@@ -45,16 +45,16 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
           <SafeAreaView style={{ alignItems: 'center'}}>
             <View style={styles.topView}>
              <Image style={styles.logo} source={require('../../assets/logo.png')} />
-             <Text style={styles.titleText}>WELCOME BACK</Text>
+             <Text style={styles.titleText}>WELCOME BACK!</Text>
              </View>
            
                <TextField  placeholder='Email adress' />
                <TextField  placeholder='Password' />
                <TouchableOpacity onPress={()=>this.props.navigation.navigate("ResetPass")}>
-               <Text style={styles.subtitleText}>Forgot password?</Text>
+               <Text style={styles.textPurple}>Forgot password?</Text>
                </TouchableOpacity>
                <ButtonResetPassaword btnLabel={'LOG IN'} data={this.handleSubmit}/>
-               <Text style={styles.subtitleText}>Other login up options</Text>
+               <Text style={styles.subtitleTextBold}>Other login up options</Text>
            
              <View style={styles.btnFaceBook}>
               <Image  source={require('../../assets/socialFaceBook.png')} />
@@ -64,8 +64,8 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
               </View>
           
                 <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signup")} style={{marginTop:'10%',flexDirection:'row'}}>
-                 <Text >Don’t have an account? </Text>
-                 <Text>Sign up.</Text>
+                 <Text style={styles.subtitleText}>Don’t have an account? </Text>
+                 <Text style={styles.subtitleText}>Sign up.</Text>
                  </TouchableOpacity>
          </SafeAreaView>
          </ScrollView>
@@ -81,8 +81,14 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
   alignItems: 'center',
     },
     subtitleText:{
-   marginVertical:10
+   marginVertical:10,
+   fontFamily:FONT.Nunito.regular
     },
+    subtitleTextBold:{
+      marginVertical:10,
+      fontFamily:FONT.Nunito.bold
+       },
+
     logo: {
       height: 80,
       width: 100,
@@ -95,14 +101,31 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
         flexDirection:'row',
         alignItems:'flex-end',
     },
+   text:{
+      color:'#F818D9',
+      fontFamily: FONT.Nunito.regular,
+      fontSize: 14,
+    
+    },
+    textPurple:{
+      color: '#F818D9',
+      fontFamily: FONT.Nunito.regular,
+      fontSize: 14,
+    
+    },
     titleText: {
       marginTop: 13,
       marginBottom: '3%',
-    //   color: BLACK.textInputTitle,
-    //   fontFamily: FONT.Nunito.bold,
+      color: BLACK.textInputTitle,
+      fontFamily: FONT.Nunito.bold,
       fontSize: 24,
       alignSelf: 'flex-end',
     },  
+    subtitletext:{
+      color: BLACK.textInputTitle,
+      fontFamily: FONT.Nunito.semiBold,
+      fontSize: 16,
+    },
     detailWrapper: {
       alignSelf: 'center',
    
@@ -116,14 +139,7 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
 
     
     },
-//     btnText: {
-//       fontSize: 16,
-//       alignSelf: 'center',
-//       fontFamily: FONT.Nunito.medium,
-//       fontSize: 14,
-//       color: BLACK.textInputTitle,
-//   ​
-//     },
+
     policyText: {
    
       alignSelf: 'center',

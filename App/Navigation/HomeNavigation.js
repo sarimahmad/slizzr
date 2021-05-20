@@ -59,7 +59,7 @@ export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeStack"
+        initialRouteName="AccountStack"
         screenOptions={{
           headerShown: false,
         }}>

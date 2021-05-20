@@ -63,10 +63,10 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
                <ButtonResetPassaword btnLabel={'SIGN UP'} data={this.handleSubmit}/>
                <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signin")} style={{marginVertical:'1%',flexDirection:'row'}}>
             
-                 <Text >Already have an account?</Text>
-                 <Text> Log in</Text>
+                 <Text style={styles.subtitletext}>Already have an account?</Text>
+                 <Text style={[styles.subtitletext,{color:'#F818D9'}]}> Log in</Text>
            </TouchableOpacity>
-              <Text style={styles.policyText}>Other sign up options</Text>
+              <Text style={styles.subtitletextbold}>Other sign up options</Text>
            
              <View style={styles.btnFaceBook}>
               <Image  source={require('../../assets/socialFaceBook.png')} />
@@ -75,9 +75,15 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
               <Image  source={require('../../assets/socialGoogle.png')} />
               </View>
           
-                <View style={{marginTop:'10%'}}>
+                <View style={{marginTop:'10%',}}>
                  <Text >By signing up, you agree to Slizzr’s </Text>
-                 <Text> Terms of Service and Privacy Policy.</Text>
+                <View style={{flexDirection:'row'}}>
+                <Text style={styles.text}>Terms of Service</Text>
+                <Text> and </Text>
+                <Text  style={styles.text}>Privacy Policy.</Text>
+                
+                </View>
+                
                  </View>
          </SafeAreaView>
          </ScrollView>
@@ -99,14 +105,36 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
         flexDirection:'row',
         alignItems:'flex-end',
     },
+    text:{
+      color:'#F818D9',
+      fontFamily: FONT.Nunito.regular,
+      fontSize: 14,
+    
+    },
+    textPurple:{
+      color: BLACK.textInputTitle,
+      fontFamily: FONT.Nunito.regular,
+      fontSize: 14,
+    
+    },
     titleText: {
       marginTop: 13,
       marginBottom: '3%',
-    //   color: BLACK.textInputTitle,
-    //   fontFamily: FONT.Nunito.bold,
+      color: BLACK.textInputTitle,
+      fontFamily: FONT.Nunito.bold,
       fontSize: 24,
       alignSelf: 'flex-end',
     },  
+    subtitletext:{
+      color: BLACK.textInputTitle,
+      fontFamily: FONT.Nunito.semiBold,
+      fontSize: 16,
+    },
+    subtitletextbold:{
+      color: BLACK.textInputTitle,
+      fontFamily: FONT.Nunito.bold,
+      fontSize: 14,
+    },
     detailWrapper: {
       alignSelf: 'center',
    

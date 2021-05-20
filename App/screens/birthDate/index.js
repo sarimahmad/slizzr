@@ -5,7 +5,8 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import TextField from '../../component/TextField';
 import Header from '../../component/Header';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import { BLACK, BLUE, WHITE } from '../../helper/Color';
+import { FONT, SCREEN } from '../../helper/Constant';
 export default class BirthDate extends Component {
   constructor(props) {
     super(props);
@@ -21,13 +22,12 @@ export default class BirthDate extends Component {
     return (
       <View style={styles.wrapperView}>
     
-           <Text style={styles.textColor}>
-            Enter the email address you registered with. We’ll send you an email
-            in order to let you choose a new password.
+           <Text style={styles.titleText}>
+           How old are you?
           </Text>
           <TextField
           secure={"no"}
-            placeholder={'Your Email Adress'}
+            placeholder={'Birth Date'}
             type="email"
             parentCallBack={this.storeInputData}
           />
@@ -54,5 +54,36 @@ const styles = StyleSheet.create({
   textColor:{
       margin: '15%', textAlign: 'center',
       color:'#8e8e93'
-  }
+  },
+  text:{
+    color:'#F818D9',
+    fontFamily: FONT.Nunito.regular,
+    fontSize: 14,
+  
+  },
+  textPurple:{
+    color: BLACK.textInputTitle,
+    fontFamily: FONT.Nunito.regular,
+    fontSize: 14,
+  
+  },
+  titleText: {
+    marginTop: 13,
+    marginBottom: '5%',
+    color: BLACK.textInputTitle,
+    fontFamily: FONT.Nunito.bold,
+    fontSize: 24,
+    textAlign:'center',
+   
+  },  
+  subtitletext:{
+    color: BLACK.textInputTitle,
+    fontFamily: FONT.Nunito.semiBold,
+    fontSize: 16,
+  },
+  subtitletextbold:{
+    color: BLACK.textInputTitle,
+    fontFamily: FONT.Nunito.bold,
+    fontSize: 14,
+  },
 });

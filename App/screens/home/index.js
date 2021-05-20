@@ -55,7 +55,7 @@ btnMap:{
     height:hp('8%'),
     backgroundColor:'black',
   position:'absolute',
-  bottom:0,
+  bottom:10,
      
 },
     btnText:{
@@ -63,7 +63,7 @@ btnMap:{
         fontSize: 16,
         color:'white',
         textAlign:'center',
-        paddingTop:'4%',
+        paddingTop:'5%',
         color:'white'
 
     },
@@ -73,6 +73,7 @@ btnMap:{
         height:hp('6%'),
         borderColor:'lightgrey',
         paddingTop:12,  
+        fontFamily:FONT.Nunito.regular,
         textAlign:'center'
     },
     subtitleText:{
@@ -96,8 +97,8 @@ btnMap:{
     titleText: {
       marginTop: 13,
       marginBottom: '3%',
-    //   color: BLACK.textInputTitle,
-    //   fontFamily: FONT.Nunito.bold,
+      color: BLACK.textInputTitle,
+      fontFamily: FONT.Nunito.bold,
       fontSize: 24,
       alignSelf: 'flex-end',
     },  
@@ -107,8 +108,8 @@ btnMap:{
     
     },
     wrapperView: {
-    //   height:hp('100%'),
-    //   width:wp('100%'),
+      height:hp('100%'),
+      width:wp('100%'),
      flex:1,
     
     
