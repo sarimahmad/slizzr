@@ -132,16 +132,7 @@ function DrawerContent(props) {
         component={HomeNavigation} />
       </Drawer.Navigator>
 
-    //  <Drawer.Navigator initialRouteName="Home">
-    //  <Drawer.Screen name="Home" component={HomeNavigation} />
-    //  <Drawer.Screen name="Find People" component={HomeNavigation} />
-    //  <Drawer.Screen name="Messages" component={HomeNavigation} />
-    
-    //  <Drawer.Screen name="Manage Events" component={HomeNavigation} />
-    //  <Drawer.Screen name="Zickets" component={HomeNavigation} />
-    //  <Drawer.Screen name="Notifications" component={HomeNavigation} />
-    //  <Drawer.Screen name="Settings" component={HomeNavigation} />
-    //  </Drawer.Navigator>
+   
   )
 }
 
