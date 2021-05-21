@@ -92,7 +92,7 @@ export default class home extends Component {
               }}>
               <Image
                 source={require('../../assets/searchWhite.png')}
-                style={styles.logoSearch}
+               
               />
               <TextInput
                 style={styles.inputSearch}
@@ -100,6 +100,7 @@ export default class home extends Component {
                 placeholderTextColor={'#8e8e93'}
                 // onChangeText={handleText}
               ></TextInput>
+              
             </View>
           )}
           {this.state.enableMap == false && (
@@ -125,11 +126,14 @@ export default class home extends Component {
               </TouchableOpacity>
             </View>
           )}
+          <View style={styles.bottomView}>
+          <TouchableOpacity onPress={()=>this.props.navigation.navigate("createEvent")}  style={styles.logoAdd}
+          >
           <Image
             source={require('../../assets/plus-circle.png')}
-            style={styles.logoAdd}
           />
-          <View style={styles.bottomView}>
+          </TouchableOpacity>
+          <View style={{backgroundColor:'white'}}>
             <TouchableOpacity
               onPress={this.showDatepicker}
               style={{flexDirection: 'row', width: wp('90%')}}>
@@ -158,6 +162,7 @@ export default class home extends Component {
             <TouchableOpacity style={styles.btnMap}>
               <Text style={styles.btnText}>List View</Text>
             </TouchableOpacity>
+          </View>
           </View>
         </SafeAreaView>
       </View>
@@ -228,7 +233,7 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     position: 'absolute',
-    backgroundColor: 'white',
+   
     bottom: 0,
     paddingBottom: 10,
   },
@@ -276,7 +281,7 @@ const styles = StyleSheet.create({
   logoAdd: {
     alignSelf: 'flex-end',
     marginRight: '5%',
-    marginBottom: '5%',
+    marginTop: '10%',
   },
 
   logoAddCalender: {

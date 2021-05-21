@@ -25,6 +25,7 @@ import signUp from '../screens/signup';
 import birthDate from '../screens/birthDate';
 import confirmEmail from '../screens/confirmEmail';
 import CustomSidebarMenu from './CustomSidebarMenu';
+import CreateEvent from '../screens/createEvent';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -34,6 +35,7 @@ const HomeNavigation = () => {
     }}>
    <Stack.Screen name="drawer" component={DrawerContent}></Stack.Screen> 
    <Stack.Screen name="Home" component={home}></Stack.Screen>
+   <Stack.Screen name="createEvent" component={CreateEvent}></Stack.Screen>
     </Stack.Navigator> );
 };
 function DrawerContent(props) {
