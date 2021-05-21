@@ -3,8 +3,17 @@
 import React, {Component} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-
+import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
+import {
+  Animated,
+  Easing,
+  SafeAreaView,
+  ScrollView,
+  View,
+  Image,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 import home from '../screens/home';
 
 import splash from '../screens/splash';
@@ -15,6 +24,7 @@ import resetPasswordForm from '../screens/resetPasswordForm';
 import signUp from '../screens/signup';
 import birthDate from '../screens/birthDate';
 import confirmEmail from '../screens/confirmEmail';
+import CustomSidebarMenu from './CustomSidebarMenu';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -22,25 +32,120 @@ const HomeNavigation = () => {
     <Stack.Navigator initialRouteName="Home" screenOptions={{
       headerShown: false
     }}>
-   <Stack.Screen name="drawer" component={DrawerNavigation}></Stack.Screen> 
+   <Stack.Screen name="drawer" component={DrawerContent}></Stack.Screen> 
    <Stack.Screen name="Home" component={home}></Stack.Screen>
     </Stack.Navigator> );
 };
-function DrawerNavigation() {
+function DrawerContent(props) {
   return (
-    <Drawer.Navigator initialRouteName="Home">
-    <Drawer.Screen name="Home" component={HomeNavigation} />
-    <Drawer.Screen name="Find People" component={HomeNavigation} />
-    <Drawer.Screen name="Messages" component={HomeNavigation} />
+
+    <Drawer.Navigator
+      drawerPosition="right"
+      drawerContentOptions={{
+        itemStyle: { marginVertical: 5 },
+        activeTintColor: 'white',
+        labelStyle: {
+          color: 'black',
+        },
+      }}
+      drawerContent={(props) => <CustomSidebarMenu {...props} />}>
+      <Drawer.Screen
+        name="Home"
+        options={{
+          title: 'Home',
+          
+          drawerIcon: ({ focused, size }) => (
+            <Image source={require('../assets/home.png')}  />
+     
+        
+          )
+        }}
+        component={HomeNavigation} />
+      <Drawer.Screen
+        name="Find People"
+        options={{
+          title: 'Find People',
+          drawerIcon: ({ focused, size }) => (
+            <Image source={require('../assets/search.png')}  />
+     
+        
+          )
+        }}
+        component={HomeNavigation} />
+       
+        
+         <Drawer.Screen
+        name="Messages"
+        options={{
+          title: 'Messages',
+          
+          drawerIcon: ({ focused, size }) => (
+            <Image source={require('../assets/message.png')}  />
+     
+        
+          )
+        }}
+        component={HomeNavigation} /> 
+        <Drawer.Screen
+        name="Manage Events"
+        options={{
+          title: 'Manage Events',
+          drawerIcon: ({ focused, size }) => (
+            <Image source={require('../assets/events.png')}  />
+     
+        
+          )
+        }}
+        component={HomeNavigation} />
+         <Drawer.Screen
+        name="Zickets"
+        options={{
+          title: 'Zickets',
+          drawerIcon: ({ focused, size }) => (
+            <Image source={require('../assets/zickets.png')}  />
+     
+        
+          )
+        }}
+        component={HomeNavigation} /> 
+        <Drawer.Screen
+        name="Notifications"
+        options={{
+          title: 'Notifications',
+          drawerIcon: ({ focused, size }) => (
+            <Image source={require('../assets/notification.png')}  />
+     
+        
+          )
+        }}
+        component={HomeNavigation} /> 
+        <Drawer.Screen
+        name="Settings"
+        options={{
+          title: 'Settings',
+          drawerIcon: ({ focused, size }) => (
+            <Image source={require('../assets/settings.png')}  />
+     
+        
+          )
+        }}
+        component={HomeNavigation} />
+      </Drawer.Navigator>
+
+    //  <Drawer.Navigator initialRouteName="Home">
+    //  <Drawer.Screen name="Home" component={HomeNavigation} />
+    //  <Drawer.Screen name="Find People" component={HomeNavigation} />
+    //  <Drawer.Screen name="Messages" component={HomeNavigation} />
     
-    <Drawer.Screen name="Manage Events" component={HomeNavigation} />
-    <Drawer.Screen name="Zickets" component={HomeNavigation} />
-    <Drawer.Screen name="Notifications" component={HomeNavigation} />
-    <Drawer.Screen name="Settings" component={HomeNavigation} />
-    
-  </Drawer.Navigator>
+    //  <Drawer.Screen name="Manage Events" component={HomeNavigation} />
+    //  <Drawer.Screen name="Zickets" component={HomeNavigation} />
+    //  <Drawer.Screen name="Notifications" component={HomeNavigation} />
+    //  <Drawer.Screen name="Settings" component={HomeNavigation} />
+    //  </Drawer.Navigator>
   )
 }
+
+
 function AccountNavigation() {
   return (
     <Stack.Navigator initialRouteName="Intro" screenOptions={{
@@ -59,7 +164,7 @@ export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="AccountStack"
+        initialRouteName="HomeStack"
         screenOptions={{
           headerShown: false,
         }}>
@@ -67,7 +172,7 @@ export const MainNavigation = () => {
 
         <Stack.Screen
           name="HomeStack"
-          component={DrawerNavigation}></Stack.Screen>
+          component={DrawerContent}></Stack.Screen>
         <Stack.Screen
           name="AccountStack"
           component={AccountNavigation}></Stack.Screen>
@@ -76,3 +181,4 @@ export const MainNavigation = () => {
   );
 };
 export default MainNavigation;
+
