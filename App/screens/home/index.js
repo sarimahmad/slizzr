@@ -207,12 +207,13 @@ const styles = StyleSheet.create({
     marginHorizontal: '10%',
     borderRadius: 25,
     marginTop: hp('5%'),
-    height: hp('8%'),
+    height: 50,
     // shadowColor: 'black',
     // shadowOffset: {width: 0, height: 2},
     // shadowRadius: 6,
     // shadowOpacity: 0.1,
     elevation: 1,
+    justifyContent:'center',
 
     borderWidth: 1,
     borderRadius: 24,
@@ -223,8 +224,9 @@ const styles = StyleSheet.create({
     width: wp('90%'),
     marginHorizontal: '5%',
     borderRadius: 25,
-    height: hp('8%'),
+    height: 50,
     backgroundColor: 'black',
+    justifyContent: 'center'
   },
   logoSearch: {
     position: 'absolute',
@@ -241,7 +243,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
-    paddingTop: '5%',
     color: 'white',
     fontFamily: FONT.Nunito.regular,
   },
@@ -249,8 +250,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'black',
     textAlign: 'center',
-    paddingTop: '5%',
     fontFamily: FONT.Nunito.regular,
+
   },
   barChild: {
     borderWidth: 1,
@@ -283,8 +284,7 @@ const styles = StyleSheet.create({
     marginRight: '5%',
     marginTop: '10%',
   },
-
-  logoAddCalender: {
+ logoAddCalender: {
     position: 'absolute',
     right: 5,
     top: 13,

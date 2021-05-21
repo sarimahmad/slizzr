@@ -39,9 +39,10 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
    render() {
      return (
        <View style={styles.wrapperView}>
+         <SafeAreaView style={styles.wrapperView}>
         <ScrollView >
           
-          <SafeAreaView style={{ alignItems: 'center'}}>
+          <View  style={{ alignItems: 'center'}}>
             <View style={styles.flex}>
              <Image style={styles.logo} source={require('../../assets/logo.png')} />
              <Text style={styles.titleText}>ing Up</Text>
@@ -85,8 +86,9 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
                 </View>
                 
                  </View>
-         </SafeAreaView>
+                 </View>
          </ScrollView>
+         </SafeAreaView>
       
        </View>
      );
@@ -141,12 +143,8 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
     
     },
     wrapperView: {
-      height:hp('100%'),
-      width:wp('100%'),
-    
-      flexDirection:'column'
-
-    
+      flex: 1,
+  
     },
 //     btnText: {
 //       fontSize: 16,
@@ -164,12 +162,12 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
       fontFamily: FONT.Nunito.regular,
     },
     btnFaceBook: {
-        height:hp('5%'),
+        height:50,
         marginTop:'5%'
         
       },
     btnGoogle: {
-        height:hp('5%'),
+        height:50,
         marginTop:'10%' 
     },
 //     absoluteLeftIcon: {

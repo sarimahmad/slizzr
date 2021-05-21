@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
   btnContainer:{
     width:wp('90%'), 
     borderRadius:25,
-    height:hp('8%'),
+    height:55,
+    justifyContent:'center',
     backgroundColor:'grey',
     marginBottom:'2%', 
     marginTop:'2%',
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color:'white',
         textAlign:'center',
-        paddingTop:'5%',
+        // paddingTop:'5%',
         color:'#f1f1f2'
 
     }

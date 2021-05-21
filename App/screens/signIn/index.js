@@ -40,9 +40,10 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
    render() {
      return (
        <View style={styles.wrapperView}>
-        <ScrollView >
-          
-          <SafeAreaView style={{ alignItems: 'center'}}>
+        
+          <SafeAreaView style={styles.wrapperView}>
+          <ScrollView>
+            <View style={{alignItems: 'center'}}>
             <View style={styles.topView}>
              <Image style={styles.logo} source={require('../../assets/logo.png')} />
              <Text style={styles.titleText}>WELCOME BACK!</Text>
@@ -67,10 +68,11 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
                  <Text style={styles.subtitleText}>Don’t have an account? </Text>
                  <Text style={styles.subtitleText}>Sign up.</Text>
                  </TouchableOpacity>
-         </SafeAreaView>
+                 </View>
          </ScrollView>
-      
-       </View>
+         </SafeAreaView>
+         </View>
+
      );
    }
  }
@@ -132,10 +134,7 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
     
     },
     wrapperView: {
-      height:hp('100%'),
-      width:wp('100%'),
-    
-      flexDirection:'column'
+      flex:1
 
     
     },
