@@ -17,10 +17,15 @@ import Header from '../../component/Header';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {BLACK, BLUE, WHITE} from '../../helper/Color';
 import { heightPercentageToDP } from 'react-native-responsive-screen';
+<<<<<<< HEAD
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
+=======
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
+>>>>>>> 6fd6e046a5532d59a080a45e235d983b2d4e0d7d
 export default class CreateEvent extends Component {
   constructor() {
     super();
@@ -252,19 +257,31 @@ export default class CreateEvent extends Component {
                   this.RBSheet = ref;
                 }}
                 height={hp('100%')}
+<<<<<<< HEAD
                 width={wp('100%')}
                 openDuration={250}
                 customStyles={{
                   container: {
                       backgroundColor:'red',
+=======
+                openDuration={250}
+                customStyles={{
+                  container: {
+>>>>>>> 6fd6e046a5532d59a080a45e235d983b2d4e0d7d
                     // justifyContent: 'center',
                     alignItems: 'center',
                   },
                 }}>
                 <View>
+<<<<<<< HEAD
                 <View style={[styles.flex, {padding: 10}]}>
             <TouchableOpacity
               onPress={() => this.RBSheet.open()}>
+=======
+                <View style={[styles.flex, {padding: 10,marginTop:30}]}>
+            <TouchableOpacity
+              onPress={() => this.RBSheet.close()}>
+>>>>>>> 6fd6e046a5532d59a080a45e235d983b2d4e0d7d
               <Image
                 source={require('../../assets/back.png')}
                 style={styles.logo}
@@ -280,8 +297,12 @@ export default class CreateEvent extends Component {
               style={styles.logo}
             />
           </View>
+<<<<<<< HEAD
               
         <View style={{marginTop:hp('20%')}}>
+=======
+         <View style={{marginTop:hp('20%')}}>
+>>>>>>> 6fd6e046a5532d59a080a45e235d983b2d4e0d7d
                   <Image
                     style={{alignSelf: 'center'}}
                     source={require('../../assets/Oval.png')}
@@ -324,6 +345,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
   
   },
+  flex: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomColor:'lightgrey',
+    borderBottomWidth:1,
+  },
+  
   add: {
     justifyContent: 'center',
     backgroundColor: 'lightgrey',

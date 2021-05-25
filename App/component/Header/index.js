@@ -29,9 +29,11 @@ export default class Header extends Component {
 const styles = StyleSheet.create({
   flex: {
     flexDirection: 'row',
+    alignItems:'center',
     justifyContent: 'space-between',
     height: hp('10%'),
-    padding: '5%',
+    paddingTop:20,
+    paddingHorizontal: '5%',
     borderBottomWidth: 2,
     borderBottomColor: 'lightgrey',
   }
