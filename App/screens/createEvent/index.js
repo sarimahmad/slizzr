@@ -16,7 +16,11 @@ import RNPickerSelect from 'react-native-picker-select';
 import Header from '../../component/Header';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {BLACK, BLUE, WHITE} from '../../helper/Color';
-
+import { heightPercentageToDP } from 'react-native-responsive-screen';
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+  } from 'react-native-responsive-screen';
 export default class CreateEvent extends Component {
   constructor() {
     super();
@@ -247,15 +251,37 @@ export default class CreateEvent extends Component {
                 ref={ref => {
                   this.RBSheet = ref;
                 }}
-                height={600}
+                height={hp('100%')}
+                width={wp('100%')}
                 openDuration={250}
                 customStyles={{
                   container: {
-                    justifyContent: 'center',
+                      backgroundColor:'red',
+                    // justifyContent: 'center',
                     alignItems: 'center',
                   },
                 }}>
                 <View>
+                <View style={[styles.flex, {padding: 10}]}>
+            <TouchableOpacity
+              onPress={() => this.RBSheet.open()}>
+              <Image
+                source={require('../../assets/back.png')}
+                style={styles.logo}
+              />
+            </TouchableOpacity>
+
+            <Image
+              source={require('../../assets/homeLogo.png')}
+              style={styles.logo}
+            />
+            <Image
+              source={require('../../assets/bell.png')}
+              style={styles.logo}
+            />
+          </View>
+              
+        <View style={{marginTop:hp('20%')}}>
                   <Image
                     style={{alignSelf: 'center'}}
                     source={require('../../assets/Oval.png')}
@@ -283,6 +309,7 @@ export default class CreateEvent extends Component {
                     </Text>
                   </TouchableOpacity>
                 </View>
+                </View>
               </RBSheet>
             </View>
           </ScrollView>
@@ -295,6 +322,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 10,
+  
   },
   add: {
     justifyContent: 'center',
@@ -307,6 +335,12 @@ const styles = StyleSheet.create({
   imagebefore: {
     // height: 0,
     // width: SCREEN.width - 350
+  },
+  flex: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomColor:'lightgrey',
+    borderBottomWidth:1
   },
   imageafter: {
     width: '100%',
