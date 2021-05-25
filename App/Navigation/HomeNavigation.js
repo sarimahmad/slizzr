@@ -26,6 +26,10 @@ import birthDate from '../screens/birthDate';
 import confirmEmail from '../screens/confirmEmail';
 import CustomSidebarMenu from './CustomSidebarMenu';
 import CreateEvent from '../screens/createEvent';
+import FindPeople from '../screens/findPeople';
+import PeopleProfiles from '../screens/peopleProfiles';
+import lookFriends from '../screens/lookFriends';
+import messages from '../screens/messages';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -36,13 +40,16 @@ const HomeNavigation = () => {
    <Stack.Screen name="drawer" component={DrawerContent}></Stack.Screen> 
    <Stack.Screen name="Home" component={home}></Stack.Screen>
    <Stack.Screen name="createEvent" component={CreateEvent}></Stack.Screen>
+   <Stack.Screen name="peopleProfiles" component={PeopleProfiles}></Stack.Screen>
+   <Stack.Screen name="lookFriends" component={lookFriends}></Stack.Screen>
+  
     </Stack.Navigator> );
 };
 function DrawerContent(props) {
   return (
 
     <Drawer.Navigator
-      drawerPosition="right"
+      drawerPosition="left"
       drawerContentOptions={{
         itemStyle: { marginVertical: 5 },
         activeTintColor: 'white',
@@ -73,7 +80,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={HomeNavigation} />
+        component={FindPeople} />
        
         
          <Drawer.Screen
@@ -87,7 +94,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={HomeNavigation} /> 
+        component={messages} /> 
         <Drawer.Screen
         name="Manage Events"
         options={{
@@ -157,7 +164,7 @@ export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Splash"
+        initialRouteName="HomeStack"
         screenOptions={{
           headerShown: false,
         }}>
