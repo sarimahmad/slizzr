@@ -6,6 +6,7 @@ export const BLACK = {
   btn: '#1E1E1E',
   appLight: 'rgba(102, 102, 102, 1)',
   appDark: 'rgba(112, 112, 112, 1)',
+  border: 'rgba(0, 0, 0, 0.101453)',
   dark: 'rgba(0, 0, 0, 1)',
   transParent: 'rgba(31, 32, 43, 0.5)',
   textColor: '#494949',

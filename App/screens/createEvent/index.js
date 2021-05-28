@@ -18,7 +18,6 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import {BLACK, BLUE, WHITE} from '../../helper/Color';
 import { heightPercentageToDP } from 'react-native-responsive-screen';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
 export default class CreateEvent extends Component {
   constructor() {
     super();
