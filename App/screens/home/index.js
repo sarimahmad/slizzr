@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 
 import {
   View,
-  Button,
   Text,
   StyleSheet,
   TouchableOpacity,
@@ -11,7 +10,7 @@ import {
   TextInput,
   Image,
 } from 'react-native';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
+import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
@@ -19,17 +18,19 @@ import {
 } from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {Platform} from 'react-native';
+import HeaderWithLogo from '../../component/HeaderWithLogo';
 export default class home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       enableMap: false,
-      date: new Date(2300, 10, 20),
+      date: new Date(),
       showDate: false,
     };
   }
   onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate || this.state.date;
 
     this.setState({date: currentDate});
     this.setState({showDate: false});
@@ -45,25 +46,14 @@ export default class home extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
+        <HeaderWithLogo
+          leftIcon={require('../../assets/drawer.png')}
+          leftPress={() => this.props.navigat.openDrawer()}
+          backColor={WHITE.dark}
+          rightIcon={require('../../assets/bell.png')}
+          rightPress={() => this.props.navigation.navigate('Notification')}
+        />
         <SafeAreaView style={styles.contentView}>
-          <View style={[styles.flex, {padding: 10}]}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-
-            <Image
-              source={require('../../assets/homeLogo.png')}
-              style={styles.logo}
-            />
-            <Image
-              source={require('../../assets/bell.png')}
-              style={styles.logo}
-            />
-          </View>
           <View style={styles.flex}>
             <Text style={styles.barChild}>All</Text>
             <Text style={styles.barChild}>Prepaid</Text>
@@ -100,7 +90,7 @@ export default class home extends Component {
               />
             </View>
           )}
-          {this.state.enableMap == false && (
+          {this.state.enableMap === false && (
             <View
               style={{
                 justifyContent: 'center',
@@ -129,33 +119,55 @@ export default class home extends Component {
               style={styles.logoAdd}>
               <Image source={require('../../assets/plus-circle.png')} />
             </TouchableOpacity>
-            <View style={{backgroundColor: WHITE.app}}>
-              <TouchableOpacity
-                onPress={this.showDatepicker}
-                style={{flexDirection: 'row', width: wp('90%')}}>
-                <View style={styles.input}>
-                  <Text style={{paddingTop: 15, paddingLeft: 20}}>
-                    Thursday, August 24, 2020
-                  </Text>
-                  <Image
-                    style={styles.logoAddCalender}
-                    source={require('../../assets/calendar-range.png')}
-                    onPress={this.showDatepicker}
-                  />
-                </View>
-                {this.state.showDate && (
+            <View style={styles.bottomWhiteView}>
+              {Platform.OS === 'android' ? (
+                <TouchableOpacity
+                  onPress={this.showDatepicker}
+                  style={styles.DataTimeWrapper}>
+                  <View style={styles.input}>
+                    <Text style={{paddingTop: 15, paddingLeft: 20}}>
+                      {this.state.date.toDateString()}
+                    </Text>
+                  </View>
+
+                  <View style={styles.logoAddCalenderView}>
+                    <Image
+                      source={require('../../assets/calendar-range.png')}
+                    />
+                  </View>
+                  {this.state.showDate && (
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={this.state.date}
+                      mode={'date'}
+                      is24Hour={true}
+                      display="default"
+                      onChange={this.onChange}
+                    />
+                  )}
+
+                  <View />
+                </TouchableOpacity>
+              ) : (
+                <View style={styles.DataTimeWrapper}>
                   <DateTimePicker
+                    style={styles.DateTimeInnerIOS}
                     testID="dateTimePicker"
                     value={this.state.date}
                     mode={'date'}
                     is24Hour={true}
                     display="default"
+                    textColor="black"
+                    themeVariant="light"
                     onChange={this.onChange}
                   />
-                )}
-
-                <View />
-              </TouchableOpacity>
+                  <View style={styles.logoAddCalenderView}>
+                    <Image
+                      source={require('../../assets/calendar-range.png')}
+                    />
+                  </View>
+                </View>
+              )}
               <TouchableOpacity style={styles.btnMap}>
                 <Text style={styles.btnText}>List View</Text>
               </TouchableOpacity>
@@ -186,18 +198,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   input: {
-    width: wp('90%'),
+    width: '100%',
     marginHorizontal: '5%',
-    borderWidth: 1,
-    height: hp('7%'),
-    marginVertical: 10,
-    borderRadius: 12,
-    borderColor: 'lightgrey',
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 6,
-    shadowOpacity: 0.1,
-    elevation: 2,
+    height: '100%',
   },
   btnLocation: {
     width: wp('80%'),
@@ -231,7 +234,6 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     position: 'absolute',
-
     bottom: 0,
     paddingBottom: 10,
   },
@@ -240,6 +242,9 @@ const styles = StyleSheet.create({
     color: WHITE.app,
     textAlign: 'center',
     fontFamily: FONT.Nunito.regular,
+  },
+  bottomWhiteView: {
+    backgroundColor: WHITE.app,
   },
   btnTextLocation: {
     fontSize: 16,
@@ -263,14 +268,11 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.semiBold,
   },
   contentView: {
-    height: hp('100%'),
+    flex: 1,
+    backgroundColor: WHITE.dark,
   },
   logo: {
-    //   height: 80,
-    //   width: 100,
-    //   resizeMode: 'contain',
     marginTop: 25,
-
     alignSelf: 'center',
   },
   logoAdd: {
@@ -278,12 +280,44 @@ const styles = StyleSheet.create({
     marginRight: '5%',
     marginTop: '10%',
   },
-  logoAddCalender: {
+  logoAddCalenderView: {
     position: 'absolute',
-    right: 5,
-    top: 13,
-    // alignSelf:'flex-end',
-    // marginRight:'5%',
+    right: 0,
+    width: 58,
+    height: 53,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderLeftWidth: 1,
+    borderLeftColor: BLACK.border,
+  },
+  DataTimeWrapper: {
+    backgroundColor: WHITE.app,
+    height: 53,
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
+    borderWidth: 0.3,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: BLACK.shadow,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    elevation: 2,
+    marginVertical: 20,
+  },
+  DateTimeInnerIOS: {
+    height: '100%',
+    width: '100%',
+    alignSelf: 'center',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: BLACK.shadow,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    elevation: 2,
   },
 
   flex: {
