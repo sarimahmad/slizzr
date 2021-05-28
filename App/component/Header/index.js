@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+
+import { BLACK } from '../../helper/Color';
+import { FONT } from '../../helper/Constant';
 
 export default class Header extends Component {
   constructor(props) {
@@ -14,13 +13,14 @@ export default class Header extends Component {
   render() {
     return (
       <View style={styles.flex}>
-        <TouchableOpacity onPress={() => this.props.navigation.navigate(this.props.route)} activeOpacity={0.85}>
-          <Image source={require('../../assets/back.png')} />
+        <TouchableOpacity 
+        onPress={this.props.leftBtnPress} 
+        activeOpacity={0.85} style={{position: 'absolute', left: 20, justifyContent: 'center', alignItems: 'center', height: 40, width: 40,}}>
+          <Image source={require('../../assets/back.png')} style={{height: 40, width: 40,  justifyContent:'center'}} />
         </TouchableOpacity>
-        <Text style={{ paddingTop: 10, fontSize: 16, color: '#8e8e93', fontWeight: 'bold' }}>
+        <Text style={{  fontSize: 17, textAlign:'center',fontFamily: FONT.Nunito.bold }}>
           {this.props.headerTitle}
         </Text>
-        <Text></Text>
       </View>
     );
   }
@@ -28,13 +28,10 @@ export default class Header extends Component {
 
 const styles = StyleSheet.create({
   flex: {
-    flexDirection: 'row',
     alignItems:'center',
-    justifyContent: 'space-between',
-    height: hp('10%'),
-    paddingTop:20,
-    paddingHorizontal: '5%',
-    borderBottomWidth: 2,
-    borderBottomColor: 'lightgrey',
+    height: 90,
+    borderBottomWidth: 1,
+    borderBottomColor: BLACK.border,
+    justifyContent: 'center',
   }
 });
