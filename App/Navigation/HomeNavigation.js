@@ -33,6 +33,13 @@ import messages from '../screens/messages';
 import messagesEvent from '../screens/messagesEvent';
 import newMessage from '../screens/newMessage';
 import chat from '../screens/chat';
+import manageEvents from '../screens/manageEvents';
+import attendingEventInfo from '../screens/attendingEventInfo';
+import myEventInfo from '../screens/myEventInfo';
+import attendeesList from '../screens/attendeesList';
+import sharedHosts from '../screens/sharedHosts';
+import sharedHostRequests from '../screens/sharedHostRequests';
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -46,6 +53,21 @@ const HomeNavigation = () => {
    <Stack.Screen name="peopleProfiles" component={PeopleProfiles}></Stack.Screen>
    <Stack.Screen name="lookFriends" component={lookFriends}></Stack.Screen>
   
+    </Stack.Navigator> );
+};
+const ManageEventNavigation = () => {
+  return (
+    <Stack.Navigator initialRouteName="Home" screenOptions={{
+      headerShown: false
+    }}>
+   <Stack.Screen name="manageEvent" component={manageEvents}></Stack.Screen> 
+   <Stack.Screen name="attendingEventInfo" component={attendingEventInfo}></Stack.Screen>
+   <Stack.Screen name="myEventInfo" component={myEventInfo}></Stack.Screen>
+   <Stack.Screen name="attendeesList" component={attendeesList}></Stack.Screen>
+   <Stack.Screen name="sharedHosts" component={sharedHosts}></Stack.Screen>
+   <Stack.Screen name="sharedHostRequests" component={sharedHostRequests}></Stack.Screen>
+   
+   
     </Stack.Navigator> );
 };
 function DrawerContent(props) {
@@ -108,7 +130,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={HomeNavigation} />
+        component={ManageEventNavigation} />
          <Drawer.Screen
         name="Zickets"
         options={{

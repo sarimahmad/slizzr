@@ -1,3 +1,5 @@
+
+
 import React, {Component} from 'react';
 import {
   View,
@@ -14,7 +16,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-export default class manageEvents extends Component {
+export default class sharedHostRequests extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -68,44 +70,23 @@ export default class manageEvents extends Component {
     };
 
   }
-myevents = ()=>{
-this.setState({myevents:true})
-this.setState({attendingEvents:false})
-}
-attendingEvents = ()=>{
-  this.setState({myevents:false})
-  this.setState({attendingEvents:true})
-  
-}
+
   render() {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
             <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
           <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
+              onPress={() => this.props.navigation.navigate("manageEvents")}>
               <Image
-                source={require('../../assets/drawer.png')}
+                source={require('../../assets/back.png')}
                 style={styles.logo}
               />
             </TouchableOpacity>
 
-            <Text style={styles.titleText}>Manage Events</Text>
+            <Text style={styles.titleText}>Shared Host Requests</Text>
             <View></View>
           </View>
-          <View style={styles.flex}>
-            <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
-               <Text>MY EVENTS</Text>
-               </TouchableOpacity>
-            <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
-              <Text>ATTENDING EVENTS</Text>
-                </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHostRequests")} style={{height:40,alignItems: 'center',backgroundColor:'#FF9500',flexDirection:'row',justifyContent: 'space-between',}}>
-           <Text style={{color:'white',paddingLeft:20}}>SHARED HOST REQUESTS</Text>
-           <Text style={{color:'white',paddingRight:20}}>+2</Text>
-          </TouchableOpacity>
-          {this.state.attendingEvents == true && (
             <FlatList
               data={this.state.findpeople}
               keyExtractor={item => item.id}
@@ -130,50 +111,19 @@ attendingEvents = ()=>{
                       <Text style={styles.subtitleText}>{item.adress}</Text>
                       <Text style={styles.purpleText}>{item.date}</Text>
                     </View>
-                    <View style={styles.shareView}>
-                      <Image source={require('../../assets/share.png')} />
-                    </View>
+            <View>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("manageEvent")} style={{marginBottom:5,marginRight:5,height:30,width:30,borderRadius:24,backgroundColor:'#4CD964',alignItems: 'center',justifyContent:'center'}}> 
+             <Image source={require('../../assets/check.png')} />  
+         </TouchableOpacity>
+         <View style={{marginRight:5,height:30,width:30,borderRadius:24,backgroundColor:'#FF3B30',alignItems: 'center',justifyContent:'center'}}> 
+             <Image source={require('../../assets/closeIcon.png')} />  
+         </View>
+         </View>
                    
                   </View>
                 </TouchableOpacity>
               )}
             />
-          )}
-           {this.state.myevents == true && (
-           
-           <FlatList
-           data={this.state.findpeople}
-           keyExtractor={item => item.id}
-           renderItem={({item}) => (
-             <TouchableOpacity onPress={()=>this.props.navigation.navigate("myEventInfo")}
-               style={{
-                 borderBottomWidth: 1,
-                 borderBottomColor: 'lightgrey',
-               }}>
-               <View style={styles.flexRow}>
-                 <View style={styles.imgView}>
-                   <Image source={require('../../assets/profile1.png')} />
-                   <Image
-                     style={{position: 'absolute', right: 15}}
-                     source={require('../../assets/private.png')}
-                   />
-            
-                 </View>
-                 
-                 <View style={styles.detail}>
-                   <Text style={styles.titleText}>{item.profileName}</Text>
-                   <Text style={styles.subtitleText}>{item.adress}</Text>
-                   <Text style={styles.purpleText}>{item.date}</Text>
-                 </View>
-                 <View style={styles.shareView}>
-                   <Image source={require('../../assets/messageIcon.png')} />
-                 </View>
-                
-               </View>
-             </TouchableOpacity>
-           )}
-         />
-       )}
         </SafeAreaView>
       </View>
     );
