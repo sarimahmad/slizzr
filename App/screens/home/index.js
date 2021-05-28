@@ -225,6 +225,8 @@ const styles = StyleSheet.create({
     marginHorizontal: '5%',
     borderRadius: 25,
     height: 50,
+    marginBottom:20,
+  
     backgroundColor: 'black',
     justifyContent: 'center'
   },
@@ -237,7 +239,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
    
     bottom: 0,
-    paddingBottom: 10,
   },
   btnText: {
     fontSize: 16,
@@ -307,8 +308,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   wrapperView: {
-    height: hp('100%'),
-    width: wp('100%'),
+   
+    // height: hp('100%'),
+    // width: wp('100%'),
     flex: 1,
   },
   policyText: {

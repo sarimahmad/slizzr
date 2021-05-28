@@ -30,6 +30,9 @@ import FindPeople from '../screens/findPeople';
 import PeopleProfiles from '../screens/peopleProfiles';
 import lookFriends from '../screens/lookFriends';
 import messages from '../screens/messages';
+import messagesEvent from '../screens/messagesEvent';
+import newMessage from '../screens/newMessage';
+import chat from '../screens/chat';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -94,7 +97,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={messages} /> 
+        component={messagesNavigation} /> 
         <Drawer.Screen
         name="Manage Events"
         options={{
@@ -145,7 +148,17 @@ function DrawerContent(props) {
   )
 }
 
-
+function messagesNavigation() {
+  return (
+    <Stack.Navigator initialRouteName="messages" screenOptions={{
+               headerShown: false
+             }}>
+               <Stack.Screen name="messages" component={messages}></Stack.Screen>
+               <Stack.Screen name="messagesEvent" component={messagesEvent}></Stack.Screen>
+               <Stack.Screen name="newMessage" component={newMessage}></Stack.Screen>
+               <Stack.Screen name="chat" component={chat}></Stack.Screen>
+             </Stack.Navigator> );
+}
 function AccountNavigation() {
   return (
     <Stack.Navigator initialRouteName="Intro" screenOptions={{

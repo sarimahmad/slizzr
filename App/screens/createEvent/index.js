@@ -238,7 +238,7 @@ export default class CreateEvent extends Component {
                   {label: 'Public', value: 'Public'},
                 ]}
               />
-              <View>
+              <View style={{marginBottom:20}}>
                 <TouchableOpacity
                   onPress={() => this.RBSheet.open()}
                   style={styles.button}>
