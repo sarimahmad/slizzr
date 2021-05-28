@@ -316,6 +316,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 10,
+  
   },
   flex: {
     flexDirection: 'row',
@@ -335,6 +336,12 @@ const styles = StyleSheet.create({
   imagebefore: {
     // height: 0,
     // width: SCREEN.width - 350
+  },
+  flex: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomColor:'lightgrey',
+    borderBottomWidth:1
   },
   imageafter: {
     width: '100%',

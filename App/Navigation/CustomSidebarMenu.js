@@ -31,8 +31,7 @@ const CustomSidebarMenu = (props) => {
   return (
     <View style={{ flex: 1, }}>
        
-       <Image source={require('../assets/Bitmap.png')} style={{position:'absolute',right:0,top:70}} />
-     
+      
       <View style={{  height: 100, width: '100%', justifyContent: 'flex-end', alignItems: 'center' }}>
       <Image source={require('../assets/LogoDrawer.png')} style={styles.logoDrawer} />
         
