@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 
 import {
@@ -71,7 +72,7 @@ export default class home extends Component {
             </Text>
             <Text style={styles.barChild}>free</Text>
           </View>
-          {this.state.enableMap == true && (
+          {this.state.enableMap === true && (
             <MapView
               style={{flex: 1}}
               initialRegion={{
@@ -82,7 +83,7 @@ export default class home extends Component {
               }}
             />
           )}
-          {this.state.enableMap == true && (
+          {this.state.enableMap === true && (
             <View
               style={{
                 position: 'absolute',
@@ -90,17 +91,13 @@ export default class home extends Component {
                 flexDirection: 'row',
                 width: wp('100%'),
               }}>
-              <Image
-                source={require('../../assets/searchWhite.png')}
-               
-              />
+              <Image source={require('../../assets/searchWhite.png')} />
               <TextInput
                 style={styles.inputSearch}
                 placeholder={'Try “western homecoming party”'}
                 placeholderTextColor={'#8e8e93'}
                 // onChangeText={handleText}
-              ></TextInput>
-              
+              />
             </View>
           )}
           {this.state.enableMap == false && (
@@ -127,42 +124,42 @@ export default class home extends Component {
             </View>
           )}
           <View style={styles.bottomView}>
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate("createEvent")}  style={styles.logoAdd}
-          >
-          <Image
-            source={require('../../assets/plus-circle.png')}
-          />
-          </TouchableOpacity>
-          <View style={{backgroundColor:'white'}}>
             <TouchableOpacity
-              onPress={this.showDatepicker}
-              style={{flexDirection: 'row', width: wp('90%')}}>
-              <View style={styles.input}>
-                <Text style={{paddingTop:15,paddingLeft:20}}>Thursday, August 24, 2020</Text>
-                <Image
-                style={styles.logoAddCalender}
-                source={require('../../assets/calendar-range.png')}
+              onPress={() => this.props.navigation.navigate('createEvent')}
+              style={styles.logoAdd}>
+              <Image source={require('../../assets/plus-circle.png')} />
+            </TouchableOpacity>
+            <View style={{backgroundColor: WHITE.app}}>
+              <TouchableOpacity
                 onPress={this.showDatepicker}
-              />
-              </View>
-              {this.state.showDate && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={this.state.date}
-                  mode={'date'}
-                  is24Hour={true}
-                  display="default"
-                  onChange={this.onChange}
-                />
-              )}
+                style={{flexDirection: 'row', width: wp('90%')}}>
+                <View style={styles.input}>
+                  <Text style={{paddingTop: 15, paddingLeft: 20}}>
+                    Thursday, August 24, 2020
+                  </Text>
+                  <Image
+                    style={styles.logoAddCalender}
+                    source={require('../../assets/calendar-range.png')}
+                    onPress={this.showDatepicker}
+                  />
+                </View>
+                {this.state.showDate && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={this.state.date}
+                    mode={'date'}
+                    is24Hour={true}
+                    display="default"
+                    onChange={this.onChange}
+                  />
+                )}
 
-             
-              <View></View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap}>
-              <Text style={styles.btnText}>List View</Text>
-            </TouchableOpacity>
-          </View>
+                <View />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.btnMap}>
+                <Text style={styles.btnText}>List View</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </SafeAreaView>
       </View>
@@ -213,10 +210,9 @@ const styles = StyleSheet.create({
     // shadowRadius: 6,
     // shadowOpacity: 0.1,
     elevation: 1,
-    justifyContent:'center',
+    justifyContent: 'center',
 
     borderWidth: 1,
-    borderRadius: 24,
     borderColor: BLACK.light,
     bottom: 10,
   },
@@ -226,7 +222,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 50,
     backgroundColor: 'black',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   logoSearch: {
     position: 'absolute',
@@ -235,15 +231,14 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     position: 'absolute',
-   
+
     bottom: 0,
     paddingBottom: 10,
   },
   btnText: {
     fontSize: 16,
-    color: 'white',
+    color: WHITE.app,
     textAlign: 'center',
-    color: 'white',
     fontFamily: FONT.Nunito.regular,
   },
   btnTextLocation: {
@@ -251,7 +246,6 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
     fontFamily: FONT.Nunito.regular,
-
   },
   barChild: {
     borderWidth: 1,
@@ -284,7 +278,7 @@ const styles = StyleSheet.create({
     marginRight: '5%',
     marginTop: '10%',
   },
- logoAddCalender: {
+  logoAddCalender: {
     position: 'absolute',
     right: 5,
     top: 13,
