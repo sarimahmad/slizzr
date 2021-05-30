@@ -39,6 +39,9 @@ import myEventInfo from '../screens/myEventInfo';
 import attendeesList from '../screens/attendeesList';
 import sharedHosts from '../screens/sharedHosts';
 import sharedHostRequests from '../screens/sharedHostRequests';
+import eventDetail from '../screens/eventDetail';
+import eventDetail2 from '../screens/eventDetail2';
+import prepay from '../screens/prepay';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -52,6 +55,9 @@ const HomeNavigation = () => {
    <Stack.Screen name="createEvent" component={CreateEvent}></Stack.Screen>
    <Stack.Screen name="peopleProfiles" component={PeopleProfiles}></Stack.Screen>
    <Stack.Screen name="lookFriends" component={lookFriends}></Stack.Screen>
+   <Stack.Screen name="eventDetail" component={eventDetail}></Stack.Screen>
+   <Stack.Screen name="eventDetail2" component={eventDetail2}></Stack.Screen>
+   <Stack.Screen name="prepay" component={prepay}></Stack.Screen>
   
     </Stack.Navigator> );
 };

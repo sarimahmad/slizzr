@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
+  FlatList,
   Image,
 } from 'react-native';
 import {BLACK, BLUE, WHITE} from '../../helper/Color';
@@ -25,6 +26,43 @@ export default class home extends Component {
       enableMap: false,
       date: new Date(2300, 10, 20),
       showDate: false,
+      events:false,
+      findpeople: [
+        {
+            imgProfile: '',
+            profileName: 'Marriage Anniversary',
+            adress: 'Host: Tallah Cotton',
+            date: '11:30 PM | Feb 25, 2020 - WED',
+          },
+          {
+            imgProfile: '',
+            profileName: 'Marriage Anniversary',
+            adress: 'Host: Tallah Cotton',
+            date: '11:30 PM | Feb 25, 2020 - WED',
+          },  
+  
+          {
+            imgProfile: '',
+            profileName: 'Marriage Anniversary',
+            adress: 'Host: Tallah Cotton',
+            date: '11:30 PM | Feb 25, 2020 - WED',
+          },  
+  
+          {
+            imgProfile: '',
+            profileName: 'Marriage Anniversary',
+            adress: 'Host: Tallah Cotton',
+            date: '11:30 PM | Feb 25, 2020 - WED',
+          },  
+          {
+            imgProfile: '',
+            profileName: 'Marriage Anniversary',
+            adress: 'Host: Tallah Cotton',
+            date: '11:30 PM | Feb 25, 2020 - WED',
+          },  
+  
+    ]
+  
     };
   }
   onChange = (event, selectedDate) => {
@@ -64,14 +102,14 @@ export default class home extends Component {
             />
           </View>
           <View style={styles.flex}>
-            <Text style={styles.barChild}>All</Text>
+            <TouchableOpacity onPress={()=>this.setState({events:true})}><Text style={styles.barChild}>All</Text></TouchableOpacity>
             <Text style={styles.barChild}>Prepaid</Text>
             <Text style={[styles.barChild, {width: wp('40%')}]}>
               Scan-&-Pay at door
             </Text>
             <Text style={styles.barChild}>free</Text>
           </View>
-          {this.state.enableMap == true && (
+          {(this.state.enableMap == true  && this.state.events == false )&& (
             <MapView
               style={{flex: 1}}
               initialRegion={{
@@ -82,7 +120,7 @@ export default class home extends Component {
               }}
             />
           )}
-          {this.state.enableMap == true && (
+          {(this.state.enableMap == true && this.state.events == false )  && (
             <View
               style={{
                 position: 'absolute',
@@ -90,10 +128,7 @@ export default class home extends Component {
                 flexDirection: 'row',
                 width: wp('100%'),
               }}>
-              <Image
-                source={require('../../assets/searchWhite.png')}
-               
-              />
+            
               <TextInput
                 style={styles.inputSearch}
                 placeholder={'Try “western homecoming party”'}
@@ -103,7 +138,7 @@ export default class home extends Component {
               
             </View>
           )}
-          {this.state.enableMap == false && (
+          {(this.state.enableMap == false && this.state.events == false )&& (
             <View
               style={{
                 justifyContent: 'center',
@@ -124,6 +159,49 @@ export default class home extends Component {
                 style={styles.btnLocation}>
                 <Text style={styles.btnTextLocation}>Allow Location</Text>
               </TouchableOpacity>
+            </View>
+          )}
+            {this.state.events == true && (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+             
+                marginTop: '10%',
+                marginHorizontal: '5%',
+              }}>
+            <FlatList
+              data={this.state.findpeople}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => (
+                <View 
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'lightgrey',
+                  }}>
+                  <View style={styles.flexRow}>
+                    <View style={styles.imgView}>
+                      <Image source={require('../../assets/profile1.png')} />
+                      <Image
+                        style={{position: 'absolute', right: 15}}
+                        source={require('../../assets/private.png')}
+                      />
+               
+                    </View>
+                    
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>{item.profileName}</Text>
+                      <Text style={styles.subtitleText}>{item.adress}</Text>
+                      <Text style={styles.purpleText}>{item.date}</Text>
+                    </View>
+                    <TouchableOpacity onPress={()=>this.props.navigation.navigate("eventDetail")} style={styles.shareView}>
+                      <Image source={require('../../assets/Right.png')} />
+                    </TouchableOpacity>
+                   
+                  </View>
+                </View>
+              )}
+            />
             </View>
           )}
           <View style={styles.bottomView}>
@@ -202,6 +280,47 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     elevation: 2,
   },
+  contentView: {
+    flex: 1,
+  },
+  imgView: {
+    width: wp('25%'),
+  },
+  shareView: {
+
+    width: wp('20%'),
+    justifyContent: 'center',
+  },
+  flex: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  logo: {},
+  titleText: {
+    color: BLACK.textInputTitle,
+    fontFamily: FONT.Nunito.bold,
+    fontSize: 17,
+  },
+  purpleText: {
+    fontSize: 12,
+    color: '#F818D9',
+    marginTop: 10,
+    textDecorationLine: 'underline',
+    fontFamily: FONT.Nunito.semiBold,
+  },
+  flexRow: {
+    flexDirection: 'row',
+    paddingVertical: 10,
+
+    
+  },
+ 
+  next: {
+    paddingTop: 15,
+  },
+  detail: {
+    width: wp('55%'),
+  },
   btnLocation: {
     width: wp('80%'),
     marginHorizontal: '10%',
@@ -264,9 +383,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   subtitleText: {
-    marginVertical: 10,
+    // marginVertical: 10,
     fontSize: 14,
-    textAlign: 'center',
+
     fontFamily: FONT.Nunito.semiBold,
   },
   contentView: {
@@ -298,11 +417,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   titleText: {
-    marginTop: 13,
-    marginBottom: '3%',
+    // marginTop: 13,
+    // marginBottom: '3%',
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,
-    fontSize: 24,
   },
   detailWrapper: {
     alignSelf: 'center',
