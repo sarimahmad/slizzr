@@ -42,6 +42,8 @@ import sharedHostRequests from '../screens/sharedHostRequests';
 import eventDetail from '../screens/eventDetail';
 import eventDetail2 from '../screens/eventDetail2';
 import prepay from '../screens/prepay';
+import event from '../screens/payments&Payouts/event';
+import index from '../screens/directInvites';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -199,17 +201,19 @@ function AccountNavigation() {
                <Stack.Screen name="PassConfirm" component={resetPasswordForm}></Stack.Screen>
                <Stack.Screen name="BirthDate" component={birthDate}></Stack.Screen>
                <Stack.Screen name="ConfirmEmail" component={confirmEmail}></Stack.Screen>
+               <Stack.Screen name="index" component={index}></Stack.Screen>
              </Stack.Navigator> );
 }
 export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeStack"
+        initialRouteName="index"
         screenOptions={{
           headerShown: false,
         }}>
         <Stack.Screen name="Splash" component={splash}></Stack.Screen>
+        <Stack.Screen name="index" component={index}></Stack.Screen>
 
         <Stack.Screen
           name="HomeStack"

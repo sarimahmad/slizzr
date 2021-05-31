@@ -18,7 +18,7 @@ export default class event extends Component {
                         headerTitle={"Events"}
                         borderBottom={true}
                         leftIcon={require('../../assets/back.png')}
-                        leftPress={() => alert('ok')}
+                        leftPress={() => this.setState({editType: !this.state.editType})}
                         rightIcon={require('../../assets/Slizzer-icon/edit.png')}
                         rightPress={() => this.setState({ editType: !this.state.editType })} 
                     />
