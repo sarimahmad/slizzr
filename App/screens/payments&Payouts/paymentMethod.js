@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native'
 import { FONT, SCREEN } from '../../helper/Constant'
-import { BLACK } from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { SafeAreaView } from 'react-navigation';
 
@@ -31,7 +30,7 @@ export default class paymentMethod extends Component {
                 <SafeAreaView style={styles.wrapperView}>
                     <HeaderWithOptionBtn
                         headerTitle={'Payment Methods'}
-                        borderBottom={true}
+                        borderBottom={!this.state.paymentMethod.length > 0 ? true : false}
                         leftIcon={require('../../assets/back.png')}
                         leftPress={() => this.setState({ editType: !this.state.editType })}
                         rightIcon={require('../../assets/Slizzer-icon/edit.png')}
@@ -59,9 +58,22 @@ export default class paymentMethod extends Component {
                                 </View>
                             </View>
                         )}
+
                         ListFooterComponent={this.footer}
-                    /> : this.footer()}
-                    
+                    /> :
+                        <View>
+                            <View style={{
+                                borderBottomWidth: 1,
+                                borderBottomColor: 'lightgrey'
+                            }}>
+                                <Text style={styles.headerText}>No Payment Method</Text>
+                            </View>
+                            <View>
+                                {this.footer()}
+                            </View>
+                        </View>
+                    }
+
                 </SafeAreaView>
             </View>
         )
@@ -118,5 +130,14 @@ const styles = StyleSheet.create({
     sideImage: {
         width: 60,
         height: 16
+    },
+    headerText: {
+        fontFamily: FONT.Nunito.regular,
+        fontSize: 17,
+        marginLeft: 20,
+        marginTop: 20,
+        color: '#494949',
+        marginBottom: 26
     }
+
 })

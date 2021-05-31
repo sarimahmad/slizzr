@@ -14,53 +14,47 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-export default class messages extends Component {
+export default class messagesEvent extends Component {
   constructor(props) {
     super(props);
     this.state = {
 
         attendingEvents:true,
         myevents:false,
-      messages: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-    ],
-        findpeople: [
+        
+    
+        messages: [
             {
                 imgProfile: '',
-                profileName: 'Marriage Anniversary',
+                message: 'Marriage Anniversary',
                 adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
+                count:3
               },
               {
                 imgProfile: '',
-                profileName: 'Marriage Anniversary',
+                message: 'Marriage Anniversary',
                 adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
+                count:3
               },  
       
               {
                 imgProfile: '',
-                profileName: 'Marriage Anniversary',
+                message: 'Marriage Anniversary',
                 adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
+                count:3
               },  
       
               {
                 imgProfile: '',
-                profileName: 'Marriage Anniversary',
+                message: 'Marriage Anniversary',
                 adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
+                count:3
               },  
               {
                 imgProfile: '',
-                profileName: 'Marriage Anniversary',
+                message: 'Marriage Anniversary',
                 adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
+                count:3
               },  
       
         ]
@@ -68,79 +62,60 @@ export default class messages extends Component {
     };
 
   }
-myevents = ()=>{
-this.setState({myevents:true})
-this.setState({attendingEvents:false})
-}
-attendingEvents = ()=>{
-  this.setState({myevents:false})
-  this.setState({attendingEvents:true})
-  
-}
   render() {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
-            <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
-          <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
+            <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center',}]}>
+          <View style={{position: 'absolute',left:20,top:10}}>
+           <TouchableOpacity
+              onPress={() => this.props.navigation.goBack()}>
               <Image
-                source={require('../../assets/drawer.png')}
+                source={require('../../assets/back.png')}
                 style={styles.logo}
               />
             </TouchableOpacity>
-
+            </View>
             <Text style={styles.titleText}>Messages</Text>
-            <View></View>
+            <View style={{position: 'absolute',right:20,top:10}}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("newMessage")}>
+              <Image
+                source={require('../../assets/newMesssage.png')}
+                style={styles.logo}
+              />
+            </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.flex}>
-            <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
-               <Text>MY EVENTS</Text>
-               </TouchableOpacity>
-            <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
-              <Text>ATTENDING EVENTS</Text>
-                </TouchableOpacity>
-          </View>
-          {this.state.attendingEvents == true && (
+      
+        
             <FlatList
-              data={this.state.findpeople}
+              data={this.state.messages}
               keyExtractor={item => item.id}
               renderItem={({item}) => (
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate("messagesEvent")}
+                <TouchableOpacity onPress={()=>this.props.navigation.navigate("")}
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
                   }}>
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
-                      <Image source={require('../../assets/profile1.png')} />
-                      <Image
-                        style={{position: 'absolute', right: 15}}
-                        source={require('../../assets/private.png')}
-                      />
+                      <Image style={{height:50,width:50}} source={require('../../assets/profile1.png')} />
+                     
                     </View>
                     <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.profileName}</Text>
-                      <Text style={styles.subtitleText}>{item.adress}</Text>
-                      <Text style={styles.purpleText}>{item.date}</Text>
+                      <Text style={styles.titleText}>{item.message}</Text>
+                      <Text style={{color:'#B2ABB1'}}>{item.adress}</Text>
+                
                     </View>
-                   
+                    <View style={{height:30,width:30,borderRadius:24,justifyContent: 'center',alignItems: 'center',backgroundColor:'#F818D9',}}>
+                       <Text style={{color:'white'}}>{item.count}</Text>
                   </View>
-                </TouchableOpacity>
+                  </View>
+                </TouchableOpacity> 
               )}
             />
-          )}
-           {this.state.myevents == true && (
-           
-           <View style={{alignItems: 'center',marginTop:hp('30%')}}>
-            <Text>You are not hosting any events at the moment.</Text>
-            <TouchableOpacity
-                onPress={() => this.setState({enableMap: true})}
-                style={styles.btnLocation}>
-                <Text style={styles.btnTextLocation}>Host?</Text>
-              </TouchableOpacity>
-           </View>
-          )}
+       
         </SafeAreaView>
       </View>
     );
@@ -173,7 +148,7 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
-    paddingVertical: 10,
+    paddingVertical: 20,
     paddingHorizontal:10,
     
   },
@@ -184,13 +159,13 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   detail: {
-    width: wp('55%'),
+    width: wp('60%'),
   },
   contentView: {
     flex: 1,
   },
   imgView: {
-    width: wp('25%'),
+    width: wp('20%'),
   },
   flex: {
     flexDirection: 'row',
