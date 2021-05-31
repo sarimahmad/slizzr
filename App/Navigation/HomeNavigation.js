@@ -30,6 +30,15 @@ import FindPeople from '../screens/findPeople';
 import PeopleProfiles from '../screens/peopleProfiles';
 import lookFriends from '../screens/lookFriends';
 import messages from '../screens/messages';
+import paymentMethod from '../screens/payments&Payouts/paymentMethod';
+import paymentsandPayouts from '../screens/payments&Payouts/paymentsandPayouts';
+import NewpayoutMethod from '../screens/payments&Payouts/NewpayoutMethod';
+import payoutMethod from '../screens/payments&Payouts/payoutMethod';
+import payouts from '../screens/payments&Payouts/payouts';
+import event from '../screens/payments&Payouts/event';
+
+
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -158,18 +167,26 @@ function AccountNavigation() {
                <Stack.Screen name="PassConfirm" component={resetPasswordForm}></Stack.Screen>
                <Stack.Screen name="BirthDate" component={birthDate}></Stack.Screen>
                <Stack.Screen name="ConfirmEmail" component={confirmEmail}></Stack.Screen>
-             </Stack.Navigator> );
+               <Stack.Screen name="paymentMethod" component={paymentMethod}></Stack.Screen>
+               <Stack.Screen name="paymentsandPayouts" component={paymentsandPayouts}></Stack.Screen>
+               <Stack.Screen name="NewpayoutMethod" component={NewpayoutMethod}></Stack.Screen>
+               <Stack.Screen name="payoutMethod" component={payoutMethod}></Stack.Screen>
+               <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
+               <Stack.Screen name="event" component={event}></Stack.Screen>
+
+             </Stack.Navigator> 
+             );
 }
 export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeStack"
+        initialRouteName="event"
         screenOptions={{
           headerShown: false,
         }}>
         <Stack.Screen name="Splash" component={splash}></Stack.Screen>
-
+        <Stack.Screen name="event" component={event}></Stack.Screen>
         <Stack.Screen
           name="HomeStack"
           component={DrawerContent}></Stack.Screen>
