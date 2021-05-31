@@ -30,14 +30,18 @@ import FindPeople from '../screens/findPeople';
 import PeopleProfiles from '../screens/peopleProfiles';
 import lookFriends from '../screens/lookFriends';
 import messages from '../screens/messages';
-import paymentMethod from '../screens/payments&Payouts/paymentMethod';
-import paymentsandPayouts from '../screens/payments&Payouts/paymentsandPayouts';
-import NewpayoutMethod from '../screens/payments&Payouts/NewpayoutMethod';
-import payoutMethod from '../screens/payments&Payouts/payoutMethod';
-import payouts from '../screens/payments&Payouts/payouts';
-import event from '../screens/payments&Payouts/event';
-
-
+import messagesEvent from '../screens/messagesEvent';
+import newMessage from '../screens/newMessage';
+import chat from '../screens/chat';
+import manageEvents from '../screens/manageEvents';
+import attendingEventInfo from '../screens/attendingEventInfo';
+import myEventInfo from '../screens/myEventInfo';
+import attendeesList from '../screens/attendeesList';
+import sharedHosts from '../screens/sharedHosts';
+import sharedHostRequests from '../screens/sharedHostRequests';
+import eventDetail from '../screens/eventDetail';
+import eventDetail2 from '../screens/eventDetail2';
+import prepay from '../screens/prepay';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -51,7 +55,25 @@ const HomeNavigation = () => {
    <Stack.Screen name="createEvent" component={CreateEvent}></Stack.Screen>
    <Stack.Screen name="peopleProfiles" component={PeopleProfiles}></Stack.Screen>
    <Stack.Screen name="lookFriends" component={lookFriends}></Stack.Screen>
+   <Stack.Screen name="eventDetail" component={eventDetail}></Stack.Screen>
+   <Stack.Screen name="eventDetail2" component={eventDetail2}></Stack.Screen>
+   <Stack.Screen name="prepay" component={prepay}></Stack.Screen>
   
+    </Stack.Navigator> );
+};
+const ManageEventNavigation = () => {
+  return (
+    <Stack.Navigator initialRouteName="Home" screenOptions={{
+      headerShown: false
+    }}>
+   <Stack.Screen name="manageEvent" component={manageEvents}></Stack.Screen> 
+   <Stack.Screen name="attendingEventInfo" component={attendingEventInfo}></Stack.Screen>
+   <Stack.Screen name="myEventInfo" component={myEventInfo}></Stack.Screen>
+   <Stack.Screen name="attendeesList" component={attendeesList}></Stack.Screen>
+   <Stack.Screen name="sharedHosts" component={sharedHosts}></Stack.Screen>
+   <Stack.Screen name="sharedHostRequests" component={sharedHostRequests}></Stack.Screen>
+   
+   
     </Stack.Navigator> );
 };
 function DrawerContent(props) {
@@ -103,7 +125,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={messages} /> 
+        component={messagesNavigation} /> 
         <Drawer.Screen
         name="Manage Events"
         options={{
@@ -114,7 +136,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={HomeNavigation} />
+        component={ManageEventNavigation} />
          <Drawer.Screen
         name="Zickets"
         options={{
@@ -154,7 +176,17 @@ function DrawerContent(props) {
   )
 }
 
-
+function messagesNavigation() {
+  return (
+    <Stack.Navigator initialRouteName="messages" screenOptions={{
+               headerShown: false
+             }}>
+               <Stack.Screen name="messages" component={messages}></Stack.Screen>
+               <Stack.Screen name="messagesEvent" component={messagesEvent}></Stack.Screen>
+               <Stack.Screen name="newMessage" component={newMessage}></Stack.Screen>
+               <Stack.Screen name="chat" component={chat}></Stack.Screen>
+             </Stack.Navigator> );
+}
 function AccountNavigation() {
   return (
     <Stack.Navigator initialRouteName="Intro" screenOptions={{
@@ -167,26 +199,18 @@ function AccountNavigation() {
                <Stack.Screen name="PassConfirm" component={resetPasswordForm}></Stack.Screen>
                <Stack.Screen name="BirthDate" component={birthDate}></Stack.Screen>
                <Stack.Screen name="ConfirmEmail" component={confirmEmail}></Stack.Screen>
-               <Stack.Screen name="paymentMethod" component={paymentMethod}></Stack.Screen>
-               <Stack.Screen name="paymentsandPayouts" component={paymentsandPayouts}></Stack.Screen>
-               <Stack.Screen name="NewpayoutMethod" component={NewpayoutMethod}></Stack.Screen>
-               <Stack.Screen name="payoutMethod" component={payoutMethod}></Stack.Screen>
-               <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
-               <Stack.Screen name="event" component={event}></Stack.Screen>
-
-             </Stack.Navigator> 
-             );
+             </Stack.Navigator> );
 }
 export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="event"
+        initialRouteName="HomeStack"
         screenOptions={{
           headerShown: false,
         }}>
         <Stack.Screen name="Splash" component={splash}></Stack.Screen>
-        <Stack.Screen name="event" component={event}></Stack.Screen>
+
         <Stack.Screen
           name="HomeStack"
           component={DrawerContent}></Stack.Screen>
