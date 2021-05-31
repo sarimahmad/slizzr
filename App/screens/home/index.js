@@ -48,7 +48,7 @@ export default class home extends Component {
       <View style={styles.wrapperView}>
         <HeaderWithLogo
           leftIcon={require('../../assets/drawer.png')}
-          leftPress={() => this.props.navigat.openDrawer()}
+          leftPress={() => this.props.navigation.openDrawer()}
           backColor={WHITE.dark}
           rightIcon={require('../../assets/bell.png')}
           rightPress={() => this.props.navigation.navigate('Notification')}
