@@ -9,7 +9,8 @@ export const BLACK = {
   border: 'rgba(0, 0, 0, 0.101453)',
   dark: 'rgba(0, 0, 0, 1)',
   transParent: 'rgba(31, 32, 43, 0.5)',
-  textColor: '#494949',
+  textColor: '#979797',
+  textColor2: '#F818D9'
 };
 
 export const WHITE = {
