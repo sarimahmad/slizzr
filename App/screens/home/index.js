@@ -1,8 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 
 import {
   View,
-  Button,
   Text,
   StyleSheet,
   TouchableOpacity,
@@ -11,7 +11,7 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
+import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
@@ -19,54 +19,54 @@ import {
 } from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {Platform} from 'react-native';
+import HeaderWithLogo from '../../component/HeaderWithLogo';
 export default class home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       enableMap: false,
-      date: new Date(2300, 10, 20),
+      date: new Date(),
       showDate: false,
-      events:false,
+      events: false,
       findpeople: [
         {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-  
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-  
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-  
-    ]
-  
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+      ],
     };
   }
   onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate || this.state.date;
 
     this.setState({date: currentDate});
     this.setState({showDate: false});
@@ -82,34 +82,25 @@ export default class home extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
+        <HeaderWithLogo
+          leftIcon={require('../../assets/drawer.png')}
+          leftPress={() => this.props.navigation.openDrawer()}
+          backColor={WHITE.dark}
+          rightIcon={require('../../assets/bell.png')}
+          rightPress={() => this.props.navigation.navigate('Notification')}
+        />
         <SafeAreaView style={styles.contentView}>
-          <View style={[styles.flex, {padding: 10}]}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-
-            <Image
-              source={require('../../assets/homeLogo.png')}
-              style={styles.logo}
-            />
-            <Image
-              source={require('../../assets/bell.png')}
-              style={styles.logo}
-            />
-          </View>
           <View style={styles.flex}>
-            <TouchableOpacity onPress={()=>this.setState({events:true})}><Text style={styles.barChild}>All</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => this.setState({events: true})}>
+              <Text style={styles.barChild}>All</Text>
+            </TouchableOpacity>
             <Text style={styles.barChild}>Prepaid</Text>
             <Text style={[styles.barChild, {width: wp('40%')}]}>
               Scan-&-Pay at door
             </Text>
             <Text style={styles.barChild}>free</Text>
           </View>
-          {(this.state.enableMap == true  && this.state.events == false )&& (
+          {this.state.enableMap === true && this.state.events === false && (
             <MapView
               style={{flex: 1}}
               initialRegion={{
@@ -120,7 +111,7 @@ export default class home extends Component {
               }}
             />
           )}
-          {(this.state.enableMap == true && this.state.events == false )  && (
+          {this.state.enableMap === true && this.state.events === false && (
             <View
               style={{
                 position: 'absolute',
@@ -128,17 +119,16 @@ export default class home extends Component {
                 flexDirection: 'row',
                 width: wp('100%'),
               }}>
-            
+              <Image source={require('../../assets/searchWhite.png')} />
               <TextInput
                 style={styles.inputSearch}
                 placeholder={'Try “western homecoming party”'}
                 placeholderTextColor={'#8e8e93'}
                 // onChangeText={handleText}
-              ></TextInput>
-              
+              />
             </View>
           )}
-          {(this.state.enableMap == false && this.state.events == false )&& (
+          {this.state.enableMap === false && this.state.events === false && (
             <View
               style={{
                 justifyContent: 'center',
@@ -161,86 +151,110 @@ export default class home extends Component {
               </TouchableOpacity>
             </View>
           )}
-            {this.state.events == true && (
+          {this.state.events === true && (
             <View
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-             
+
                 marginTop: '10%',
                 marginHorizontal: '5%',
               }}>
-            <FlatList
-              data={this.state.findpeople}
-              keyExtractor={item => item.id}
-              renderItem={({item}) => (
-                <View 
-                  style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'lightgrey',
-                  }}>
-                  <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
-                      <Image source={require('../../assets/profile1.png')} />
-                      <Image
-                        style={{position: 'absolute', right: 15}}
-                        source={require('../../assets/private.png')}
-                      />
-               
+              <FlatList
+                data={this.state.findpeople}
+                keyExtractor={item => item.id}
+                renderItem={({item}) => (
+                  <View
+                    style={{
+                      borderBottomWidth: 1,
+                      borderBottomColor: 'lightgrey',
+                    }}>
+                    <View style={styles.flexRow}>
+                      <View style={styles.imgView}>
+                        <Image source={require('../../assets/profile1.png')} />
+                        <Image
+                          style={{position: 'absolute', right: 15}}
+                          source={require('../../assets/private.png')}
+                        />
+                      </View>
+
+                      <View style={styles.detail}>
+                        <Text style={styles.titleText}>{item.profileName}</Text>
+                        <Text style={styles.subtitleText}>{item.adress}</Text>
+                        <Text style={styles.purpleText}>{item.date}</Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.props.navigation.navigate('eventDetail')
+                        }
+                        style={styles.shareView}>
+                        <Image source={require('../../assets/Right.png')} />
+                      </TouchableOpacity>
                     </View>
-                    
-                    <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.profileName}</Text>
-                      <Text style={styles.subtitleText}>{item.adress}</Text>
-                      <Text style={styles.purpleText}>{item.date}</Text>
-                    </View>
-                    <TouchableOpacity onPress={()=>this.props.navigation.navigate("eventDetail")} style={styles.shareView}>
-                      <Image source={require('../../assets/Right.png')} />
-                    </TouchableOpacity>
-                   
                   </View>
-                </View>
-              )}
-            />
+                )}
+              />
             </View>
           )}
           <View style={styles.bottomView}>
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate("createEvent")}  style={styles.logoAdd}
-          >
-          <Image
-            source={require('../../assets/plus-circle.png')}
-          />
-          </TouchableOpacity>
-          <View style={{backgroundColor:'white'}}>
             <TouchableOpacity
-              onPress={this.showDatepicker}
-              style={{flexDirection: 'row', width: wp('90%')}}>
-              <View style={styles.input}>
-                <Text style={{paddingTop:15,paddingLeft:20}}>Thursday, August 24, 2020</Text>
-                <Image
-                style={styles.logoAddCalender}
-                source={require('../../assets/calendar-range.png')}
-                onPress={this.showDatepicker}
-              />
-              </View>
-              {this.state.showDate && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={this.state.date}
-                  mode={'date'}
-                  is24Hour={true}
-                  display="default"
-                  onChange={this.onChange}
-                />
-              )}
+              onPress={() => this.props.navigation.navigate('createEvent')}
+              style={styles.logoAdd}>
+              <Image source={require('../../assets/plus-circle.png')} />
+            </TouchableOpacity>
+            <View style={styles.bottomWhiteView}>
+              {Platform.OS === 'android' ? (
+                <TouchableOpacity
+                  onPress={this.showDatepicker}
+                  style={styles.DataTimeWrapper}>
+                  <View style={styles.input}>
+                    <Text style={{paddingTop: 15, paddingLeft: 20}}>
+                      {this.state.date.toDateString()}
+                    </Text>
+                  </View>
 
-             
-              <View></View>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap}>
-              <Text style={styles.btnText}>List View</Text>
-            </TouchableOpacity>
-          </View>
+                  <View style={styles.logoAddCalenderView}>
+                    <Image
+                      source={require('../../assets/calendar-range.png')}
+                    />
+                  </View>
+                  {this.state.showDate && (
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={this.state.date}
+                      mode={'date'}
+                      is24Hour={true}
+                      display="default"
+                      onChange={this.onChange}
+                    />
+                  )}
+
+                  <View />
+                </TouchableOpacity>
+              ) : (
+                <View style={styles.DataTimeWrapper}>
+                  <DateTimePicker
+                    style={styles.DateTimeInnerIOS}
+                    testID="dateTimePicker"
+                    value={this.state.date}
+                    mode={'date'}
+                    is24Hour={true}
+                    display="default"
+                    textColor="black"
+                    themeVariant="light"
+                    onChange={this.onChange}
+                  />
+                  <View style={styles.logoAddCalenderView}>
+                    <Image
+                      source={require('../../assets/calendar-range.png')}
+                    />
+                  </View>
+                </View>
+              )}
+              <TouchableOpacity style={styles.btnMap}>
+                <Text style={styles.btnText}>List View</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </SafeAreaView>
       </View>
@@ -267,18 +281,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   input: {
-    width: wp('90%'),
+    width: '100%',
     marginHorizontal: '5%',
-    borderWidth: 1,
-    height: hp('7%'),
-    marginVertical: 10,
-    borderRadius: 12,
-    borderColor: 'lightgrey',
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 6,
-    shadowOpacity: 0.1,
-    elevation: 2,
+    height: '100%',
   },
   contentView: {
     flex: 1,
@@ -287,7 +292,6 @@ const styles = StyleSheet.create({
     width: wp('25%'),
   },
   shareView: {
-
     width: wp('20%'),
     justifyContent: 'center',
   },
@@ -311,10 +315,8 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
-
-    
   },
- 
+
   next: {
     paddingTop: 15,
   },
@@ -332,10 +334,9 @@ const styles = StyleSheet.create({
     // shadowRadius: 6,
     // shadowOpacity: 0.1,
     elevation: 1,
-    justifyContent:'center',
+    justifyContent: 'center',
 
     borderWidth: 1,
-    borderRadius: 24,
     borderColor: BLACK.light,
     bottom: 10,
   },
@@ -344,10 +345,10 @@ const styles = StyleSheet.create({
     marginHorizontal: '5%',
     borderRadius: 25,
     height: 50,
-    marginBottom:20,
-  
+    marginBottom: 20,
+
     backgroundColor: 'black',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   logoSearch: {
     position: 'absolute',
@@ -356,22 +357,22 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     position: 'absolute',
-   
     bottom: 0,
   },
   btnText: {
     fontSize: 16,
-    color: 'white',
+    color: WHITE.app,
     textAlign: 'center',
-    color: 'white',
     fontFamily: FONT.Nunito.regular,
+  },
+  bottomWhiteView: {
+    backgroundColor: WHITE.app,
   },
   btnTextLocation: {
     fontSize: 16,
     color: 'black',
     textAlign: 'center',
     fontFamily: FONT.Nunito.regular,
-
   },
   barChild: {
     borderWidth: 1,
@@ -388,45 +389,54 @@ const styles = StyleSheet.create({
 
     fontFamily: FONT.Nunito.semiBold,
   },
-  contentView: {
-    height: hp('100%'),
-  },
-  logo: {
-    //   height: 80,
-    //   width: 100,
-    //   resizeMode: 'contain',
-    marginTop: 25,
-
-    alignSelf: 'center',
-  },
   logoAdd: {
     alignSelf: 'flex-end',
     marginRight: '5%',
     marginTop: '10%',
   },
- logoAddCalender: {
+  logoAddCalenderView: {
     position: 'absolute',
-    right: 5,
-    top: 13,
-    // alignSelf:'flex-end',
-    // marginRight:'5%',
+    right: 0,
+    width: 58,
+    height: 53,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderLeftWidth: 1,
+    borderLeftColor: BLACK.border,
   },
-
-  flex: {
+  DataTimeWrapper: {
+    backgroundColor: WHITE.app,
+    height: 53,
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
+    borderWidth: 0.3,
+    borderRadius: 10,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: BLACK.shadow,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    elevation: 2,
+    marginVertical: 20,
   },
-  titleText: {
-    // marginTop: 13,
-    // marginBottom: '3%',
-    color: BLACK.textInputTitle,
-    fontFamily: FONT.Nunito.bold,
+  DateTimeInnerIOS: {
+    height: '100%',
+    width: '100%',
+    alignSelf: 'center',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: BLACK.shadow,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    elevation: 2,
   },
   detailWrapper: {
     alignSelf: 'center',
   },
   wrapperView: {
-   
     // height: hp('100%'),
     // width: wp('100%'),
     flex: 1,
