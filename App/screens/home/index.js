@@ -28,43 +28,41 @@ export default class home extends Component {
       enableMap: false,
       date: new Date(),
       showDate: false,
-      events:false,
+      events: false,
       findpeople: [
         {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-  
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-  
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-  
-    ]
-  
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+      ],
     };
   }
   onChange = (event, selectedDate) => {
@@ -93,14 +91,16 @@ export default class home extends Component {
         />
         <SafeAreaView style={styles.contentView}>
           <View style={styles.flex}>
-            <TouchableOpacity onPress={()=>this.setState({events:true})}><Text style={styles.barChild}>All</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => this.setState({events: true})}>
+              <Text style={styles.barChild}>All</Text>
+            </TouchableOpacity>
             <Text style={styles.barChild}>Prepaid</Text>
             <Text style={[styles.barChild, {width: wp('40%')}]}>
               Scan-&-Pay at door
             </Text>
             <Text style={styles.barChild}>free</Text>
           </View>
-          {(this.state.enableMap == true  && this.state.events == false )&& (
+          {this.state.enableMap === true && this.state.events === false && (
             <MapView
               style={{flex: 1}}
               initialRegion={{
@@ -111,7 +111,7 @@ export default class home extends Component {
               }}
             />
           )}
-          {(this.state.enableMap == true && this.state.events == false )  && (
+          {this.state.enableMap === true && this.state.events === false && (
             <View
               style={{
                 position: 'absolute',
@@ -128,7 +128,7 @@ export default class home extends Component {
               />
             </View>
           )}
-          {(this.state.enableMap == false && this.state.events == false )&& (
+          {this.state.enableMap === false && this.state.events === false && (
             <View
               style={{
                 justifyContent: 'center',
@@ -151,47 +151,49 @@ export default class home extends Component {
               </TouchableOpacity>
             </View>
           )}
-            {this.state.events == true && (
+          {this.state.events === true && (
             <View
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-             
+
                 marginTop: '10%',
                 marginHorizontal: '5%',
               }}>
-            <FlatList
-              data={this.state.findpeople}
-              keyExtractor={item => item.id}
-              renderItem={({item}) => (
-                <View 
-                  style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'lightgrey',
-                  }}>
-                  <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
-                      <Image source={require('../../assets/profile1.png')} />
-                      <Image
-                        style={{position: 'absolute', right: 15}}
-                        source={require('../../assets/private.png')}
-                      />
-               
+              <FlatList
+                data={this.state.findpeople}
+                keyExtractor={item => item.id}
+                renderItem={({item}) => (
+                  <View
+                    style={{
+                      borderBottomWidth: 1,
+                      borderBottomColor: 'lightgrey',
+                    }}>
+                    <View style={styles.flexRow}>
+                      <View style={styles.imgView}>
+                        <Image source={require('../../assets/profile1.png')} />
+                        <Image
+                          style={{position: 'absolute', right: 15}}
+                          source={require('../../assets/private.png')}
+                        />
+                      </View>
+
+                      <View style={styles.detail}>
+                        <Text style={styles.titleText}>{item.profileName}</Text>
+                        <Text style={styles.subtitleText}>{item.adress}</Text>
+                        <Text style={styles.purpleText}>{item.date}</Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.props.navigation.navigate('eventDetail')
+                        }
+                        style={styles.shareView}>
+                        <Image source={require('../../assets/Right.png')} />
+                      </TouchableOpacity>
                     </View>
-                    
-                    <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.profileName}</Text>
-                      <Text style={styles.subtitleText}>{item.adress}</Text>
-                      <Text style={styles.purpleText}>{item.date}</Text>
-                    </View>
-                    <TouchableOpacity onPress={()=>this.props.navigation.navigate("eventDetail")} style={styles.shareView}>
-                      <Image source={require('../../assets/Right.png')} />
-                    </TouchableOpacity>
-                   
                   </View>
-                </View>
-              )}
-            />
+                )}
+              />
             </View>
           )}
           <View style={styles.bottomView}>
@@ -290,7 +292,6 @@ const styles = StyleSheet.create({
     width: wp('25%'),
   },
   shareView: {
-
     width: wp('20%'),
     justifyContent: 'center',
   },
@@ -314,10 +315,8 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
-
-    
   },
- 
+
   next: {
     paddingTop: 15,
   },
@@ -346,8 +345,8 @@ const styles = StyleSheet.create({
     marginHorizontal: '5%',
     borderRadius: 25,
     height: 50,
-    marginBottom:20,
-  
+    marginBottom: 20,
+
     backgroundColor: 'black',
     justifyContent: 'center',
   },
@@ -389,14 +388,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
 
     fontFamily: FONT.Nunito.semiBold,
-  },
-  contentView: {
-    flex: 1,
-    backgroundColor: WHITE.dark,
-  },
-  logo: {
-    marginTop: 25,
-    alignSelf: 'center',
   },
   logoAdd: {
     alignSelf: 'flex-end',
@@ -442,22 +433,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     elevation: 2,
   },
-
-  flex: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  titleText: {
-    // marginTop: 13,
-    // marginBottom: '3%',
-    color: BLACK.textInputTitle,
-    fontFamily: FONT.Nunito.bold,
-  },
   detailWrapper: {
     alignSelf: 'center',
   },
   wrapperView: {
-   
     // height: hp('100%'),
     // width: wp('100%'),
     flex: 1,
