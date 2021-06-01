@@ -42,8 +42,8 @@ import sharedHostRequests from '../screens/sharedHostRequests';
 import eventDetail from '../screens/eventDetail';
 import eventDetail2 from '../screens/eventDetail2';
 import prepay from '../screens/prepay';
-import event from '../screens/payments&Payouts/event';
-import index from '../screens/directInvites';
+import index from '../screens/myProfile';
+
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
