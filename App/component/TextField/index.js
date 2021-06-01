@@ -10,6 +10,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { SCREEN } from '../../helper/Constant';
 
 const TextField = props => {
   const [showPassword, setShowPassword] = useState(true);
@@ -20,7 +21,7 @@ const TextField = props => {
   return (
     <View>
          {/* {props.secure === 'no' && ( */}
-        <View style={[styles.inputView,props.type== "small" ?  {width:wp('42%')} : {width:wp('90%')}]}>
+        <View style={[styles.inputView,props.type== "small" ?  {width:(SCREEN.width-40)/2.1} : {width:SCREEN.width-40}]}>
           <TextInput
             style={styles.input}
             placeholder={props.placeholder}
@@ -56,10 +57,11 @@ export default TextField;
 const styles = StyleSheet.create({
   inputView: {
     // width: wp('85%'),
-    height: hp('10%'),
+    height: 53,
+    marginTop:20
   },
   inputPasssword: {
-    width: wp('80%'),
+    // width: wp('80%'),
   },
   eyeView: {
     paddingTop: 10,

@@ -208,7 +208,7 @@ export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="index"
+        initialRouteName="HomeStack"
         screenOptions={{
           headerShown: false,
         }}>

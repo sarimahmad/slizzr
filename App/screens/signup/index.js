@@ -39,7 +39,7 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
    render() {
      return (
        <View style={styles.wrapperView}>
-         <SafeAreaView style={styles.wrapperView}>
+         <SafeAreaView style={styles.contentView}>
         <ScrollView >
           
           <View  style={{ alignItems: 'center'}}>
@@ -50,10 +50,10 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
             
               <View style={{flexDirection:'row',justifyContent: 'space-between',marginTop:'5%'}}>
                
-               <View style={{marginRight:'2%'}}>
+               <View style={{marginRight:6}}>
                <TextField  placeholder='First Name' type="small"/>
                </View>
-               <View style={{marginLeft:'2%'}}>
+               <View style={{marginLeft:6}}>
               
                <TextField  placeholder='Last Name' type="small"/>
                </View>
@@ -62,26 +62,59 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
                <TextField  placeholder='Password' />
                <TextField  placeholder='ConfirmPassword' />
                <ButtonResetPassaword btnLabel={'SIGN UP'} data={this.handleSubmit}/>
-               <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signin")} style={{marginVertical:'1%',flexDirection:'row'}}>
+               <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signin")} style={{marginTop:26,flexDirection:'row'}}>
             
                  <Text style={styles.subtitletext}>Already have an account?</Text>
                  <Text style={[styles.subtitletext,{color:'#F818D9'}]}> Log in</Text>
            </TouchableOpacity>
-              <Text style={styles.subtitletextbold}>Other sign up options</Text>
+              <Text style={[styles.subtitletextbold,{marginTop:10}]}>Other sign up options</Text>
            
-             <View style={styles.btnFaceBook}>
-              <Image  source={require('../../assets/socialFaceBook.png')} />
+              <View style={styles.btnFaceBook}>
+                <View
+                  style={{
+                    position: 'absolute',
+                    width: 35,
+                    height: 35,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 44,
+                    backgroundColor: 'white',
+                    left: 30,
+                  }}>
+                  <Image source={require('../../assets/facebook.png')} />
+                </View>
+                <TouchableOpacity>
+                  <Text style={styles.btnText}>Continue with Facebook</Text>
+                </TouchableOpacity>
               </View>
+
+
               <View style={styles.btnGoogle}>
-              <Image  source={require('../../assets/socialGoogle.png')} />
+                <View
+                  style={{
+                    position: 'absolute',
+                    width: 35,
+                    height: 35,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 44,
+                    backgroundColor: 'white',
+                    left: 30,
+                  }}>
+                  <Image source={require('../../assets/google.png')} />
+                </View>
+                <TouchableOpacity>
+                  <Text style={styles.btnText}>Continue with Google</Text>
+                </TouchableOpacity>
               </View>
-          
-                <View style={{marginTop:'10%',}}>
-                 <Text >By signing up, you agree to Slizzr’s </Text>
+
+             
+                <View style={{marginTop:25,}}>
+                 <Text style={{fontSize:12}}>By signing up, you agree to Slizzr’s </Text>
                 <View style={{flexDirection:'row'}}>
-                <Text style={styles.text}>Terms of Service</Text>
-                <Text> and </Text>
-                <Text  style={styles.text}>Privacy Policy.</Text>
+                <Text style={[styles.text,{fontSize:12}]}>Terms of Service</Text>
+                <Text style={{fontSize:12}}> and </Text>
+                <Text  style={[styles.text,{fontSize:12}]}>Privacy Policy.</Text>
                 
                 </View>
                 
@@ -96,8 +129,8 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
  }
   const styles = StyleSheet.create({
     logo: {
-      height: 82,
-      width: 62,
+      height: 65,
+      width: 65,
       resizeMode: 'contain',
       marginTop: 25,
     
@@ -110,8 +143,7 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
     text:{
       color:'#F818D9',
       fontFamily: FONT.Nunito.regular,
-      fontSize: 14,
-    
+     
     },
     textPurple:{
       color: BLACK.textInputTitle,
@@ -120,17 +152,17 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
     
     },
     titleText: {
-      marginTop: 13,
-      marginBottom: '3%',
+      marginTop: 26,
+     
       color: BLACK.textInputTitle,
       fontFamily: FONT.Nunito.bold,
-      fontSize: 24,
+      fontSize: 28,
       alignSelf: 'flex-end',
     },  
     subtitletext:{
       color: BLACK.textInputTitle,
-      fontFamily: FONT.Nunito.semiBold,
-      fontSize: 16,
+      fontFamily: FONT.Nunito.regular,
+      fontSize: 15,
     },
     subtitletextbold:{
       color: BLACK.textInputTitle,
@@ -143,8 +175,17 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
     
     },
     wrapperView: {
+      flex:1,
+      backgroundColor: WHITE.dark,
+ 
+    },
+    contentView: {
       flex: 1,
-  
+      justifyContent: 'center',
+      alignSelf: 'center',
+      width:SCREEN.width-40,
+      backgroundColor: WHITE.dark,
+ 
     },
 //     btnText: {
 //       fontSize: 16,
@@ -162,13 +203,31 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
       fontFamily: FONT.Nunito.regular,
     },
     btnFaceBook: {
-        height:50,
-        marginTop:'5%'
-        
-      },
+      height: 55,
+      backgroundColor: '#3664A2',
+      width: '100%',
+      borderRadius: 25,
+      height: 55,
+      justifyContent: 'center',
+      marginTop: 10,
+    },
+    btnText: {
+      textAlignVertical: 'center',
+      fontSize: 14,
+      color: 'white',
+      textAlign: 'center',
+      fontFamily:FONT.Nunito.bold,
+      color: '#f1f1f2',
+    },
+   
     btnGoogle: {
-        height:50,
-        marginTop:'10%' 
+      height: 55,
+      backgroundColor: '#FF3B30',
+      width: '100%',
+      borderRadius: 25,
+      height: 55,
+      justifyContent: 'center',
+      marginTop: 19,
     },
 //     absoluteLeftIcon: {
 //       position: 'absolute',

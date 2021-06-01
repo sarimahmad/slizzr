@@ -248,16 +248,14 @@ export default class CreateEvent extends Component {
                 ref={ref => {
                   this.RBSheet = ref;
                 }}
-                height={hp('100%')}
+                height={SCREEN.height}
                 openDuration={250}
                 customStyles={{
                   container: {
-                    // justifyContent: 'center',
-                    alignItems: 'center',
                   },
                 }}>
                 <View>
-                <View style={[styles.flex, {padding: 10,marginTop:30}]}>
+                <View style={[styles.flex,{padding:10}]}>
             <TouchableOpacity
               onPress={() => this.RBSheet.close()}>
               <Image
@@ -275,12 +273,12 @@ export default class CreateEvent extends Component {
               style={styles.logo}
             />
           </View>
-         <View style={{marginTop:hp('20%')}}>
+         <View style={{marginTop:100}}>
                   <Image
                     style={{alignSelf: 'center'}}
                     source={require('../../assets/Oval.png')}
                   />
-                  <Text style={styles.titleText}> Event Created!</Text>
+                  <Text style={[styles.titleText,{marginTop:100}]}> Event Created!</Text>
                   {this.state.skip == false && (
                     <TouchableOpacity style={styles.button}>
                       <Text style={styles.text}> Share event</Text>
@@ -316,12 +314,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 10,
-  
+    backgroundColor: WHITE.dark,
   },
   flex: {
+    // backgroundColor:'red',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomColor:'lightgrey',
+    // borderBottomColor:'lightgrey',
     borderBottomWidth:1,
   },
   

@@ -13,7 +13,7 @@ export default class Header extends Component {
     return (
       <View style={styles.flex}>
         <TouchableOpacity 
-        onPress={this.props.leftBtnPress} 
+        onPress={()=>this.props.navigation.navigate("Home")} 
         activeOpacity={0.85} style={{position: 'absolute', left: 20, justifyContent: 'center', alignItems: 'center', height: 40, width: 40,}}>
           <Image source={require('../../assets/back.png')} style={{height: 40, width: 40,  justifyContent:'center'}} />
         </TouchableOpacity>
@@ -28,7 +28,7 @@ export default class Header extends Component {
 const styles = StyleSheet.create({
   flex: {
     alignItems:'center',
-    height: 90,
+    height: 60,
     borderBottomWidth: 1,
     borderBottomColor: BLACK.border,
     justifyContent: 'center',

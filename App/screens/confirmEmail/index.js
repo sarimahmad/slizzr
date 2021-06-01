@@ -26,24 +26,26 @@ export default class ConfirmEmail extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-    
+      <SafeAreaView style={styles.contentView}>
+      <Image style={styles.logo} source={require('../../assets/logo.png')} />
+         
            <Text style={styles.titleColor}>
            Confirm your email address  
           </Text>
-          <Text style={styles.textColor}>
+          <Text style={[styles.textColor],{marginTop:22}}>
           We sent a confirmation email to:
           </Text>
           <Text style={styles.subtitletextbold}>
           email@email.com
           </Text>
-          <Text style={styles.textColor}>
+          <Text style={[styles.textColor,{marginTop:26}]}>
           Check your email and click on the confirmation link to continue,
           </Text>
           <Text style={styles.textPurple}>
           Resend email
           </Text>
         
-     
+     </SafeAreaView>
       </View> 
     );
   }
@@ -52,21 +54,30 @@ const styles = StyleSheet.create({
   logo: {
     height: 70,
     width: 70,
+    
   },
   wrapperView: {
-    height:hp('100%'),
+    flex: 1,
+
+    backgroundColor: WHITE.dark,
+  },
+  contentView: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'#F2F2F2'
+    alignSelf: 'center',
+    width: SCREEN.width - 40,
+    backgroundColor: WHITE.dark,
   },
-  textColor:{
+ textColor:{
       fontSize:16,
-      margin: '2%', textAlign: 'center',
-      color:'#494949'
+       textAlign: 'center',
+      color:'#494949',
+      fontFamily:FONT.Nunito.regular
   },
   titleColor:{
     fontSize:26,
-    margin: '2%', textAlign: 'center',
+    marginTop: 26, textAlign: 'center',
     color:'#494949',
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,
@@ -82,8 +93,8 @@ const styles = StyleSheet.create({
     color: '#F818D9',
     fontFamily: FONT.Nunito.regular,
     fontSize: 14,
-    marginVertical:30
-  
+    marginVertical:30,
+    textDecorationLine:'underline'  
   },
   titleText: {
     marginTop: 13,
@@ -103,6 +114,6 @@ const styles = StyleSheet.create({
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,
     fontSize: 14,
-    marginVertical:10
+    marginTop:26
   },
 });

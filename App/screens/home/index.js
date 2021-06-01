@@ -26,43 +26,68 @@ export default class home extends Component {
       enableMap: false,
       date: new Date(2300, 10, 20),
       showDate: false,
-      events:false,
+      prePaid: false,
+      events: false,
       findpeople: [
         {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-  
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-  
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-          {
-            imgProfile: '',
-            profileName: 'Marriage Anniversary',
-            adress: 'Host: Tallah Cotton',
-            date: '11:30 PM | Feb 25, 2020 - WED',
-          },  
-  
-    ]
-  
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+    ],
+
     };
   }
   onChange = (event, selectedDate) => {
@@ -82,34 +107,41 @@ export default class home extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
-          <View style={[styles.flex, {padding: 10}]}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
+        <View style={[styles.flex, {padding: 10}]}>
+          <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
+            <Image
+              source={require('../../assets/drawer.png')}
+              style={styles.logo}
+            />
+          </TouchableOpacity>
 
-            <Image
-              source={require('../../assets/homeLogo.png')}
-              style={styles.logo}
-            />
-            <Image
-              source={require('../../assets/bell.png')}
-              style={styles.logo}
-            />
-          </View>
-          <View style={styles.flex}>
-            <TouchableOpacity onPress={()=>this.setState({events:true})}><Text style={styles.barChild}>All</Text></TouchableOpacity>
+          <Image
+            source={require('../../assets/homeLogo.png')}
+            style={styles.logo}
+          />
+          <Image
+            source={require('../../assets/bell.png')}
+            style={styles.logo}
+          />
+        </View>
+        <View style={styles.flex}>
+          <TouchableOpacity onPress={() => this.setState({events: true})}>
+            <Text style={styles.barChild}>All</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => this.setState({prePaid: true, events: false})}>
             <Text style={styles.barChild}>Prepaid</Text>
-            <Text style={[styles.barChild, {width: wp('40%')}]}>
-              Scan-&-Pay at door
-            </Text>
-            <Text style={styles.barChild}>free</Text>
-          </View>
-          {(this.state.enableMap == true  && this.state.events == false )&& (
+          </TouchableOpacity>
+
+          <Text style={[styles.barChild, {width: wp('40%')}]}>
+            Scan-&-Pay at door
+          </Text>
+          <Text style={styles.barChild}>free</Text>
+        </View>
+
+        <SafeAreaView style={styles.contentView}>
+
+          {(this.state.enableMap == true   ) && (
             <MapView
               style={{flex: 1}}
               initialRegion={{
@@ -120,127 +152,154 @@ export default class home extends Component {
               }}
             />
           )}
-          {(this.state.enableMap == true && this.state.events == false )  && (
+          {(this.state.enableMap == true || this.state.events == true) && (
             <View
               style={{
                 position: 'absolute',
-                top: 130,
-                flexDirection: 'row',
-                width: wp('100%'),
+                top: 0,
               }}>
-            
-              <TextInput
-                style={styles.inputSearch}
+              <View style={styles.inputSearch}>
+                <Image
+                  source={require('../../assets/magnify.png')}
+                  style={{marginTop: 10, marginRight: 10}}
+                />
+                <TextInput
+
                 placeholder={'Try “western homecoming party”'}
-                placeholderTextColor={'#8e8e93'}
-                // onChangeText={handleText}
-              ></TextInput>
-              
+                  placeholderTextColor={'#8e8e93'}
+                  // onChangeText={handleText}
+                ></TextInput>
+              </View>
             </View>
           )}
-          {(this.state.enableMap == false && this.state.events == false )&& (
+          {this.state.enableMap == false &&
+            this.state.events == false &&
+            this.state.prePaid == false && (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 50,
+                  paddingHorizontal: 20,
+                }}>
+                <Image
+                  source={require('../../assets/map-marker-outline.png')}
+                  style={styles.logo}
+                />
+                <Text style={[styles.titleText, {marginTop: 10, fontSize: 27}]}>
+                  Enable Location
+                </Text>
+                <Text style={styles.subtitleText}>
+                  You will need to enable location to see events near you
+                </Text>
+                <TouchableOpacity
+                  onPress={() => this.setState({enableMap: true})}
+                  style={styles.btnLocation}>
+                  <Text style={styles.btnTextLocation}>Allow Location</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          {this.state.events == true && (
             <View
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginTop: '10%',
-                marginHorizontal: '5%',
+                marginTop: 50,
               }}>
-              <Image
-                source={require('../../assets/map-marker-outline.png')}
-                style={styles.logo}
-              />
-              <Text style={styles.titleText}>Enable Location</Text>
-              <Text style={styles.subtitleText}>
-                You will need to enable location to see events near you
-              </Text>
-              <TouchableOpacity
-                onPress={() => this.setState({enableMap: true})}
-                style={styles.btnLocation}>
-                <Text style={styles.btnTextLocation}>Allow Location</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-            {this.state.events == true && (
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-             
-                marginTop: '10%',
-                marginHorizontal: '5%',
-              }}>
-            <FlatList
-              data={this.state.findpeople}
-              keyExtractor={item => item.id}
-              renderItem={({item}) => (
-                <View 
-                  style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'lightgrey',
-                  }}>
-                  <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
-                      <Image source={require('../../assets/profile1.png')} />
-                      <Image
-                        style={{position: 'absolute', right: 15}}
-                        source={require('../../assets/private.png')}
-                      />
-               
+              <FlatList
+                data={this.state.findpeople}
+                keyExtractor={item => item.id}
+                renderItem={({item}) => (
+                  <View>
+                    <View style={styles.flexRow}>
+                      <View style={styles.imgView}>
+                        <Image source={require('../../assets/profile1.png')} />
+                        <Image
+                          style={{position: 'absolute', right: 15}}
+                          source={require('../../assets/private.png')}
+                        />
+
                     </View>
-                    
+
                     <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.profileName}</Text>
-                      <Text style={styles.subtitleText}>{item.adress}</Text>
-                      <Text style={styles.purpleText}>{item.date}</Text>
-                    </View>
-                    <TouchableOpacity onPress={()=>this.props.navigation.navigate("eventDetail")} style={styles.shareView}>
-                      <Image source={require('../../assets/Right.png')} />
-                    </TouchableOpacity>
-                   
+                        <Text style={styles.titleText}>{item.profileName}</Text>
+                        <Text style={styles.subtitleText}>{item.adress}</Text>
+                        <Text style={styles.purpleText}>{item.date}</Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.props.navigation.navigate('eventDetail')
+                        }
+                        style={styles.shareView}>
+                        <Image source={require('../../assets/Right.png')} />
+                      </TouchableOpacity>
+
+                    <View
+                      style={{height: 1, backgroundColor: 'lightgrey'}}></View>
                   </View>
                 </View>
-              )}
-            />
+                )}
+              />
             </View>
           )}
-          <View style={styles.bottomView}>
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate("createEvent")}  style={styles.logoAdd}
-          >
-          <Image
-            source={require('../../assets/plus-circle.png')}
-          />
-          </TouchableOpacity>
-          <View style={{backgroundColor:'white'}}>
-            <TouchableOpacity
-              onPress={this.showDatepicker}
-              style={{flexDirection: 'row', width: wp('90%')}}>
-              <View style={styles.input}>
-                <Text style={{paddingTop:15,paddingLeft:20}}>Thursday, August 24, 2020</Text>
+          {this.state.prePaid == true && (
+            <View>
+              <View>
                 <Image
-                style={styles.logoAddCalender}
-                source={require('../../assets/calendar-range.png')}
-                onPress={this.showDatepicker}
-              />
-              </View>
-              {this.state.showDate && (
-                <DateTimePicker
-                  testID="dateTimePicker"
-                  value={this.state.date}
-                  mode={'date'}
-                  is24Hour={true}
-                  display="default"
-                  onChange={this.onChange}
-                />
-              )}
+                  source={require('../../assets/logo.png')}
+                  style={{height: 80, width: 80, alignSelf: 'center'}} />
 
-             
-              <View></View>
+
+                <Text style={styles.subtitleText}>
+                  No events to show in your area.
+                </Text>
+                <TouchableOpacity style={styles.btnMap}>
+                  <Text style={styles.btnText}>List View</Text>
+                </TouchableOpacity>
+
+
+                  </View>
+            </View>
+          )}
+            
+
+
+          <View style={styles.bottomView}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('createEvent')}
+              style={styles.logoAdd}>
+              <Image source={require('../../assets/plus-circle.png')} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap}>
-              <Text style={styles.btnText}>List View</Text>
+            <View style={{backgroundColor: 'white'}}>
+              <TouchableOpacity
+                onPress={this.showDatepicker}
+                style={{flexDirection: 'row'}}>
+                <View style={styles.input}>
+                  <Text style={{paddingTop: 15, paddingLeft: 20}}>
+                    Thursday, August 24, 2020
+                  </Text>
+                  <Image
+                    style={styles.logoAddCalender}
+                    source={require('../../assets/calendar-range.png')}
+                    onPress={this.showDatepicker}
+                  />
+                </View>
+                {this.state.showDate && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={this.state.date}
+                    mode={'date'}
+                    is24Hour={true}
+                    display="default"
+                    onChange={this.onChange}
+                  />
+                )}
+
             </TouchableOpacity>
-          </View>
+              <TouchableOpacity style={styles.btnMap}>
+                <Text style={styles.btnText}>List View</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </SafeAreaView>
       </View>
@@ -249,14 +308,17 @@ export default class home extends Component {
 }
 const styles = StyleSheet.create({
   topView: {
-    height: hp('35%'),
+    // height: hp('35%'),
   },
   inputSearch: {
-    width: wp('90%'),
-    marginHorizontal: '5%',
+    width: SCREEN.width - 40,
+    flexDirection: 'row',
+    height: 42,
     borderWidth: 1,
+    justifyContent: 'flex-start',
+    paddingLeft: 20,
     backgroundColor: 'white',
-    paddingLeft: 40,
+
     marginVertical: 10,
     borderRadius: 24,
     borderColor: 'lightgrey',
@@ -267,10 +329,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   input: {
-    width: wp('90%'),
-    marginHorizontal: '5%',
+    width: SCREEN.width - 40,
     borderWidth: 1,
-    height: hp('7%'),
+    height: 53,
     marginVertical: 10,
     borderRadius: 12,
     borderColor: 'lightgrey',
@@ -280,14 +341,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     elevation: 2,
   },
-  contentView: {
-    flex: 1,
-  },
   imgView: {
     width: wp('25%'),
   },
   shareView: {
-
     width: wp('20%'),
     justifyContent: 'center',
   },
@@ -311,10 +368,9 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
-
-    
+    paddingHorizontal: 20,
   },
- 
+
   next: {
     paddingTop: 15,
   },
@@ -322,17 +378,17 @@ const styles = StyleSheet.create({
     width: wp('55%'),
   },
   btnLocation: {
-    width: wp('80%'),
-    marginHorizontal: '10%',
+    width: SCREEN.width - 140,
     borderRadius: 25,
-    marginTop: hp('5%'),
+    marginTop: 60,
     height: 50,
+    backgroundColor: WHITE.dark,
     // shadowColor: 'black',
     // shadowOffset: {width: 0, height: 2},
     // shadowRadius: 6,
     // shadowOpacity: 0.1,
     elevation: 1,
-    justifyContent:'center',
+    justifyContent: 'center',
 
     borderWidth: 1,
     borderRadius: 24,
@@ -340,14 +396,15 @@ const styles = StyleSheet.create({
     bottom: 10,
   },
   btnMap: {
-    width: wp('90%'),
-    marginHorizontal: '5%',
+    width: SCREEN.width - 40,
+    // marginHorizontal: '5%',
     borderRadius: 25,
+
     height: 50,
-    marginBottom:20,
-  
+    marginBottom: 20,
+
     backgroundColor: 'black',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   logoSearch: {
     position: 'absolute',
@@ -356,7 +413,7 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     position: 'absolute',
-   
+
     bottom: 0,
   },
   btnText: {
@@ -371,7 +428,6 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
     fontFamily: FONT.Nunito.regular,
-
   },
   barChild: {
     borderWidth: 1,
@@ -385,12 +441,11 @@ const styles = StyleSheet.create({
   subtitleText: {
     // marginVertical: 10,
     fontSize: 14,
-
+    marginTop: 14,
+    textAlign: 'center',
     fontFamily: FONT.Nunito.semiBold,
   },
-  contentView: {
-    height: hp('100%'),
-  },
+
   logo: {
     //   height: 80,
     //   width: 100,
@@ -401,10 +456,8 @@ const styles = StyleSheet.create({
   },
   logoAdd: {
     alignSelf: 'flex-end',
-    marginRight: '5%',
-    marginTop: '10%',
   },
- logoAddCalender: {
+  logoAddCalender: {
     position: 'absolute',
     right: 5,
     top: 13,
@@ -416,20 +469,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  titleText: {
-    // marginTop: 13,
-    // marginBottom: '3%',
-    color: BLACK.textInputTitle,
-    fontFamily: FONT.Nunito.bold,
-  },
+
   detailWrapper: {
     alignSelf: 'center',
   },
   wrapperView: {
-   
-    // height: hp('100%'),
-    // width: wp('100%'),
     flex: 1,
+
+    backgroundColor: WHITE.dark,
+  },
+  contentView: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    // width: SCREEN.width - 40,
+    backgroundColor: WHITE.dark,
   },
   policyText: {
     alignSelf: 'center',
