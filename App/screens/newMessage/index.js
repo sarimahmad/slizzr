@@ -112,10 +112,10 @@ export default class newMessage extends Component {
                   </View>
                   <View style={styles.detail}>
                     <Text style={styles.titleText}>{item.name}</Text>
-                    <Image
+                    {/* <Image
                       style={{height: 30, width: 30}}
                       source={require('../../assets/newProfile.png')}
-                    />
+                    /> */}
                   </View>
                  
                 </View>
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   logo: {},
   titleText: {
     color: BLACK.textInputTitle,
-    fontFamily: FONT.Nunito.bold,
+    fontFamily: FONT.Nunito.semiBold,
     fontSize: 17,
   
   },

@@ -27,22 +27,28 @@ export default class chat extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
         <View
-            style={[{padding: 20, alignItems: 'center', alignItems: 'center'}]}>
-            <View style={{position: 'absolute', left: 20, top: 10}}>
+            style={[{padding: 20, alignItems: 'center', alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
+            <View style={{position: 'absolute', left: 20, top: 10,flexDirection:'row'}}>
               <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                 <Image
                   source={require('../../assets/back.png')}
                   style={styles.logo}
                 />
               </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Profile Name</Text>
+            <Image
+                      style={{height: 40, width: 40}}
+                      source={require('../../assets/profile1.png')}
+                    />
+         </View>
+           
+            <Text style={styles.titleText}>Cindy Ray</Text>
            
           </View>
+      
+        <SafeAreaView style={styles.contentView}>
           <View style={{margin:20}}>
-         <View style={{flexDirection:'row',alignItems: 'center',}}>
+         <View style={{flexDirection:'row',alignItems: 'center',width:SCREEN.width-20}}>
          <Image
                       style={{height: 50, width: 50}}
                       source={require('../../assets/profile1.png')}
@@ -51,15 +57,15 @@ export default class chat extends Component {
          <View style={styles.myMessages}>
          <Text style={{color:'white'}}>Hey! Anything you want, might be chilly so maybe a jacket.</Text>
          </View>
-         <Text >02/17/2020 - 08:02 PM</Text>
+         <Text style={{textAlign:'left',color:'lightgrey'}}>02/17/2020 - 08:02 PM</Text>
          </View>
          </View>
-         <View style={{flexDirection:'row',alignItems: 'center',}}>
+         <View style={{flexDirection:'row',alignItems: 'center',width:SCREEN.width-20}}>
         <View>
          <View style={styles.otherMessages}>
          <Text >What do you reccomend I bring to this event?</Text>
          </View>
-         <Text style={{textAlign:'right'}}>02/17/2020 - 08:02 PM</Text>
+         <Text style={{textAlign:'right',color:'lightgrey'}}>02/17/2020 - 08:02 PM</Text>
        
          </View>
          <Image
@@ -76,22 +82,33 @@ export default class chat extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+
+    backgroundColor: WHITE.dark,
   },
-  myMessages:{
+  contentView: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    width: SCREEN.width - 40,
+    backgroundColor: WHITE.dark,
+  }, myMessages:{
   backgroundColor:'#F818D9',
   borderTopRightRadius:12,
   borderBottomRightRadius:12,
   borderTopLeftRadius:12,
   height:60,
+  padding:10,
   marginVertical:10,
   alignItems: 'center',
   justifyContent: 'center',
   },
   otherMessages:{
-      marginVertical:10,
+    
+    marginVertical:10,
     borderTopRightRadius:12,
     borderBottomLeftRadius:12,
     borderTopLeftRadius:12,
+    padding:10,
     backgroundColor:'lightgrey',
     height:60  ,
     
@@ -112,9 +129,6 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
  
-  contentView: {
-    flex: 1,
-  },
   imgView: {
     width: wp('20%'),
   },

@@ -132,8 +132,23 @@ export default class sharedHostRequests extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+
+    backgroundColor: WHITE.dark,
   },
-  btnTextLocation: {
+  contentView: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    // width: SCREEN.width - 40,
+    backgroundColor: WHITE.dark,
+  }, btnTextLocation: {
+    fontSize: 16,
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: FONT.Nunito.regular,
+
+  },
+ btnTextLocation: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
@@ -168,9 +183,6 @@ const styles = StyleSheet.create({
   },
   detail: {
     width: wp('55%'),
-  },
-  contentView: {
-    flex: 1,
   },
   imgView: {
     width: wp('25%'),

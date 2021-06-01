@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  TextInput,
   FlatList,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
@@ -60,22 +61,37 @@ export default class attendeesList extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
-            <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center',}]}>
-          <View style={{position: 'absolute',left:20,top:10}}>
-           <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("myEventInfo")}>
-              <Image
-                source={require('../../assets/back.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
+         <View
+            style={[{padding: 20, alignItems: 'center', alignItems: 'center'}]}>
+            <View style={{position: 'absolute', left: 20, top: 10}}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../../assets/back.png')}
+                  style={styles.logo}
+                />
+              </TouchableOpacity>
             </View>
             <Text style={styles.titleText}>Attendee List</Text>
-            <View style={{position: 'absolute',right:20,top:10}}>
-            </View>
+           
           </View>
-      
+     
+        <SafeAreaView style={styles.contentView}>
+        <View
+              style={styles.inputSearch}
+              >
+                 <Image style={{marginHorizontal:10,marginTop:10}}
+                source={require('../../assets/searchWhite.png')}
+               
+              />
+             
+              <TextInput
+                placeholder={'Try “western homecoming party”'}
+                placeholderTextColor={'#8e8e93'}
+                // onChangeText={handleText}
+              ></TextInput>
+              
+            </View>
+         
         
              <FlatList
               data={this.state.attendeesLIst}
@@ -114,8 +130,37 @@ export default class attendeesList extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+
+    backgroundColor: WHITE.dark,
   },
-  btnTextLocation: {
+  inputSearch: {
+    width: SCREEN.width - 40,
+    flexDirection: 'row',
+    height: 42,
+    borderWidth: 1,
+    justifyContent: 'flex-start',
+    paddingLeft: 20,
+    backgroundColor: 'lightgrey',
+
+    marginVertical: 10,
+    borderRadius: 12,
+    borderColor: 'lightgrey',
+  },
+  
+  contentView: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    // width: SCREEN.width - 40,
+    backgroundColor: WHITE.dark,
+  }, btnTextLocation: {
+    fontSize: 16,
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: FONT.Nunito.regular,
+
+  },
+ btnTextLocation: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
@@ -169,9 +214,6 @@ const styles = StyleSheet.create({
   },
   next: {
     paddingTop: 15,
-  },
-  contentView: {
-    flex: 1,
   },
   imgView: {
     width: wp('20%'),

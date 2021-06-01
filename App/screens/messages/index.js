@@ -80,8 +80,7 @@ attendingEvents = ()=>{
   render() {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
-            <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
+          <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
           <TouchableOpacity
               onPress={() => this.props.navigation.openDrawer()}>
               <Image
@@ -93,6 +92,8 @@ attendingEvents = ()=>{
             <Text style={styles.titleText}>Messages</Text>
             <View></View>
           </View>
+         
+        <SafeAreaView style={styles.contentView}>
           <View style={styles.flex}>
             <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
                <Text>MY EVENTS</Text>
@@ -107,10 +108,7 @@ attendingEvents = ()=>{
               keyExtractor={item => item.id}
               renderItem={({item}) => (
                 <TouchableOpacity onPress={()=>this.props.navigation.navigate("messagesEvent")}
-                  style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'lightgrey',
-                  }}>
+                 >
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image source={require('../../assets/profile1.png')} />
@@ -126,6 +124,8 @@ attendingEvents = ()=>{
                     </View>
                    
                   </View>
+                  <View style={{hiehgt:1,borderBottomWidth:1,borderBottomColor:'lightgrey',width:SCREEN.width}}></View>
+          
                 </TouchableOpacity>
               )}
             />
@@ -149,8 +149,17 @@ attendingEvents = ()=>{
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+
+    backgroundColor: WHITE.dark,
   },
-  btnTextLocation: {
+  contentView: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    // width: SCREEN.width - 40,
+    backgroundColor: WHITE.dark,
+  },
+ btnTextLocation: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
@@ -174,6 +183,7 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
+ 
     paddingHorizontal:10,
     
   },
@@ -184,13 +194,10 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   detail: {
-    width: wp('55%'),
-  },
-  contentView: {
-    flex: 1,
+    width: SCREEN.width *0.55,
   },
   imgView: {
-    width: wp('25%'),
+    width: SCREEN.width *0.25,
   },
   flex: {
     flexDirection: 'row',

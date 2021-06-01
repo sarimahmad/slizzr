@@ -15,6 +15,8 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Picker} from '@react-native-picker/picker';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 export default class sharedHosts extends Component {
   constructor(props) {
@@ -62,22 +64,13 @@ export default class sharedHosts extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
+        <HeaderWithOptionBtn leftIcon={require('../../assets/back.png')} headerTitle={'Shared Hosts'} leftPress={() => this.props.navigation.pop()} />
+     
         <SafeAreaView style={styles.contentView}>
-            <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
-          <View style={{position: 'absolute',left:20,top:10}}>
-           
-           <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("myEventInfo")}>
-              <Image
-                source={require('../../assets/back.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Attendee List</Text>
-       
-          </View>
-          <View style={styles.form}>
+        <View style={{width:SCREEN.width-40,alignSelf:'center'}}>
+          <Text style={{color:BLACK.lightgrey}}>Select shared hosts for:</Text>
+      
+            <View style={styles.form}>
         <Picker
               mode="dropdown"
               
@@ -96,9 +89,9 @@ export default class sharedHosts extends Component {
             </Picker>
             </View>
   
-            <Text style={{marginTop:20,marginLeft:20,color:'#B2ABB1',  fontFamily: FONT.Nunito.regular,}}>Invite shared hosts</Text>
+            <Text style={{marginTop:20,color:BLACK.lightgrey,  fontFamily: FONT.Nunito.regular,}}>Invite shared hosts</Text>
             <View style={{flexDirection:'row',marginTop:10}}>
-         <View style={{marginLeft:15,marginRight:5,height:45,width:45,borderRadius:24,backgroundColor:'lightgrey',alignItems: 'center',justifyContent:'center'}}> 
+         <View style={{marginRight:5,height:45,width:45,borderRadius:24,backgroundColor:'lightgrey',alignItems: 'center',justifyContent:'center'}}> 
              <Image source={require('../../assets/searchPurple.png')} />  
          </View>
          <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
@@ -107,10 +100,10 @@ export default class sharedHosts extends Component {
          <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
          <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
          </View>
-        
           <TouchableOpacity style={styles.shareButton}>
               <Text style={styles.sharebtnText}>Invite shared hosts</Text>
             </TouchableOpacity>
+            </View>
           
         
           <View style={styles.flex}>
@@ -126,11 +119,8 @@ export default class sharedHosts extends Component {
               data={this.state.attendeesLIst}
               keyExtractor={item => item.id}
               renderItem={({item}) => (
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate("")}
-                  style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'lightgrey',
-                  }}>
+                <TouchableOpacity 
+                 >
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image style={{height:50,width:50}} source={require('../../assets/profile1.png')} />
@@ -144,6 +134,9 @@ export default class sharedHosts extends Component {
                     <Image style={{height:50,width:50}} source={require('../../assets/close.png')} />
                       </View>
                   </View>
+                  <View
+                      style={{height: 1, backgroundColor: 'lightgrey',width:SCREEN.width}}></View>
+                 
                 </TouchableOpacity> 
               )}
             /> 
@@ -156,8 +149,15 @@ export default class sharedHosts extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+
+    backgroundColor: WHITE.dark,
   },
-  btnTextLocation: {
+ 
+  
+  contentView: {
+    width:SCREEN.width,
+    backgroundColor: WHITE.dark,
+  }, btnTextLocation: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
@@ -179,8 +179,6 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
   },
   shareButton:{
-    width: wp('90%'),
-    marginHorizontal: '5%',
     borderRadius: 25,
     height: 50,
     marginBottom:20,
@@ -189,7 +187,7 @@ const styles = StyleSheet.create({
   
   },
   form: {
-    marginHorizontal:20,
+    // marginHorizontal:20,
     elevation:2,
     marginVertical:5,
     borderWidth: 1,
@@ -227,7 +225,7 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 20,
-    paddingHorizontal:10,
+    // paddingHorizontal:10,
     alignSelf: 'center',
     alignItems: 'center',
     
@@ -237,9 +235,6 @@ const styles = StyleSheet.create({
   },
   next: {
     paddingTop: 15,
-  },
-  contentView: {
-    flex: 1,
   },
   imgView: {
     width: wp('20%'),
@@ -263,7 +258,7 @@ const styles = StyleSheet.create({
   },
   barChild: {
     borderBottomWidth: 1,
-    width: wp('50%'),
+    width: SCREEN.width*0.5,
     height: 36,
     height:40,
     borderBottomColor: 'lightgrey',

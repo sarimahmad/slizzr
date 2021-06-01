@@ -54,7 +54,6 @@ export default class lookFriends extends Component {
   render() {
     return (
         <View style={styles.wrapperView}>
-       <SafeAreaView style={styles.contentView}>
        <View
             style={[
               styles.flex,
@@ -66,7 +65,7 @@ export default class lookFriends extends Component {
               },
             ]}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("propleProfiles")}>
+              onPress={() => this.props.navigation.navigate("peopleProfiles")}>
               <Image
                 source={require('../../assets/back.png')}
                 style={styles.logo}
@@ -77,17 +76,18 @@ export default class lookFriends extends Component {
            <View></View>
           </View>
    
+       <SafeAreaView style={styles.contentView}>
+       
 
        <View style={styles.searchBar}>
        <TouchableOpacity onPress={()=>this.props.navigation.navigate('lookFriends')}
               style={[
                 styles.logo,
                 {
-                  elevation: 6,
                   marginRight: 5,
                   padding: 10,
-                  backgroundColor: 'white',
                   borderRadius: 24,
+                 
                 },
               ]}>
               <Image source={require('../../assets/searchBlack.png')} />
@@ -99,7 +99,7 @@ export default class lookFriends extends Component {
           data={this.state.findpeople}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <View style={{borderBottomWidth:1,borderBottomColor:'lightgrey'}}>
+            <View >
             <View style={styles.flexRow}>
               <View style={styles.imgView}>
                 <Image source={require('../../assets/lookFriend1.png')} />
@@ -112,6 +112,7 @@ export default class lookFriends extends Component {
               </View>
              
             </View>
+           <View style={{hiehgt:1,borderBottomWidth:1,borderBottomColor:'lightgrey',width:SCREEN.width}}></View>
             </View>
           )}
         /> 
@@ -166,22 +167,14 @@ const styles = StyleSheet.create({
     
      },
      searchBar:{
-      borderWidth:1,
-      borderColor:'grey',
+      backgroundColor:'lightgrey',
       height:40,
+      width:SCREEN.width-40,
       marginHorizontal:20,
       marginVertical:10,
       borderRadius:10,
       flexDirection:'row',
-      opacity:0.1,
-      backgroundColor:'#000000',
-      elevation:4,
-      shadowOpacity: 0.8,
-      shadowRadius: 1,
-      shadowOffset: {
-    
-     },
-     },
+           },
      flexRow: {
        flexDirection: 'row',
        paddingVertical: 10,
@@ -266,9 +259,6 @@ const styles = StyleSheet.create({
    
        fontFamily: FONT.Nunito.semiBold,
      },
-     contentView: {
-       height: hp('100%'),
-     },
      logo: {
       
    
@@ -308,10 +298,18 @@ const styles = StyleSheet.create({
        alignSelf: 'center',
      },
      wrapperView: {
-     
-       flex: 1,
-     },
-     policyText: {
+      flex: 1,
+  
+      backgroundColor: WHITE.dark,
+    },
+    contentView: {
+
+      flex: 1,
+      alignSelf: 'center',
+      alignItems: 'center',
+      width: SCREEN.width,
+    },
+   policyText: {
        alignSelf: 'center',
        marginTop: '2%',
        color: BLACK.appDark,

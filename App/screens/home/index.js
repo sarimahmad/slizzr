@@ -243,8 +243,7 @@ export default class home extends Component {
             </View>
           )}
           {this.state.prePaid == true && (
-            <View>
-              <View>
+            <View style={{marginTop:100}}>
                 <Image
                   source={require('../../assets/logo.png')}
                   style={{height: 80, width: 80, alignSelf: 'center'}} />
@@ -259,11 +258,11 @@ export default class home extends Component {
 
 
                   </View>
-            </View>
           )}
             
 
-
+            {this.state.prePaid == false && (
+        
           <View style={styles.bottomView}>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('createEvent')}
@@ -301,6 +300,7 @@ export default class home extends Component {
               </TouchableOpacity>
             </View>
           </View>
+            )}
         </SafeAreaView>
       </View>
     );

@@ -53,7 +53,6 @@ export default class findPeople extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
           <View
             style={[
               styles.flex,
@@ -71,10 +70,7 @@ export default class findPeople extends Component {
               />
             </TouchableOpacity>
 
-            <Image
-              source={require('../../assets/homeLogo.png')}
-              style={styles.logo}
-            />
+            <Text style={[styles.titleText,{marginTop:30}]}>Find People For</Text>
             <View
               style={[
                 styles.logo,
@@ -89,6 +85,8 @@ export default class findPeople extends Component {
               <Image source={require('../../assets/searchGrey.png')} />
             </View>
           </View>
+    
+        <SafeAreaView style={styles.contentView}>
        
           <FlatList
           
@@ -123,7 +121,7 @@ export default class findPeople extends Component {
 }
 const styles = StyleSheet.create({
   topView: {
-    height: hp('35%'),
+    // height: hp('35%'),
   },
   flexRow: {
     flexDirection: 'row',
@@ -232,9 +230,6 @@ const styles = StyleSheet.create({
 
     fontFamily: FONT.Nunito.semiBold,
   },
-  contentView: {
-   flex:1
-  },
   logo: {
     //   height: 80,
     //   width: 100,
@@ -275,10 +270,18 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   wrapperView: {
-   
     flex: 1,
+
+    backgroundColor: WHITE.dark,
   },
-  policyText: {
+  contentView: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    // width: SCREEN.width - 40,
+    backgroundColor: WHITE.dark,
+  },
+ policyText: {
     alignSelf: 'center',
     marginTop: '2%',
     color: BLACK.appDark,

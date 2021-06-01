@@ -80,19 +80,21 @@ attendingEvents = ()=>{
   render() {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
-            <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
-          <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-
+               <View
+            style={[{padding: 20, alignItems: 'center', alignItems: 'center'}]}>
+            <View style={{position: 'absolute', left: 20, top: 10}}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../../assets/back.png')}
+                  style={styles.logo}
+                />
+              </TouchableOpacity>
+            </View>
             <Text style={styles.titleText}>Manage Events</Text>
-            <View></View>
+           
           </View>
+     
+        <SafeAreaView style={styles.contentView}>
           <View style={styles.flex}>
             <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
                <Text>MY EVENTS</Text>
@@ -101,7 +103,7 @@ attendingEvents = ()=>{
               <Text>ATTENDING EVENTS</Text>
                 </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHostRequests")} style={{height:40,alignItems: 'center',backgroundColor:'#FF9500',flexDirection:'row',justifyContent: 'space-between',}}>
+          <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
            <Text style={{color:'white',paddingLeft:20}}>SHARED HOST REQUESTS</Text>
            <Text style={{color:'white',paddingRight:20}}>+2</Text>
           </TouchableOpacity>
@@ -182,8 +184,20 @@ attendingEvents = ()=>{
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+
+    backgroundColor: WHITE.dark,
   },
-  btnTextLocation: {
+  sharedView:{
+    width:SCREEN.width, height:40,alignItems: 'center',backgroundColor:'#FF9500',flexDirection:'row',justifyContent: 'space-between',
+  
+  },
+  contentView: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    // width: SCREEN.width - 40,
+    backgroundColor: WHITE.dark,
+  }, btnTextLocation: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
@@ -218,9 +232,6 @@ const styles = StyleSheet.create({
   },
   detail: {
     width: wp('55%'),
-  },
-  contentView: {
-    flex: 1,
   },
   imgView: {
     width: wp('25%'),

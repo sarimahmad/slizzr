@@ -65,8 +65,7 @@ export default class messagesEvent extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
-            <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center',}]}>
+        <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
           <View style={{position: 'absolute',left:20,top:10}}>
            <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}>
@@ -88,17 +87,17 @@ export default class messagesEvent extends Component {
             </View>
           </View>
       
+        <SafeAreaView style={styles.contentView}>
+         
         
             <FlatList
               data={this.state.messages}
               keyExtractor={item => item.id}
               renderItem={({item}) => (
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate("")}
-                  style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'lightgrey',
-                  }}>
-                  <View style={styles.flexRow}>
+                <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('chat')}>
+             
+               <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image style={{height:50,width:50}} source={require('../../assets/profile1.png')} />
                      
@@ -108,10 +107,12 @@ export default class messagesEvent extends Component {
                       <Text style={{color:'#B2ABB1'}}>{item.adress}</Text>
                 
                     </View>
-                    <View style={{height:30,width:30,borderRadius:24,justifyContent: 'center',alignItems: 'center',backgroundColor:'#F818D9',}}>
+                    <View style={{height:23,width:23,borderRadius:24,justifyContent: 'center',alignItems: 'center',backgroundColor:'#F818D9',}}>
                        <Text style={{color:'white'}}>{item.count}</Text>
                   </View>
                   </View>
+                  <View style={{hiehgt:1,borderBottomWidth:1,borderBottomColor:'lightgrey',width:SCREEN.width}}></View>
+          
                 </TouchableOpacity> 
               )}
             />
@@ -124,8 +125,17 @@ export default class messagesEvent extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+
+    backgroundColor: WHITE.dark,
   },
-  btnTextLocation: {
+  contentView: {
+    flex: 1,
+    alignSelf: 'center',
+    alignItems: 'center',
+    // width: SCREEN.width - 40,
+    backgroundColor: WHITE.dark,
+  },
+ btnTextLocation: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
@@ -133,7 +143,7 @@ const styles = StyleSheet.create({
 
   },
   btnLocation: {
-    width: wp('80%'),
+    // width: wp('80%'),
     marginHorizontal: '10%',
     borderRadius: 25,
     marginTop: hp('5%'),
@@ -150,6 +160,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 20,
     paddingHorizontal:10,
+    alignSelf: 'center',
+    justifyContent: 'center',
     
   },
   detail: {
@@ -160,9 +172,6 @@ const styles = StyleSheet.create({
   },
   detail: {
     width: wp('60%'),
-  },
-  contentView: {
-    flex: 1,
   },
   imgView: {
     width: wp('20%'),

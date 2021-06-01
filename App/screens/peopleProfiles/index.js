@@ -25,23 +25,38 @@ export default class peopleProfiles extends Component {
     this.state = {
         searchPeople:false,
         findpeople: [
-            {
-              imgProfile:'',  
-              profileName: 'Marriage Anniversary',
-              adress: 'Host: Tallah Cotton',
-              date: '11:30 PM | Feb 25, 2020 - WED',
-            },
-           
-            
-          ],
+          {
+            imgProfile:'',  
+            profileName: 'Marriage Anniversary',
+            adress: 'Host: Tallah Cotton',
+            date: '11:30 PM | Feb 25, 2020 - WED',
+          },
+          {
+              imgProfile:'',
+            profileName: 'Celebration Time',
+            adress: 'Host: Jaclynn Bradley',
+            date: '11:30 PM | Feb 25, 2020 - WED',
+          },
+          {
+              imgProfile:'',
+            profileName: 'Sagar’s Birthday',
+            adress: 'Host: Kita Chihoko',
+            date: '11:30 PM | Feb 25, 2020 - WED',
+          },
+          {
+              imgProfile:'',
+            profileName: 'GMU Party',
+            adress: 'Host: Jaclynn Bradley',
+            date: '11:30 PM | Feb 25, 2020 - WED',
+          },
+        ],
+      
     };
   }
 
   render() {
     return (
         <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
-        
           <View
             style={[
               styles.flex,
@@ -77,85 +92,73 @@ export default class peopleProfiles extends Component {
               <Image source={require('../../assets/searchGrey.png')} />
             </TouchableOpacity>
           </View>
+   
+        <SafeAreaView style={styles.contentView}>
+        
+   
    <ScrollView >
+   <TouchableOpacity onPress={()=>this.props.navigation.navigate("lookFriends")} style={styles.inputSearch}>
+                <Text style={{color:'black'}}>finding people for: my party</Text>
+                {/* <TextInput
 
+                placeholder={'finding people for: my party'}
+                  placeholderTextColor={'black'}
+                ></TextInput> */}
+              </TouchableOpacity>
+           
        <View style={styles.ageView}>
    
        <Text style={{fontSize:17,color:'#F818D9',fontFamily:FONT.Nunito.regular,paddingRight:5}}>Age:</Text>
        <Text style={{fontSize:17,fontFamily:FONT.Nunito.regular,paddingRight:5}}>Min:</Text>
     
-       <View style={{borderWidth:1,borderRadius:5,paddingHorizontal:20,paddingVertical:15,borderColor:'lightgrey'}}><Text>17</Text></View>
+       <View style={styles.box}><Text>17</Text></View>
        <Text style={{paddingHorizontal:5}}>Max :</Text>
-       <View style={{borderWidth:1,borderRadius:5,paddingHorizontal:20,paddingVertical:15,borderColor:'lightgrey'}}><Text>25</Text></View>
+       <View style={styles.box}><Text>25</Text></View>
        </View>
   
-       <View style={styles.cardView}>
-         <View style={styles.topView}>
-
-         <Image source={require('../../assets/cardTopView.png')} style={{alignSelf:'center',}} />      
-        
-         </View>
-        
-         <View style={styles.bottomView}>
-             <View style={{ alignItems: 'center',justifyContent: 'center',}}>
-   <Text style={styles.titleText}>Mary Poppins, 22, F</Text>
-   <View style={{flexDirection:'row',marginTop:5}}>
-   <Image source={require('../../assets/location.png')} style={{marginHorizontal:5}}  />  
-   <Text>12 KM away</Text>
-   </View>
-   </View>
-   <Text style={[styles.titleText,{alignItems: 'flex-start',marginTop:12}]}>Mutual Connections</Text>
-         <View style={{flexDirection:'row',marginTop:10}}>
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         </View>
-         <Text style={styles.purpleText}>See more</Text>
-         <TouchableOpacity
-                
-                style={styles.btnLocation}>
-                <Text style={styles.btnTextLocation}>DIRECT INVITE</Text>
-              </TouchableOpacity>
-         </View>
-         <Image source={require('../../assets/cardImage1.png')} style={{position:'absolute',left:100,top:40}} />
-        
-         </View>
-        <View style={styles.cardView}>
-         <View style={styles.topView}>
-
-         <Image source={require('../../assets/cardTopView.png')} style={{alignSelf:'center',}} />      
-        
-         </View>
-        
-         <View style={styles.bottomView}>
-             <View style={{ alignItems: 'center',justifyContent: 'center',}}>
-   <Text style={styles.titleText}>Mary Poppins, 22, F</Text>
-   <View style={{flexDirection:'row',marginTop:5}}>
-   <Image source={require('../../assets/location.png')} style={{marginHorizontal:5}}  />  
-   <Text>12 KM away</Text>
-   </View>
-   </View>
-   <Text style={[styles.titleText,{alignItems: 'flex-start',marginTop:12}]}>Mutual Connections</Text>
-         <View style={{flexDirection:'row',marginTop:10}}>
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         </View>
-         <Text style={styles.purpleText}>See more</Text>
-         <TouchableOpacity
-                
-                style={styles.btnLocation}>
-                <Text style={styles.btnTextLocation}>DIRECT INVITE</Text>
-              </TouchableOpacity>
-         </View>
-         <Image source={require('../../assets/cardImage1.png')} style={{position:'absolute',left:100,top:40}} />
-        
-         </View>
-
+       <FlatList
+          
+          data={this.state.findpeople}
+          keyExtractor={item => item.id}
+          renderItem={({item}) => (
+            <View style={styles.cardView}>
+            <View style={styles.topView}>
+   
+            <Image source={require('../../assets/cardTopView.png')} style={{alignSelf:'center',}} />      
+           
+            </View>
+           
+            <View style={styles.bottomView}>
+                <View style={{ alignItems: 'center',justifyContent: 'center',}}>
+      <Text style={styles.titleText}>Mary Poppins, 22, F</Text>
+      <View style={{flexDirection:'row',marginTop:5}}>
+      <Image source={require('../../assets/location.png')} style={{marginHorizontal:5}}  />  
+      <Text>12 KM away</Text>
+      </View>
+      </View>
+      <Text style={[styles.titleText,{alignItems: 'flex-start',marginTop:12}]}>Mutual Connections</Text>
+            <View style={{flexDirection:'row',marginTop:10}}>
+            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
+            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
+            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
+            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
+            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
+            </View>
+            <Text style={styles.purpleText}>See more</Text>
+            <TouchableOpacity
+                   
+                   style={styles.btnLocation}>
+                   <Text style={styles.btnTextLocation}>DIRECT INVITE</Text>
+                 </TouchableOpacity>
+            </View>
+            <Image source={require('../../assets/cardImage1.png')} style={{position:'absolute',left:100,top:40}} />
+           
+            </View>
+   
+            )}
+        />
+     
+  
 </ScrollView>
         </SafeAreaView>
       </View>
@@ -170,6 +173,11 @@ const styles = StyleSheet.create({
    alignItems: 'center',
    marginHorizontal:20
    },
+   box:{
+    borderWidth:1,borderRadius:5,paddingHorizontal:20,paddingVertical:15,borderColor:'lightgrey',
+    elevation:2
+     
+  },
     btnLocation: {
         // width: wp('0%'),
         marginHorizontal: 20,
@@ -238,21 +246,22 @@ const styles = StyleSheet.create({
       width: wp('25%'),
     },
     inputSearch: {
-      width: wp('90%'),
-      marginHorizontal: '5%',
+      width: SCREEN.width,
+      height: 42,
       borderWidth: 1,
+      justifyContent: 'flex-start',
+      paddingLeft: 20,
+      alignSelf: 'center',
+      justifyContent: 'center',
       backgroundColor: 'white',
-      paddingLeft: 40,
-      marginVertical: 10,
-      borderRadius: 24,
-      borderColor: 'lightgrey',
+      borderColor: 'black',
       shadowColor: 'black',
       shadowOffset: {width: 0, height: 2},
       shadowRadius: 6,
       shadowOpacity: 0.1,
       elevation: 2,
     },
-    input: {
+     input: {
       width: wp('90%'),
       marginHorizontal: '5%',
       borderWidth: 1,
@@ -306,9 +315,6 @@ const styles = StyleSheet.create({
   
       fontFamily: FONT.Nunito.semiBold,
     },
-    contentView: {
-    flex:1,
-    },
     logo: {
       //   height: 80,
       //   width: 100,
@@ -351,10 +357,18 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
     },
     wrapperView: {
-     
       flex: 1,
+  
+      backgroundColor: WHITE.dark,
     },
-    policyText: {
+    contentView: {
+      flex: 1,
+      alignSelf: 'center',
+      alignItems: 'center',
+      // width: SCREEN.width - 40,
+      backgroundColor: WHITE.dark,
+    },
+   policyText: {
       alignSelf: 'center',
       marginTop: '2%',
       color: BLACK.appDark,
