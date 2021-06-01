@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { View, Image, StyleSheet, StatusBar } from 'react-native';
-import { WHITE } from '../../helper/Color';
+import React, {Component} from 'react';
+import {View, Image, StyleSheet, StatusBar} from 'react-native';
+import {WHITE} from '../../helper/Color';
 
 class splash extends Component {
   state = {};

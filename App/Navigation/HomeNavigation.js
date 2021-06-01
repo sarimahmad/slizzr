@@ -44,6 +44,8 @@ import eventDetail2 from '../screens/eventDetail2';
 import prepay from '../screens/prepay';
 import event from '../screens/payments&Payouts/event';
 import index from '../screens/directInvites';
+import zickets from '../screens/zickets';
+import scan from '../screens/scan';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -149,7 +151,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={HomeNavigation} /> 
+        component={zickets} /> 
         <Drawer.Screen
         name="Notifications"
         options={{
@@ -214,6 +216,7 @@ export const MainNavigation = () => {
         }}>
         <Stack.Screen name="Splash" component={splash}></Stack.Screen>
         <Stack.Screen name="index" component={index}></Stack.Screen>
+        <Stack.Screen name="Scan" component={scan}></Stack.Screen>
 
         <Stack.Screen
           name="HomeStack"

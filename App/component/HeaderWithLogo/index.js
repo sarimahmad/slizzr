@@ -1,28 +1,29 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { Image, Text, TouchableHighlight, View, TouchableOpacity } from 'react-native';
-import { FONT, isIphoneXorAbove, SCREEN } from '../../helper/Constant';
+import { Image, TouchableHighlight, View, TouchableOpacity } from 'react-native';
+import { isIphoneXorAbove, SCREEN } from '../../helper/Constant';
 import { BLACK } from '../../helper/Color';
 
-function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rightIcon, backColor, borderBottom }) {
+function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor, borderBottom }) {
   return (
     <View
       style={{
         flexDirection: 'row',
-        height: isIphoneXorAbove ? 100 : 80,
-        alignItems: 'center',
+        height: isIphoneXorAbove ? 120 : 100,
+        alignItems: 'flex-end',
+        paddingBottom: 21,
         width: SCREEN.width,
         paddingHorizontal: 30,
         alignSelf: 'center',
-        backgroundColor: backColor ? backColor : BLACK.dark,
+        backgroundColor: backColor,
         borderBottomColor: BLACK.border,
         borderBottomWidth: borderBottom ? 1 : 0,
       }}>
       {leftPress &&
         <TouchableOpacity
           onPress={leftPress}
-          activeOpacity={0.85} style={{ position: 'absolute', left: 20, justifyContent: 'center', alignItems: 'center', height: 20, width: 20 }}>
+          activeOpacity={0.85} style={{justifyContent: 'center', alignItems: 'center', height: 20, width: 20}}>
           <Image source={leftIcon} style={{ height: 40, width: 40, justifyContent: 'center' }} />
         </TouchableOpacity>}
       <View
@@ -34,7 +35,7 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rig
         <View style={{
           flexDirection: 'row', alignItems: 'center',
         }}>
-          <Text style={{ fontSize: 18, fontFamily: FONT.Nunito.bold, color: BLACK.app, marginLeft: 10 }}>{headerTitle}</Text>
+          <Image source={require('../../assets/homeLogo.png')} />
         </View>
       </View>
       {rightIcon && <TouchableHighlight
@@ -55,4 +56,4 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rig
   );
 }
 
-export default HeaderWithOptionBtn;
+export default HeaderWithLogo;
