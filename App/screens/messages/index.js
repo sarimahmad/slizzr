@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   View,
@@ -8,19 +9,19 @@ import {
   FlatList,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
+import {BLACK, WHITE} from '../../helper/Color';
+import {FONT} from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class messages extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
-        attendingEvents:true,
-        myevents:false,
+      attendingEvents: true,
+      myevents: false,
       messages: [
         {
           imgProfile: '',
@@ -28,85 +29,80 @@ export default class messages extends Component {
           adress: 'Host: Tallah Cotton',
           date: '11:30 PM | Feb 25, 2020 - WED',
         },
-    ],
-        findpeople: [
-            {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-        ]
-      
-    };
+      ],
+      findpeople: [
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
 
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+      ],
+    };
   }
-myevents = ()=>{
-this.setState({myevents:true})
-this.setState({attendingEvents:false})
-}
-attendingEvents = ()=>{
-  this.setState({myevents:false})
-  this.setState({attendingEvents:true})
-  
-}
+  myevents = () => {
+    this.setState({myevents: true});
+    this.setState({attendingEvents: false});
+  };
+  attendingEvents = () => {
+    this.setState({myevents: false});
+    this.setState({attendingEvents: true});
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
-            <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
-          <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-
-            <Text style={styles.titleText}>Messages</Text>
-            <View></View>
-          </View>
+          <HeaderWithOptionBtn
+            headerTitle={'Messaging'}
+            leftIcon={require('../../assets/drawer.png')}
+            leftPress={() => this.props.navigation.openDrawer()}
+            backColor={WHITE.dark}
+          />
           <View style={styles.flex}>
             <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
-               <Text>MY EVENTS</Text>
-               </TouchableOpacity>
-            <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
+              <Text>MY EVENTS</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={this.attendingEvents}
+              style={styles.barChild}>
               <Text>ATTENDING EVENTS</Text>
-                </TouchableOpacity>
+            </TouchableOpacity>
           </View>
-          {this.state.attendingEvents == true && (
+          {this.state.attendingEvents === true && (
             <FlatList
               data={this.state.findpeople}
               keyExtractor={item => item.id}
               renderItem={({item}) => (
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate("messagesEvent")}
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate('messagesEvent')
+                  }
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
@@ -124,22 +120,20 @@ attendingEvents = ()=>{
                       <Text style={styles.subtitleText}>{item.adress}</Text>
                       <Text style={styles.purpleText}>{item.date}</Text>
                     </View>
-                   
                   </View>
                 </TouchableOpacity>
               )}
             />
           )}
-           {this.state.myevents == true && (
-           
-           <View style={{alignItems: 'center',marginTop:hp('30%')}}>
-            <Text>You are not hosting any events at the moment.</Text>
-            <TouchableOpacity
+          {this.state.myevents === true && (
+            <View style={{alignItems: 'center', marginTop: hp('30%')}}>
+              <Text>You are not hosting any events at the moment.</Text>
+              <TouchableOpacity
                 onPress={() => this.setState({enableMap: true})}
                 style={styles.btnLocation}>
                 <Text style={styles.btnTextLocation}>Host?</Text>
               </TouchableOpacity>
-           </View>
+            </View>
           )}
         </SafeAreaView>
       </View>
@@ -149,13 +143,13 @@ attendingEvents = ()=>{
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+    backgroundColor: WHITE.dark,
   },
   btnTextLocation: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
     fontFamily: FONT.Nunito.regular,
-
   },
   btnLocation: {
     width: wp('80%'),
@@ -164,18 +158,16 @@ const styles = StyleSheet.create({
     marginTop: hp('5%'),
     height: 50,
     elevation: 1,
-    justifyContent:'center',
-    backgroundColor:'black',
+    justifyContent: 'center',
+    backgroundColor: 'black',
     borderWidth: 1,
-    borderRadius: 24,
     borderColor: BLACK.light,
     bottom: 10,
   },
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
-    paddingHorizontal:10,
-    
+    paddingHorizontal: 10,
   },
   detail: {
     width: wp('55%'),
@@ -183,17 +175,16 @@ const styles = StyleSheet.create({
   next: {
     paddingTop: 15,
   },
-  detail: {
-    width: wp('55%'),
-  },
   contentView: {
     flex: 1,
+    backgroundColor: WHITE.dark,
   },
   imgView: {
     width: wp('25%'),
   },
   flex: {
     flexDirection: 'row',
+    backgroundColor: WHITE.dark,
     justifyContent: 'space-between',
   },
   logo: {},
@@ -212,8 +203,7 @@ const styles = StyleSheet.create({
   barChild: {
     borderWidth: 1,
     width: wp('50%'),
-    height: 36,
-    height:40,
+    height: 40,
     borderColor: 'lightgrey',
     paddingTop: 12,
     fontFamily: FONT.Nunito.regular,
