@@ -62,7 +62,7 @@ export default class attendeesList extends Component {
     return (
       <View style={styles.wrapperView}>
          <View
-            style={[{padding: 20, alignItems: 'center', alignItems: 'center'}]}>
+            style={[{padding: 20, alignItems: 'center', alignItems: 'center',marginTop:20}]}>
             <View style={{position: 'absolute', left: 20, top: 10}}>
               <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                 <Image

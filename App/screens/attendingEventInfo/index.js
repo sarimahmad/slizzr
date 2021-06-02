@@ -28,20 +28,18 @@ export default class attendingEventInfo extends Component {
     return (
         <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
-            <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
-          <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("manageEvent")}>
-              <Image
-                source={require('../../assets/back.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-
-            <Text style={styles.titleText}>Event</Text>
-            <View>
-            
+        <View
+            style={[{padding: 20, alignItems: 'center', alignItems: 'center',marginTop:20 }]}>
+            <View style={{position: 'absolute', left: 20, top: 10}}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../../assets/back.png')}
+                  style={styles.logo}
+                />
+              </TouchableOpacity>
             </View>
-          
+            <Text style={styles.titleText}>Event</Text>
+           
           </View>
           <ScrollView>
           <Image

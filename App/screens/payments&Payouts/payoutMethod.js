@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react
 import { FONT, SCREEN } from '../../helper/Constant'
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { SafeAreaView } from 'react-navigation';
+import { WHITE } from '../../helper/Color';
 export default class payoutMethod extends Component {
     constructor() {
         super();
@@ -27,6 +28,7 @@ export default class payoutMethod extends Component {
                 <SafeAreaView style={styles.wrapperView}>
                     <HeaderWithOptionBtn
                         headerTitle={"Payout Methods"}
+                        backColor={WHITE.dark}
                         borderBottom={true}
                         leftIcon={require('../../assets/back.png')}
                         leftPress={() => alert('ok')}
@@ -69,7 +71,8 @@ export default class payoutMethod extends Component {
 }
 const styles = StyleSheet.create({
     wrapperView: {
-        flex: 1
+        flex: 1,
+        backgroundColor: WHITE.dark,
     },
     blockView: {
         flexDirection: "row",

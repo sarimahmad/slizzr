@@ -111,6 +111,7 @@ export default class eventDetail2 extends Component {
 const styles = StyleSheet.create({
     wrapperView: {
       flex: 1,
+      backgroundColor:WHITE.dark
     },
     btnTextLocation: {
       fontSize: 16,
@@ -171,7 +172,7 @@ const styles = StyleSheet.create({
     flexRow: {
       flexDirection: 'row',
       paddingVertical: 10,
-      paddingHorizontal:10,
+      // paddingHorizontal:10,
       
     },
     detail: {

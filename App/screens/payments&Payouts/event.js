@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react
 import { FONT, SCREEN } from '../../helper/Constant'
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { SafeAreaView } from 'react-navigation';
+import { WHITE } from '../../helper/Color';
 export default class event extends Component {
     constructor(){
         super();
@@ -17,6 +18,7 @@ export default class event extends Component {
                     <HeaderWithOptionBtn
                         headerTitle={"Events"}
                         borderBottom={true}
+                        backColor={WHITE.dark}
                         leftIcon={require('../../assets/back.png')}
                         leftPress={() => this.setState({editType: !this.state.editType})}
                         rightIcon={require('../../assets/Slizzer-icon/edit.png')}
@@ -78,6 +80,7 @@ export default class event extends Component {
 const styles = StyleSheet.create({
     wrapperView: {
         flex: 1,
+        backgroundColor: WHITE.dark,
     },
     imageView: {
         width: SCREEN.width - 40,
@@ -138,7 +141,6 @@ const styles = StyleSheet.create({
         fontWeight:'600',
         textAlign:'center',
         textDecorationLine:'underline',
-        marginTop:49,
         marginLeft:23,
         marginRight:9,
         color:'#494949',

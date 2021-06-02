@@ -42,11 +42,20 @@ import sharedHostRequests from '../screens/sharedHostRequests';
 import eventDetail from '../screens/eventDetail';
 import eventDetail2 from '../screens/eventDetail2';
 import prepay from '../screens/prepay';
-import event from '../screens/payments&Payouts/event';
 import index from '../screens/directInvites';
 import zickets from '../screens/zickets';
 import scan from '../screens/scan';
-
+import settings from '../screens/settings';
+import BlockedUser from '../screens/settings/BlockedUser';
+import aboutSlizzr from '../screens/settings/aboutSlizzr';
+import contactUs from '../screens/settings/contactUs';
+import help from '../screens/settings/help';
+import paymentsandPayouts from '../screens/payments&Payouts/paymentsandPayouts';
+import NewpayoutMethod from '../screens/payments&Payouts/NewpayoutMethod';
+import event from '../screens/payments&Payouts/event';
+import payouts from '../screens/payments&Payouts/payouts';
+import paymentMethod from '../screens/payments&Payouts/paymentMethod';
+import payoutMethod from '../screens/payments&Payouts/payoutMethod';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -173,7 +182,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={HomeNavigation} />
+        component={settings} />
       </Drawer.Navigator>
 
    
@@ -210,14 +219,24 @@ export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeStack"
+        initialRouteName="AccountStack"
         screenOptions={{
           headerShown: false,
         }}>
         <Stack.Screen name="Splash" component={splash}></Stack.Screen>
         <Stack.Screen name="index" component={index}></Stack.Screen>
         <Stack.Screen name="Scan" component={scan}></Stack.Screen>
-
+        <Stack.Screen name="BlockedUser" component={BlockedUser}></Stack.Screen>
+        <Stack.Screen name="aboutSlizzr" component={aboutSlizzr}></Stack.Screen>
+        <Stack.Screen name="help" component={help}></Stack.Screen>
+        <Stack.Screen name="contactUs" component={contactUs}></Stack.Screen>
+        <Stack.Screen name="paymentsandPayouts" component={paymentsandPayouts}></Stack.Screen>
+        <Stack.Screen name="NewpayoutMethod" component={NewpayoutMethod}></Stack.Screen>
+        <Stack.Screen name="event" component={event}></Stack.Screen>
+        <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
+        <Stack.Screen name="paymentMethod" component={paymentMethod}></Stack.Screen>
+        <Stack.Screen name="payoutMethod" component={payoutMethod}></Stack.Screen>
+        {/* <Stack.Screen name="manageEvents" component={manageEvents}></Stack.Screen> */}
         <Stack.Screen
           name="HomeStack"
           component={DrawerContent}></Stack.Screen>

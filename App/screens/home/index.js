@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import {
   View,
@@ -11,8 +11,8 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
+import { BLACK, BLUE, WHITE } from '../../helper/Color';
+import { FONT, SCREEN } from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -86,19 +86,19 @@ export default class home extends Component {
           date: '11:30 PM | Feb 25, 2020 - WED',
         },
 
-    ],
+      ],
 
     };
   }
   onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
 
-    this.setState({date: currentDate});
-    this.setState({showDate: false});
+    this.setState({ date: currentDate });
+    this.setState({ showDate: false });
   };
 
   showDatepicker = () => {
-    this.setState({showDate: true});
+    this.setState({ showDate: true });
   };
 
   componentDidMount() {
@@ -107,7 +107,7 @@ export default class home extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <View style={[styles.flex, {padding: 10}]}>
+        <View style={[styles.flex, { padding: 10 ,marginTop:30}]}>
           <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
             <Image
               source={require('../../assets/drawer.png')}
@@ -125,15 +125,15 @@ export default class home extends Component {
           />
         </View>
         <View style={styles.flex}>
-          <TouchableOpacity onPress={() => this.setState({events: true})}>
+          <TouchableOpacity onPress={() => this.setState({ events: true })}>
             <Text style={styles.barChild}>All</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.setState({prePaid: true, events: false})}>
+            onPress={() => this.setState({ prePaid: true, events: false })}>
             <Text style={styles.barChild}>Prepaid</Text>
           </TouchableOpacity>
 
-          <Text style={[styles.barChild, {width: wp('40%')}]}>
+          <Text style={[styles.barChild, { width: wp('40%') }]}>
             Scan-&-Pay at door
           </Text>
           <Text style={styles.barChild}>free</Text>
@@ -141,9 +141,9 @@ export default class home extends Component {
 
         <SafeAreaView style={styles.contentView}>
 
-          {(this.state.enableMap == true   ) && (
+          {(this.state.enableMap == true) && (
             <MapView
-              style={{flex: 1}}
+              style={{ flex: 1 }}
               initialRegion={{
                 latitude: 26.4788,
                 longitude: 80.292061,
@@ -161,13 +161,13 @@ export default class home extends Component {
               <View style={styles.inputSearch}>
                 <Image
                   source={require('../../assets/magnify.png')}
-                  style={{marginTop: 10, marginRight: 10}}
+                  style={{ marginTop: 10, marginRight: 10 }}
                 />
                 <TextInput
 
-                placeholder={'Try “western homecoming party”'}
+                  placeholder={'Try “western homecoming party”'}
                   placeholderTextColor={'#8e8e93'}
-                  // onChangeText={handleText}
+                // onChangeText={handleText}
                 ></TextInput>
               </View>
             </View>
@@ -186,14 +186,14 @@ export default class home extends Component {
                   source={require('../../assets/map-marker-outline.png')}
                   style={styles.logo}
                 />
-                <Text style={[styles.titleText, {marginTop: 10, fontSize: 27}]}>
+                <Text style={[styles.titleText, { marginTop: 10, fontSize: 27 }]}>
                   Enable Location
                 </Text>
                 <Text style={styles.subtitleText}>
                   You will need to enable location to see events near you
                 </Text>
                 <TouchableOpacity
-                  onPress={() => this.setState({enableMap: true})}
+                  onPress={() => this.setState({ enableMap: true })}
                   style={styles.btnLocation}>
                   <Text style={styles.btnTextLocation}>Allow Location</Text>
                 </TouchableOpacity>
@@ -209,19 +209,19 @@ export default class home extends Component {
               <FlatList
                 data={this.state.findpeople}
                 keyExtractor={item => item.id}
-                renderItem={({item}) => (
+                renderItem={({ item }) => (
                   <View>
                     <View style={styles.flexRow}>
                       <View style={styles.imgView}>
                         <Image source={require('../../assets/profile1.png')} />
                         <Image
-                          style={{position: 'absolute', right: 15}}
+                          style={{ position: 'absolute', right: 15 }}
                           source={require('../../assets/private.png')}
                         />
 
-                    </View>
+                      </View>
 
-                    <View style={styles.detail}>
+                      <View style={styles.detail}>
                         <Text style={styles.titleText}>{item.profileName}</Text>
                         <Text style={styles.subtitleText}>{item.adress}</Text>
                         <Text style={styles.purpleText}>{item.date}</Text>
@@ -234,73 +234,73 @@ export default class home extends Component {
                         <Image source={require('../../assets/Right.png')} />
                       </TouchableOpacity>
 
-                    <View
-                      style={{height: 1, backgroundColor: 'lightgrey'}}></View>
+                      <View
+                        style={{ height: 1,width:SCREEN.width, backgroundColor: 'lightgrey' }}></View>
+                    </View>
                   </View>
-                </View>
                 )}
               />
             </View>
           )}
           {this.state.prePaid == true && (
-            <View style={{marginTop:100}}>
-                <Image
-                  source={require('../../assets/logo.png')}
-                  style={{height: 80, width: 80, alignSelf: 'center'}} />
+            <View style={{ marginTop: 100 }}>
+              <Image
+                source={require('../../assets/logo.png')}
+                style={{ height: 80, width: 80, alignSelf: 'center' }} />
 
 
-                <Text style={styles.subtitleText}>
-                  No events to show in your area.
+              <Text style={styles.subtitleText}>
+                No events to show in your area.
                 </Text>
-                <TouchableOpacity style={styles.btnMap}>
-                  <Text style={styles.btnText}>List View</Text>
-                </TouchableOpacity>
-
-
-                  </View>
-          )}
-            
-
-            {this.state.prePaid == false && (
-        
-          <View style={styles.bottomView}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('createEvent')}
-              style={styles.logoAdd}>
-              <Image source={require('../../assets/plus-circle.png')} />
-            </TouchableOpacity>
-            <View style={{backgroundColor: 'white'}}>
-              <TouchableOpacity
-                onPress={this.showDatepicker}
-                style={{flexDirection: 'row'}}>
-                <View style={styles.input}>
-                  <Text style={{paddingTop: 15, paddingLeft: 20}}>
-                    Thursday, August 24, 2020
-                  </Text>
-                  <Image
-                    style={styles.logoAddCalender}
-                    source={require('../../assets/calendar-range.png')}
-                    onPress={this.showDatepicker}
-                  />
-                </View>
-                {this.state.showDate && (
-                  <DateTimePicker
-                    testID="dateTimePicker"
-                    value={this.state.date}
-                    mode={'date'}
-                    is24Hour={true}
-                    display="default"
-                    onChange={this.onChange}
-                  />
-                )}
-
-            </TouchableOpacity>
               <TouchableOpacity style={styles.btnMap}>
                 <Text style={styles.btnText}>List View</Text>
               </TouchableOpacity>
+
+
             </View>
-          </View>
-            )}
+          )}
+
+
+          {this.state.prePaid == false && (
+
+            <View style={styles.bottomView}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('createEvent')}
+                style={styles.logoAdd}>
+                <Image source={require('../../assets/plus-circle.png')} />
+              </TouchableOpacity>
+              <View style={{ backgroundColor: 'white' }}>
+                <TouchableOpacity
+                  onPress={this.showDatepicker}
+                  style={{ flexDirection: 'row' }}>
+                  <View style={styles.input}>
+                    <Text style={{ paddingTop: 15, paddingLeft: 20 }}>
+                      Thursday, August 24, 2020
+                  </Text>
+                    <Image
+                      style={styles.logoAddCalender}
+                      source={require('../../assets/calendar-range.png')}
+                      onPress={this.showDatepicker}
+                    />
+                  </View>
+                  {this.state.showDate && (
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={this.state.date}
+                      mode={'date'}
+                      is24Hour={true}
+                      display="default"
+                      onChange={this.onChange}
+                    />
+                  )}
+
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.btnMap}>
+                  <Text style={styles.btnText}>List View</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
         </SafeAreaView>
       </View>
     );
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderColor: 'lightgrey',
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     shadowOpacity: 0.1,
     elevation: 2,
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderColor: 'lightgrey',
     shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
     shadowOpacity: 0.1,
     elevation: 2,
@@ -400,6 +400,7 @@ const styles = StyleSheet.create({
     // marginHorizontal: '5%',
     borderRadius: 25,
 
+    marginVertical:15,
     height: 50,
     marginBottom: 20,
 
@@ -442,18 +443,11 @@ const styles = StyleSheet.create({
     // marginVertical: 10,
     fontSize: 14,
     marginTop: 14,
-    textAlign: 'center',
+   
     fontFamily: FONT.Nunito.semiBold,
   },
 
-  logo: {
-    //   height: 80,
-    //   width: 100,
-    //   resizeMode: 'contain',
-    marginTop: 25,
 
-    alignSelf: 'center',
-  },
   logoAdd: {
     alignSelf: 'flex-end',
   },
