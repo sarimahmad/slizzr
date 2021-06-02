@@ -163,7 +163,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={HomeNavigation} /> 
+        component={notification} /> 
         <Drawer.Screen
         name="Settings"
         options={{
