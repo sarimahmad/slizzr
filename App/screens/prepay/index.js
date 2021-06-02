@@ -27,49 +27,44 @@ export default class prepay extends Component {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
-          <View
-            style={[
-              styles.flex,
-              {
-                padding: 20,
-                alignItems: 'center',
-                borderBottomColor: 'lightgrey',
-                borderBottomWidth: 1,
-              },
-            ]}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('eventDetail2')}>
-              <Image
-                source={require('../../assets/back.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-
-            <Image
-              source={require('../../assets/slizerLogo.png')}
-              style={styles.logo}
-            />
-            <Image
-              source={require('../../assets/share.png')}
-              style={styles.logo}
-            />
+        <View
+            style={[{padding: 20, alignItems: 'center', alignItems: 'center',borderBottomWidth:1,borderBottomColor:'lightgrey'}]}>
+            <View style={{position: 'absolute', left: 20, top: 10}}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../../assets/back.png')}
+                  style={styles.logo}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.titleText}>Prepay to Attend</Text>
+           
           </View>
           <ScrollView>
-            <Image
+        <View>
+          <Image
               source={require('../../assets/eventInfo.png')}
-              style={styles.logo}
+              style={{width:SCREEN.width}}
             />
+            
+          <Image
+              source={require('../../assets/lock.png')}
+              style={{position: 'absolute',right:30,top:20}}
+            />
+            </View>
+            <View style={{width:SCREEN.width-40,alignSelf:'center'}}>
+         
             <View style={{marginHorizontal: 20, alignSelf: 'center'}}>
-              <Text style={[styles.titleText,{textAlign:'center'}]}>Uroojs Banger</Text>
-              <Text style={[styles.purpleText,{textAlign:'center'}]}>
+              <Text style={[styles.titleText,{textAlign:'center',marginTop:20}]}>Uroojs Banger</Text>
+              <Text style={[styles.purpleText,{textAlign:'center',marginTop:8}]}>
                 11:30 PM | Feb 25, 2020 - WED
               </Text>
             </View>
-            <View style={{flexDirection:'row',justifyContent: 'space-between',marginHorizontal:20}}>
-              <Text style={[styles.titleText,{textAlign:'center',marginTop:10}]}>PREPAID ZICKET X 1</Text>
-              <Text style={[styles.titleText,{textAlign:'center',marginTop:10}]}>$5</Text>
+            <View style={{flexDirection:'row',justifyContent: 'space-between',marginTop:30}}>
+              <Text style={[{fontWeight:'400',fontSize:18,textAlign:'center',marginTop:10}]}>PREPAID ZICKET X 1</Text>
+              <Text style={[{fontFamily:FONT.Nunito.extraBold,fontSize:18,textAlign:'center',marginTop:10}]}>$5</Text>
             </View>
-            <Text style={[styles.titleText,{textAlign:'center',marginTop:10}]}>Pay now with Google Pay</Text>
+            <Text style={[{fontFamily:FONT.Nunito.extraBold,textAlign:'center',fontSize:15,marginTop:15}]}>Pay now with Google Pay</Text>
           
             <TouchableOpacity style={styles.btnMap}>
             <Image
@@ -77,14 +72,15 @@ export default class prepay extends Component {
               style={{alignItems: 'center',justifyContent: 'center',}}
             />
             </TouchableOpacity>
-            <Text style={[styles.subtitleText,{textAlign:'center',marginTop:10}]}>Or use a card below</Text>
+            <Text style={[{fontFamily:FONT.Nunito.extraBold,textAlign:'center',fontSize:15,marginTop:15}]}>Or use a card below</Text>
            
-            <Text style={[styles.subtitleText,{textAlign:'center',marginTop:10}]}>** put scrollable stripe card + billing address form here** 
+            <Text style={[styles.subtitleText,{textAlign:'center',marginTop:30}]}>** put scrollable stripe card + billing address form here** 
 https://stripe.com/img/docs/elements/elements-demo-iphone.png</Text>
            
              <TouchableOpacity style={[styles.btnPay,{alignSelf:'center'}]}>
-          <Text style={{alignItems: 'center',justifyContent: 'center',color:'white',}}>PAY</Text>
+          <Text style={[{fontSize:14,fontFamily:FONT.Nunito.bold,alignItems: 'center',justifyContent: 'center',color:'white',}]}>PAY</Text>
             </TouchableOpacity>
+            </View>
           </ScrollView>
         </SafeAreaView>
       </View>
@@ -94,6 +90,7 @@ https://stripe.com/img/docs/elements/elements-demo-iphone.png</Text>
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+    backgroundColor:WHITE.dark
   },
   btnTextLocation: {
     fontSize: 16,
@@ -126,14 +123,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   btnMap: {
-    width: wp('90%'),
-    marginHorizontal: '5%',
+       
     borderRadius: 25,
     height: 50,
+    marginBottom:30,
+    marginTop:30,
     alignItems: 'center',
-    marginVertical: 20,
-    backgroundColor: 'black',
-    justifyContent: 'center',
+    backgroundColor: '#000000',
+    justifyContent: 'center'
   },
 
   btnLocation: {
@@ -154,14 +151,13 @@ const styles = StyleSheet.create({
     width: wp('20%'),
     // marginHorizontal: '10%',
     borderRadius: 25,
-    marginTop: hp('5%'),
+    marginTop: 30,
     alignItems: 'center',
-    height: 50,
+    height: 56,
+    width:92,
     elevation: 1,
     justifyContent: 'center',
     backgroundColor: '#1FB438',
-    borderWidth: 1,  
-    borderRadius: 24,
     bottom: 10,
   },
   flexRow: {
@@ -215,7 +211,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#F818D9',
 
-    textDecorationLine: 'underline',
+   
     fontFamily: FONT.Nunito.semiBold,
   },
   barChild: {

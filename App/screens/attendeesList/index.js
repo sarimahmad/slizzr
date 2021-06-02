@@ -85,8 +85,9 @@ export default class attendeesList extends Component {
               />
              
               <TextInput
-                placeholder={'Try “western homecoming party”'}
+                placeholder={'Search'}
                 placeholderTextColor={'#8e8e93'}
+                style={{fontSize:17,fontFamily:FONT.Nunito.regular}}
                 // onChangeText={handleText}
               ></TextInput>
               
@@ -102,15 +103,16 @@ export default class attendeesList extends Component {
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
                   }}>
-                  <View style={styles.flexRow}>
+                  <View style={[styles.flexRow,{height:70}]}>
                     <View style={styles.imgView}>
                       <Image style={{height:50,width:50}} source={require('../../assets/profile1.png')} />
                      
                     </View>
-                    <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.attendee}</Text>
-                     
+                    <View style={[styles.detail,{flexDirection:'row',alignItems: 'center',}]}>
+                      <Text style={[styles.titleText,{fontFamily:FONT.Nunito.semiBold}]}>{item.attendee}</Text>
+                      <Image style={{height:26,width:28,resizeMode:'contain'}} source={require('../../assets/option.png')} />
                     </View>
+                   
                     <View style={{height:30,width:80,borderRadius:24,justifyContent: 'center',alignItems: 'center',backgroundColor:'#F818D9',}}>
                        <Text style={{color:'white'}}>DISINVITE</Text>
                   </View>
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
     height: 42,
     borderWidth: 1,
     justifyContent: 'flex-start',
-    paddingLeft: 20,
+    paddingLeft:5,
     backgroundColor: 'lightgrey',
 
     marginVertical: 10,

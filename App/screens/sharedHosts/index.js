@@ -25,7 +25,17 @@ export default class sharedHosts extends Component {
 
         attendingEvents:true,
         myevents:false,
-        
+        image: [{ id: 1, image: require('../../assets/profile2.png') },
+      { id: 2, image: require('../../assets/profile2.png') },
+      { id: 3, image: require('../../assets/profile2.png') },
+      { id: 4, image: require('../../assets/profile2.png') },
+      { id: 5, image: require('../../assets/profile2.png') },
+      { id: 4, image: require('../../assets/profile2.png') },
+      { id: 5, image: require('../../assets/profile2.png') },
+      { id: 4, image: require('../../assets/profile2.png') },
+      { id: 5, image: require('../../assets/profile2.png') },
+    ],
+    
     
         attendeesLIst: [
             {
@@ -33,6 +43,33 @@ export default class sharedHosts extends Component {
                 attendee: 'Ava Gregoraci',
                 count:3
               },
+              {
+                imgProfile: '',
+                attendee: 'Ava Gregoraci',
+                count:3
+              },  
+              {
+                imgProfile: '',
+                attendee: 'Ava Gregoraci',
+                count:3
+              },  
+              {
+                imgProfile: '',
+                attendee: 'Ava Gregoraci',
+                count:3
+              },  
+      
+              {
+                imgProfile: '',
+                attendee: 'Ava Gregoraci',
+                count:3
+              },  
+      
+              {
+                imgProfile: '',
+                attendee: 'Ava Gregoraci',
+                count:3
+              },  
               {
                 imgProfile: '',
                 attendee: 'Ava Gregoraci',
@@ -80,7 +117,7 @@ export default class sharedHosts extends Component {
           </View>
         <SafeAreaView style={styles.contentView}>
         <View style={{width:SCREEN.width-40,alignSelf:'center'}}>
-          <Text style={{color:BLACK.lightgrey}}>Select shared hosts for:</Text>
+          <Text style={{color:BLACK.lightgrey,fontSize:12,fontFamily:FONT.Nunito.regular}}>Select shared hosts for:</Text>
       
             <View style={styles.form}>
         <Picker
@@ -101,29 +138,35 @@ export default class sharedHosts extends Component {
             </Picker>
             </View>
   
-            <Text style={{marginTop:20,color:BLACK.lightgrey,  fontFamily: FONT.Nunito.regular,}}>Invite shared hosts</Text>
-            <View style={{flexDirection:'row',marginTop:10}}>
-         <View style={{marginRight:5,height:45,width:45,borderRadius:24,backgroundColor:'lightgrey',alignItems: 'center',justifyContent:'center'}}> 
+          
+         <View style={{flexDirection:'row',marginTop:20}}>
+         <View style={{marginRight:5,height:45,width:45,borderRadius:24,backgroundColor:'#EBE5F1',alignItems: 'center',justifyContent:'center'}}> 
              <Image source={require('../../assets/searchPurple.png')} />  
          </View>
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         </View>
+         
+           <FlatList
+                                    data={this.state.image}
+                                    horizontal
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) => (
+                                        <View style={styles.listView}>
+                                            <Image style={styles.ImageView} source={item.image} />
+                                        </View>
+                                    )}
+                                />
+                                </View>
           <TouchableOpacity style={styles.shareButton}>
-              <Text style={styles.sharebtnText}>Invite shared hosts</Text>
+              <Text style={styles.sharebtnText}>INVITE SHARED HOSTS</Text>
             </TouchableOpacity>
             </View>
           
         
-          <View style={styles.flex}>
+          <View style={[styles.flex,{marginTop:20}]}>
             <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
-               <Text>SHARED HOSTS</Text>
+               <Text style={{fontSize:17,color:'#B2ABB1',fontFamily:FONT.Nunito.bold,fontSize:11}}>SHARED HOSTS</Text>
                </TouchableOpacity>
             <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
-              <Text>PENDING REQUESTS</Text>
+              <Text style={{fontSize:17,color:'#B2ABB1',fontFamily:FONT.Nunito.bold,fontSize:11}}>PENDING REQUESTS</Text>
                 </TouchableOpacity>
           </View>
         
@@ -143,7 +186,7 @@ export default class sharedHosts extends Component {
                      
                     </View>
                     <View style={{justifyContent: 'center',alignItems: 'center'}}>
-                    <Image style={{height:50,width:50}} source={require('../../assets/close.png')} />
+                    <Image style={{height:35,width:35}} source={require('../../assets/close.png')} />
                       </View>
                   </View>
                   <View
@@ -193,7 +236,7 @@ const styles = StyleSheet.create({
   shareButton:{
     borderRadius: 25,
     height: 50,
-    marginBottom:20,
+    marginTop:20,
     backgroundColor: 'grey',
     justifyContent: 'center'
   
@@ -204,7 +247,7 @@ const styles = StyleSheet.create({
     marginVertical:5,
     borderWidth: 1,
     borderColor: 'lightgrey',
-    marginTop: 20,
+    marginTop: 10,
     borderRadius: 5,
   },
 
@@ -238,12 +281,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 20,
     // paddingHorizontal:10,
-    alignSelf: 'center',
+    // alignSelf: 'center',
+    paddingHorizontal:20,
     alignItems: 'center',
     
   },
   detail: {
-    width: wp('50%'),
+    width: wp('60%'),
   },
   next: {
     paddingTop: 15,

@@ -88,32 +88,44 @@ export default class findPeople extends Component {
     
         <SafeAreaView style={styles.contentView}>
        
-          <FlatList
-          
-            data={this.state.findpeople}
-            keyExtractor={item => item.id}
-            renderItem={({item}) => (
-              <View style={{borderBottomWidth:1,borderBottomColor:'lightgrey'}}>
-              <View style={styles.flexRow}>
-                <View style={styles.imgView}>
-                  <Image source={require('../../assets/profile1.png')} />
-                  <Image
-                    style={{position: 'absolute', right: 15}}
-                    source={require('../../assets/private.png')}
-                  />
-                </View>
-                <View style={styles.detail}>
-                  <Text style={styles.titleText}>{item.profileName}</Text>
-                  <Text style={styles.subtitleText}>{item.adress}</Text>
-                  <Text style={styles.purpleText}>{item.date}</Text>
-                </View>
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate("peopleProfiles")} style={styles.next}>
-                  <Image source={require('../../assets/listDetail.png')} />
-                </TouchableOpacity>
-              </View>
-              </View>
-            )}
-          />
+        <FlatList
+                data={this.state.findpeople}
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => (
+                  <View
+                    style={{
+                      height: 80,
+                      borderBottomColor: 'lightgrey',
+                      borderBottomWidth: 1,
+                      width: SCREEN.width,
+                   
+                    }}>
+                    <View style={[styles.flexRow, { width: SCREEN.width - 20 ,alignItems: 'center',}]}>
+                      <View style={styles.imgView}>
+                        <Image source={require('../../assets/profile1.png')} />
+                        <Image
+                          style={{ position: 'absolute', right: 15 }}
+                          source={require('../../assets/private.png')}
+                        />
+                      </View>
+
+                      <View style={styles.detail}>
+                        <Text style={styles.titleText}>{item.profileName}</Text>
+                        <Text style={styles.adressText}>{item.adress}</Text>
+                        <Text style={styles.purpleText}>{item.date}</Text>
+                    
+                      </View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.props.navigation.navigate('peopleProfiles')
+                        }
+                        style={styles.shareView}>
+                        <Image source={require('../../assets/Right.png')} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+              />
         </SafeAreaView>
       </View>
     );
@@ -260,11 +272,15 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.bold,
     fontSize: 17,
   },
+  adressText: {
+    fontSize: 12,
+    color: BLACK.grey,
+    fontFamily: FONT.Nunito.regular,
+  },
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-
-    fontFamily: FONT.Nunito.semiBold,
+    fontFamily: FONT.Nunito.bold,
   },
   detailWrapper: {
     alignSelf: 'center',

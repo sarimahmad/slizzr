@@ -80,6 +80,7 @@ attendingEvents = ()=>{
   render() {
     return (
       <View style={styles.wrapperView}>
+             <SafeAreaView style={styles.contentView}>
                <View
             style={[{padding: 20, alignItems: 'center', alignItems: 'center',marginTop:20 }]}>
             <View style={{position: 'absolute', left: 20, top: 10}}>
@@ -91,16 +92,23 @@ attendingEvents = ()=>{
               </TouchableOpacity>
             </View>
             <Text style={styles.titleText}>Manage Events</Text>
-           
+            <View style={{position: 'absolute', right: 20, top: 10}}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={require('../../assets/plus.png')}
+                  style={styles.logo}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
      
-        <SafeAreaView style={styles.contentView}>
+       
           <View style={styles.flex}>
             <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
-               <Text>MY EVENTS</Text>
+               <Text style={styles.barText}>MY EVENTS</Text>
                </TouchableOpacity>
             <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
-              <Text>ATTENDING EVENTS</Text>
+              <Text style={styles.barText}>ATTENDING EVENTS</Text>
                 </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
@@ -128,10 +136,10 @@ attendingEvents = ()=>{
                     </View>
                     
                     <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.profileName}</Text>
-                      <Text style={styles.subtitleText}>{item.adress}</Text>
-                      <Text style={styles.purpleText}>{item.date}</Text>
-                    </View>
+                   <Text style={styles.titleText}>{item.profileName}</Text>
+                   <Text style={styles.subtitleText}>{item.adress}</Text>
+                   <Text style={[styles.purpleText,{marginTop:5}]}>{item.date}</Text>
+                 </View>
                     <View style={styles.shareView}>
                       <Image source={require('../../assets/share.png')} />
                     </View>
@@ -165,12 +173,12 @@ attendingEvents = ()=>{
                  <View style={styles.detail}>
                    <Text style={styles.titleText}>{item.profileName}</Text>
                    <Text style={styles.subtitleText}>{item.adress}</Text>
-                   <Text style={styles.purpleText}>{item.date}</Text>
+                   <Text style={[styles.purpleText,{marginTop:5}]}>{item.date}</Text>
                  </View>
                  <View style={styles.shareView}>
                    <Image source={require('../../assets/messageIcon.png')} />
                  </View>
-                
+                  
                </View>
              </TouchableOpacity>
            )}
@@ -193,8 +201,7 @@ const styles = StyleSheet.create({
   },
   contentView: {
     flex: 1,
-    alignSelf: 'center',
-    alignItems: 'center',
+  
     // width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
   }, btnTextLocation: {
@@ -222,7 +229,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 10,
     paddingHorizontal:10,
-    
+    alignItems: 'center',
+  },
+  subtitleText:{
+    color: BLACK.lightgrey,
+    fontFamily: FONT.Nunito.regular,
+    fontSize: 12,
   },
   detail: {
     width: wp('55%'),
@@ -254,9 +266,9 @@ const styles = StyleSheet.create({
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-    marginTop: 10,
-    textDecorationLine: 'underline',
-    fontFamily: FONT.Nunito.semiBold,
+    
+  
+    fontFamily: FONT.Nunito.bold,
   },
   barChild: {
     borderWidth: 1,
@@ -266,6 +278,13 @@ const styles = StyleSheet.create({
     borderColor: 'lightgrey',
     paddingTop: 12,
     fontFamily: FONT.Nunito.regular,
+    textAlign: 'center',
+    alignItems: 'center',
+  },
+  barText: {
+    borderColor: 'lightgrey',
+    fontSize:11,
+    fontFamily: FONT.Nunito.bold,
     textAlign: 'center',
     alignItems: 'center',
   },

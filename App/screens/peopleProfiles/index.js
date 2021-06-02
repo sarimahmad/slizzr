@@ -50,7 +50,16 @@ export default class peopleProfiles extends Component {
             date: '11:30 PM | Feb 25, 2020 - WED',
           },
         ],
-      
+        image: [{ id: 1, image: require('../../assets/profile2.png') },
+        { id: 2, image: require('../../assets/profile2.png') },
+        { id: 3, image: require('../../assets/profile2.png') },
+        { id: 4, image: require('../../assets/profile2.png') },
+        { id: 5, image: require('../../assets/profile2.png') },
+        { id: 4, image: require('../../assets/profile2.png') },
+        { id: 5, image: require('../../assets/profile2.png') },
+        { id: 4, image: require('../../assets/profile2.png') },
+        { id: 5, image: require('../../assets/profile2.png') },
+      ]
     };
   }
 
@@ -98,21 +107,17 @@ export default class peopleProfiles extends Component {
    
    <ScrollView >
    <TouchableOpacity onPress={()=>this.props.navigation.navigate("lookFriends")} style={styles.inputSearch}>
-                <Text style={{color:'black'}}>finding people for: my party</Text>
-                {/* <TextInput
-
-                placeholder={'finding people for: my party'}
-                  placeholderTextColor={'black'}
-                ></TextInput> */}
+                <Text style={[styles.titleText,{fontSize:11}]}>FINDING PEOPLE FOR MY PARTY</Text>
+              
               </TouchableOpacity>
            
        <View style={styles.ageView}>
    
-       <Text style={{fontSize:17,color:'#F818D9',fontFamily:FONT.Nunito.regular,paddingRight:5}}>Age:</Text>
+       <Text style={{fontSize:17,color:'#F818D9',fontFamily:FONT.Nunito.bold,paddingRight:5}}>Age:</Text>
        <Text style={{fontSize:17,fontFamily:FONT.Nunito.regular,paddingRight:5}}>Min:</Text>
     
        <View style={styles.box}><Text>17</Text></View>
-       <Text style={{paddingHorizontal:5}}>Max :</Text>
+       <Text style={{fontSize:17,fontFamily:FONT.Nunito.regular,paddingLeft:15,paddingRight:5}}>Max :</Text>
        <View style={styles.box}><Text>25</Text></View>
        </View>
   
@@ -136,15 +141,21 @@ export default class peopleProfiles extends Component {
       <Text>12 KM away</Text>
       </View>
       </View>
-      <Text style={[styles.titleText,{alignItems: 'flex-start',marginTop:12}]}>Mutual Connections</Text>
-            <View style={{flexDirection:'row',marginTop:10}}>
-            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-            <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-            </View>
-            <Text style={styles.purpleText}>See more</Text>
+      <Text style={[styles.titleText,{alignItems: 'flex-start',marginTop:10}]}>Mutual Connections</Text>
+     
+    <View style={{marginTop:10}}>
+      <FlatList
+                                    data={this.state.image}
+                                    horizontal
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) => (
+                                        <View >
+                                            <Image style={{height:50,width:50}} source={item.image} />
+                                        </View>
+                                    )}
+                                />
+                                </View>
+            <Text style={[styles.purpleText,{marginTop:10}]}>See more</Text>
             <TouchableOpacity
                    
                    style={styles.btnLocation}>
@@ -183,6 +194,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         borderRadius: 25,
         marginVertical:20,
+        marginTop:20,
         marginBottom: 25,
         height: 50,
         backgroundColor:'black',
@@ -259,7 +271,7 @@ const styles = StyleSheet.create({
       shadowOffset: {width: 0, height: 2},
       shadowRadius: 6,
       shadowOpacity: 0.1,
-      elevation: 2,
+      elevation: 3,
     },
      input: {
       width: wp('90%'),
@@ -349,7 +361,7 @@ const styles = StyleSheet.create({
     purpleText: {
       fontSize: 12,
       color: '#F818D9',
-      marginTop:10,
+     
       textDecorationLine:'underline',
       fontFamily: FONT.Nunito.semiBold,
     },
