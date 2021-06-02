@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react
 import { FONT, SCREEN } from '../../helper/Constant'
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { SafeAreaView } from 'react-navigation';
+import { BLACK, WHITE } from '../../helper/Color';
 export default class event extends Component {
     constructor(){
         super();
@@ -15,6 +16,7 @@ export default class event extends Component {
             <View style={styles.wrapperView}>
                 <SafeAreaView style={styles.wrapperView}>
                     <HeaderWithOptionBtn
+                        backColor={WHITE.dark}
                         headerTitle={"Events"}
                         borderBottom={true}
                         leftIcon={require('../../assets/back.png')}
@@ -52,7 +54,7 @@ export default class event extends Component {
                         </Text>
                         <Text style={styles.textView2}>(All currencies shown in CAD)</Text>
                         <Text style={styles.text3}>Status:</Text>
-                        <View>
+                        
                         {this.state.editType ? <Text style={styles.start}>PAYOUT on the way</Text> :(
                         <View>
                         <Text style={styles.text4}>Payout Failed to transfer</Text>
@@ -61,7 +63,7 @@ export default class event extends Component {
                             <Text style={styles.btntext}> REQUEST PAYOUT</Text>
                         </TouchableOpacity>
                         </View>)}
-                        </View> 
+                        
                         
                         <Text style={styles.text5}>
                         NOTE: Make sure you have a valid payout method setup before requesting. Payouts start processing 4-5 days after your request and can take up to an additional 7 bank days to show in your account.
@@ -78,12 +80,11 @@ export default class event extends Component {
 const styles = StyleSheet.create({
     wrapperView: {
         flex: 1,
+        backgroundColor: WHITE.dark
     },
     imageView: {
         width: SCREEN.width - 40,
         height: (SCREEN.width - 40) / 2.3,
-        resizeMode: 'stretch'
-
     },
     textView1: {
         marginBottom: 5,
@@ -92,10 +93,9 @@ const styles = StyleSheet.create({
         color: '#494949'
     },
     textView2: {
-        fontFamily: FONT.Nunito.regular,
+        fontFamily: FONT.Nunito.semiBold,
         fontSize: 16,
-        fontWeight: '600',
-        color: '#494949',
+        color: BLACK.textColor,
         marginBottom: 5
     },
     numValue: {
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     text3: {
         fontFamily: FONT.Nunito.bold,
         fontSize: 17,
-        color: '#494949',
+        color: BLACK.textColor,
         marginTop: 15,
         marginBottom:5
     },
@@ -133,15 +133,14 @@ const styles = StyleSheet.create({
         letterSpacing: 0.7,
     },
     text5:{
-        fontFamily: FONT.Nunito.regular,
+        fontFamily: FONT.Nunito.semiBold,
         fontSize:12,
-        fontWeight:'600',
         textAlign:'center',
         textDecorationLine:'underline',
-        marginTop:49,
-        marginLeft:23,
-        marginRight:9,
-        color:'#494949',
+        color: BLACK.textColor,
+        width: SCREEN.width -  40,
+        position:'absolute',
+        bottom: 70
     },
     start:{
         fontFamily: FONT.Nunito.bold,
