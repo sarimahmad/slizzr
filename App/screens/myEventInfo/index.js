@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
       color: '#F818D9',
       marginTop: 10,
       textDecorationLine: 'underline',
-      fontFamily: FONT.Nunito.semiBold,
+      fontFamily: FONT.Nunito.regular,
     },
     barChild: {
       borderWidth: 1,

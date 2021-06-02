@@ -19,6 +19,7 @@ import {
 } from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { StatusBar } from 'react-native';
 export default class home extends Component {
   constructor(props) {
     super(props);
@@ -107,6 +108,7 @@ export default class home extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
+        {/* <StatusBar style={{height:20}}/> */}
         <View style={[styles.flex, {padding: 10}]}>
           <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
             <Image
@@ -119,12 +121,22 @@ export default class home extends Component {
             source={require('../../assets/homeLogo.png')}
             style={styles.logo}
           />
-          <Image
+          <TouchableOpacity onPress={()=>this.props.navigation.navigate("notification")}>
+            <Image
             source={require('../../assets/bell.png')}
             style={styles.logo}
           />
+          </TouchableOpacity>
+
         </View>
-        <View style={styles.flex}>
+        <View style={{ overflow: 'hidden', paddingBottom: 5 }}>
+        <View style={[styles.flex,{height:50,alignItems: 'center',backgroundColor: '#fff',
+     
+        shadowColor: '#000',
+        shadowOffset: { width: 1, height: 1 },
+        shadowOpacity:  0.4,
+        shadowRadius: 3,
+        elevation: 5,}]}>
           <TouchableOpacity onPress={() => this.setState({events: true})}>
             <Text style={styles.barChild}>All</Text>
           </TouchableOpacity>
@@ -133,12 +145,12 @@ export default class home extends Component {
             <Text style={styles.barChild}>Prepaid</Text>
           </TouchableOpacity>
 
-          <Text style={[styles.barChild, {width: wp('40%')}]}>
+          <Text style={[styles.barChild, {width:SCREEN.width*0.4}]}>
             Scan-&-Pay at door
           </Text>
           <Text style={styles.barChild}>free</Text>
         </View>
-
+          </View>
         <SafeAreaView style={styles.contentView}>
 
           {(this.state.enableMap == true   ) && (
@@ -179,17 +191,18 @@ export default class home extends Component {
                 style={{
                   justifyContent: 'center',
                   alignItems: 'center',
-                  marginTop: 50,
+                  width:SCREEN.width,
+                  marginTop:40,
                   paddingHorizontal: 20,
                 }}>
                 <Image
                   source={require('../../assets/map-marker-outline.png')}
                   style={styles.logo}
                 />
-                <Text style={[styles.titleText, {marginTop: 10, fontSize: 27}]}>
+                <Text style={[styles.titleText, {marginTop: 20, fontSize: 27}]}>
                   Enable Location
                 </Text>
-                <Text style={styles.subtitleText}>
+                <Text style={[styles.subtitleText,{textAlign:'center'}]}>
                   You will need to enable location to see events near you
                 </Text>
                 <TouchableOpacity
@@ -204,14 +217,14 @@ export default class home extends Component {
               style={{
                 justifyContent: 'center',
                 alignItems: 'center',
-                marginTop: 50,
+                marginTop: 60,
               }}>
               <FlatList
                 data={this.state.findpeople}
                 keyExtractor={item => item.id}
                 renderItem={({item}) => (
-                  <View>
-                    <View style={styles.flexRow}>
+                <View style={{height:80,borderBottomColor:'lightgrey',borderBottomWidth:1,width:SCREEN.width}}>
+                    <View style={[styles.flexRow,{width:SCREEN.width-20}]}>
                       <View style={styles.imgView}>
                         <Image source={require('../../assets/profile1.png')} />
                         <Image
@@ -223,8 +236,16 @@ export default class home extends Component {
 
                     <View style={styles.detail}>
                         <Text style={styles.titleText}>{item.profileName}</Text>
-                        <Text style={styles.subtitleText}>{item.adress}</Text>
+                        <Text style={styles.adressText}>{item.adress}</Text>
                         <Text style={styles.purpleText}>{item.date}</Text>
+                    <View style={styles.flexRow}>
+                    <Image
+                          style={{height:16,width:12,marginRight:5}}
+                          source={require('../../assets/location.png')}
+                        />
+
+                      <Text>15 KM away</Text>
+                    </View>
                       </View>
                       <TouchableOpacity
                         onPress={() =>
@@ -233,27 +254,25 @@ export default class home extends Component {
                         style={styles.shareView}>
                         <Image source={require('../../assets/Right.png')} />
                       </TouchableOpacity>
-
-                    <View
-                      style={{height: 1, backgroundColor: 'lightgrey'}}></View>
+                      </View>
+                   
                   </View>
-                </View>
+               
                 )}
               />
             </View>
           )}
           {this.state.prePaid == true && (
-            <View style={{marginTop:100}}>
+            <View style={{position: 'absolute',bottom:120}}>
+               
                 <Image
-                  source={require('../../assets/logo.png')}
-                  style={{height: 80, width: 80, alignSelf: 'center'}} />
-
-
-                <Text style={styles.subtitleText}>
-                  No events to show in your area.
+                  source={require('../../assets/circle.png')}
+                  style={{height: 120, width: 120, alignSelf: 'center',marginVertical:20}} />
+                <Text style={[styles.subtitleText,{fontSize:20,  fontFamily: FONT.Nunito.regular,}]}>
+                  No events to show{'\n'} in your area.
                 </Text>
                 <TouchableOpacity style={styles.btnMap}>
-                  <Text style={styles.btnText}>List View</Text>
+                  <Text style={styles.btnText}>HOST AN EVENT</Text>
                 </TouchableOpacity>
 
 
@@ -269,7 +288,7 @@ export default class home extends Component {
               style={styles.logoAdd}>
               <Image source={require('../../assets/plus-circle.png')} />
             </TouchableOpacity>
-            <View style={{backgroundColor: 'white'}}>
+            <View style={{backgroundColor: 'white',alignSelf:'center'}}>
               <TouchableOpacity
                 onPress={this.showDatepicker}
                 style={{flexDirection: 'row'}}>
@@ -342,7 +361,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   imgView: {
-    width: wp('25%'),
+    
+    width: SCREEN.width*0.25,
+    // justifyContent: 'center',
+    // alignSelf:'center'
   },
   shareView: {
     width: wp('20%'),
@@ -351,6 +373,7 @@ const styles = StyleSheet.create({
   flex: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    
   },
   logo: {},
   titleText: {
@@ -358,36 +381,39 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.bold,
     fontSize: 17,
   },
+  adressText:{
+ fontSize:12,
+ color: BLACK.grey,
+    fontFamily: FONT.Nunito.regular,
+  },
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-    marginTop: 10,
-    textDecorationLine: 'underline',
-    fontFamily: FONT.Nunito.semiBold,
+    fontFamily: FONT.Nunito.bold,
   },
   flexRow: {
     flexDirection: 'row',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    
   },
 
   next: {
     paddingTop: 15,
   },
   detail: {
-    width: wp('55%'),
+    width: SCREEN.width*0.6,
   },
   btnLocation: {
-    width: SCREEN.width - 140,
+    width: SCREEN.width - 100,
     borderRadius: 25,
     marginTop: 60,
-    height: 50,
+    height: 55,
     backgroundColor: WHITE.dark,
+    
     // shadowColor: 'black',
     // shadowOffset: {width: 0, height: 2},
     // shadowRadius: 6,
     // shadowOpacity: 0.1,
-    elevation: 1,
+    elevation: 5,
     justifyContent: 'center',
 
     borderWidth: 1,
@@ -413,7 +439,8 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     position: 'absolute',
-
+   
+    width:SCREEN.width,
     bottom: 0,
   },
   btnText: {
@@ -431,18 +458,18 @@ const styles = StyleSheet.create({
   },
   barChild: {
     borderWidth: 1,
-    width: wp('20%'),
-    height: hp('6%'),
+    width: SCREEN.width*0.2,
+    height: 50,
     borderColor: 'lightgrey',
-    paddingTop: 12,
-    fontFamily: FONT.Nunito.regular,
+    paddingTop:14,
+    fontFamily: FONT.Nunito.semiBold,
     textAlign: 'center',
   },
   subtitleText: {
-    // marginVertical: 10,
+    
     fontSize: 14,
     marginTop: 14,
-    textAlign: 'center',
+   
     fontFamily: FONT.Nunito.semiBold,
   },
 
@@ -456,6 +483,7 @@ const styles = StyleSheet.create({
   },
   logoAdd: {
     alignSelf: 'flex-end',
+    marginRight:10,
   },
   logoAddCalender: {
     position: 'absolute',
@@ -465,10 +493,7 @@ const styles = StyleSheet.create({
     // marginRight:'5%',
   },
 
-  flex: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+ 
 
   detailWrapper: {
     alignSelf: 'center',

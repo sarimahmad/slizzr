@@ -46,6 +46,7 @@ import event from '../screens/payments&Payouts/event';
 import index from '../screens/directInvites';
 import zickets from '../screens/zickets';
 import scan from '../screens/scan';
+import notification from '../screens/notification';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -217,7 +218,7 @@ export const MainNavigation = () => {
         <Stack.Screen name="Splash" component={splash}></Stack.Screen>
         <Stack.Screen name="index" component={index}></Stack.Screen>
         <Stack.Screen name="Scan" component={scan}></Stack.Screen>
-
+        <Stack.Screen name="notification" component={notification}></Stack.Screen>
         <Stack.Screen
           name="HomeStack"
           component={DrawerContent}></Stack.Screen>

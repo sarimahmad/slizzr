@@ -27,22 +27,20 @@ export default class attendingEventInfo extends Component {
   render() {
     return (
         <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
-            <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
-          <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("manageEvent")}>
+        <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
+          <View style={{position: 'absolute',left:20,top:10}}>
+           <TouchableOpacity
+              onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={require('../../assets/back.png')}
                 style={styles.logo}
               />
             </TouchableOpacity>
-
-            <Text style={styles.titleText}>Event</Text>
-            <View>
-            
             </View>
-          
-          </View>
+            <Text style={styles.titleText}>Event</Text>
+            </View>
+        <SafeAreaView style={styles.contentView}>
+       
           <ScrollView>
           <Image
                 source={require('../../assets/eventInfo.png')}
@@ -68,7 +66,7 @@ export default class attendingEventInfo extends Component {
          <Text>1817 18 St. SW Calgary AB T2T 4T2 (Calgary, Alberta)</Text>
             </View>
             <Text style={[styles.titleText,{textAlign:'center'}]}>Description:</Text>
-            <Text style={[styles.text,{textAlign:'center',marginHorizontal:36}]}>Tousled food truck polaroid, salvia bespoke small batch Pinterest Marfa. Fingerstache authentic craft beer, food truck Banksy Carles kale chips hoodie. Trust fund artisan master cleanse fingerstache post-ironic, fashion axe art party Etsy direct trade retro organic. Cliche Shoreditch Odd Future Pinterest, pug disrupt photo booth VHS literally occupy gluten-free polaroid Intelligentsia PBR mustache. Locavore fashion axe chia, iPhone cardigan disrupt Etsy dreamcatcher. Craft beer selvage fanny pack, 8-bit post-ironic keffiyeh </Text>
+            <Text style={[styles.text,{textAlign:'center',marginHorizontal:36,marginTop:10,marginBottom:20}]}>Tousled food truck polaroid, salvia bespoke small batch Pinterest Marfa. Fingerstache authentic craft beer, food truck Banksy Carles kale chips hoodie. Trust fund artisan master cleanse fingerstache post-ironic, fashion axe art party Etsy direct trade retro organic. Cliche Shoreditch Odd Future Pinterest, pug disrupt photo booth VHS literally occupy gluten-free polaroid Intelligentsia PBR mustache. Locavore fashion axe chia, iPhone cardigan disrupt Etsy dreamcatcher. Craft beer selvage fanny pack, 8-bit post-ironic keffiyeh </Text>
             <TouchableOpacity style={styles.btnMap}>
               <Text style={styles.btnText}>Attendees</Text>
             </TouchableOpacity>
@@ -92,6 +90,13 @@ export default class attendingEventInfo extends Component {
 const styles = StyleSheet.create({
     wrapperView: {
       flex: 1,
+      backgroundColor:WHITE.dark
+    }, contentView: {
+      flex: 1,
+      alignSelf: 'center',
+      alignItems: 'center',
+      width: SCREEN.width - 20,
+      backgroundColor: WHITE.dark,
     },
     btnTextLocation: {
       fontSize: 16,
@@ -126,12 +131,12 @@ const styles = StyleSheet.create({
       
       },
     btnMap: {
-        width: wp('90%'),
-        marginHorizontal: '5%',
-        borderRadius: 25,
-        height: 50,
-        marginBottom:20,
       
+       borderRadius: 25,
+        height: 50,
+        alignSelf:'center',
+        marginBottom:20,
+        width:SCREEN.width-40,
         backgroundColor: 'black',
         justifyContent: 'center'
       },
@@ -165,9 +170,7 @@ const styles = StyleSheet.create({
     detail: {
       width: wp('55%'),
     },
-    contentView: {
-      flex: 1,
-    },
+    
     imgView: {
       width: wp('25%'),
     },

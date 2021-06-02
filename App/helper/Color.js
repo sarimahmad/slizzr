@@ -12,7 +12,7 @@ export const BLACK = {
   textColor: '#979797',
   textColor2: '#F818D9',
   lightgrey:'#B2ABB1',
-
+  grey:'#494949',
   shadow: 'rgba(0, 0, 0, 0.247487)',
 };
 
