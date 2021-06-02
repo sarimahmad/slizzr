@@ -30,7 +30,7 @@ export default class eventDetail extends Component {
         <SafeAreaView style={styles.contentView}>
             <View style={[styles.flex, {padding: 20, alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
           <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("manageEvent")}>
+              onPress={() => this.props.navigation.navigate("Home")}>
               <Image
                 source={require('../../assets/back.png')}
                 style={styles.logo}

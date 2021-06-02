@@ -38,7 +38,7 @@ export default class prepay extends Component {
               },
             ]}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('manageEvent')}>
+              onPress={() => this.props.navigation.navigate('eventDetail2')}>
               <Image
                 source={require('../../assets/back.png')}
                 style={styles.logo}

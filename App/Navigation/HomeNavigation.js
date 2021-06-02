@@ -43,7 +43,7 @@ import eventDetail from '../screens/eventDetail';
 import eventDetail2 from '../screens/eventDetail2';
 import prepay from '../screens/prepay';
 import newPaymentMethods from '../screens/payments&Payouts/newPaymentMethods'
-import event from '../screens/payments&Payouts/event';
+
 
 
 const Stack = createStackNavigator();
@@ -202,20 +202,18 @@ function AccountNavigation() {
                <Stack.Screen name="PassConfirm" component={resetPasswordForm}></Stack.Screen>
                <Stack.Screen name="BirthDate" component={birthDate}></Stack.Screen>
                <Stack.Screen name="ConfirmEmail" component={confirmEmail}></Stack.Screen>
-               <Stack.Screen name="event" component={event}></Stack.Screen>
+              
              </Stack.Navigator> );
 }
 export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="event"
+        initialRouteName="Splash"
         screenOptions={{
           headerShown: false,
         }}>
         <Stack.Screen name="Splash" component={splash}></Stack.Screen>
-        <Stack.Screen name="event" component={event}></Stack.Screen>
-       
 
         <Stack.Screen
           name="HomeStack"

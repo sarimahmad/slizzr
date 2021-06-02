@@ -1,8 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   Text,
   View,
-  Button,
   SafeAreaView,
   Image,
   TouchableOpacity,
@@ -236,7 +236,7 @@ export default class CreateEvent extends Component {
                   {label: 'Public', value: 'Public'},
                 ]}
               />
-              <View style={{marginBottom:20}}>
+              <View style={{marginBottom: 20}}>
                 <TouchableOpacity
                   onPress={() => this.RBSheet.open()}
                   style={styles.button}>
@@ -256,52 +256,52 @@ export default class CreateEvent extends Component {
                   },
                 }}>
                 <View>
-                <View style={[styles.flex, {padding: 10,marginTop:30}]}>
-            <TouchableOpacity
-              onPress={() => this.RBSheet.close()}>
-              <Image
-                source={require('../../assets/back.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
+                  <View style={[styles.flex, {padding: 10, marginTop: 30}]}>
+                    <TouchableOpacity onPress={() => this.RBSheet.close()}>
+                      <Image
+                        source={require('../../assets/back.png')}
+                        style={styles.logo}
+                      />
+                    </TouchableOpacity>
 
-            <Image
-              source={require('../../assets/homeLogo.png')}
-              style={styles.logo}
-            />
-            <Image
-              source={require('../../assets/bell.png')}
-              style={styles.logo}
-            />
-          </View>
-         <View style={{marginTop:hp('20%')}}>
-                  <Image
-                    style={{alignSelf: 'center'}}
-                    source={require('../../assets/Oval.png')}
-                  />
-                  <Text style={styles.titleText}> Event Created!</Text>
-                  {this.state.skip == false && (
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={styles.text}> Share event</Text>
+                    <Image
+                      source={require('../../assets/homeLogo.png')}
+                      style={styles.logo}
+                    />
+                    <Image
+                      source={require('../../assets/bell.png')}
+                      style={styles.logo}
+                    />
+                  </View>
+                  <View style={{marginTop: hp('20%')}}>
+                    <Image
+                      style={{alignSelf: 'center'}}
+                      source={require('../../assets/Oval.png')}
+                    />
+                    <Text style={styles.titleText}> Event Created!</Text>
+                    {this.state.skip === false && (
+                      <TouchableOpacity style={styles.button}>
+                        <Text style={styles.text}> Share event</Text>
+                      </TouchableOpacity>
+                    )}
+                    {this.state.skip === true && (
+                      <TouchableOpacity style={styles.button}>
+                        <Text style={styles.text}> Send Direct Invites</Text>
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                      onPress={() => this.setState({skip: true})}>
+                      <Text
+                        style={{
+                          marginVertical: 20,
+                          textAlign: 'center',
+                          color: '#F818D9',
+                          textDecorationLine: 'underline',
+                        }}>
+                        Skip
+                      </Text>
                     </TouchableOpacity>
-                  )}
-                  {this.state.skip == true && (
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={styles.text}> Send Direct Invites</Text>
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity onPress={() => this.setState({skip: true})}>
-                    <Text
-                      style={{
-                        marginVertical: 20,
-                        textAlign: 'center',
-                        color: '#F818D9',
-                        textDecorationLine: 'underline',
-                      }}>
-                      Skip
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                  </View>
                 </View>
               </RBSheet>
             </View>
@@ -315,15 +315,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 10,
-  
   },
   flex: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomColor:'lightgrey',
-    borderBottomWidth:1,
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
   },
-  
+
   add: {
     justifyContent: 'center',
     backgroundColor: 'lightgrey',
@@ -335,12 +334,6 @@ const styles = StyleSheet.create({
   imagebefore: {
     // height: 0,
     // width: SCREEN.width - 350
-  },
-  flex: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderBottomColor:'lightgrey',
-    borderBottomWidth:1
   },
   imageafter: {
     width: '100%',
