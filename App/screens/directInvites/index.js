@@ -3,8 +3,7 @@ import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react
 import { FONT, SCREEN } from '../../helper/Constant'
 import { SafeAreaView } from 'react-navigation';
 import { BLACK } from '../../helper/Color';
-import { TextComponent } from 'react-native';
-
+import { TextInput } from 'react-native';
 var selectedUser = ['Dai J.'];
 
 export default class index extends Component {
@@ -43,6 +42,14 @@ export default class index extends Component {
                             <Image
                                 source={require('../../assets/Slizzer-icon/close.png')} />
                         </TouchableOpacity>
+                    </View>
+                    <View style={[styles.textInput,{backgroundColor: 'lightgrey', marginTop:18}]}>
+                    <Image 
+                    style={{position:'absolute',bottom:10,left:20,width:17.5, height: 17.5}}
+                    source={require('../../assets/searchBlack.png')}/>
+                    <TextInput
+                    style={styles.textInput}
+                    placeholder={"Search Slizzr Connections"}/>
                     </View>
                     <Text style={styles.text1}>Select people to directly invite to your event: EVENT NAME HERE.</Text>
                     <FlatList
@@ -103,6 +110,7 @@ const styles = StyleSheet.create({
         color: '#979797',
         marginHorizontal: 20,
         marginTop: 23,
+
     },
     blockView: {
         width: SCREEN.width / 3,
@@ -126,7 +134,7 @@ const styles = StyleSheet.create({
     btn: {
         width: SCREEN.width - 40,
         height: 55,
-        backgroundColor: '#1E1E1E',
+        backgroundColor: BLACK.textColor3,
         borderRadius: 27.5,
         alignSelf: 'center',
         alignItems: 'center',
@@ -147,5 +155,13 @@ const styles = StyleSheet.create({
         marginBottom: 31,
         textDecorationLine: 'underline',
         marginTop:31
+    },
+    textInput:{
+        width:SCREEN.width-40,
+        height: 36,
+        borderRadius: 10,
+        alignSelf:'center',
+        paddingLeft: 33.5,
     }
+
 })
