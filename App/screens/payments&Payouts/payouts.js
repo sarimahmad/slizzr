@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react
 import { FONT, SCREEN } from '../../helper/Constant'
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { SafeAreaView } from 'react-navigation';
+import { WHITE } from '../../helper/Color';
 export default class payouts extends Component {
     constructor() {
         super();
@@ -19,13 +20,14 @@ export default class payouts extends Component {
                         headerTitle={"Payouts"}
                         borderBottom={true}
                         leftIcon={require('../../assets/back.png')}
+                        backColor={WHITE.dark}
                         leftPress={() => alert('ok')}/>
                 <FlatList
                 data={this.state.payoutData}
                 keyExtractor={(item,index) => index.toString()}
                 renderItem={({item}) => (
                     <View>
-                        <View style={styles.blockView}> 
+                        <TouchableOpacity style={styles.blockView} onPress={() => this.props.navigation.navigate('event')}> 
                         <Image 
                         style={styles.imageView}
                         source={require('../../assets/Slizzer-icon/pic.png')}/>
@@ -42,7 +44,7 @@ export default class payouts extends Component {
                         style={{marginRight: 20}}
                         source={require('../../assets/listDetail.png')}/>
                         </View>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                 )}
                 />
@@ -56,6 +58,7 @@ export default class payouts extends Component {
 const styles = StyleSheet.create({
     wrapperView: {
         flex: 1,
+        backgroundColor: WHITE.dark,
     },
     blockView: {
         flexDirection: "row",

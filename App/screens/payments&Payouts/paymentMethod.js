@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react
 import { FONT, SCREEN } from '../../helper/Constant'
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { SafeAreaView } from 'react-navigation';
+import { WHITE } from '../../helper/Color';
 
 
 export default class paymentMethod extends Component {
@@ -32,6 +33,7 @@ export default class paymentMethod extends Component {
                         headerTitle={'Payment Methods'}
                         borderBottom={!this.state.paymentMethod.length > 0 ? true : false}
                         leftIcon={require('../../assets/back.png')}
+                        backColor={WHITE.dark}
                         leftPress={() => this.setState({ editType: !this.state.editType })}
                         rightIcon={require('../../assets/Slizzer-icon/edit.png')}
                         rightPress={() => this.setState({ editType: !this.state.editType })}
@@ -82,6 +84,7 @@ export default class paymentMethod extends Component {
 const styles = StyleSheet.create({
     wrapperView: {
         flex: 1,
+        backgroundColor: WHITE.dark,
     },
     blockView: {
         borderBottomWidth: 1,

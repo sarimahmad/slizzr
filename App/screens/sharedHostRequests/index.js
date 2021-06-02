@@ -74,10 +74,9 @@ export default class sharedHostRequests extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
-            <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
+        <View style={[styles.flex, {padding: 20, alignItems: 'center',marginTop:20 }]}>
           <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("manageEvents")}>
+              onPress={() => this.props.navigation.navigate("manageEvent")}>
               <Image
                 source={require('../../assets/back.png')}
                 style={styles.logo}
@@ -87,6 +86,8 @@ export default class sharedHostRequests extends Component {
             <Text style={styles.titleText}>Shared Host Requests</Text>
             <View></View>
           </View>
+        <SafeAreaView style={styles.contentView}>
+           
             <FlatList
               data={this.state.findpeople}
               keyExtractor={item => item.id}

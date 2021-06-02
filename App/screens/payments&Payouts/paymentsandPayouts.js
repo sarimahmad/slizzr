@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity } from 'react
 import { FONT} from '../../helper/Constant'
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { SafeAreaView } from 'react-navigation';
+import { WHITE } from '../../helper/Color';
 
 
 
@@ -24,14 +25,15 @@ export default class paymentsandPayouts extends Component {
                     <HeaderWithOptionBtn
                         headerTitle={'Payments and Payouts'}
                         borderBottom={true}
+                        backColor={WHITE.dark}
                         leftPress={() => alert('ok')}
                         leftIcon={require('../../assets/back.png')}
                     />
                     <FlatList
                         data={this.state.PaymentsandPayouts}
                         keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item }) => (
-                            <View style={styles.blockView}>
+                        renderItem={({ item, index }) => (
+                            <TouchableOpacity style={styles.blockView} onPress={() => this.props.navigation.navigate('paymentMethod')}>
                                 <Text style={styles.textView}>{item.name}</Text>
 
                                 {item.id !== this.state.selectedMethod ? <Image
@@ -40,7 +42,7 @@ export default class paymentsandPayouts extends Component {
                                         <Text style={styles.text2}>CAD$</Text>
                                     )}
       
-                            </View>
+                            </TouchableOpacity>
                         )}
                     />
                 </SafeAreaView>
@@ -51,6 +53,7 @@ export default class paymentsandPayouts extends Component {
 const styles = StyleSheet.create({
     wrapperView: {
         flex: 1,
+        backgroundColor: WHITE.dark,
     },
     blockView:{
         justifyContent:'space-between',

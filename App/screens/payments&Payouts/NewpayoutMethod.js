@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, FlatList, Image, TextInput, TouchableOpacity } 
 import { FONT, SCREEN } from '../../helper/Constant'
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { SafeAreaView } from 'react-navigation';
+import { WHITE } from '../../helper/Color';
 
 export default class NewpayoutMethod extends Component {
     constructor(props) {
@@ -26,6 +27,7 @@ export default class NewpayoutMethod extends Component {
                     {this.state.editType ? <View>
                         <HeaderWithOptionBtn
                             headerTitle={"New Payout Method"}
+                            backColor={WHITE.dark}
                             borderBottom={true}
                             leftIcon={require('../../assets/back.png')}
                             leftPress={() => alert()}
@@ -83,6 +85,7 @@ export default class NewpayoutMethod extends Component {
 const styles = StyleSheet.create({
     wrapperView: {
         flex: 1,
+        backgroundColor: WHITE.dark,
     },
     blockView: {
         borderBottomWidth: 1,
