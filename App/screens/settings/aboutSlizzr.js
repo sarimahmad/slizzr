@@ -11,7 +11,7 @@ export default class about extends Component {
                 <Header
                     headerTitle={'About Slizzr'}
                     navigation={this.props.navigation}
-                    route={'Home'}
+                    route={'SettingsNavigation'}
                 />
                 <View style={styles.textView2}>
                     <Text style={styles.text}>

@@ -39,15 +39,39 @@ export default class editProfle extends Component {
             <View style={styles.wrapperView}>
                 <SafeAreaView style={styles.wrapperView}>
                     <HeaderWithOptionBtn
+                       backColor={WHITE.dark}
                         borderBottom={true}
                         leftIcon={require('../../assets/back.png')}
-                        leftPress={() => alert('ok')}
+                        leftPress={() => this.props.navigation.navigate("myProfile")}
                         headerTitle={"Edit Profile"}
                     />
                     <ScrollView style={styles.wrapperView} bounces={true}>
                         <View style={styles.blockView}>
-                            <View style={[styles.profileView]}>
-                            </View>
+                        <View style={{height:200,width:SCREEN.width}}>
+                                 <Image
+                            style={{position: 'absolute',left:0,height:140,width:140,borderRadius:50}}
+                            source={require('../../assets/profileImage1.png')}/>
+                            
+                          <Image
+                            style={{position: 'absolute',left:30,height:170,width:170,borderRadius:50}}
+                            source={require('../../assets/profileImage2.png')}/>
+                      
+                           <Image
+                            style={{position: 'absolute',right:0,height:140,width:140,borderRadius:50}}
+                            source={require('../../assets/profileImage1.png')}/>
+                            <Image
+                            style={{position: 'absolute',right:30,height:170,width:170,borderRadius:50}}
+                            source={require('../../assets/profileImage2.png')}/>
+                        
+                            
+                           <Image
+                            style={{position: 'absolute',alignSelf: 'center',height:200,width:200,borderRadius:50}}
+                            source={require('../../assets/profileImage3.png')}/>
+                            <Image
+                            style={{position: 'absolute',alignSelf: 'center',bottom:10,height:35,width:35,borderRadius:50}}
+                            source={require('../../assets/edit.png')}/>
+                           </View>
+                           
                             <TextInput
                                 value={"Zoya"}
                                 style={styles.inputTextView}
@@ -147,7 +171,7 @@ export default class editProfle extends Component {
                         placeholder="Message"
                         />
                          <TouchableOpacity style={styles.btn}>
-                                <Text style={styles.btntext}> SEND MESSAGE</Text>
+                                <Text style={styles.btntext}>SAVE</Text>
                             </TouchableOpacity>
                         </View>
                     </ScrollView>
@@ -165,7 +189,7 @@ const styles = StyleSheet.create({
     blockView: {
         
         marginTop: 30,
-        alignItems: 'center'
+        // alignItems: 'center'
 
     },
     profileView: {

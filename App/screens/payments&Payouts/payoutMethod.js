@@ -16,7 +16,7 @@ export default class payoutMethod extends Component {
     }
         footer = () => {
             return (
-                <TouchableOpacity style={styles.btn}>
+                <TouchableOpacity style={styles.btn} onPress={()=>this.props.navigation.navigate("newPaymentMethods")}>
                     <Text style={styles.btntext}> ADD NEW PAYOUT METHOD</Text>
                 </TouchableOpacity>
             )

@@ -21,7 +21,7 @@ export default class payouts extends Component {
                         borderBottom={true}
                         leftIcon={require('../../assets/back.png')}
                         backColor={WHITE.dark}
-                        leftPress={() => alert('ok')}/>
+                        leftPress={()=>this.props.navigation.navigate("paymentsandPayouts") }/>
                 <FlatList
                 data={this.state.payoutData}
                 keyExtractor={(item,index) => index.toString()}
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
     },
     imageView:{
-        marginHorizontal: 20,
+       marginLeft:5
     },
     imageView2:{
         flex:1,

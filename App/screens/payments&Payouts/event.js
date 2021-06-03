@@ -20,7 +20,9 @@ export default class event extends Component {
                         borderBottom={true}
                         backColor={WHITE.dark}
                         leftIcon={require('../../assets/back.png')}
-                        leftPress={() => this.setState({editType: !this.state.editType})}
+                        leftPress={()=>this.props.navigation.navigate("payouts") 
+                            // => this.setState({editType: !this.state.editType})
+                        }
                         rightIcon={require('../../assets/Slizzer-icon/edit.png')}
                         rightPress={() => this.setState({ editType: !this.state.editType })} 
                     />

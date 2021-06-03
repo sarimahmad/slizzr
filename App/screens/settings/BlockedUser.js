@@ -26,7 +26,8 @@ export default class BlockedUser extends Component {
           <Header
             headerTitle={'Blocked Users'}
             navigation={this.props.navigation}
-            route={'Home'}
+            route={'SettingsNavigation'}
+        
           />
           <FlatList
             data={this.state.blockedUser}

@@ -20,7 +20,7 @@ export default class paymentMethod extends Component {
     }
     footer = () => {
         return (
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity style={styles.btn} onPress={()=>this.props.navigation.navigate("newPaymentMethods")}>
                 <Text style={styles.btntext}> ADD NEW PAYMENT METHOD</Text>
             </TouchableOpacity>
         )
@@ -34,7 +34,9 @@ export default class paymentMethod extends Component {
                         borderBottom={!this.state.paymentMethod.length > 0 ? true : false}
                         leftIcon={require('../../assets/back.png')}
                         backColor={WHITE.dark}
-                        leftPress={() => this.setState({ editType: !this.state.editType })}
+                        leftPress={() =>this.props.navigation.navigate("paymentsandPayouts") 
+                            // this.setState({ editType: !this.state.editType })
+                        }
                         rightIcon={require('../../assets/Slizzer-icon/edit.png')}
                         rightPress={() => this.setState({ editType: !this.state.editType })}
                     />

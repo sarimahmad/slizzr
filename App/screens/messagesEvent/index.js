@@ -103,12 +103,12 @@ export default class messagesEvent extends Component {
                      
                     </View>
                     <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.message}</Text>
-                      <Text style={{color:'#B2ABB1'}}>{item.adress}</Text>
+                      <Text style={[styles.titleText,{fontFamily:FONT.Nunito.semiBold}]}>{item.message}</Text>
+                      <Text style={{color:'#B2ABB1',fontSize:12}}>{item.adress}</Text>
                 
                     </View>
                     <View style={{height:23,width:23,borderRadius:24,justifyContent: 'center',alignItems: 'center',backgroundColor:'#F818D9',}}>
-                       <Text style={{color:'white'}}>{item.count}</Text>
+                       <Text style={[styles.titleText,{color:'white'}]}>{item.count}</Text>
                   </View>
                   </View>
                   <View style={{hiehgt:1,borderBottomWidth:1,borderBottomColor:'lightgrey',width:SCREEN.width}}></View>
@@ -161,6 +161,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal:10,
     alignSelf: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
     
   },

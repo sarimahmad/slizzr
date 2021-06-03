@@ -25,7 +25,7 @@ export default class paymentsandPayouts2 extends Component {
                     </View>
                     <Text style={styles.text1}>Host Payout Method Added</Text>
                     <Text style={styles.text2}>It generally takes less than ??? business days for a new payout method to be validated to accept payouts. You’ll get an email when your method is validated.  Payouts are released ???</Text>
-                    <TouchableOpacity style={styles.btn}>
+                    <TouchableOpacity style={styles.btn} onPress={()=>this.props.navigation.navigate("payoutMethod")}>
                         <Text style={styles.btntext}>DONE</Text>
                     </TouchableOpacity>
                 </SafeAreaView>

@@ -22,9 +22,7 @@ export default class sharedHosts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
-        attendingEvents:true,
-        myevents:false,
+        index:0,
         image: [{ id: 1, image: require('../../assets/profile2.png') },
       { id: 2, image: require('../../assets/profile2.png') },
       { id: 3, image: require('../../assets/profile2.png') },
@@ -98,6 +96,13 @@ export default class sharedHosts extends Component {
     };
 
   }
+  barTapped=(indexTap)=>{
+    if(indexTap===0){
+      this.setState({index:0})
+     }else if(indexTap===1){
+     this.setState({index:1})
+    } 
+  }
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -162,12 +167,41 @@ export default class sharedHosts extends Component {
           
         
           <View style={[styles.flex,{marginTop:20}]}>
-            <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
-               <Text style={{fontSize:17,color:'#B2ABB1',fontFamily:FONT.Nunito.bold,fontSize:11}}>SHARED HOSTS</Text>
-               </TouchableOpacity>
-            <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
-              <Text style={{fontSize:17,color:'#B2ABB1',fontFamily:FONT.Nunito.bold,fontSize:11}}>PENDING REQUESTS</Text>
-                </TouchableOpacity>
+          <TouchableOpacity
+                style={
+                  this.state.index == 0
+                    ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,justifyContent: 'center',width:SCREEN.width*0.5,height:39}
+                    : { color: 'black' ,width:SCREEN.width*0.5,height:39,justifyContent: 'center'}
+                }
+              onPress={()=>this.barTapped(0)}>
+              <Text
+                style={[
+                  styles.barChild,
+                  this.state.index == 0
+                    ? { color: '#F818D9' }
+                    : { color: 'black' },
+                ]}>
+                SHARED HOSTS
+              </Text>
+            </TouchableOpacity>
+               <TouchableOpacity
+                style={
+                  this.state.index == 1
+                    ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,justifyContent: 'center',width:SCREEN.width*0.5,height:39}
+                    : { color: 'black' ,width:SCREEN.width*0.5,height:39,justifyContent: 'center'}
+                }
+              onPress={()=>this.barTapped(1)}>
+              <Text
+                style={[
+                  styles.barChild,
+                  this.state.index == 1
+                    ? { color: '#F818D9' }
+                    : { color: 'black' },
+                ]}>
+                PENDING REQUESTS
+              </Text>
+            </TouchableOpacity>
+         
           </View>
         
              <FlatList

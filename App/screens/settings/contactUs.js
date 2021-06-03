@@ -27,8 +27,9 @@ export default class contactUs extends Component {
                         style={styles.inputTextView}
                         placeholder="Phone Number"/>
                         <Textarea
-                        style={[styles.inputTextView,{height: 159}]}
+                        style={[styles.inputTextView,{height: 159,}]}
                         maxLength={200}
+                        
                         placeholder="Message"
                         />
                     </View>

@@ -11,10 +11,10 @@ export default class paymentsandPayouts extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            PaymentsandPayouts: [{ id: 1, name: 'Payout method' },
-            { id: 2, name: 'Payments Methods' },
-            { id: 3, name: 'View Payouts' },
-            { id: 4, name: 'Currency' },],
+            PaymentsandPayouts: [{ id: 1, name: 'Payout method', route: 'payoutMethod' },
+            { id: 2, name: 'Payments Methods', route: 'paymentsandPayouts2' },
+            { id: 3, name: 'View Payouts' , route: 'payouts'},
+            { id: 4, name: 'Currency', route: 'payoutMethod' },],
             selectedMethod: 4
         }
     }
@@ -26,14 +26,14 @@ export default class paymentsandPayouts extends Component {
                         headerTitle={'Payments and Payouts'}
                         borderBottom={true}
                         backColor={WHITE.dark}
-                        leftPress={() => alert('ok')}
+                        leftPress={() => this.props.navigation.navigate("SettingsNavigation")}
                         leftIcon={require('../../assets/back.png')}
                     />
                     <FlatList
                         data={this.state.PaymentsandPayouts}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item, index }) => (
-                            <TouchableOpacity style={styles.blockView} onPress={() => this.props.navigation.navigate('paymentMethod')}>
+                            <TouchableOpacity style={styles.blockView} onPress={() => this.props.navigation.navigate(item.route)}>
                                 <Text style={styles.textView}>{item.name}</Text>
 
                                 {item.id !== this.state.selectedMethod ? <Image

@@ -11,7 +11,7 @@ export default class help extends Component {
                 <Header 
                 headerTitle={"Help"}
                 navigation={this.props.navigation}
-                route={'Home'}/>
+                route={'SettingsNavigation'}/>
                 <View style={styles.text}>
                     <Text style={styles.textView}>OPEN SITE HERE</Text>
                 </View>

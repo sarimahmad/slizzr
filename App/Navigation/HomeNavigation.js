@@ -48,6 +48,28 @@ import zickets from '../screens/zickets';
 import scan from '../screens/scan';
 import notification from '../screens/notification';
 
+
+
+
+
+
+
+import newPaymentMethods from '../screens/payments&Payouts/newPaymentMethods';
+import paymentMethod from '../screens/payments&Payouts/paymentMethod';
+import paymentsandPayouts from '../screens/payments&Payouts/paymentsandPayouts';
+import paymentsandPayouts2 from '../screens/payments&Payouts/paymentsandPayouts2';
+import paymentsandPayouts3 from '../screens/payments&Payouts/paymentsandPayouts3';
+import payoutMethod from '../screens/payments&Payouts/payoutMethod';
+import payouts from '../screens/payments&Payouts/payouts';
+
+import BlockedUser from '../screens/settings/BlockedUser';
+import aboutSlizzr from '../screens/settings/aboutSlizzr';
+import contactUs from '../screens/settings/contactUs';
+import help from '../screens/settings/help';
+import settings from '../screens/settings/index';
+import myProfile from '../screens/myProfile';
+import editProfle from '../screens/myProfile/editProfle';
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -64,6 +86,36 @@ const HomeNavigation = () => {
    <Stack.Screen name="eventDetail2" component={eventDetail2}></Stack.Screen>
    <Stack.Screen name="prepay" component={prepay}></Stack.Screen>
   
+    </Stack.Navigator> );
+};
+const SettingsNavigation = () => {
+  return (
+    <Stack.Navigator initialRouteName="Settings" screenOptions={{
+      headerShown: false
+    }}>
+    <Stack.Screen name="Settings" component={settings}></Stack.Screen> 
+    <Stack.Screen name="paymentsandPayouts" component={PaymentsNavigation}></Stack.Screen>
+    <Stack.Screen name="BlockedUser" component={BlockedUser}></Stack.Screen>
+    <Stack.Screen name="aboutSlizzr" component={aboutSlizzr}></Stack.Screen>
+    <Stack.Screen name="contactUs" component={contactUs}></Stack.Screen>
+    <Stack.Screen name="help" component={help}></Stack.Screen>
+   
+    </Stack.Navigator> );
+};
+const PaymentsNavigation = () => {
+  return (
+    <Stack.Navigator initialRouteName="paymentsandPayouts" screenOptions={{
+      headerShown: false
+    }}>
+    <Stack.Screen name="paymentsandPayouts" component={paymentsandPayouts}></Stack.Screen>   
+    <Stack.Screen name="newPaymentMethods" component={newPaymentMethods}></Stack.Screen>
+    <Stack.Screen name="paymentMethod" component={paymentMethod}></Stack.Screen>
+    <Stack.Screen name="event" component={event}></Stack.Screen>
+    <Stack.Screen name="paymentsandPayouts2" component={paymentsandPayouts2}></Stack.Screen>
+    <Stack.Screen name="paymentsandPayouts3" component={paymentsandPayouts3}></Stack.Screen>
+    <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
+    <Stack.Screen name="payoutMethod" component={payoutMethod}></Stack.Screen>
+   
     </Stack.Navigator> );
 };
 const ManageEventNavigation = () => {
@@ -174,7 +226,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={HomeNavigation} />
+        component={SettingsNavigation} />
       </Drawer.Navigator>
 
    
@@ -219,6 +271,9 @@ export const MainNavigation = () => {
         <Stack.Screen name="index" component={index}></Stack.Screen>
         <Stack.Screen name="Scan" component={scan}></Stack.Screen>
         <Stack.Screen name="notification" component={notification}></Stack.Screen>
+        <Stack.Screen name="SettingsNavigation" component={SettingsNavigation}></Stack.Screen>
+        <Stack.Screen name="myProfile" component={myProfile}></Stack.Screen>
+        <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>
         <Stack.Screen
           name="HomeStack"
           component={DrawerContent}></Stack.Screen>

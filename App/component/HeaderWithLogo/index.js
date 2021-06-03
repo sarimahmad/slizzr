@@ -49,7 +49,7 @@ function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor,
         }}>
         <Image
           source={rightIcon}
-          style={{ height: 40, width: 40, resizeMode: 'contain' }}
+          style={{ height: 28, width: 40, resizeMode: 'contain' }}
         />
       </TouchableHighlight>}
     </View>

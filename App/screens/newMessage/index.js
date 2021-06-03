@@ -86,8 +86,9 @@ export default class newMessage extends Component {
               />
               <TextInput
                 style={styles.inputSearch}
-                placeholder={'Try “western homecoming party”'}
-                placeholderTextColor={'#8e8e93'}
+                placeholder={'Search'}
+                placeholderTextColor={'#B2ABB1'}
+                style={{fontFamily:FONT.Nunito.regular,fontSize:17,color:'#B2ABB1'}}
                 // onChangeText={handleText}
               ></TextInput>
               
@@ -112,16 +113,19 @@ export default class newMessage extends Component {
                   </View>
                   <View style={styles.detail}>
                     <Text style={styles.titleText}>{item.name}</Text>
-                    {/* <Image
-                      style={{height: 30, width: 30}}
+                    <Image
+                      style={{height: 26, width: 28,marginLeft:5,resizeMode:'contain'}}
                       source={require('../../assets/newProfile.png')}
-                    /> */}
+                    />
                   </View>
                  
                 </View>
               </TouchableOpacity>
             )}
           />
+             <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("attendeesList")}>
+              <Text style={styles.btnText}>MESSAGE ALL 87 ATTENDEES</Text>
+            </TouchableOpacity>
         </SafeAreaView>
       </View>
     );
@@ -130,12 +134,23 @@ export default class newMessage extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+    backgroundColor:WHITE.dark
   },
-  btnTextLocation: {
-    fontSize: 16,
+  btnMap: {
+    width: wp('90%'),
+    alignItems:'center',
+    borderRadius: 25,
+    height: 50,
+    marginBottom:20,
+    alignSelf:'center',
+    backgroundColor: 'black',
+    justifyContent: 'center'
+  },
+  btnText: {
+    fontSize: 14,
     color: 'white',
     textAlign: 'center',
-    fontFamily: FONT.Nunito.regular,
+    fontFamily: FONT.Nunito.bold,
   },
   btnLocation: {
     width: wp('80%'),
@@ -155,6 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 10,
     paddingHorizontal: 10,
+    alignItems: 'center',
   },
   detail: {
     flexDirection: 'row',
@@ -167,6 +183,7 @@ const styles = StyleSheet.create({
  
   contentView: {
     flex: 1,
+    backgroundColor:WHITE.dark
   },
   imgView: {
     width: wp('20%'),

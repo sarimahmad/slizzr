@@ -32,18 +32,41 @@ export default class index extends Component {
                     
                     <HeaderWithOptionBtn
                         leftIcon={require('../../assets/back.png')}
-                        leftPress={() => alert('ok')}
+                        leftPress={() =>this.props.navigation.navigate("HomeStack")}
+                        rightPress={() =>this.props.navigation.navigate("editProfle")}
+                        
                         borderBottom={true}
                         rightIcon={require('../../assets/Slizzer-icon/group.png')}
                     />
                     <ScrollView style={styles.wrapperView}  bounces={true}>
                     <View style={styles.wrapperView2}>
-                        <View style={styles.imageBlock}>
+                   
+                        <View style={{width:SCREEN.width}}>
+                       
+                    <View style={{height:200,width:SCREEN.width}}>
+                                 <Image
+                            style={{position: 'absolute',left:0,height:140,width:140,borderRadius:50}}
+                            source={require('../../assets/profileImage1.png')}/>
+                            
+                          <Image
+                            style={{position: 'absolute',left:30,height:170,width:170,borderRadius:50}}
+                            source={require('../../assets/profileImage2.png')}/>
+                      
+                           <Image
+                            style={{position: 'absolute',right:0,height:140,width:140,borderRadius:50}}
+                            source={require('../../assets/profileImage1.png')}/>
                             <Image
-                            style={{width:400, height: 180, alignSelf:'center',marginTop:30,backgroundColor:WHITE.dark}}
-                            source={require('../../assets/Slizzer-icon/image3.png')}/>
+                            style={{position: 'absolute',right:30,height:170,width:170,borderRadius:50}}
+                            source={require('../../assets/profileImage2.png')}/>
+                        
+                            
+                           <Image
+                            style={{position: 'absolute',alignSelf: 'center',height:200,width:200,borderRadius:50}}
+                            source={require('../../assets/profileImage3.png')}/>
                           
-                        </View>
+                           </View>
+                          
+                  </View>
                         <View style={styles.messageIcon}>
                             <Image style={{ width: 51, width: 51, resizeMode: 'contain' }}
                                 source={require('../../assets/Slizzer-icon/message.png')} />
@@ -100,8 +123,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     imageBlock: {
-        height: SCREEN.height / 3 - 90,
-        width: 100,
+        height: SCREEN.height*0.4,
+        // width: 100,
  
     },
     messageIcon: {
@@ -161,9 +184,10 @@ const styles = StyleSheet.create({
     blockUser: {
         fontFamily: FONT.Nunito.bold,
         fontSize: 14,
-        color: BLACK.textColor4,
+        color: '#FF2D55',
         letterSpacing: 0.7,
         marginTop: 40,
+        marginBottom:10,
         textDecorationLine: 'underline'
     }
 })

@@ -22,7 +22,7 @@ export default class newPaymentMethods extends Component {
                     <HeaderWithOptionBtn
                         headerTitle={"New Payment Method"}
                         leftIcon={require('../../assets/back.png')}
-                        leftPress={() => alert('ok')}
+                        leftPress={() => this.props.navigation.navigate("paymentsandPayouts")}
                         borderBottom={true}
                         backColor={WHITE.dark}
                     />

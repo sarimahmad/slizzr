@@ -38,7 +38,7 @@ const CustomSidebarMenu = (props) => {
       </View>
       <SafeAreaView style={{ flex: 1, }}>
        
-          <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate('Account')}>
+          <TouchableOpacity activeOpacity={0.8} onPress={() => props.navigation.navigate('myProfile')}>
            
             <View style={styles.NameDetailWrapper}>
             <Image source={require('../assets/profilePic.png')} style={styles.logo} />

@@ -14,11 +14,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
 export default class messages extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+       index:0,
         attendingEvents:true,
         myevents:false,
       messages: [
@@ -77,32 +78,73 @@ attendingEvents = ()=>{
   this.setState({attendingEvents:true})
   
 }
+barTapped=(indexTap)=>{
+  if(indexTap===0){
+    this.setState({index:0})
+   }else if(indexTap===1){
+   this.setState({index:1})
+  } 
+}
   render() {
     return (
       <View style={styles.wrapperView}>
-          <View style={[styles.flex, {padding: 20, alignItems: 'center'}]}>
-          <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
+         <SafeAreaView style={styles.contentView}>
+               <View
+            style={[{padding: 20, alignItems: 'center', alignItems: 'center',marginTop:20 }]}>
+            <View style={{position: 'absolute', left: 20, top: 10}}>
+              <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
               <Image
                 source={require('../../assets/drawer.png')}
                 style={styles.logo}
               />
-            </TouchableOpacity>
-
+              </TouchableOpacity>
+            </View>
             <Text style={styles.titleText}>Messages</Text>
-            <View></View>
+      
           </View>
-         
-        <SafeAreaView style={styles.contentView}>
-          <View style={styles.flex}>
-            <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
-               <Text>MY EVENTS</Text>
-               </TouchableOpacity>
-            <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
-              <Text>ATTENDING EVENTS</Text>
-                </TouchableOpacity>
+                 <View style={styles.flex}>
+                 <TouchableOpacity
+                style={
+                  this.state.index == 0
+                    ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,justifyContent: 'center',width:SCREEN.width*0.5,height:39}
+                    : { color: 'black' ,width:SCREEN.width*0.5,height:39,justifyContent: 'center'}
+                }
+              onPress={()=>this.barTapped(0)}>
+              <Text
+                style={[
+                  styles.barChild,
+                  this.state.index == 0
+                    ? { color: '#F818D9' }
+                    : { color: 'black' },
+                ]}>
+                MY EVENTS
+              </Text>
+            </TouchableOpacity>
+               <TouchableOpacity
+                style={
+                  this.state.index == 1
+                    ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,justifyContent: 'center',width:SCREEN.width*0.5,height:39}
+                    : { color: 'black' ,width:SCREEN.width*0.5,height:39,justifyContent: 'center'}
+                }
+              onPress={()=>this.barTapped(1)}>
+              <Text
+                style={[
+                  styles.barChild,
+                  this.state.index == 1
+                    ? { color: '#F818D9' }
+                    : { color: 'black' },
+                ]}>
+              ATTENDING EVENTS
+              </Text>
+            </TouchableOpacity>
+            {/* <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
+               <Text style={{fontFamily:FONT.Nunito.bold,fontSize:11}}></Text>
+               </TouchableOpacity> */}
+            {/* <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
+              <Text style={{fontFamily:FONT.Nunito.bold,fontSize:11}}></Text>
+                </TouchableOpacity> */}
           </View>
-          {this.state.attendingEvents == true && (
+          {this.state.index == 0 && (
             <FlatList
               data={this.state.findpeople}
               keyExtractor={item => item.id}
@@ -119,7 +161,7 @@ attendingEvents = ()=>{
                     </View>
                     <View style={styles.detail}>
                       <Text style={styles.titleText}>{item.profileName}</Text>
-                      <Text style={styles.subtitleText}>{item.adress}</Text>
+                      <Text style={styles.greyText}>{item.adress}</Text>
                       <Text style={styles.purpleText}>{item.date}</Text>
                     </View>
                    
@@ -130,14 +172,14 @@ attendingEvents = ()=>{
               )}
             />
           )}
-           {this.state.myevents == true && (
+           {this.state.index == 1 && (
            
            <View style={{alignItems: 'center',marginTop:hp('30%')}}>
-            <Text>You are not hosting any events at the moment.</Text>
+            <Text style={{fontSize:20,fontFamily:FONT.Nunito.regular,textAlign:'center'}}>You are not hosting any events at the moment.</Text>
             <TouchableOpacity
                 onPress={() => this.setState({enableMap: true})}
                 style={styles.btnLocation}>
-                <Text style={styles.btnTextLocation}>Host?</Text>
+                <Text style={[styles.btnTextLocation]}>HOST?</Text>
               </TouchableOpacity>
            </View>
           )}
@@ -155,36 +197,40 @@ const styles = StyleSheet.create({
   contentView: {
     flex: 1,
     alignSelf: 'center',
-    alignItems: 'center',
-    // width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
   },
  btnTextLocation: {
-    fontSize: 16,
+    fontSize: 14,
     color: 'white',
+    flex:1,
     textAlign: 'center',
+    fontFamily: FONT.Nunito.bold,
+    paddingTop:15
+  },
+  greyText: {
+    fontSize: 12,
+    color: BLACK.grey,
     fontFamily: FONT.Nunito.regular,
-
   },
   btnLocation: {
-    width: wp('80%'),
-    marginHorizontal: '10%',
+    width:SCREEN.width-40,
+    alignContent:'center',
     borderRadius: 25,
-    marginTop: hp('5%'),
     height: 50,
+    marginTop:20,
     elevation: 1,
-    justifyContent:'center',
     backgroundColor:'black',
     borderWidth: 1,
     borderRadius: 24,
     borderColor: BLACK.light,
-    bottom: 10,
+  
   },
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
  
     paddingHorizontal:10,
+    alignItems:'center'
     
   },
   detail: {
@@ -212,9 +258,8 @@ const styles = StyleSheet.create({
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-    marginTop: 10,
-    textDecorationLine: 'underline',
-    fontFamily: FONT.Nunito.semiBold,
+    marginTop: 5,
+    fontFamily: FONT.Nunito.bold,
   },
   barChild: {
     borderWidth: 1,

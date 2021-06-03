@@ -21,6 +21,7 @@ export default class manageEvents extends Component {
 
         attendingEvents:true,
         myevents:false,
+        index:1,
       messages: [
         {
           imgProfile: '',
@@ -68,6 +69,18 @@ export default class manageEvents extends Component {
     };
 
   }
+  barTapped=(indexTap)=>{
+    if(indexTap===1){
+     this.setState({index:1})
+    }else if(indexTap===2){
+      this.setState({index:2})
+     }if(indexTap===3){
+      this.setState({index:3})
+     }if(indexTap===4){
+      this.setState({index:4})
+     } 
+  }
+ 
 myevents = ()=>{
 this.setState({myevents:true})
 this.setState({attendingEvents:false})
@@ -103,19 +116,49 @@ attendingEvents = ()=>{
           </View>
      
        
-          <View style={styles.flex}>
-            <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
-               <Text style={styles.barText}>MY EVENTS</Text>
-               </TouchableOpacity>
-            <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
-              <Text style={styles.barText}>ATTENDING EVENTS</Text>
-                </TouchableOpacity>
+          <View style={styles.flexRow}>
+           
+            <TouchableOpacity
+              style={
+                this.state.index == 1
+                  ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,borderColor:'lightgrey',justifyContent: 'center',borderWidth:1,width:SCREEN.width*0.5,height:39}
+                  : { color: 'black' ,width:SCREEN.width*0.5,height:39,borderColor:'lightgrey',borderWidth:1,justifyContent: 'center'}
+              }
+              onPress={()=>this.barTapped(1)}>
+              <Text
+                style={[
+                  styles.barText,
+                  this.state.index == 1
+                    ? { color: '#F818D9' }
+                    : { color: 'black' },
+                ]}>
+                MY EVENTS
+              </Text>
+            </TouchableOpacity>
+          
+                  <TouchableOpacity
+              style={
+                this.state.index == 2
+                  ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,borderColor:'grey',justifyContent: 'center',borderWidth:1,width:SCREEN.width*0.5,height:39}
+                  : { color: 'black' ,width:SCREEN.width*0.5,height:39,borderColor:'grey',justifyContent: 'center',borderWidth:1}
+              }
+              onPress={()=>this.barTapped(2)}>
+              <Text
+                style={[
+                  styles.barText,
+                  this.state.index == 2
+                    ? { color: '#F818D9' }
+                    : { color: 'black' },
+                ]}>
+                ATTENDING EVENTS
+              </Text>
+            </TouchableOpacity>
           </View>
           <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
            <Text style={{color:'white',paddingLeft:20}}>SHARED HOST REQUESTS</Text>
            <Text style={{color:'white',paddingRight:20}}>+2</Text>
           </TouchableOpacity>
-          {this.state.attendingEvents == true && (
+          {this.state.index === 1 && (
             <FlatList
               data={this.state.findpeople}
               keyExtractor={item => item.id}
@@ -149,7 +192,7 @@ attendingEvents = ()=>{
               )}
             />
           )}
-           {this.state.myevents == true && (
+           {this.state.index === 2 && (
            
            <FlatList
            data={this.state.findpeople}
@@ -227,8 +270,8 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
-    paddingVertical: 10,
-    paddingHorizontal:10,
+   
+  
     alignItems: 'center',
   },
   subtitleText:{
