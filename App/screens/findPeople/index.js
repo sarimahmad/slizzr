@@ -16,7 +16,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class findPeople extends Component {
   constructor(props) {
     super(props);
@@ -53,41 +53,20 @@ export default class findPeople extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-          <View
-            style={[
-              styles.flex,
-              {
-                padding: 10,
-                borderBottomColor: 'lightgrey',
-                borderBottomWidth: 1,
-              },
-            ]}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
 
-            <Text style={[styles.titleText,{marginTop:30}]}>Find People For</Text>
-            <View
-              style={[
-                styles.logo,
-                {
-                  elevation: 6,
-                  marginRight: 5,
-                  padding: 10,
-                  backgroundColor: 'white',
-                  borderRadius: 24,
-                },
-              ]}>
-              <Image source={require('../../assets/searchGrey.png')} />
-            </View>
-          </View>
     
         <SafeAreaView style={styles.contentView}>
-       
+        <HeaderWithOptionBtn
+                    
+                        borderBottom={true}
+                        backColor={WHITE.dark}
+                        leftPress={() => this.props.navigation.openDrawer()}
+                        leftIcon={require('../../assets/drawer.png')}
+                        rightPress={() => this.props.navigation.navigate('notification')}
+                        searchIcon={require('../../assets/searchGrey.png')}
+                        headerTitle={'Find People For'}
+                       
+                    />
         <FlatList
                 data={this.state.findpeople}
                 keyExtractor={item => item.id}
@@ -292,9 +271,7 @@ const styles = StyleSheet.create({
   },
   contentView: {
     flex: 1,
-    alignSelf: 'center',
-    alignItems: 'center',
-    // width: SCREEN.width - 40,
+   
     backgroundColor: WHITE.dark,
   },
  policyText: {

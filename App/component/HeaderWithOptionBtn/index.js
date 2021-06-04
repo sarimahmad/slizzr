@@ -5,7 +5,7 @@ import { Image, Text, TouchableHighlight, View, TouchableOpacity } from 'react-n
 import { FONT, isIphoneXorAbove, SCREEN } from '../../helper/Constant';
 import { BLACK } from '../../helper/Color';
 
-function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rightIcon, backColor, borderBottom }) {
+function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rightIcon, backColor, borderBottom,centerIcon,searchIcon }) {
   return (
     <View
       style={{
@@ -25,7 +25,22 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rig
           activeOpacity={0.85} style={{ position: 'absolute', left: 20, justifyContent: 'center', alignItems: 'center', height: 20, width: 20 }}>
           <Image source={leftIcon} style={{ height: 40, width: 40, justifyContent: 'center' }} />
         </TouchableOpacity>}
+        {centerIcon &&
       <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+      <View style={{
+        flexDirection: 'row', alignItems: 'center',
+      }}>
+      <Image source={centerIcon} style={{  justifyContent: 'center' }} />
+      </View>    
+    </View>
+      }
+{headerTitle &&
+      <View 
         style={{
           flex: 1,
           justifyContent: 'center',
@@ -37,6 +52,7 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rig
           <Text style={{ fontSize: 18, fontFamily: FONT.Nunito.bold, color: BLACK.app, marginLeft: 10 }}>{headerTitle}</Text>
         </View>
       </View>
+}
       {rightIcon && <TouchableHighlight
         underlayColor={backColor}
         onPress={rightPress}
@@ -48,8 +64,31 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rig
         }}>
         <Image
           source={rightIcon}
-          style={{ height: 40, width: 40, resizeMode: 'contain' }}
+          style={{  resizeMode: 'contain' }}
         />
+      </TouchableHighlight>}
+      {searchIcon && <TouchableHighlight
+        underlayColor={backColor}
+        onPress={rightPress}
+        style={{
+          width: 20,
+          height: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+       <View
+              style={[
+               
+                {
+                  elevation: 6,
+                  marginRight: 5,
+                  padding: 10,
+                  backgroundColor: 'white',
+                  borderRadius: 24,
+                },
+              ]}>
+              <Image source={searchIcon} />
+            </View>
       </TouchableHighlight>}
     </View>
   );

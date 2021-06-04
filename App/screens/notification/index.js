@@ -13,11 +13,8 @@ import {
   } from 'react-native';
   import {BLACK, BLUE, WHITE} from '../../helper/Color';
   import {FONT, SCREEN} from '../../helper/Constant';
-  import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-  } from 'react-native-responsive-screen';
-
+  
+  import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class notification extends Component {
   constructor(props) {
     super(props);
@@ -55,21 +52,15 @@ export default class notification extends Component {
     return (
         <View style={styles.wrapperView}>
 <SafeAreaView  style={styles.contentView}>
-      <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center'}]}>
-          <View style={{position: 'absolute',left:20,top:10}}>
-         
-           <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Notification</Text>
-            </View>
-   
-      
+     
+    <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    headerTitle={'Notification'}
+                    leftPress={() => this.props.navigation.openDrawer()}
+                    leftIcon={require('../../assets/drawer.png')}
+                />   
        
 
       <FlatList

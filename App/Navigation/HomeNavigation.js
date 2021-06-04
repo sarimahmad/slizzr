@@ -270,7 +270,7 @@ export const MainNavigation = () => {
         <Stack.Screen name="Splash" component={splash}></Stack.Screen>
         <Stack.Screen name="index" component={index}></Stack.Screen>
         <Stack.Screen name="Scan" component={scan}></Stack.Screen>
-        <Stack.Screen name="notification" component={notification}></Stack.Screen>
+        <Stack.Screen name="Notifications" component={notification}></Stack.Screen>
         <Stack.Screen name="SettingsNavigation" component={SettingsNavigation}></Stack.Screen>
         <Stack.Screen name="myProfile" component={myProfile}></Stack.Screen>
         <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>

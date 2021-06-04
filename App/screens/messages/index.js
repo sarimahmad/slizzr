@@ -15,13 +15,14 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class messages extends Component {
   constructor(props) {
     super(props);
     this.state = {
-       index:0,
-        attendingEvents:true,
-        myevents:false,
+      index: 0,
+      attendingEvents: true,
+      myevents: false,
       messages: [
         {
           imgProfile: '',
@@ -29,128 +30,159 @@ export default class messages extends Component {
           adress: 'Host: Tallah Cotton',
           date: '11:30 PM | Feb 25, 2020 - WED',
         },
-    ],
-        findpeople: [
-            {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-        ]
-      
-    };
+      ],
+      findpeople: [
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
 
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+      ],
+    };
   }
-myevents = ()=>{
-this.setState({myevents:true})
-this.setState({attendingEvents:false})
-}
-attendingEvents = ()=>{
-  this.setState({myevents:false})
-  this.setState({attendingEvents:true})
-  
-}
-barTapped=(indexTap)=>{
-  if(indexTap===0){
-    this.setState({index:0})
-   }else if(indexTap===1){
-   this.setState({index:1})
-  } 
-}
+  myevents = () => {
+    this.setState({myevents: true});
+    this.setState({attendingEvents: false});
+  };
+  attendingEvents = () => {
+    this.setState({myevents: false});
+    this.setState({attendingEvents: true});
+  };
+  barTapped = indexTap => {
+    if (indexTap === 0) {
+      this.setState({index: 0});
+    } else if (indexTap === 1) {
+      this.setState({index: 1});
+    }
+  };
+  topBar=()=>{
+    return (
+      <View style={styles.flex}>
+      <TouchableOpacity
+        style={
+          this.state.index == 0
+            ? {
+                borderBottomColor: '#F818D9',
+                borderBottomWidth: 3,
+                justifyContent: 'center',
+                width: SCREEN.width * 0.5,
+                height: 39,
+              }
+            : {
+                color: 'black',
+                width: SCREEN.width * 0.5,
+                height: 39,
+                justifyContent: 'center',
+              }
+        }
+        onPress={() => this.barTapped(0)}>
+        <Text
+          style={[
+            styles.barChild,
+            this.state.index == 0 ? {color: '#F818D9'} : {color: 'black'},
+          ]}>
+          MY EVENTS
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={
+          this.state.index == 1
+            ? {
+                borderBottomColor: '#F818D9',
+                borderBottomWidth: 3,
+                justifyContent: 'center',
+                width: SCREEN.width * 0.5,
+                height: 39,
+              }
+            : {
+                color: 'black',
+                width: SCREEN.width * 0.5,
+                height: 39,
+                justifyContent: 'center',
+              }
+        }
+        onPress={() => this.barTapped(1)}>
+        <Text
+          style={[
+            styles.barChild,
+            this.state.index == 1 ? {color: '#F818D9'} : {color: 'black'},
+          ]}>
+          ATTENDING EVENTS
+        </Text>
+      </TouchableOpacity>
+    </View>
+   
+    )
+  }
+  noEvent=()=>{
+    return (
+      <View style={{alignItems: 'center', marginTop: hp('30%')}}>
+      <Text
+        style={{
+          fontSize: 20,
+          fontFamily: FONT.Nunito.regular,
+          textAlign: 'center',
+        }}>
+        You are not hosting any events at the moment.
+      </Text>
+      <TouchableOpacity
+        onPress={() => this.setState({enableMap: true})}
+        style={styles.btnLocation}>
+        <Text style={[styles.btnTextLocation]}>HOST?</Text>
+      </TouchableOpacity>
+    </View>
+
+    )
+  }
   render() {
     return (
       <View style={styles.wrapperView}>
-         <SafeAreaView style={styles.contentView}>
-               <View
-            style={[{padding: 20, alignItems: 'center', alignItems: 'center',marginTop:20 }]}>
-            <View style={{position: 'absolute', left: 20, top: 10}}>
-              <TouchableOpacity  onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Messages</Text>
-      
-          </View>
-                 <View style={styles.flex}>
-                 <TouchableOpacity
-                style={
-                  this.state.index == 0
-                    ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,justifyContent: 'center',width:SCREEN.width*0.5,height:39}
-                    : { color: 'black' ,width:SCREEN.width*0.5,height:39,justifyContent: 'center'}
-                }
-              onPress={()=>this.barTapped(0)}>
-              <Text
-                style={[
-                  styles.barChild,
-                  this.state.index == 0
-                    ? { color: '#F818D9' }
-                    : { color: 'black' },
-                ]}>
-                MY EVENTS
-              </Text>
-            </TouchableOpacity>
-               <TouchableOpacity
-                style={
-                  this.state.index == 1
-                    ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,justifyContent: 'center',width:SCREEN.width*0.5,height:39}
-                    : { color: 'black' ,width:SCREEN.width*0.5,height:39,justifyContent: 'center'}
-                }
-              onPress={()=>this.barTapped(1)}>
-              <Text
-                style={[
-                  styles.barChild,
-                  this.state.index == 1
-                    ? { color: '#F818D9' }
-                    : { color: 'black' },
-                ]}>
-              ATTENDING EVENTS
-              </Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity onPress={this.myevents} style={styles.barChild}>
-               <Text style={{fontFamily:FONT.Nunito.bold,fontSize:11}}></Text>
-               </TouchableOpacity> */}
-            {/* <TouchableOpacity  onPress={this.attendingEvents} style={styles.barChild}>
-              <Text style={{fontFamily:FONT.Nunito.bold,fontSize:11}}></Text>
-                </TouchableOpacity> */}
-          </View>
+        <SafeAreaView style={styles.contentView}>
+          <HeaderWithOptionBtn
+            borderBottom={true}
+            backColor={WHITE.dark}
+            headerTitle={'Messages'}
+            leftPress={() => this.props.navigation.openDrawer()}
+            leftIcon={require('../../assets/drawer.png')}
+          />
+         {this.topBar()}
+         
           {this.state.index == 0 && (
             <FlatList
               data={this.state.findpeople}
               keyExtractor={item => item.id}
               renderItem={({item}) => (
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate("messagesEvent")}
-                 >
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate('messagesEvent')
+                  }>
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image source={require('../../assets/profile1.png')} />
@@ -164,25 +196,21 @@ barTapped=(indexTap)=>{
                       <Text style={styles.greyText}>{item.adress}</Text>
                       <Text style={styles.purpleText}>{item.date}</Text>
                     </View>
-                   
                   </View>
-                  <View style={{hiehgt:1,borderBottomWidth:1,borderBottomColor:'lightgrey',width:SCREEN.width}}></View>
-          
+                  <View
+                    style={{
+                      hiehgt: 1,
+                      borderBottomWidth: 1,
+                      borderBottomColor: 'lightgrey',
+                      width: SCREEN.width,
+                    }}></View>
                 </TouchableOpacity>
               )}
             />
           )}
-           {this.state.index == 1 && (
-           
-           <View style={{alignItems: 'center',marginTop:hp('30%')}}>
-            <Text style={{fontSize:20,fontFamily:FONT.Nunito.regular,textAlign:'center'}}>You are not hosting any events at the moment.</Text>
-            <TouchableOpacity
-                onPress={() => this.setState({enableMap: true})}
-                style={styles.btnLocation}>
-                <Text style={[styles.btnTextLocation]}>HOST?</Text>
-              </TouchableOpacity>
-           </View>
-          )}
+          {this.state.index == 1 && (
+           this.noEvent()
+         )}
         </SafeAreaView>
       </View>
     );
@@ -199,13 +227,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: WHITE.dark,
   },
- btnTextLocation: {
+  btnTextLocation: {
     fontSize: 14,
     color: 'white',
-    flex:1,
+    flex: 1,
     textAlign: 'center',
     fontFamily: FONT.Nunito.bold,
-    paddingTop:15
+    paddingTop: 15,
   },
   greyText: {
     fontSize: 12,
@@ -213,25 +241,23 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
   },
   btnLocation: {
-    width:SCREEN.width-40,
-    alignContent:'center',
+    width: SCREEN.width - 40,
+    alignContent: 'center',
     borderRadius: 25,
     height: 50,
-    marginTop:20,
+    marginTop: 20,
     elevation: 1,
-    backgroundColor:'black',
+    backgroundColor: 'black',
     borderWidth: 1,
     borderRadius: 24,
     borderColor: BLACK.light,
-  
   },
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
- 
-    paddingHorizontal:10,
-    alignItems:'center'
-    
+
+    paddingHorizontal: 10,
+    alignItems: 'center',
   },
   detail: {
     width: wp('55%'),
@@ -240,10 +266,10 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   detail: {
-    width: SCREEN.width *0.55,
+    width: SCREEN.width * 0.55,
   },
   imgView: {
-    width: SCREEN.width *0.25,
+    width: SCREEN.width * 0.25,
   },
   flex: {
     flexDirection: 'row',
@@ -265,7 +291,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: wp('50%'),
     height: 36,
-    height:40,
+    height: 40,
     borderColor: 'lightgrey',
     paddingTop: 12,
     fontFamily: FONT.Nunito.regular,
