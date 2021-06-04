@@ -106,20 +106,15 @@ export default class sharedHosts extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        {/* <HeaderWithOptionBtn leftIcon={require('../../assets/back.png')} headerTitle={'Shared Hosts'} leftPress={() => this.props.navigation.pop()} /> */}
-        <View
-            style={[{padding: 20, alignItems: 'center', alignItems: 'center',marginTop:20}]}>
-            <View style={{position: 'absolute', left: 20, top: 10}}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={require('../../assets/back.png')}
-                  style={styles.logo}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Shared Hosts</Text>
-           
-          </View>
+     
+           <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    headerTitle={'Shared Hosts'}
+                    leftPress={() => this.props.navigation.goBack()}
+                    leftIcon={require('../../assets/back.png')}
+                /> 
         <SafeAreaView style={styles.contentView}>
         <View style={{width:SCREEN.width-40,alignSelf:'center'}}>
           <Text style={{color:BLACK.lightgrey,fontSize:12,fontFamily:FONT.Nunito.regular}}>Select shared hosts for:</Text>

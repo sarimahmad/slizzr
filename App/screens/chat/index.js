@@ -16,68 +16,153 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class chat extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-     
-     
-    };
+    this.state = {};
   }
   render() {
     return (
       <View style={styles.wrapperView}>
-      <SafeAreaView style={styles.contentView}>
-     
-       <View
-            style={[{padding:20, justifyContent: 'center', alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
-            <View style={{position: 'absolute', left: 20, top: 10,flexDirection:'row'}}>
+        <SafeAreaView style={styles.contentView}>
+          {/* <View
+            style={[
+              {
+                padding: 20,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderBottomColor: 'lightgrey',
+                borderBottomWidth: 1,
+              },
+            ]}>
+            <View
+              style={{
+                position: 'absolute',
+                left: 20,
+                top: 10,
+                flexDirection: 'row',
+              }}>
               <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                 <Image
                   source={require('../../assets/back.png')}
                   style={styles.logo}
                 />
               </TouchableOpacity>
-            <Image
-                      style={{height: 40, width: 40}}
-                      source={require('../../assets/profile1.png')}
-                    />
-         </View>
-           
+              <Image
+                style={{height: 40, width: 40}}
+                source={require('../../assets/profile1.png')}
+              />
+            </View>
+
             <Text style={styles.titleText}>Cindy Ray</Text>
-           
-          </View> 
-        
-     
-          <View style={{width:SCREEN.width-40,alignSelf:'center'}}>
-         <View style={{flexDirection:'row',alignItems: 'center'}}>
-         <Image
-                      style={{height: 50, width: 50}}
-                      source={require('../../assets/profile1.png')}
-                    />
-         <View>
-         <View style={styles.myMessages}>
-         <Text style={{color:'white'}}>Hey! Anything you want, might be chilly so maybe a jacket.</Text>
-         </View>
-         <Text style={{textAlign:'left',color:'#B2ABB1',fontSize:12,}}>02/17/2020 - 08:02 PM</Text>
-         </View>
-         </View>
-         <View style={{flexDirection:'row',alignItems: 'center'}}>
-        <View>
-         <View style={styles.otherMessages}>
-         <Text >What do you reccomend I bring to this event?</Text>
-         </View>
-         <Text style={{textAlign:'right',color:'#B2ABB1',fontSize:12,}}>02/17/2020 - 08:02 PM</Text>
-       
-         </View>
-         <Image
-                      style={{height: 50, width: 50}} 
-                      source={require('../../assets/profile1.png')}
-                    />
-         </View>
-         </View>
+          </View> */}
+
+          <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    headerTitle={'Cindy Ray'}
+                    leftPress={() => this.props.navigation.goBack()}
+                    leftIcon={require('../../assets/back.png')}
+                    profileIcon={require('../../assets/profile1.png')}
+                /> 
+          <View style={{width: SCREEN.width - 40, alignSelf: 'center'}}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Image
+                style={{height: 50, width: 50}}
+                source={require('../../assets/profile1.png')}
+              />
+              <View>
+                <View style={styles.myMessages}>
+                  <Text style={{color: 'white'}}>
+                    Hey! Anything you want, might be chilly so maybe a jacket.
+                  </Text>
+                </View>
+                <Text
+                  style={{textAlign: 'left', color: '#B2ABB1', fontSize: 12}}>
+                  02/17/2020 - 08:02 PM
+                </Text>
+              </View>
+            </View>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View>
+                <View style={styles.otherMessages}>
+                  <Text>What do you reccomend I bring to this event?</Text>
+                </View>
+                <Text
+                  style={{textAlign: 'right', color: '#B2ABB1', fontSize: 12}}>
+                  02/17/2020 - 08:02 PM
+                </Text>
+              </View>
+              <Image
+                style={{height: 50, width: 50}}
+                source={require('../../assets/profile1.png')}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              position: 'absolute',
+              bottom: 0,
+              height: 100,
+              paddingTop: 10,
+              paddingBottom: 44,
+              backgroundColor: '#EBE5F1',
+              width: SCREEN.width,
+              paddingHorizontal: 20,
+            }}>
+            <View
+              style={{
+                backgroundColor: WHITE.dark,
+                height: 43,
+                width: SCREEN.width * 0.6,
+                borderRadius: 12,
+              }}>
+              <TextInput
+                style={[styles.titleText, {fontFamily: FONT.Nunito.semiBold}]}
+                placeholder={'Type something to send…'}
+                placeholderTextColor={'#8e8e93'}
+              />
+            </View>
+            <View
+              style={[
+                {
+
+                  marginRight: 5,
+                  padding: 10,
+                  height: 43,
+                  width: 43,
+                  alignSelf: 'center',
+                  backgroundColor: 'white',
+                  borderRadius: 12,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                },
+              ]}>
+              <Image source={require('../../assets/addChat.png')} />
+            </View>
+            <View
+              style={[
+                {
+
+                  marginRight: 5,
+                  padding: 10,
+                  height: 43,
+                  width: 43,
+                  alignSelf: 'center',
+                  backgroundColor: 'white',
+                  borderRadius: 12,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                },
+              ]}>
+              <Image source={require('../../assets/sendChat.png')} />
+            </View>
+          </View>
         </SafeAreaView>
-     
       </View>
     );
   }
@@ -90,34 +175,33 @@ const styles = StyleSheet.create({
   },
   contentView: {
     flex: 1,
-   
-  
+
     backgroundColor: WHITE.dark,
-  }, myMessages:{
-  backgroundColor:'#F818D9',
-  borderTopRightRadius:12,
-  borderBottomRightRadius:12,
-  borderTopLeftRadius:12,
-  height:66,
-  width:SCREEN.width*0.75,
-  padding:10,
-  marginVertical:10,
-  alignItems: 'center',
-  justifyContent: 'center',
   },
-  otherMessages:{
-    
-    backgroundColor:'#EBE5F1',
-  borderTopRightRadius:12,
-  borderBottomRightRadius:12,
-  borderTopLeftRadius:12,
-  height:66,
-  width:SCREEN.width*0.75,
-  padding:10,
-  marginVertical:10,
-  alignItems: 'center',
-  justifyContent: 'center',
-},
+  myMessages: {
+    backgroundColor: '#F818D9',
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
+    borderTopLeftRadius: 12,
+    height: 66,
+    width: SCREEN.width * 0.75,
+    padding: 10,
+    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  otherMessages: {
+    backgroundColor: '#EBE5F1',
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
+    borderTopLeftRadius: 12,
+    height: 66,
+    width: SCREEN.width * 0.75,
+    padding: 10,
+    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
@@ -126,12 +210,12 @@ const styles = StyleSheet.create({
   detail: {
     flexDirection: 'row',
     width: wp('60%'),
-    paddingTop:10
+    paddingTop: 10,
   },
   next: {
     paddingTop: 15,
   },
- 
+
   imgView: {
     width: wp('20%'),
   },
@@ -144,7 +228,6 @@ const styles = StyleSheet.create({
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,
     fontSize: 17,
-  
   },
   purpleText: {
     fontSize: 12,

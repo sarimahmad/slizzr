@@ -91,6 +91,48 @@ attendingEvents = ()=>{
   this.setState({attendingEvents:true})
   
 }
+topBar=()=>{
+  return(
+    <View style={styles.flexRow}>
+           
+    <TouchableOpacity
+      style={
+        this.state.index == 1
+          ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,borderColor:'lightgrey',justifyContent: 'center',borderWidth:1,width:SCREEN.width*0.5,height:39}
+          : { color: 'black' ,width:SCREEN.width*0.5,height:39,borderColor:'lightgrey',borderWidth:1,justifyContent: 'center'}
+      }
+      onPress={()=>this.barTapped(1)}>
+      <Text
+        style={[
+          styles.barText,
+          this.state.index == 1
+            ? { color: '#F818D9' }
+            : { color: 'black' },
+        ]}>
+        MY EVENTS
+      </Text>
+    </TouchableOpacity>
+  
+          <TouchableOpacity
+      style={
+        this.state.index == 2
+          ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,borderColor:'grey',justifyContent: 'center',borderWidth:1,width:SCREEN.width*0.5,height:39}
+          : { color: 'black' ,width:SCREEN.width*0.5,height:39,borderColor:'grey',justifyContent: 'center',borderWidth:1}
+      }
+      onPress={()=>this.barTapped(2)}>
+      <Text
+        style={[
+          styles.barText,
+          this.state.index == 2
+            ? { color: '#F818D9' }
+            : { color: 'black' },
+        ]}>
+        ATTENDING EVENTS
+      </Text>
+    </TouchableOpacity>
+  </View>
+  )
+}
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -101,51 +143,14 @@ attendingEvents = ()=>{
                     borderBottom={true}
                     backColor={WHITE.dark}
                     leftPress={() => this.props.navigation.openDrawer()}
-                    leftIcon={require('../../assets/back.png')}
+                    leftIcon={require('../../assets/drawer.png')}
                     rightPress={() => this.props.navigation.navigate('createEvent')}
                     rightIcon={require('../../assets/plus.png')}
                     headerTitle={'Manage Events'}
                    
                 />
        
-          <View style={styles.flexRow}>
-           
-            <TouchableOpacity
-              style={
-                this.state.index == 1
-                  ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,borderColor:'lightgrey',justifyContent: 'center',borderWidth:1,width:SCREEN.width*0.5,height:39}
-                  : { color: 'black' ,width:SCREEN.width*0.5,height:39,borderColor:'lightgrey',borderWidth:1,justifyContent: 'center'}
-              }
-              onPress={()=>this.barTapped(1)}>
-              <Text
-                style={[
-                  styles.barText,
-                  this.state.index == 1
-                    ? { color: '#F818D9' }
-                    : { color: 'black' },
-                ]}>
-                MY EVENTS
-              </Text>
-            </TouchableOpacity>
-          
-                  <TouchableOpacity
-              style={
-                this.state.index == 2
-                  ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,borderColor:'grey',justifyContent: 'center',borderWidth:1,width:SCREEN.width*0.5,height:39}
-                  : { color: 'black' ,width:SCREEN.width*0.5,height:39,borderColor:'grey',justifyContent: 'center',borderWidth:1}
-              }
-              onPress={()=>this.barTapped(2)}>
-              <Text
-                style={[
-                  styles.barText,
-                  this.state.index == 2
-                    ? { color: '#F818D9' }
-                    : { color: 'black' },
-                ]}>
-                ATTENDING EVENTS
-              </Text>
-            </TouchableOpacity>
-          </View>
+       {this.topBar()}
           <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
            <Text style={{color:'white',paddingLeft:20}}>SHARED HOST REQUESTS</Text>
            <Text style={{color:'white',paddingRight:20}}>+2</Text>

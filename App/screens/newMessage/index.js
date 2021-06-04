@@ -16,6 +16,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class newMessage extends Component {
   constructor(props) {
     super(props);
@@ -58,19 +59,16 @@ export default class newMessage extends Component {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
-          <View
-            style={[{padding: 20, alignItems: 'center', alignItems: 'center'}]}>
-            <View style={{position: 'absolute', left: 20, top: 10}}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={require('../../assets/back.png')}
-                  style={styles.logo}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>New Messages</Text>
-           
-          </View>
+        
+          <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    headerTitle={'New Messages'}
+                    leftPress={() =>this.props.navigation.goBack()}
+                    leftIcon={require('../../assets/back.png')}
+                />   
+       
           <View
               style={{
                 backgroundColor:'lightgrey',

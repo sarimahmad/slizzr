@@ -18,6 +18,7 @@ import {
   } from 'react-native-responsive-screen';
 import { ScrollView } from 'react-native-gesture-handler';
 import { fonts } from 'react-native-elements/dist/config';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class attendingEventInfo extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +30,7 @@ export default class attendingEventInfo extends Component {
     return (
         <View style={styles.wrapperView}>
              <SafeAreaView style={styles.contentView}>
-        <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
+        {/* <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
           <View style={{position: 'absolute',left:20,top:10}}>
            <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}>
@@ -41,7 +42,15 @@ export default class attendingEventInfo extends Component {
             </View>
             <Text style={styles.titleText}>Event</Text>
             </View>
-     
+      */}
+       <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    headerTitle={'Event'}
+                    leftPress={() => this.props.navigation.goBack()}
+                    leftIcon={require('../../assets/back.png')}
+                />   
        
           <ScrollView>
           <Image

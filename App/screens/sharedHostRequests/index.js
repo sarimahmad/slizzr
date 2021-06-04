@@ -16,6 +16,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class sharedHostRequests extends Component {
   constructor(props) {
     super(props);
@@ -74,7 +75,7 @@ export default class sharedHostRequests extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <View style={[styles.flex, {padding: 20, alignItems: 'center',marginTop:20 }]}>
+        {/* <View style={[styles.flex, {padding: 20, alignItems: 'center',marginTop:20 }]}>
           <TouchableOpacity
               onPress={() => this.props.navigation.navigate("manageEvent")}>
               <Image
@@ -85,7 +86,15 @@ export default class sharedHostRequests extends Component {
 
             <Text style={styles.titleText}>Shared Host Requests</Text>
             <View></View>
-          </View>
+          </View> */}
+          <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    headerTitle={'Shared Host Requests'}
+                    leftPress={() => this.props.navigation.goBack()}
+                    leftIcon={require('../../assets/back.png')}
+                /> 
         <SafeAreaView style={styles.contentView}>
            
             <FlatList

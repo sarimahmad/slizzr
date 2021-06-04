@@ -14,6 +14,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class messagesEvent extends Component {
   constructor(props) {
     super(props);
@@ -65,30 +67,19 @@ export default class messagesEvent extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <View style={[ {padding: 20, alignItems: 'center',alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
-          <View style={{position: 'absolute',left:20,top:10}}>
-           <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}>
-              <Image
-                source={require('../../assets/back.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Messages</Text>
-            <View style={{position: 'absolute',right:20,top:10}}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("newMessage")}>
-              <Image
-                source={require('../../assets/newMesssage.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-            </View>
-          </View>
       
         <SafeAreaView style={styles.contentView}>
-         
+        <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    leftPress={() => this.props.navigation.goBack()}
+                    leftIcon={require('../../assets/back.png')}
+                    rightPress={() =>this.props.navigation.navigate("newMessage")}
+                    rightIcon={require('../../assets/newMesssage.png')}
+                    headerTitle={'Messages'}
+                   
+                />   
         
             <FlatList
               data={this.state.messages}

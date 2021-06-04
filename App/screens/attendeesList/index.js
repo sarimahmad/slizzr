@@ -15,6 +15,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class attendeesList extends Component {
   constructor(props) {
     super(props);
@@ -61,20 +62,15 @@ export default class attendeesList extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-         <View
-            style={[{padding: 20, alignItems: 'center', alignItems: 'center',marginTop:20}]}>
-            <View style={{position: 'absolute', left: 20, top: 10}}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={require('../../assets/back.png')}
-                  style={styles.logo}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Attendee List</Text>
-           
-          </View>
-     
+  
+       <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    headerTitle={'Attendee List'}
+                    leftPress={() => this.props.navigation.goBack()}
+                    leftIcon={require('../../assets/back.png')}
+                /> 
         <SafeAreaView style={styles.contentView}>
         <View
               style={styles.inputSearch}

@@ -17,7 +17,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
-
+  import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class lookFriends extends Component {
   constructor(props) {
     super(props);
@@ -54,28 +54,17 @@ export default class lookFriends extends Component {
   render() {
     return (
         <View style={styles.wrapperView}>
-       <View
-            style={[
-              styles.flex,
-              {
-                padding: 15,
-                alignItems: 'center',
-                borderBottomColor: 'lightgrey',
-                borderBottomWidth: 1,
-              },
-            ]}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("peopleProfiles")}>
-              <Image
-                source={require('../../assets/back.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-
-           <Text>Look for Friends</Text>
-           <View></View>
-          </View>
    
+     <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    headerTitle={'Look for Friends'}
+                    leftPress={() => this.props.navigation.goBack()}
+                    leftIcon={require('../../assets/back.png')}
+                />   
+       
+
        <SafeAreaView style={styles.contentView}>
        
 

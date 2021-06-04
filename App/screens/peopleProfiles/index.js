@@ -19,6 +19,7 @@ import {
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
 import { ScrollView } from 'react-native-gesture-handler';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class peopleProfiles extends Component {
   constructor(props) {
     super(props);
@@ -66,42 +67,18 @@ export default class peopleProfiles extends Component {
   render() {
     return (
         <View style={styles.wrapperView}>
-          <View
-            style={[
-              styles.flex,
-              {
-                padding: 10,
-                borderBottomColor: 'lightgrey',
-                borderBottomWidth: 1,
-              },
-            ]}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-
-            <Image
-              source={require('../../assets/homeLogo.png')}
-              style={styles.logo}
-            />
-            <TouchableOpacity onPress={()=>this.props.navigation.navigate('lookFriends')}
-              style={[
-                styles.logo,
-                {
-                  elevation: 6,
-                  marginRight: 5,
-                  padding: 10,
-                  backgroundColor: 'white',
-                  borderRadius: 24,
-                },
-              ]}>
-              <Image source={require('../../assets/searchGrey.png')} />
-            </TouchableOpacity>
-          </View>
-   
+           <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    leftPress={() => this.props.navigation.openDrawer()}
+                    leftIcon={require('../../assets/drawer.png')}
+                    rightPress={() => this.props.navigation.navigate('createEvent')}
+                    searchIcon={require('../../assets/searchGrey.png')}
+                    centerIcon={require('../../assets/homeLogo.png')}
+                   
+                />
+        
         <SafeAreaView style={styles.contentView}>
         
    

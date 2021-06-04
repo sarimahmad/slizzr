@@ -5,7 +5,7 @@ import { Image, Text, TouchableHighlight, View, TouchableOpacity } from 'react-n
 import { FONT, isIphoneXorAbove, SCREEN } from '../../helper/Constant';
 import { BLACK } from '../../helper/Color';
 
-function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rightIcon, backColor, borderBottom,centerIcon,searchIcon }) {
+function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rightPress, rightIcon, backColor, borderBottom,centerIcon,searchIcon }) {
   return (
     <View
       style={{
@@ -25,6 +25,13 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon, rightPress, rig
           activeOpacity={0.85} style={{ position: 'absolute', left: 20, justifyContent: 'center', alignItems: 'center', height: 20, width: 20 }}>
           <Image source={leftIcon} style={{ height: 40, width: 40, justifyContent: 'center' }} />
         </TouchableOpacity>}
+        {profileIcon &&
+      
+      <Image
+      style={{position: 'absolute',left: 60, justifyContent: 'center', alignItems: 'center', height: 40, width: 40}}
+      source={require('../../assets/profile1.png')}
+    />}
+
         {centerIcon &&
       <View
       style={{
