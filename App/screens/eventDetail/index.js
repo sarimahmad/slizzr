@@ -17,78 +17,92 @@ import {
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
 import { ScrollView } from 'react-native-gesture-handler';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+
 export default class eventDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    };
+      image: [{ id: 1, image: require('../../assets/Slizzer-icon/testImage.webp') },
+      { id: 2, image: require('../../assets/Slizzer-icon/testImage.webp') },
+      { id: 3, image: require('../../assets/Slizzer-icon/testImage.webp') },
+      { id: 4, image: require('../../assets/Slizzer-icon/testImage.webp') },
+      { id: 5, image: require('../../assets/Slizzer-icon/testImage.webp') },]
+  }
+
   }
 
   render() {
     return (
         <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
-            <View style={[styles.flex, {padding: 20, alignItems: 'center',borderBottomColor:'lightgrey',borderBottomWidth:1}]}>
-          <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Home")}>
-              <Image
-                source={require('../../assets/back.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-
-            <Image
-                source={require('../../assets/slizerLogo.png')}
-                style={styles.logo}
-              />
-                <Image
-                source={require('../../assets/share.png')}
-                style={styles.logo}
-              />
-           
-          
-          </View>
-          <ScrollView>
-          <View>
+           <HeaderWithOptionBtn
+                    
+                    borderBottom={true}
+                    backColor={WHITE.dark}
+                    leftPress={() => this.props.navigation.goBack()}
+                    leftIcon={require('../../assets/back.png')}
+                    rightIcon={require('../../assets/share.png')}
+                    centerIcon={require('../../assets/slizerLogo.png')}
+                
+                />   
+       
+     
+          <ScrollView bounces={false}>
+          <View style={{marginTop:20,alignSelf:'center'}}>
           <Image
                 source={require('../../assets/eventDetail.png')}
-                style={styles.logoEvent}
+                style={{width:SCREEN.width,height:420}}
               />
-            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("eventDetail2")} style={{position: 'absolute',top:30,padding:10,borderRadius:60,backgroundColor:'white',left:30}}>    
-          <Image
+            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("eventDetail2")} 
+            style={{
+              position: 'absolute',
+              top:30,height:35,
+              width:35,borderRadius:60,
+              backgroundColor:'white',left:30,
+              justifyContent:'center',alignContent:'center'}}>    
+          <Image style={{marginLeft:5}}
                 source={require('../../assets/group.png')}
               
               />  
               </TouchableOpacity>
           </View>
-          <View style={{alignSelf: 'center',}}>
+          <View style={{width:SCREEN.width - 40,alignSelf:'center'}}>
           <View style={styles.flex}>
-          <Text style={[styles.titleText,{textAlign:'center'}]}>Brittney’s 18th Birthday </Text>
-          <Text style={[styles.purpleText,{textAlign:'center'}]}>SCAN-&-pay at door</Text>
+          <Text style={[styles.titleText]}>Brittney’s 18th Birthday </Text>
+          <Text style={[styles.purpleText]}>SCAN-&-pay at door</Text>
           </View>
-          <View style={styles.flexRow}>
-          <Text style={[styles.titleText,{fontSize:12}]}>Host:</Text>
-          <Text style={styles.purpleText}>Holly Smith</Text>
+          <View style={[styles.flexRow,{paddingTop:8}]}>
+          <Text style={[styles.titleText,{fontSize:12,fontFamily:FONT.Nunito.regular}]}>Host: </Text>
+          <Text style={[styles.purpleText,{textDecorationLine:'underline',fontFamily:FONT.Nunito.regular,paddingLeft:4}]}>Holly Smith</Text>
           </View>
-          <Text style={[styles.purpleText,]}>11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
-         
-         
+          <Text style={{fontFamily:FONT.Nunito.bold, fontSize: 12, color: BLACK.textColor3, marginTop:3}}>11:30 PM | FEB 25, 2020 - WED | 2 HRS</Text>
+          <View style={[styles.flexRow,{justifyContent:'space-between'}]}>
+          <View style={[styles.flexRow,{paddingTop: 5}]}>
+            <Image style={{width:12, height: 16, marginRight: 5}} source={require('../../assets/location.png')}/>
+            <Text style={{fontFamily: FONT.Nunito.semiBold, fontSize: 12, color: BLACK.grey}}>15 KM away</Text>
           </View>
-          <Text style={[styles.titleText,{marginLeft:20,marginTop:10}]}>Mututal Attendes</Text>
-          <View style={{flexDirection:'row',marginLeft:20,marginVertical:10}}>
-         
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
+          <Text style={{fontFamily:FONT.Nunito.bold, fontSize: 17, color: BLACK.textColor2}}>$15</Text>
+          </View>
+          <Text style={[styles.titleText,{marginTop:9}]}>Mututal Attendes</Text>
+          <View style={{ height: 50, width: SCREEN.width, marginTop: 11, }}>
+                                <FlatList
+                                    data={this.state.image}
+                                    horizontal
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) => (
+                                        <View style={styles.listView}>
+                                            <Image style={styles.ImageView} source={item.image} />
+                                        </View>
+                                    )}
+                                />
+                            </View>
+                            <Text style={[styles.purpleText,{marginTop:9, textDecorationLine:'underline',}]}>See more</Text>
          </View>
-         <Text style={[styles.purpleText,{marginLeft:20,marginBottom:10, textDecorationLine:'underline',}]}>See more</Text>
+         
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("prepay")} style={styles.btnMap}>
               <Text style={styles.btnText}>Attend</Text>
             </TouchableOpacity>
-          
-            
             </ScrollView>
           </SafeAreaView>
    </View>
@@ -107,6 +121,17 @@ const styles = StyleSheet.create({
       fontFamily: FONT.Nunito.regular,
   
     },
+    listView: {
+      marginRight: 11,
+  },
+
+    ImageView: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+
+  },
+ 
     btnText: {
         fontSize: 16,
         color: 'white',
@@ -158,8 +183,6 @@ const styles = StyleSheet.create({
     },
     flexRow: {
       flexDirection: 'row',
-      paddingVertical: 10,
-      // paddingHorizontal:10,
       
     },
     detail: {
@@ -173,6 +196,7 @@ const styles = StyleSheet.create({
     },
     contentView: {
       flex: 1,
+      backgroundColor:WHITE.dark
     },
     imgView: {
       width: wp('25%'),
@@ -197,17 +221,15 @@ const styles = StyleSheet.create({
         width:width
     },
     titleText: {
-      color: BLACK.textInputTitle,
+      color: BLACK.grey,
       fontFamily: FONT.Nunito.bold,
       fontSize: 17,
       
     },
     purpleText: {
       fontSize: 12,
-      color: '#F818D9',
-    
-      textDecorationLine: 'underline',
-      fontFamily: FONT.Nunito.semiBold,
+      color: BLACK.textColor2,
+      fontFamily: FONT.Nunito.bold,
     },
     barChild: {
       borderWidth: 1,

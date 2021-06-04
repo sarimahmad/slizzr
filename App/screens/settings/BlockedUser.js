@@ -3,6 +3,7 @@ import {Text, View, StyleSheet, FlatList, Image} from 'react-native';
 import {FONT} from '../../helper/Constant';
 import Header from '../../component/Header';
 import {SafeAreaView} from 'react-navigation';
+import { WHITE } from '../../helper/Color';
 
 export default class BlockedUser extends Component {
   constructor(props) {
@@ -58,6 +59,7 @@ export default class BlockedUser extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+    backgroundColor: WHITE.dark
   },
   contextView: {
     flex: 1,

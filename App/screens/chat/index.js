@@ -1,17 +1,17 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
   StyleSheet,
   TextInput,
-  FlatList,
+  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
-import {width, height} from '../../helper/Constant';
+import { SafeAreaView } from 'react-navigation';
+import { BLACK, BLUE, WHITE } from '../../helper/Color';
+import { FONT, isIphoneXorAbove, SCREEN } from '../../helper/Constant';
+import { width, height } from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -25,143 +25,115 @@ export default class chat extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
+        <HeaderWithOptionBtn
+
+          borderBottom={true}
+          backColor={WHITE.dark}
+          headerTitle={'Cindy Ray'}
+          leftPress={() => this.props.navigation.goBack()}
+          leftIcon={require('../../assets/back.png')}
+          profileIcon={require('../../assets/profile1.png')}
+        />
         <SafeAreaView style={styles.contentView}>
-          {/* <View
-            style={[
-              {
-                padding: 20,
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderBottomColor: 'lightgrey',
-                borderBottomWidth: 1,
-              },
-            ]}>
-            <View
-              style={{
-                position: 'absolute',
-                left: 20,
-                top: 10,
-                flexDirection: 'row',
-              }}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+          <KeyboardAvoidingView
+            style={styles.wrapperView}
+            enabled
+            keyboardVerticalOffset={isIphoneXorAbove ? 120 : 80}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}>
+            <View style={{ width: SCREEN.width - 40, alignSelf: 'center', flex: 1 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Image
-                  source={require('../../assets/back.png')}
-                  style={styles.logo}
+                  style={{ height: 50, width: 50 }}
+                  source={require('../../assets/profile1.png')}
                 />
-              </TouchableOpacity>
-              <Image
-                style={{height: 40, width: 40}}
-                source={require('../../assets/profile1.png')}
-              />
-            </View>
-
-            <Text style={styles.titleText}>Cindy Ray</Text>
-          </View> */}
-
-          <HeaderWithOptionBtn
-                    
-                    borderBottom={true}
-                    backColor={WHITE.dark}
-                    headerTitle={'Cindy Ray'}
-                    leftPress={() => this.props.navigation.goBack()}
-                    leftIcon={require('../../assets/back.png')}
-                    profileIcon={require('../../assets/profile1.png')}
-                /> 
-          <View style={{width: SCREEN.width - 40, alignSelf: 'center'}}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Image
-                style={{height: 50, width: 50}}
-                source={require('../../assets/profile1.png')}
-              />
-              <View>
-                <View style={styles.myMessages}>
-                  <Text style={{color: 'white'}}>
-                    Hey! Anything you want, might be chilly so maybe a jacket.
+                <View>
+                  <View style={styles.myMessages}>
+                    <Text style={{ color: 'white' }}>
+                      Hey! Anything you want, might be chilly so maybe a jacket.
                   </Text>
-                </View>
-                <Text
-                  style={{textAlign: 'left', color: '#B2ABB1', fontSize: 12}}>
-                  02/17/2020 - 08:02 PM
+                  </View>
+                  <Text
+                    style={{ textAlign: 'left', color: '#B2ABB1', fontSize: 12 }}>
+                    02/17/2020 - 08:02 PM
                 </Text>
+                </View>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <View>
+                  <View style={styles.otherMessages}>
+                    <Text>What do you reccomend I bring to this event?</Text>
+                  </View>
+                  <Text
+                    style={{ textAlign: 'right', color: '#B2ABB1', fontSize: 12 }}>
+                    02/17/2020 - 08:02 PM
+                </Text>
+                </View>
+                <Image
+                  style={{ height: 50, width: 50 }}
+                  source={require('../../assets/profile1.png')}
+                />
               </View>
             </View>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View>
-                <View style={styles.otherMessages}>
-                  <Text>What do you reccomend I bring to this event?</Text>
-                </View>
-                <Text
-                  style={{textAlign: 'right', color: '#B2ABB1', fontSize: 12}}>
-                  02/17/2020 - 08:02 PM
-                </Text>
-              </View>
-              <Image
-                style={{height: 50, width: 50}}
-                source={require('../../assets/profile1.png')}
-              />
-            </View>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              position: 'absolute',
-              bottom: 0,
-              height: 100,
-              paddingTop: 10,
-              paddingBottom: 44,
-              backgroundColor: '#EBE5F1',
-              width: SCREEN.width,
-              paddingHorizontal: 20,
-            }}>
             <View
               style={{
-                backgroundColor: WHITE.dark,
-                height: 43,
-                width: SCREEN.width * 0.6,
-                borderRadius: 12,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                bottom: 0,
+                height: isIphoneXorAbove ? 100 : 63,
+                backgroundColor: '#EBE5F1',
+                width: SCREEN.width,
+                paddingHorizontal: 20,
+                alignItems: 'center'
               }}>
-              <TextInput
-                style={[styles.titleText, {fontFamily: FONT.Nunito.semiBold}]}
-                placeholder={'Type something to send…'}
-                placeholderTextColor={'#8e8e93'}
-              />
-            </View>
-            <View
-              style={[
-                {
-
-                  marginRight: 5,
-                  padding: 10,
+              <View
+                style={{
+                  backgroundColor: WHITE.dark,
                   height: 43,
-                  width: 43,
-                  alignSelf: 'center',
-                  backgroundColor: 'white',
+                  width: SCREEN.width * 0.6,
                   borderRadius: 12,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                },
-              ]}>
-              <Image source={require('../../assets/addChat.png')} />
-            </View>
-            <View
-              style={[
-                {
+                }}>
+                <TextInput
+                  style={[styles.titleText, { fontFamily: FONT.Nunito.semiBold }]}
+                  placeholder={'Type something to send…'}
+                  placeholderTextColor={'#8e8e93'}
+                />
+              </View>
+              <View
+                style={[
+                  {
 
-                  marginRight: 5,
-                  padding: 10,
-                  height: 43,
-                  width: 43,
-                  alignSelf: 'center',
-                  backgroundColor: 'white',
-                  borderRadius: 12,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                },
-              ]}>
-              <Image source={require('../../assets/sendChat.png')} />
+                    marginRight: 5,
+                    padding: 10,
+                    height: 43,
+                    width: 43,
+                    alignSelf: 'center',
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  },
+                ]}>
+                <Image source={require('../../assets/addChat.png')} />
+              </View>
+              <View
+                style={[
+                  {
+
+                    marginRight: 5,
+                    padding: 10,
+                    height: 43,
+                    width: 43,
+                    alignSelf: 'center',
+                    backgroundColor: 'white',
+                    borderRadius: 12,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  },
+                ]}>
+                <Image source={require('../../assets/sendChat.png')} />
+              </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </SafeAreaView>
       </View>
     );
@@ -228,6 +200,9 @@ const styles = StyleSheet.create({
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,
     fontSize: 17,
+    textAlign: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
   },
   purpleText: {
     fontSize: 12,

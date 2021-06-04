@@ -28,19 +28,6 @@ export default class myEventInfo extends Component {
   render() {
     return (
         <View style={styles.wrapperView}>
-         {/* <View
-            style={[{padding: 20, alignItems: 'center', alignItems: 'center',marginTop:20}]}>
-            <View style={{position: 'absolute', left: 20, top: 10}}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={require('../../assets/back.png')}
-                  style={styles.logo}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Event</Text>
-           
-          </View> */}
       <HeaderWithOptionBtn
                     
                     borderBottom={true}

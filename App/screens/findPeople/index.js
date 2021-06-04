@@ -80,13 +80,15 @@ export default class findPeople extends Component {
                    
                     }}>
                     <View style={[styles.flexRow, { width: SCREEN.width - 20 ,alignItems: 'center',}]}>
-                      <View style={styles.imgView}>
-                        <Image source={require('../../assets/profile1.png')} />
-                        <Image
-                          style={{ position: 'absolute', right: 15 }}
-                          source={require('../../assets/private.png')}
-                        />
-                      </View>
+                    <View style={styles.imgView}>
+                   
+                   <Image source={require('../../assets/image2.jpg')} style={{borderRadius:44,height:60,width:60}} />
+                  
+                   <Image
+                     style={{position: 'absolute',right:-10}}
+                     source={require('../../assets/private.png')}
+                   />
+                 </View>
 
                       <View style={styles.detail}>
                         <Text style={styles.titleText}>{item.profileName}</Text>
@@ -127,9 +129,12 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   imgView: {
-    width: wp('25%'),
+    marginHorizontal:20,
+    alignItems:'center',
+    
+    alignSelf:'center'
   },
-  inputSearch: {
+ inputSearch: {
     width: wp('90%'),
     marginHorizontal: '5%',
     borderWidth: 1,

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,9 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
+import { SafeAreaView } from 'react-navigation';
+import { BLACK, BLUE, WHITE } from '../../helper/Color';
+import { FONT, SCREEN } from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -68,96 +68,96 @@ export default class messages extends Component {
     };
   }
   myevents = () => {
-    this.setState({myevents: true});
-    this.setState({attendingEvents: false});
+    this.setState({ myevents: true });
+    this.setState({ attendingEvents: false });
   };
   attendingEvents = () => {
-    this.setState({myevents: false});
-    this.setState({attendingEvents: true});
+    this.setState({ myevents: false });
+    this.setState({ attendingEvents: true });
   };
   barTapped = indexTap => {
     if (indexTap === 0) {
-      this.setState({index: 0});
+      this.setState({ index: 0 });
     } else if (indexTap === 1) {
-      this.setState({index: 1});
+      this.setState({ index: 1 });
     }
   };
-  topBar=()=>{
+  topBar = () => {
     return (
       <View style={styles.flex}>
-      <TouchableOpacity
-        style={
-          this.state.index == 0
-            ? {
+        <TouchableOpacity
+          style={
+            this.state.index == 0
+              ? {
                 borderBottomColor: '#F818D9',
                 borderBottomWidth: 3,
                 justifyContent: 'center',
                 width: SCREEN.width * 0.5,
                 height: 39,
               }
-            : {
+              : {
                 color: 'black',
                 width: SCREEN.width * 0.5,
                 height: 39,
                 justifyContent: 'center',
               }
-        }
-        onPress={() => this.barTapped(0)}>
-        <Text
-          style={[
-            styles.barChild,
-            this.state.index == 0 ? {color: '#F818D9'} : {color: 'black'},
-          ]}>
-          MY EVENTS
+          }
+          onPress={() => this.barTapped(0)}>
+          <Text
+            style={[
+              styles.barChild,
+              this.state.index == 0 ? { color: '#F818D9' } : { color: 'black' },
+            ]}>
+            MY EVENTS
         </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={
-          this.state.index == 1
-            ? {
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={
+            this.state.index == 1
+              ? {
                 borderBottomColor: '#F818D9',
                 borderBottomWidth: 3,
                 justifyContent: 'center',
                 width: SCREEN.width * 0.5,
                 height: 39,
               }
-            : {
+              : {
                 color: 'black',
                 width: SCREEN.width * 0.5,
                 height: 39,
                 justifyContent: 'center',
               }
-        }
-        onPress={() => this.barTapped(1)}>
-        <Text
-          style={[
-            styles.barChild,
-            this.state.index == 1 ? {color: '#F818D9'} : {color: 'black'},
-          ]}>
-          ATTENDING EVENTS
+          }
+          onPress={() => this.barTapped(1)}>
+          <Text
+            style={[
+              styles.barChild,
+              this.state.index == 1 ? { color: '#F818D9' } : { color: 'black' },
+            ]}>
+            ATTENDING EVENTS
         </Text>
-      </TouchableOpacity>
-    </View>
-   
+        </TouchableOpacity>
+      </View>
+
     )
   }
-  noEvent=()=>{
+  noEvent = () => {
     return (
-      <View style={{alignItems: 'center', marginTop: hp('30%')}}>
-      <Text
-        style={{
-          fontSize: 20,
-          fontFamily: FONT.Nunito.regular,
-          textAlign: 'center',
-        }}>
-        You are not hosting any events at the moment.
+      <View style={{ alignItems: 'center', marginTop: hp('30%') }}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontFamily: FONT.Nunito.regular,
+            textAlign: 'center',
+          }}>
+          You are not hosting any events at the moment.
       </Text>
-      <TouchableOpacity
-        onPress={() => this.setState({enableMap: true})}
-        style={styles.btnLocation}>
-        <Text style={[styles.btnTextLocation]}>HOST?</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity
+          onPress={() => this.setState({ enableMap: true })}
+          style={styles.btnLocation}>
+          <Text style={[styles.btnTextLocation]}>HOST?</Text>
+        </TouchableOpacity>
+      </View>
 
     )
   }
@@ -172,22 +172,24 @@ export default class messages extends Component {
             leftPress={() => this.props.navigation.openDrawer()}
             leftIcon={require('../../assets/drawer.png')}
           />
-         {this.topBar()}
-         
+          {this.topBar()}
+
           {this.state.index == 0 && (
             <FlatList
               data={this.state.findpeople}
               keyExtractor={item => item.id}
-              renderItem={({item}) => (
+              renderItem={({ item }) => (
                 <TouchableOpacity
                   onPress={() =>
                     this.props.navigation.navigate('messagesEvent')
                   }>
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
-                      <Image source={require('../../assets/profile1.png')} />
+
+                      <Image source={require('../../assets/image2.jpg')} style={{ borderRadius: 44, height: 60, width: 60 }} />
+
                       <Image
-                        style={{position: 'absolute', right: 15}}
+                        style={{ position: 'absolute', right: -10 }}
                         source={require('../../assets/private.png')}
                       />
                     </View>
@@ -209,8 +211,8 @@ export default class messages extends Component {
             />
           )}
           {this.state.index == 1 && (
-           this.noEvent()
-         )}
+            this.noEvent()
+          )}
         </SafeAreaView>
       </View>
     );
@@ -269,7 +271,10 @@ const styles = StyleSheet.create({
     width: SCREEN.width * 0.55,
   },
   imgView: {
-    width: SCREEN.width * 0.25,
+    marginHorizontal: 20,
+    alignItems: 'center',
+
+    alignSelf: 'center'
   },
   flex: {
     flexDirection: 'row',

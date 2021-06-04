@@ -54,7 +54,8 @@ export default class lookFriends extends Component {
   render() {
     return (
         <View style={styles.wrapperView}>
-   
+   <SafeAreaView style={styles.contentView}>
+       
      <HeaderWithOptionBtn
                     
                     borderBottom={true}
@@ -65,7 +66,6 @@ export default class lookFriends extends Component {
                 />   
        
 
-       <SafeAreaView style={styles.contentView}>
        
 
        <View style={styles.searchBar}>
@@ -81,7 +81,7 @@ export default class lookFriends extends Component {
               ]}>
               <Image source={require('../../assets/searchBlack.png')} />
             </TouchableOpacity>
-  <TextInput style={{paddingHorizontal:20,color:'grey'}} placeholderTextColor='black' placeholder={'Search'}/>
+  <TextInput style={{color:'grey',fontFamily:FONT.Nunito.regular}} placeholderTextColor='grey' placeholder={'Search'}/>
       </View>
       <FlatList
           
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     
      },
      searchBar:{
-      backgroundColor:'lightgrey',
+      backgroundColor:BLACK.textInput,
       height:40,
       width:SCREEN.width-40,
       marginHorizontal:20,
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
        paddingTop: 15,
      },
      imgView: {
-       width: wp('25%'),
+       width: wp('20%'),
      },
      inputSearch: {
        width: wp('90%'),
@@ -292,10 +292,7 @@ const styles = StyleSheet.create({
       backgroundColor: WHITE.dark,
     },
     contentView: {
-
       flex: 1,
-      alignSelf: 'center',
-      alignItems: 'center',
       width: SCREEN.width,
     },
    policyText: {

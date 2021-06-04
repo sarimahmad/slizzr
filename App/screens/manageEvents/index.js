@@ -166,15 +166,16 @@ topBar=()=>{
                     borderBottomColor: 'lightgrey',
                   }}>
                   <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
-                      <Image source={require('../../assets/profile1.png')} />
-                      <Image
-                        style={{position: 'absolute', right: 15}}
-                        source={require('../../assets/private.png')}
-                      />
-               
-                    </View>
-                    
+                  <View style={styles.imgView}>
+                   
+                   <Image source={require('../../assets/image2.jpg')} style={{borderRadius:44,height:60,width:60}} />
+                  
+                   <Image
+                     style={{position: 'absolute',right:-10}}
+                     source={require('../../assets/private.png')}
+                   />
+                 </View>
+
                     <View style={styles.detail}>
                    <Text style={styles.titleText}>{item.profileName}</Text>
                    <Text style={styles.subtitleText}>{item.adress}</Text>
@@ -268,6 +269,7 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
    
+   
   
     alignItems: 'center',
   },
@@ -276,17 +278,18 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
     fontSize: 12,
   },
-  detail: {
-    width: wp('55%'),
-  },
+
   next: {
     paddingTop: 15,
   },
   detail: {
     width: wp('55%'),
+    height: 80
   },
   imgView: {
-    width: wp('25%'),
+    marginHorizontal:20,
+    alignItems:'center',
+        alignSelf:'center'
   },
   shareView: {
 

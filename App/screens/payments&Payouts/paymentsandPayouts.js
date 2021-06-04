@@ -26,7 +26,7 @@ export default class paymentsandPayouts extends Component {
                         headerTitle={'Payments and Payouts'}
                         borderBottom={true}
                         backColor={WHITE.dark}
-                        leftPress={() => this.props.navigation.navigate("SettingsNavigation")}
+                        leftPress={() => this.props.navigation.pop()}
                         leftIcon={require('../../assets/back.png')}
                     />
                     <FlatList

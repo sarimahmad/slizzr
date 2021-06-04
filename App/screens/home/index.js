@@ -11,8 +11,8 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
+import {BLACK, BLUE, WHITE,} from '../../helper/Color';
+import {FONT, SCREEN,isIphoneXorAbove} from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -20,6 +20,7 @@ import {
 import MapView from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import { ScrollView } from 'react-native-gesture-handler';
 export default class home extends Component {
   constructor(props) {
     super(props);
@@ -127,14 +128,14 @@ export default class home extends Component {
 
   listView = () => {
     return (
-      <View>
+      <View style={{flex:1}}>
         {this.searchBar()}
         <View
           style={{
-            justifyContent: 'center',
+            justifyContent: 'center',  
             alignItems: 'center',
-
-            marginBottom: 60,
+            flex:1,
+            // marginBottom: SCREEN.height*0.15,
           }}>
           <FlatList
             data={this.state.findpeople}
@@ -149,9 +150,11 @@ export default class home extends Component {
                 }}>
                 <View style={[styles.flexRow, {width: SCREEN.width - 20}]}>
                   <View style={styles.imgView}>
-                    <Image source={require('../../assets/profile1.png')} />
+                   
+                    <Image source={require('../../assets/image2.jpg')} style={{borderRadius:44,height:60,width:60}} />
+                   
                     <Image
-                      style={{position: 'absolute', right: 15}}
+                      style={{position: 'absolute',right:-10}}
                       source={require('../../assets/private.png')}
                     />
                   </View>
@@ -181,7 +184,7 @@ export default class home extends Component {
             )}
           />
         </View>
-      </View>
+      </View >
     );
   };
   mapView = () => {
@@ -198,7 +201,7 @@ export default class home extends Component {
     );
   };
   searchBar = () => {
-    return (
+    return (  
       <View
         style={{
           alignSelf: 'center',
@@ -225,8 +228,8 @@ export default class home extends Component {
           justifyContent: 'center',
           alignItems: 'center',
           width: SCREEN.width,
-          marginTop: 40,
-          paddingHorizontal: 20,
+          flex:1,
+          paddingTop: SCREEN.height * 0.035,
         }}>
         <Image
           source={require('../../assets/map-marker-outline.png')}
@@ -235,7 +238,7 @@ export default class home extends Component {
         <Text style={[styles.titleText, {marginTop: 20, fontSize: 27}]}>
           Enable Location
         </Text>
-        <Text style={[styles.subtitleText, {textAlign: 'center'}]}>
+        <Text style={{color:BLACK.grey,marginHorizontal:50,textAlign: 'center',fontSize:17,fontFamily: FONT.Nunito.bold, marginTop: 7}}>
           You will need to enable location to see events near you
         </Text>
         <TouchableOpacity
@@ -265,6 +268,7 @@ export default class home extends Component {
               fontSize: 20,
               fontFamily: FONT.Nunito.regular,
               textAlign: 'center',
+              color: BLACK.grey
             },
           ]}>
           No events to show{'\n'} in your area.
@@ -286,9 +290,9 @@ export default class home extends Component {
               backgroundColor: '#fff',
 
               shadowColor: '#000',
-              shadowOffset: {width: 1, height: 1},
-              shadowOpacity: 0.4,
-              shadowRadius: 3,
+              shadowOffset: {width: 2, height: 3},
+              shadowOpacity: 0.1,
+              shadowRadius: 6,
               elevation: 5,
             },
           ]}>
@@ -422,12 +426,7 @@ export default class home extends Component {
   };
   bottomView = () => {
     return (
-      <View style={{position: 'absolute', bottom: 0,height:189}}>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('createEvent')}
-          style={styles.logoAdd}>
-          <Image source={require('../../assets/plus-circle.png')} />
-        </TouchableOpacity>
+      <View style={{ height:151,justifyContent:'center'}}>
         <View
           style={{
             backgroundColor: 'white',
@@ -479,14 +478,14 @@ export default class home extends Component {
             <TouchableOpacity
               style={styles.btnMap}
               onPress={() => this.setState({mapView: false, listView: true})}>
-              <Text style={styles.btnText}>List View</Text>
+              <Text style={styles.btnText}>LIST VIEW</Text>
             </TouchableOpacity>
           )}
           {this.state.listView == true && (
             <TouchableOpacity
               style={styles.btnMap}
               onPress={() => this.setState({listView: false, mapView: true})}>
-              <Text style={styles.btnText}>Map View</Text>
+              <Text style={styles.btnText}>MAP VIEW</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -499,7 +498,6 @@ export default class home extends Component {
       
         <SafeAreaView style={styles.contentView}>
         <HeaderWithOptionBtn
-                    
                         borderBottom={true}
                         backColor={WHITE.dark}
                         leftPress={() => this.props.navigation.openDrawer()}
@@ -524,8 +522,24 @@ export default class home extends Component {
             this.state.index == 4) &&
             this.noEvent()}
 
-          {(this.state.listView === true || this.state.mapView === true) &&
+          {(this.state.listView === true || this.state.mapView === true)  &&
             this.bottomView()}
+            {(this.state.listView === true || this.state.mapView === true)  &&
+          
+            <View style={{
+              position:'absolute',
+              bottom: isIphoneXorAbove ? 182 : 148,
+            
+              right:0
+              }}>
+            <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('createEvent')}
+          style={styles.logoAdd}>
+          <Image source={require('../../assets/plus-circle.png')} />
+        </TouchableOpacity>
+      
+            </View>
+    }
         </SafeAreaView>
       </View>
     );
@@ -567,9 +581,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   imgView: {
-    width: SCREEN.width * 0.25,
-    // justifyContent: 'center',
-    // alignSelf:'center'
+    marginHorizontal:20,
+    alignItems:'center',
+    
+    alignSelf:'center'
   },
   shareView: {
     width: wp('20%'),
@@ -606,32 +621,27 @@ const styles = StyleSheet.create({
     width: SCREEN.width * 0.6,
   },
   btnLocation: {
-    width: SCREEN.width - 100,
+    width: SCREEN.width - 98,
     borderRadius: 25,
-    marginTop: 60,
+    marginTop: SCREEN.height * 0.078,
     height: 55,
     backgroundColor: WHITE.dark,
-
-    // shadowColor: 'black',
-    // shadowOffset: {width: 0, height: 2},
-    // shadowRadius: 6,
-    // shadowOpacity: 0.1,
-    elevation: 5,
-    justifyContent: 'center',
-
+    shadowColor: '#000',
+    shadowOffset: {width: 1, height: 1},
+    shadowOpacity: 0.6,
+    shadowRadius: 3,
+    justifyContent:'center',
     borderWidth: 1,
     borderRadius: 24,
     borderColor: BLACK.light,
     bottom: 10,
   },
   btnMap: {
+    marginTop:10,
     width: SCREEN.width - 40,
-    // marginHorizontal: '5%',
     borderRadius: 25,
-
     height: 50,
     marginBottom: 20,
-
     backgroundColor: 'black',
     justifyContent: 'center',
   },
@@ -642,7 +652,6 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     position: 'absolute',
-
     bottom: 20,
   },
   btnText: {
@@ -650,7 +659,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     color: 'white',
-    fontFamily: FONT.Nunito.regular,
+    fontFamily: FONT.Nunito.bold,
   },
   btnTextLocation: {
     fontSize: 16,
@@ -667,7 +676,6 @@ const styles = StyleSheet.create({
   subtitleText: {
     fontSize: 14,
     marginTop: 14,
-
     fontFamily: FONT.Nunito.semiBold,
   },
 

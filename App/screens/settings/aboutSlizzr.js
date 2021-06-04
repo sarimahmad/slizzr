@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { FONT, SCREEN } from '../../helper/Constant'
 import Header from '../../component/Header';
+import { WHITE } from '../../helper/Color';
 
 
 export default class about extends Component {
@@ -27,7 +28,8 @@ export default class about extends Component {
 const styles = StyleSheet.create({
     wrapperView: {
         flex: 1,
-        marginTop: 20
+        marginTop: 20,
+        backgroundColor: WHITE.dark,
     },
     textView2: {
         justifyContent: 'center',

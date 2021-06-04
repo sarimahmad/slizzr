@@ -4,6 +4,7 @@ import { FONT, SCREEN } from '../../helper/Constant'
 import Header from '../../component/Header';
 import Textarea from 'react-native-textarea'
 import { SafeAreaView } from 'react-navigation';
+import { WHITE } from '../../helper/Color';
 
 export default class contactUs extends Component {
     render() {
@@ -44,6 +45,7 @@ export default class contactUs extends Component {
 }
 const styles = StyleSheet.create({
     wrapperView: {
+        backgroundColor: WHITE.dark,
         flex: 1,
     },
     textView:{
@@ -60,7 +62,8 @@ const styles = StyleSheet.create({
         
     },
     inputTextView:{
-        shadowOpacity:0.6,
+        backgroundColor: WHITE.dark,
+        shadowOpacity:0.1,
         shadowRadius: 10,
         shadowOffset: {width:1,height:1},
         width: SCREEN.width - 40,

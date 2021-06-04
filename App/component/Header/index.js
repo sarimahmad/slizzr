@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { BLACK } from '../../helper/Color';
+import { BLACK, WHITE } from '../../helper/Color';
 import { FONT } from '../../helper/Constant';
 
 export default class Header extends Component {
@@ -27,6 +27,7 @@ export default class Header extends Component {
 
 const styles = StyleSheet.create({
   flex: {
+    backgroundColor: WHITE.dark,
     alignItems:'center',
     height: 60,
     borderBottomWidth: 1,

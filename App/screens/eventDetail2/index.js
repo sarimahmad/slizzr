@@ -21,8 +21,12 @@ export default class eventDetail2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    };
-  }
+      image: [{ id: 1, image: require('../../assets/Slizzer-icon/testImage.webp') },
+      { id: 2, image: require('../../assets/Slizzer-icon/testImage.webp') },
+      { id: 3, image: require('../../assets/Slizzer-icon/testImage.webp') },
+      { id: 4, image: require('../../assets/Slizzer-icon/testImage.webp') },
+      { id: 5, image: require('../../assets/Slizzer-icon/testImage.webp') },]
+  } }
 
   render() {
     return (
@@ -50,7 +54,19 @@ export default class eventDetail2 extends Component {
           </View>
           <ScrollView>
           
-          <View style={{elevation:5,marginHorizontal:20,borderRadius:12,marginBottom:20,padding:10,backgroundColor:'white'}}>
+          <View style={{
+          elevation:5,
+          marginTop: 20,
+          marginHorizontal:20,
+          borderRadius:12,
+          marginBottom:20,
+          padding:10,
+          backgroundColor:'white',shadowColor: 'black',
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 6,
+    shadowOpacity: 0.1,
+    height: 380
+    }}>
          <TouchableOpacity onPress={()=>this.props.navigation.navigate("eventDetail")} style={{borderWidth:1,height:35,width:35,borderRadius:24,backgroundColor:'white',justifyContent:'center',alignItems: 'center',}}>
           <Image
                 source={require('../../assets/backEvent.png')}
@@ -58,45 +74,50 @@ export default class eventDetail2 extends Component {
               />
      </TouchableOpacity>
           <Text style={[styles.titleText,{textAlign:'center'}]}>Nitish Birthday Party </Text>
-          <Text style={[styles.subtitleText,{textAlign:'center'}]}>Fixie tote bag ethnic keytar. Neutra vinyl American Apparel kale chips tofu art party, cardigan raw denim quinoa. Cray paleo tattooed, Truffaut skateboard street art PBR jean shorts Shoreditch farm-to-table Austin lo-fi Odd Future occupy. Chia semiotics skateboard, Schlitz messenger bag master cleanse High Life occupy vegan polaroid tote bag leggings. Single-origin coffee mumblecore deep v salvia mlkshk. Organic photo booth cray tofu, vegan fixie bitters sriracha. Blog Austin Wes Anderson, deep v pour-over trust fund vinyl mlkshk +1. </Text>
-         
-          </View>
-          <View style={{marginHorizontal:20}}>
-         
-          <View style={styles.flex}>
-          <Text style={[styles.titleText,{textAlign:'center'}]}>Nitish Birthday Party </Text>
-          <Text style={[styles.purpleText,{textAlign:'center'}]}>15 KM away </Text>
-          </View>
-        
-        
-          <View style={styles.flexRow}>
-          <Text style={[styles.titleText,{fontSize:12}]}>Host:</Text>
-          <Text style={styles.purpleText}>Holly Smith</Text>
-          </View>
-          <Text style={[styles.purpleText,]}>11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
-         
-          <View style={styles.flex}>
-          <View style={styles.flexRow}>
-           <Image
+          <Text style={[styles.subtitleText,{textAlign:'center',marginTop:12}]}>Fixie tote bag ethnic keytar. Neutra vinyl American Apparel kale chips tofu art party, cardigan raw denim quinoa. Cray paleo tattooed, Truffaut skateboard street art PBR jean shorts Shoreditch farm-to-table Austin lo-fi Odd Future occupy. Chia semiotics skateboard, Schlitz messenger bag master cleanse High Life occupy vegan polaroid tote bag leggings. Single-origin coffee mumblecore deep v salvia mlkshk. Organic photo booth cray tofu, vegan fixie bitters sriracha. Blog Austin Wes Anderson, deep v pour-over trust fund vinyl mlkshk +1. </Text>
+          <View style={{flexDirection:'row',backgroundColor:'rgba(178, 171, 177, 0.246039)',padding:20,margin:20,borderRadius:10}}>
+         <Image
                 source={require('../../assets/location.png')}
-                style={styles.logo}
+                style={{height:16,width:12}}
               />
-          <Text style={styles.purpleText}>15 KM away</Text>
-          </View>
-          <Text style={[styles.purpleText,]}>$15</Text>
         
+         <Text style={{marginLeft:5}}>1817 18 St. SW Calgary AB T2T 4T2 (Calgary, Alberta)</Text>
+            </View>
+      
           </View>
+          <View style={{width:SCREEN.width - 40,alignSelf:'center'}}>
+          <View style={styles.flex}>
+          <Text style={[styles.titleText]}>Brittney’s 18th Birthday </Text>
+          <Text style={[styles.titleText,{color:'#F818D9'}]}>prepaid</Text>
           </View>
-          <Text style={[styles.titleText,{marginLeft:20,marginTop:10}]}>Mututal Attendes</Text>
-          <View style={{flexDirection:'row',marginLeft:20,marginVertical:10}}>
-         
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
-         <Image source={require('../../assets/profile2.png')} style={{marginHorizontal:5}} />  
+          <View style={[styles.flexRow,{paddingTop:5}]}>
+          <Text style={[styles.titleText,{fontSize:12,fontFamily:FONT.Nunito.regular}]}>Host: </Text>
+          <Text style={[styles.purpleText,{textDecorationLine:'underline',fontFamily:FONT.Nunito.regular,paddingLeft:4}]}>Holly Smith</Text>
+          </View>
+          <Text style={{fontFamily:FONT.Nunito.bold, fontSize: 12, color: BLACK.textColor3, marginTop:3}}>11:30 PM | FEB 25, 2020 - WED | 2 HRS</Text>
+          <View style={[styles.flexRow,{justifyContent:'space-between'}]}>
+          <View style={[styles.flexRow,{paddingTop: 5}]}>
+            <Image style={{width:12, height: 16, marginRight: 5}} source={require('../../assets/location.png')}/>
+            <Text style={{fontFamily: FONT.Nunito.semiBold, fontSize: 12, color: BLACK.grey}}>15 KM away</Text>
+          </View>
+          <Text style={{fontFamily:FONT.Nunito.bold, fontSize: 17, color: BLACK.textColor2}}>$15</Text>
+          </View>
+          <Text style={[styles.titleText,{marginTop:9}]}>Mututal Attendes</Text>
+          <View style={{ height: 50, width: SCREEN.width, marginTop: 11, }}>
+                                <FlatList
+                                    data={this.state.image}
+                                    horizontal
+                                    keyExtractor={(item, index) => index.toString()}
+                                    renderItem={({ item }) => (
+                                        <View style={styles.listView}>
+                                            <Image style={styles.ImageView} source={item.image} />
+                                        </View>
+                                    )}
+                                />
+                            </View>
+          <Text style={[styles.purpleText,{marginTop:9, textDecorationLine:'underline',}]}>See more</Text>
          </View>
-         <Text style={[styles.purpleText,{marginLeft:20,marginBottom:10, textDecorationLine:'underline',}]}>See more</Text>
+          
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("prepay")} style={styles.btnMap}>
               <Text style={styles.btnText}>Attend</Text>
             </TouchableOpacity>
@@ -134,6 +155,17 @@ const styles = StyleSheet.create({
         color: 'red',
         fontFamily: FONT.Nunito.regular,
       },
+      listView: {
+        marginRight: 11,
+    },
+  
+      ImageView: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+  
+    },
+   
       cancelButton:{
         width: wp('90%'),
         marginHorizontal: '5%',
@@ -171,7 +203,6 @@ const styles = StyleSheet.create({
     },
     flexRow: {
       flexDirection: 'row',
-      paddingVertical: 10,
       // paddingHorizontal:10,
       
     },
@@ -210,10 +241,9 @@ const styles = StyleSheet.create({
         width:width
     },
     titleText: {
-      color: BLACK.textInputTitle,
+      color: BLACK.grey,
       fontFamily: FONT.Nunito.bold,
       fontSize: 17,
-      
     },
     subtitleText: {
         // marginVertical: 10,
@@ -224,9 +254,7 @@ const styles = StyleSheet.create({
     purpleText: {
       fontSize: 12,
       color: '#F818D9',
-    
-      textDecorationLine: 'underline',
-      fontFamily: FONT.Nunito.semiBold,
+      fontFamily: FONT.Nunito.bold,
     },
     barChild: {
       borderWidth: 1,

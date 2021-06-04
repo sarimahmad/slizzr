@@ -53,9 +53,7 @@ export default class notification extends Component {
         <View style={styles.wrapperView}>
 <SafeAreaView  style={styles.contentView}>
      
-    <HeaderWithOptionBtn
-                    
-                    borderBottom={true}
+    <HeaderWithOptionBtn    
                     backColor={WHITE.dark}
                     headerTitle={'Notification'}
                     leftPress={() => this.props.navigation.openDrawer()}
@@ -64,7 +62,6 @@ export default class notification extends Component {
        
 
       <FlatList
-          
           data={this.state.findpeople}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
@@ -99,14 +96,14 @@ const styles = StyleSheet.create({
         backgroundColor: WHITE.dark,
       },
       imgView:{
-        width:SCREEN.width*0.2
+        width:  SCREEN.width* 0.16,
       },
       detail:{
+
 
       },
       contentView: {
         flex: 1,
-      
         backgroundColor: WHITE.dark,
       },
     greyText:{
@@ -115,17 +112,13 @@ const styles = StyleSheet.create({
         fontFamily: FONT.Nunito.regular,
         
     },
-   
      flexRow: {
        flexDirection: 'row',
-       paddingVertical: 10,
-       paddingHorizontal:10,
        height:80,
        alignItems: 'center',
        
      },
-            
-      
+
   
      subtitleText: {
        fontSize: 12,

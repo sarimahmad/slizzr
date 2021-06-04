@@ -67,6 +67,8 @@ export default class peopleProfiles extends Component {
   render() {
     return (
         <View style={styles.wrapperView}>
+<SafeAreaView style={styles.contentView}>
+        
            <HeaderWithOptionBtn
                     
                     borderBottom={true}
@@ -79,7 +81,6 @@ export default class peopleProfiles extends Component {
                    
                 />
         
-        <SafeAreaView style={styles.contentView}>
         
    
    <ScrollView >
@@ -106,7 +107,7 @@ export default class peopleProfiles extends Component {
             <View style={styles.cardView}>
             <View style={styles.topView}>
    
-            <Image source={require('../../assets/cardTopView.png')} style={{alignSelf:'center',}} />      
+            <Image source={require('../../assets/cardTopView.png')} style={{alignSelf:'center',width:SCREEN.width-40,borderTopLeftRadius:20,borderTopRightRadius:20}} />      
            
             </View>
            
@@ -139,7 +140,7 @@ export default class peopleProfiles extends Component {
                    <Text style={styles.btnTextLocation}>DIRECT INVITE</Text>
                  </TouchableOpacity>
             </View>
-            <Image source={require('../../assets/cardImage1.png')} style={{position:'absolute',left:100,top:40}} />
+            <Image source={require('../../assets/cardImage1.png')} style={{position:'absolute',alignSelf:'center',top:40}} />
            
             </View>
    
@@ -159,7 +160,8 @@ const styles = StyleSheet.create({
    flexDirection:'row',
    marginTop:10,
    alignItems: 'center',
-   marginHorizontal:20
+   marginHorizontal:20,
+   marginBottom:10
    },
    box:{
     borderWidth:1,borderRadius:5,paddingHorizontal:20,paddingVertical:15,borderColor:'lightgrey',
@@ -184,7 +186,8 @@ const styles = StyleSheet.create({
         bottom: 10,
       },
     topView:{
-     height:100
+     height:100,
+    
     },
     bottomView:{
     height:312,
@@ -193,11 +196,16 @@ const styles = StyleSheet.create({
      
     },
     cardView:{
-    marginHorizontal:10,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 6,
+    shadowOpacity: 0.6,
+    backgroundColor:'white',
     borderRadius:20,
     height:412,
-    marginTop:20,
-
+    marginVertical:10,
+    alignSelf:'center',
+    width:SCREEN.width-40,
     elevation:6,
     
 
@@ -352,9 +360,6 @@ const styles = StyleSheet.create({
     },
     contentView: {
       flex: 1,
-      alignSelf: 'center',
-      alignItems: 'center',
-      // width: SCREEN.width - 40,
       backgroundColor: WHITE.dark,
     },
    policyText: {
