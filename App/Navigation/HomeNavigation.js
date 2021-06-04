@@ -69,6 +69,7 @@ import help from '../screens/settings/help';
 import settings from '../screens/settings/index';
 import myProfile from '../screens/myProfile';
 import editProfle from '../screens/myProfile/editProfle';
+import zicketDetail from '../screens/zicketDetail';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -204,7 +205,7 @@ function DrawerContent(props) {
         
           )
         }}
-        component={zickets} /> 
+        component={zicketsNavigation} /> 
         <Drawer.Screen
         name="Notifications"
         options={{
@@ -244,6 +245,17 @@ function messagesNavigation() {
                <Stack.Screen name="chat" component={chat}></Stack.Screen>
              </Stack.Navigator> );
 }
+function zicketsNavigation() {
+  return (
+    <Stack.Navigator initialRouteName="Zickets" screenOptions={{
+               headerShown: false
+             }}>
+              
+               <Stack.Screen name="Zickets" component={zickets}></Stack.Screen>
+           
+               <Stack.Screen name="zicketDetail" component={zicketDetail}></Stack.Screen>
+             </Stack.Navigator> );
+}
 function AccountNavigation() {
   return (
     <Stack.Navigator initialRouteName="Intro" screenOptions={{
@@ -259,6 +271,7 @@ function AccountNavigation() {
                <Stack.Screen name="index" component={index}></Stack.Screen>
              </Stack.Navigator> );
 }
+
 export const MainNavigation = () => {
   return (
     <NavigationContainer>

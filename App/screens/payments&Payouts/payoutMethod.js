@@ -31,7 +31,7 @@ export default class payoutMethod extends Component {
                         backColor={WHITE.dark}
                         borderBottom={true}
                         leftIcon={require('../../assets/back.png')}
-                        leftPress={() => alert('ok')}
+                        leftPress={() => this.props.navigation.goBack()}
                         rightIcon={require('../../assets/Slizzer-icon/edit.png')}
                         rightPress={() => this.setState({ editType: !this.state.editType })} />
                     <FlatList

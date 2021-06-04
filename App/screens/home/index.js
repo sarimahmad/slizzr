@@ -422,7 +422,7 @@ export default class home extends Component {
   };
   bottomView = () => {
     return (
-      <View style={{position: 'absolute', bottom: 0}}>
+      <View style={{position: 'absolute', bottom: 0,height:189}}>
         <TouchableOpacity
           onPress={() => this.props.navigation.navigate('createEvent')}
           style={styles.logoAdd}>

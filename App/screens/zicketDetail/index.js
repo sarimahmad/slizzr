@@ -19,7 +19,7 @@ import {
 import { ScrollView } from 'react-native-gesture-handler';
 import { fonts } from 'react-native-elements/dist/config';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class attendingEventInfo extends Component {
+export default class zicketDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,7 +35,7 @@ export default class attendingEventInfo extends Component {
                     
                     borderBottom={true}
                     backColor={WHITE.dark}
-                    headerTitle={'Event'}
+                    headerTitle={'zicketsNavigation'}
                     leftPress={() => this.props.navigation.goBack()}
                     leftIcon={require('../../assets/back.png')}
                 />   
@@ -64,22 +64,33 @@ export default class attendingEventInfo extends Component {
         
          <Text style={{fontSize:12,fontFamily:FONT.Nunito.regular,color:'#494949'}}>1817 18 St. SW Calgary AB T2T 4T2 (Calgary, Alberta)</Text>
             </View>
-            <Text style={[styles.titleText,{textAlign:'center'}]}>Description:</Text>
-            <Text style={[styles.text,{textAlign:'center',marginHorizontal:36,marginTop:10,marginBottom:20}]}>Tousled food truck polaroid, salvia bespoke small batch Pinterest Marfa. Fingerstache authentic craft beer, food truck Banksy Carles kale chips hoodie. Trust fund artisan master cleanse fingerstache post-ironic, fashion axe art party Etsy direct trade retro organic. Cliche Shoreditch Odd Future Pinterest, pug disrupt photo booth VHS literally occupy gluten-free polaroid Intelligentsia PBR mustache. Locavore fashion axe chia, iPhone cardigan disrupt Etsy dreamcatcher. Craft beer selvage fanny pack, 8-bit post-ironic keffiyeh </Text>
-            <TouchableOpacity style={styles.btnMap}>
-              <Text style={styles.btnText}>ATTENDEES</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap}>
-              <Text style={styles.btnText}>VIEW ZICKET</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap}>
-              <Text style={styles.btnText}>MESSAGE HOST</Text>
-            </TouchableOpacity>
-          
-            <TouchableOpacity style={styles.cancelButton}>
-              <Text style={styles.btnTextCancel}>CANCEL ATTANDANCE</Text>
-            </TouchableOpacity>
-          
+           <View style={{borderWidth:2,alignSelf:'center',borderColor:'#F818D9',height:242,width:242}}>
+            <Image
+                source={require('../../assets/barCode.png')}
+                style={{height:239,width:239}}
+              />
+              </View>
+           <View style={{flexDirection:'row',alignSelf:'center',marginTop:20}}>
+               <Text style={styles.titleText}>Host: </Text>
+               <Text style={{fontFamily:FONT.Nunito.regular}}>Nitish Shrma</Text>
+           </View>
+           <View style={{flexDirection:'row',alignSelf:'center'}}>
+               <Text style={styles.titleText}>Attendee: </Text>
+               <Text style={{fontFamily:FONT.Nunito.regular}}>Zoya Rajput</Text>
+           </View>
+           <View style={{alignSelf:'center',marginTop:20}}>
+            <Image
+                source={require('../../assets/appleWallet.png')}
+                style={{height:55,width:174}}
+              />
+              </View>
+              <View style={{flexDirection:'row',alignSelf:'center',marginTop:26,marginBottom:10}}>
+              <Image
+                source={require('../../assets/invalid.png')}
+                // style={{height:55,width:174}}
+              />
+              <Text style={{fontFamily:FONT.Nunito.semiBold,fontSize:12,color:'#F818D9'}}> #Valid payment method must be set up to ensure entry at door</Text>
+              </View>
             </ScrollView>
           </SafeAreaView>
    </View>
@@ -92,7 +103,8 @@ const styles = StyleSheet.create({
       backgroundColor:WHITE.dark
     }, contentView: {
       flex: 1,
-     
+      width:SCREEN.width-20,
+      alignSelf:'center',      
       backgroundColor: WHITE.dark,
     },
     btnTextLocation: {
