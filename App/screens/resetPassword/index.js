@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -24,8 +25,17 @@ export default class resetPassword extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <Header headerTitle={'Reset Password'} navigation={this.props.navigation} route={"Signin"}/>
-        <SafeAreaView style={{justifyContent: 'center', alignItems: 'center',marginTop:'10%'}}>
+        <Header
+          headerTitle={'Reset Password'}
+          navigation={this.props.navigation}
+          route={'Signin'}
+        />
+        <SafeAreaView
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: '10%',
+          }}>
           <Image
             source={require('../../assets/logo.png')}
             style={styles.logo}
@@ -35,7 +45,7 @@ export default class resetPassword extends Component {
             in order to let you choose a new password.
           </Text>
           <TextField
-          secure={"no"}
+            secure={'no'}
             placeholder={'Your Email Adress'}
             type="email"
             parentCallBack={this.storeInputData}
@@ -56,10 +66,11 @@ const styles = StyleSheet.create({
   },
   wrapperView: {
     flex: 1,
-    backgroundColor:'#F2F2F2'
+    backgroundColor: '#F2F2F2',
   },
-  textColor:{
-      margin: '15%', textAlign: 'center',
-      color:'#8e8e93'
-  }
+  textColor: {
+    margin: '15%',
+    textAlign: 'center',
+    color: '#8e8e93',
+  },
 });

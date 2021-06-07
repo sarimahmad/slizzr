@@ -34,13 +34,13 @@ export default class scan extends Component {
         <SafeAreaView style={styles.SafeView}>
           <QRCodeScanner
             onRead={this.onSuccess}
-            containerStyle={{height:SCREEN.height,width:SCREEN.width}}
+            containerStyle={{height: SCREEN.height, width: SCREEN.width}}
             cameraType={this.state.cameraType}
             reactivateTimeout={2000}
-            cameraStyle={{height:SCREEN.height,width:SCREEN.width}}
+            cameraStyle={{height: SCREEN.height, width: SCREEN.width}}
             reactivate={true}
             showMarker={false}
-            flashMode={this.state.flash}   
+            flashMode={this.state.flash}
           />
           <View style={styles.AbsoluteScanner}>
             <View style={styles.IconWrapper}>

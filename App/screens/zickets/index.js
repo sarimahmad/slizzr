@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet,FlatList,Image} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Image,
+} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {APPCOLOR, BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -104,57 +111,51 @@ export default class Zickets extends Component {
                   fontSize: 11,
                   fontFamily: FONT.Nunito.bold,
                 }}>
-             MY ZICKETS
+                MY ZICKETS
               </Text>
             </TouchableOpacity>
           </View>
           {!this.state.scanZickets ? (
             <FlatList
-            data={this.state.findpeople}
-            keyExtractor={item => item.id}
-            renderItem={({item}) => (
-              <TouchableOpacity 
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: 'lightgrey',
-                }}>
-                <View style={styles.flexRow}>
-                <View style={styles.imgView}>
-                   
-                   <Image source={require('../../assets/image2.jpg')} style={{borderRadius:44,height:60,width:60}} />
-                  
-                   <Image
-                     style={{position: 'absolute',right:-10}}
-                     source={require('../../assets/private.png')}
-                   />
-                 </View>
+              data={this.state.findpeople}
+              keyExtractor={item => item.id}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'lightgrey',
+                  }}>
+                  <View style={styles.flexRow}>
+                    <View style={styles.imgView}>
+                      <Image
+                        source={require('../../assets/image2.jpg')}
+                        style={{borderRadius: 44, height: 60, width: 60}}
+                      />
 
-                  <View style={styles.detail}>
-                    <Text style={styles.titleText}>{item.profileName}</Text>
-                    <Text style={styles.subtitleText}>{item.adress}</Text>
-                    <Text style={[styles.purpleText,{marginTop:5}]}>{item.date}</Text>
+                      <Image
+                        style={{position: 'absolute', right: -10}}
+                        source={require('../../assets/private.png')}
+                      />
+                    </View>
+
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>{item.profileName}</Text>
+                      <Text style={styles.subtitleText}>{item.adress}</Text>
+                      <Text style={[styles.purpleText, {marginTop: 5}]}>
+                        {item.date}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('zicketDetail')
+                      }
+                      style={styles.shareView}>
+                      <Image source={require('../../assets/Right.png')} />
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('zicketDetail')
-                    }
-                    style={styles.shareView}>
-                    <Image source={require('../../assets/Right.png')} />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
-           // <View style={{alignItems: 'center', marginTop: hp('30%')}}>
-            //   <Text style={styles.detail}>
-            //     You are not attending any events at the moment.
-            //   </Text>
-            //   <TouchableOpacity
-            //     onPress={() => this.setState({enableMap: true})}
-            //     style={styles.btnLocation}>
-            //     <Text style={styles.btnTextLocation}>look for events!</Text>
-            //   </TouchableOpacity>
-            // </View>
+                </TouchableOpacity>
+              )}
+            />
           ) : (
             <View style={{alignItems: 'center', marginTop: hp('30%')}}>
               <Text style={styles.det0ail}>
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   detail: {
-    width: SCREEN.width *0.55,
+    width: SCREEN.width * 0.55,
     alignSelf: 'center',
     textAlign: 'center',
   },
@@ -223,12 +224,12 @@ const styles = StyleSheet.create({
     backgroundColor: WHITE.dark,
   },
   imgView: {
-    marginHorizontal:20,
-    alignItems:'center',
-    
-    alignSelf:'center'
+    marginHorizontal: 20,
+    alignItems: 'center',
+
+    alignSelf: 'center',
   },
-   flex: {
+  flex: {
     flexDirection: 'row',
     backgroundColor: WHITE.dark,
     justifyContent: 'space-between',
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: APPCOLOR.text,
     marginTop: 10,
-   
+
     fontFamily: FONT.Nunito.semiBold,
   },
   barChild: {

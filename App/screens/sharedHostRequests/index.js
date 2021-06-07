@@ -1,5 +1,4 @@
-
-
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   View,
@@ -10,8 +9,8 @@ import {
   FlatList,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
+import {BLACK, WHITE} from '../../helper/Color';
+import {FONT} from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -21,9 +20,8 @@ export default class sharedHostRequests extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
-        attendingEvents:true,
-        myevents:false,
+      attendingEvents: true,
+      myevents: false,
       messages: [
         {
           imgProfile: '',
@@ -31,45 +29,42 @@ export default class sharedHostRequests extends Component {
           adress: 'Host: Tallah Cotton',
           date: '11:30 PM | Feb 25, 2020 - WED',
         },
-    ],
-        findpeople: [
-            {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-        ]
-      
-    };
+      ],
+      findpeople: [
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
 
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+      ],
+    };
   }
 
   render() {
@@ -87,53 +82,74 @@ export default class sharedHostRequests extends Component {
             <Text style={styles.titleText}>Shared Host Requests</Text>
             <View></View>
           </View> */}
-          <HeaderWithOptionBtn
-                    
-                    borderBottom={true}
-                    backColor={WHITE.dark}
-                    headerTitle={'Shared Host Requests'}
-                    leftPress={() => this.props.navigation.goBack()}
-                    leftIcon={require('../../assets/back.png')}
-                /> 
+        <HeaderWithOptionBtn
+          borderBottom={true}
+          backColor={WHITE.dark}
+          headerTitle={'Shared Host Requests'}
+          leftPress={() => this.props.navigation.goBack()}
+          leftIcon={require('../../assets/back.png')}
+        />
         <SafeAreaView style={styles.contentView}>
-           
-            <FlatList
-              data={this.state.findpeople}
-              keyExtractor={item => item.id}
-              renderItem={({item}) => (
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate("attendingEventInfo")}
-                  style={{
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'lightgrey',
-                  }}>
-                  <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
-                      <Image source={require('../../assets/profile1.png')} />
-                      <Image
-                        style={{position: 'absolute', right: 15}}
-                        source={require('../../assets/private.png')}
-                      />
-               
-                    </View>
-                    
-                    <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.profileName}</Text>
-                      <Text style={styles.subtitleText}>{item.adress}</Text>
-                      <Text style={styles.purpleText}>{item.date}</Text>
-                    </View>
-            <View>
-            <TouchableOpacity onPress={()=>this.props.navigation.navigate("manageEvent")} style={{marginBottom:5,marginRight:5,height:30,width:30,borderRadius:24,backgroundColor:'#4CD964',alignItems: 'center',justifyContent:'center'}}> 
-             <Image source={require('../../assets/check.png')} />  
-         </TouchableOpacity>
-         <View style={{marginRight:5,height:30,width:30,borderRadius:24,backgroundColor:'#FF3B30',alignItems: 'center',justifyContent:'center'}}> 
-             <Image source={require('../../assets/closeIcon.png')} />  
-         </View>
-         </View>
-                   
+          <FlatList
+            data={this.state.findpeople}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('attendingEventInfo')
+                }
+                style={{
+                  borderBottomWidth: 1,
+                  borderBottomColor: 'lightgrey',
+                }}>
+                <View style={styles.flexRow}>
+                  <View style={styles.imgView}>
+                    <Image source={require('../../assets/profile1.png')} />
+                    <Image
+                      style={{position: 'absolute', right: 15}}
+                      source={require('../../assets/private.png')}
+                    />
                   </View>
-                </TouchableOpacity>
-              )}
-            />
+
+                  <View style={styles.detail}>
+                    <Text style={styles.titleText}>{item.profileName}</Text>
+                    <Text style={styles.subtitleText}>{item.adress}</Text>
+                    <Text style={styles.purpleText}>{item.date}</Text>
+                  </View>
+                  <View>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('manageEvent')
+                      }
+                      style={{
+                        marginBottom: 5,
+                        marginRight: 5,
+                        height: 30,
+                        width: 30,
+                        borderRadius: 24,
+                        backgroundColor: '#4CD964',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Image source={require('../../assets/check.png')} />
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        marginRight: 5,
+                        height: 30,
+                        width: 30,
+                        borderRadius: 24,
+                        backgroundColor: '#FF3B30',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Image source={require('../../assets/closeIcon.png')} />
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
+          />
         </SafeAreaView>
       </View>
     );
@@ -151,29 +167,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
-  }, btnTextLocation: {
-    fontSize: 16,
-    color: 'white',
-    textAlign: 'center',
-    fontFamily: FONT.Nunito.regular,
-
   },
- btnTextLocation: {
+  btnTextLocation: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
     fontFamily: FONT.Nunito.regular,
-
   },
   btnLocation: {
     width: wp('80%'),
     marginHorizontal: '10%',
-    borderRadius: 25,
     marginTop: hp('5%'),
     height: 50,
     elevation: 1,
-    justifyContent:'center',
-    backgroundColor:'black',
+    justifyContent: 'center',
+    backgroundColor: 'black',
     borderWidth: 1,
     borderRadius: 24,
     borderColor: BLACK.light,
@@ -182,8 +190,7 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
-    paddingHorizontal:10,
-    
+    paddingHorizontal: 10,
   },
   detail: {
     width: wp('55%'),
@@ -191,14 +198,10 @@ const styles = StyleSheet.create({
   next: {
     paddingTop: 15,
   },
-  detail: {
-    width: wp('55%'),
-  },
   imgView: {
     width: wp('25%'),
   },
   shareView: {
-
     width: wp('20%'),
     justifyContent: 'center',
   },
@@ -222,8 +225,7 @@ const styles = StyleSheet.create({
   barChild: {
     borderWidth: 1,
     width: wp('50%'),
-    height: 36,
-    height:40,
+    height: 40,
     borderColor: 'lightgrey',
     paddingTop: 12,
     fontFamily: FONT.Nunito.regular,

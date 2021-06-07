@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   View,
@@ -9,12 +10,8 @@ import {
   Image,
 } from 'react-native';
 import TextField from '../../component/TextField/index';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import {BLACK, WHITE} from '../../helper/Color';
+import {FONT} from '../../helper/Constant';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 
 export default class SignIn extends Component {
@@ -93,7 +90,6 @@ export default class SignIn extends Component {
                 </TouchableOpacity>
               </View>
 
-
               <View style={styles.btnGoogle}>
                 <View
                   style={{
@@ -149,10 +145,9 @@ const styles = StyleSheet.create({
   btnText: {
     textAlignVertical: 'center',
     fontSize: 16,
-    color: 'white',
     textAlign: 'center',
     // paddingTop:'5%',
-    fontFamily:FONT.Nunito.bold,
+    fontFamily: FONT.Nunito.bold,
     color: '#f1f1f2',
   },
   subtitleTextBold: {
@@ -212,7 +207,6 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
   },
   btnFaceBook: {
-    height: 55,
     backgroundColor: '#3664A2',
     width: '100%',
     borderRadius: 25,
@@ -221,7 +215,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   btnGoogle: {
-    height: 55,
     backgroundColor: '#FF3B30',
     width: '100%',
     borderRadius: 25,

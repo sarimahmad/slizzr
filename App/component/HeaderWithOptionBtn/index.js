@@ -26,7 +26,7 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rig
           <Image source={leftIcon} style={{ height: 40, width: 40, justifyContent: 'center' }} />
         </TouchableOpacity>}
         {profileIcon &&
-      
+
       <Image
       style={{position: 'absolute',left: 60, justifyContent: 'center', alignItems: 'center', height: 40, width: 40}}
       source={require('../../assets/profile1.png')}
@@ -43,11 +43,11 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rig
         flexDirection: 'row', alignItems: 'center',
       }}>
       <Image source={centerIcon} style={{  justifyContent: 'center' }} />
-      </View>    
+      </View>
     </View>
       }
 {headerTitle &&
-      <View 
+      <View
         style={{
           flex: 1,
           justifyContent: 'center',
@@ -85,7 +85,7 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rig
         }}>
        <View
               style={[
-               
+
                 {
                   elevation: 6,
                   marginRight: 5,
