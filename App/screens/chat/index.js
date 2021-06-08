@@ -201,8 +201,6 @@ const styles = StyleSheet.create({
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,
     fontSize: 17,
-    textAlign: 'center',
-    alignItems: 'center',
     paddingVertical: 10,
   },
   purpleText: {

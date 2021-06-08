@@ -66,13 +66,13 @@ export default class attendingEventInfo extends Component {
             </View>
             <Text style={[styles.titleText,{textAlign:'center'}]}>Description:</Text>
             <Text style={[styles.text,{textAlign:'center',marginHorizontal:36,marginTop:10,marginBottom:20}]}>Tousled food truck polaroid, salvia bespoke small batch Pinterest Marfa. Fingerstache authentic craft beer, food truck Banksy Carles kale chips hoodie. Trust fund artisan master cleanse fingerstache post-ironic, fashion axe art party Etsy direct trade retro organic. Cliche Shoreditch Odd Future Pinterest, pug disrupt photo booth VHS literally occupy gluten-free polaroid Intelligentsia PBR mustache. Locavore fashion axe chia, iPhone cardigan disrupt Etsy dreamcatcher. Craft beer selvage fanny pack, 8-bit post-ironic keffiyeh </Text>
-            <TouchableOpacity style={styles.btnMap}>
+            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("attendeesList")} style={styles.btnMap}>
               <Text style={styles.btnText}>ATTENDEES</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap}>
+            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("zicketDetail")} style={styles.btnMap}>
               <Text style={styles.btnText}>VIEW ZICKET</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap}>
+            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("chat")} style={styles.btnMap}>
               <Text style={styles.btnText}>MESSAGE HOST</Text>
             </TouchableOpacity>
           

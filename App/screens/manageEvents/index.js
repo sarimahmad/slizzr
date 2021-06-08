@@ -180,9 +180,9 @@ topBar=()=>{
                    <Text style={styles.subtitleText}>{item.adress}</Text>
                    <Text style={[styles.purpleText,{marginTop:5}]}>{item.date}</Text>
                  </View>
-                    <View style={styles.shareView}>
-                      <Image source={require('../../assets/share.png')} />
-                    </View>
+                 <TouchableOpacity onPress={()=>this.props.navigation.navigate("directInvites")} style={styles.shareView}>
+                   <Image source={require('../../assets/share.png')} />
+                    </TouchableOpacity>
                    
                   </View>
                 </TouchableOpacity>
@@ -215,9 +215,9 @@ topBar=()=>{
                  <Text style={styles.subtitleText}>{item.adress}</Text>
                  <Text style={[styles.purpleText,{marginTop:5}]}>{item.date}</Text>
                </View>
-                  <View style={styles.shareView}>
+                  <TouchableOpacity onPress={()=>this.props.navigation.navigate("directInvites")} style={styles.shareView}>
                   <Image source={require('../../assets/messageIcon.png')} />
-                  </View>
+                  </TouchableOpacity>
                  
                 </View>
               </TouchableOpacity>

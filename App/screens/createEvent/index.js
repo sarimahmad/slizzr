@@ -40,7 +40,10 @@ export default class CreateEvent extends Component {
       console.log('imageDeatail', JSON.stringify(image));
     });
   }
-
+directInvites = ()=>{
+  this.props.navigation.navigate("directInvites"),
+  this.RBSheet.close()
+}
   render() {
     return (
       <View style={styles.container}>
@@ -280,7 +283,7 @@ export default class CreateEvent extends Component {
                   />
                   <Text style={[styles.titleText,{marginTop:100}]}> Event Created!</Text>
                   {this.state.skip == false && (
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity onPress={this.directInvites} style={styles.button}>
                       <Text style={styles.text}> Share event</Text>
                     </TouchableOpacity>
                   )}

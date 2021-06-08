@@ -43,7 +43,7 @@ export default class scan extends Component {
             flashMode={this.state.flash}
           />
           <View style={styles.AbsoluteScanner}>
-            <View style={styles.IconWrapper}>
+            <View style={styles.IconWrapper}>  
               <Image
                 style={[
                   styles.IconWrapper,

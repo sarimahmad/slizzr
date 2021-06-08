@@ -157,7 +157,7 @@ export default class messages extends Component {
           You are not hosting any events at the moment.
         </Text>
         <TouchableOpacity
-          onPress={() => this.setState({enableMap: true})}
+          onPress={() => this.props.navigation.navigate("createEvent")}
           style={styles.btnLocation}>
           <Text style={[styles.btnTextLocation]}>HOST?</Text>
         </TouchableOpacity>

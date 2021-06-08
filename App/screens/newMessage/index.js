@@ -123,7 +123,7 @@ export default class newMessage extends Component {
               </TouchableOpacity>
             )}
           />
-             <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("attendeesList")}>
+             <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("chat")}>
               <Text style={styles.btnText}>MESSAGE ALL 87 ATTENDEES</Text>
             </TouchableOpacity>
         </SafeAreaView>

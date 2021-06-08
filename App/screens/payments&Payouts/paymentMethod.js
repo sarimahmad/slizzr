@@ -49,10 +49,10 @@ export default class paymentMethod extends Component {
               () => this.props.navigation.navigate('paymentsandPayouts')
               // this.setState({ editType: !this.state.editType })
             }
-            rightIcon={require('../../assets/Slizzer-icon/edit.png')}
+            rightIconText={this.state.editType == true ? 'EDIT' : 'DONE'}
             rightPress={() => this.setState({editType: !this.state.editType})}
           />
-          {!this.state.paymentMethod.length > 0 ? (
+          {this.state.paymentMethod.length > 0 ? (
             <FlatList
               data={this.state.paymentMethod}
               keyExtractor={item => item.id}

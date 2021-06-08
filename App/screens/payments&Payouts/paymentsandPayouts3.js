@@ -24,7 +24,7 @@ export default class paymentsandPayouts3 extends Component {
                         />
                     </View>
                     <Text style={styles.text1}>Thanks for Adding your Payment Method</Text>
-                    <TouchableOpacity style={styles.btn}>
+                    <TouchableOpacity  onPress={()=>this.props.navigation.navigate("paymentMethod")} style={styles.btn}>
                         <Text style={styles.btntext}>DONE</Text>
                     </TouchableOpacity>
                 </SafeAreaView>

@@ -88,7 +88,7 @@ export default class lookFriends extends Component {
           data={this.state.findpeople}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <View >
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("myProfile")} >
             <View style={styles.flexRow}>
               <View style={styles.imgView}>
                 <Image source={require('../../assets/lookFriend1.png')} />
@@ -102,7 +102,7 @@ export default class lookFriends extends Component {
              
             </View>
            <View style={{hiehgt:1,borderBottomWidth:1,borderBottomColor:'lightgrey',width:SCREEN.width}}></View>
-            </View>
+            </TouchableOpacity>
           )}
         /> 
    

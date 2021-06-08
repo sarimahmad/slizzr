@@ -56,7 +56,8 @@ import myProfile from '../screens/myProfile';
 import editProfle from '../screens/myProfile/editProfle';
 import zicketDetail from '../screens/zicketDetail';
 import mutualConnections from '../screens/mutualConnections';
-
+import directInvites from '../screens/directInvites';
+import NewpayoutMethod from '../screens/payments&Payouts/NewpayoutMethod';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -117,11 +118,13 @@ const PaymentsNavigation = () => {
       <Stack.Screen
         name="paymentsandPayouts2"
         component={paymentsandPayouts2}></Stack.Screen>
-      <Stack.Screen
-        name="paymentsandPayouts3"
-        component={paymentsandPayouts3}></Stack.Screen>
+
+      <Stack.Screen name="paymentsandPayouts3"   component={paymentsandPayouts3}></Stack.Screen>
       <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
       <Stack.Screen name="payoutMethod" component={payoutMethod}></Stack.Screen>
+      <Stack.Screen
+        name="NewpayoutMethod"
+        component={NewpayoutMethod}></Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -171,7 +174,7 @@ function DrawerContent(props) {
         component={HomeNavigation}
       />
       <Drawer.Screen
-        name="Find People"
+        name="FindPeople"
         options={{
           title: 'Find People',
           drawerIcon: ({focused, size}) => (
@@ -235,7 +238,6 @@ function DrawerContent(props) {
     </Drawer.Navigator>
   );
 }
-
 function messagesNavigation() {
   return (
     <Stack.Navigator
@@ -292,10 +294,12 @@ function ProfileNavigation() {
       screenOptions={{
         headerShown: false,
       }}>
-     <Stack.Screen name="myProfile" component={myProfile}></Stack.Screen>
-        <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>
-        <Stack.Screen name="mutualConnections" component={mutualConnections}></Stack.Screen>
-       </Stack.Navigator>
+      <Stack.Screen name="myProfile" component={myProfile}></Stack.Screen>
+      <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>
+      <Stack.Screen
+        name="mutualConnections"
+        component={mutualConnections}></Stack.Screen>
+    </Stack.Navigator>
   );
 }
 
@@ -310,15 +314,27 @@ export const MainNavigation = () => {
         <Stack.Screen name="Splash" component={splash}></Stack.Screen>
         <Stack.Screen name="index" component={index}></Stack.Screen>
         <Stack.Screen name="Scan" component={scan}></Stack.Screen>
+        <Stack.Screen name="Intro" component={introduction}></Stack.Screen>
+        <Stack.Screen name="paymentsandPayouts3"   component={paymentsandPayouts3}></Stack.Screen>
         <Stack.Screen
           name="Notifications"
           component={notification}></Stack.Screen>
         <Stack.Screen
           name="SettingsNavigation"
           component={SettingsNavigation}></Stack.Screen>
-        <Stack.Screen name="myProfile" component={ProfileNavigation}></Stack.Screen>
-       
+        <Stack.Screen
+          name="myProfile"
+          component={ProfileNavigation}></Stack.Screen>
+
         <Stack.Screen name="HomeStack" component={DrawerContent}></Stack.Screen>
+        <Stack.Screen
+          name="directInvites"
+          component={directInvites}></Stack.Screen>
+        <Stack.Screen name="chat" component={chat}></Stack.Screen>
+
+        <Stack.Screen
+          name="zicketDetail"
+          component={zicketDetail}></Stack.Screen>
         <Stack.Screen
           name="AccountStack"
           component={AccountNavigation}></Stack.Screen>
