@@ -73,7 +73,7 @@ export default class settings extends Component {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('')}
+              
                 style={styles.rowView}>
                 <Text style={styles.textView}>Push Notifications</Text>
                 <Image
@@ -82,7 +82,7 @@ export default class settings extends Component {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('')}
+               
                 style={styles.rowView}>
                 <Text style={styles.textView}>
                   Profile Visibility in People Radar
@@ -93,7 +93,7 @@ export default class settings extends Component {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('contactUs')}
+           
                 style={styles.rowView}>
                 <Text style={styles.textView}>Privacy Policy</Text>
                 <Image
@@ -102,7 +102,7 @@ export default class settings extends Component {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('')}
+              
                 style={styles.rowView}>
                 <Text style={styles.textView}>Term of Service</Text>
                 <Image
@@ -129,7 +129,7 @@ export default class settings extends Component {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('')}
+             onPress={() => this.props.navigation.navigate('Intro')}
                 style={styles.rowView}>
                 <Text style={styles.textView}>Logout</Text>
                 <Image
@@ -137,7 +137,7 @@ export default class settings extends Component {
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <View style={[styles.rowView, {borderBottomWidth: 0}]}>
+              <TouchableOpacity  onPress={() => this.props.navigation.navigate('Intro')} style={[styles.rowView, {borderBottomWidth: 0}]}>
                 <Text
                   style={[
                     styles.textView,
@@ -149,7 +149,7 @@ export default class settings extends Component {
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
-              </View>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </SafeAreaView>

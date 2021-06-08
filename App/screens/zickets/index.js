@@ -162,7 +162,7 @@ export default class Zickets extends Component {
                 You are not hosting any events at the moment.
               </Text>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Scan')}
+                onPress={() => this.props.navigation.navigate('createEvent')}
                 style={styles.btnLocation}>
                 <Text style={styles.btnTextLocation}>Host?</Text>
               </TouchableOpacity>

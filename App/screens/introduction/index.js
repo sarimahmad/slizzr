@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Image, StyleSheet, StatusBar, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import { BLACK, WHITE } from '../../helper/Color';
 import { FONT, SCREEN } from '../../helper/Constant';
-
+import Swiper from 'react-native-swiper'
 class introduction extends Component {
   state = {};
   componentDidMount() {
@@ -16,9 +16,26 @@ class introduction extends Component {
         <StatusBar hidden={true} />
         <SafeAreaView style={styles.container}>
           <Image source={require('../../assets/logo.png')} style={styles.logo} />
+        
           <Text style={styles.detailText}>Revolutionize the way you host and attend events!</Text>
-          <Image style={styles.getStartedImg} source={require('../../assets/get_started_mobile.png')} />
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signup")} style={styles.getStartedBtn} activeOpacity={0.8}>
+        
+          <Swiper  style={styles.wrapper} showsButtons={false}
+            paginationStyle={styles.paginationStyle}
+
+            activeDot={<View style={styles.selectedDotView} />}
+            dot={<View style={styles.unselectedDotView} />}>
+        <View style={styles.slide1}>
+        <Image style={styles.getStartedImg} source={require('../../assets/get_started_mobile.png')} />
+        </View>
+        <View style={styles.slide2}>
+        <Image style={styles.getStartedImg} source={require('../../assets/slider2.png')} />
+           </View>
+        <View style={styles.slide3}>
+        <Image style={styles.getStartedImg} source={require('../../assets/slider3.png')} />
+           </View>
+      </Swiper>
+        
+         <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signup")} style={styles.getStartedBtn} activeOpacity={0.8}>
             <Text style={styles.getStartedText}>GET STARTED</Text>
           </TouchableOpacity>
          <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signin")}>
@@ -36,6 +53,60 @@ const styles = StyleSheet.create({
   logo: {
     height: 70,
     width: 70,
+    marginTop:20
+  },
+  paginationStyle: {
+  
+    // backgroundColor:'green',
+  
+  },
+  selectedDotView: {
+    backgroundColor: 'grey',
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginLeft: 3,
+    marginRight: 3,
+    marginTop: 3,
+    marginBottom: 3,
+  },
+  unselectedDotView: {
+    backgroundColor: 'lightgrey',
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginLeft: 3,
+    marginRight: 3,
+    marginTop: 3,
+    marginBottom: 3,
+  },
+  activeDots: {
+    backgroundColor: 'grey',
+    width: 16,
+    height: 8,
+    borderRadius: 4,
+    marginLeft: 3,
+    marginRight: 3,
+    marginTop: 3,
+    marginBottom: 3,
+  },
+  wrapper:{
+ backgroundColor:WHITE.dark,
+  height:379,
+  },
+  slide1: {
+    elevation:10
+  },
+  slide2: {
+    elevation:10
+  },
+  slide3: {
+    elevation:10
+  },
+  text: {
+    color: '#fff',
+    fontSize: 30,
+    fontWeight: 'bold'
   },
   container: {
     flex: 1,
@@ -56,7 +127,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     resizeMode: 'contain',
     marginTop: 30,
-    height: SCREEN.height / 1.9,
+    height:379,
+    elevation:10
   },
   getStartedBtn: {
     height: 55,

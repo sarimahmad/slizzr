@@ -18,7 +18,7 @@ export default class paymentsandPayouts extends Component {
     this.state = {
       PaymentsandPayouts: [
         {id: 1, name: 'Payout method', route: 'payoutMethod'},
-        {id: 2, name: 'Payments Methods', route: 'paymentsandPayouts2'},
+        {id: 2, name: 'Payments Methods', route: 'paymentMethod'},
         {id: 3, name: 'View Payouts', route: 'payouts'},
         {id: 4, name: 'Currency', route: 'payoutMethod'},
       ],

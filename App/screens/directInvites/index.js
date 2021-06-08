@@ -6,7 +6,7 @@ import { BLACK } from '../../helper/Color';
 import { TextInput } from 'react-native';
 var selectedUser = ['Dai J.'];
 
-export default class index extends Component {
+export default class directInvites extends Component {
     constructor() {
         super();
         this.state = {
@@ -35,14 +35,14 @@ export default class index extends Component {
         return (
             <View style={styles.wrapperView}>
                 <SafeAreaView style={styles.wrapperView}>
-                    <View style={styles.headerView}>
+                    <TouchableOpacity style={styles.headerView}>
                         <Text style={styles.headerTxt}>Direct Invites</Text>
 
-                        <TouchableOpacity style={styles.closeBtn}>
+                        <TouchableOpacity  onPress={()=>this.props.navigation.goBack()} style={styles.closeBtn}>
                             <Image
                                 source={require('../../assets/Slizzer-icon/close.png')} />
                         </TouchableOpacity>
-                    </View>
+                    </TouchableOpacity>
                     <View style={[styles.textInput,{backgroundColor: 'lightgrey', marginTop:18}]}>
                     <Image 
                     style={{position:'absolute',bottom:10,left:20,width:17.5, height: 17.5}}
@@ -94,8 +94,8 @@ const styles = StyleSheet.create({
     },
     closeBtn: {
         backgroundColor: 'white',
-        height: 40,
-        width: 40,
+        height: 35,
+        width: 35,
         marginRight: 20,
         borderRadius: 35,
         alignItems: 'center',

@@ -33,7 +33,7 @@ export default class BirthDate extends Component {
     this.setState({showDate: true});
   };
   handleSubmit = () => {
-    this.props.navigation.navigate('ConfirmEmail');
+    this.props.navigation.navigate('HomeStack');
   };
   render() {
     return (

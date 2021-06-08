@@ -94,7 +94,7 @@ export default class attendeesList extends Component {
               data={this.state.attendeesLIst}
               keyExtractor={item => item.id}
               renderItem={({item}) => (
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate("")}
+                <View
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
@@ -113,10 +113,10 @@ export default class attendeesList extends Component {
                        <Text style={{color:'white'}}>DISINVITE</Text>
                   </View>
                   </View>
-                </TouchableOpacity> 
+                </View> 
               )}
             /> 
-        <TouchableOpacity style={styles.btnMap}>
+        <TouchableOpacity  onPress={()=>this.props.navigation.navigate("chat")}  style={styles.btnMap}>
               <Text style={styles.btnText}>Message all 100 attendees</Text>
             </TouchableOpacity>
      

@@ -201,15 +201,18 @@ export default class home extends Component {
           longitudeDelta: 1,
         }}>
         {this.state.markers.map((marker, index) => (
+          
           <MapView.Marker
             coordinate={{
               latitude: marker.lat,
               longitude: 74.358749,
             }}
-            title={'title'}
+            onPress={()=>this.props.navigation.navigate("eventDetail")}
+            // title={'City'}
             image={require('../../assets/marker.png')}
-            description={'description'}
-          />
+            // description={'Description'}
+            
+            />
         ))}
       </MapView>
     );
@@ -259,7 +262,7 @@ export default class home extends Component {
         <View
           style={{
             position: 'absolute',
-            top: SCREEN.height * 0.1,
+            top: SCREEN.height * 0.08,
             justifyContent: 'center',
             alignItems: 'center',
             width: SCREEN.width,
@@ -315,7 +318,7 @@ export default class home extends Component {
           ]}>
           No events to show{'\n'} in your area.
         </Text>
-        <TouchableOpacity style={[styles.btnMap, {marginTop: 30}]}>
+        <TouchableOpacity     onPress={() => this.props.navigation.navigate('createEvent')}  style={[styles.btnMap, {marginTop: 30}]}>
           <Text style={styles.btnText}>HOST AN EVENT</Text>
         </TouchableOpacity>
       </View>
@@ -658,7 +661,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   detail: {
-    width: SCREEN.width * 0.6,
+    width: SCREEN.width * 0.55,
   },
   btnLocation: {
     width: SCREEN.width - 98,

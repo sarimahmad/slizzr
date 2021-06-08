@@ -14,6 +14,7 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
+import { ScrollView } from 'react-native';
 
 export default class NewpayoutMethod extends Component {
   constructor(props) {
@@ -34,6 +35,7 @@ export default class NewpayoutMethod extends Component {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.wrapperView}>
+          <ScrollView>
           {this.state.editType ? (
             <View>
               <HeaderWithOptionBtn
@@ -41,7 +43,7 @@ export default class NewpayoutMethod extends Component {
                 backColor={WHITE.dark}
                 borderBottom={true}
                 leftIcon={require('../../assets/back.png')}
-                leftPress={() => alert()}
+                leftPress={() => this.props.navigation.goBack()}
               />
 
               <View style={styles.blockView}>
@@ -59,6 +61,7 @@ export default class NewpayoutMethod extends Component {
             <View style={{flex: 1}}>
               <HeaderWithOptionBtn
                 headerTitle={'Bank Transfer'}
+                backColor={WHITE.dark}
                 borderBottom={true}
                 leftIcon={require('../../assets/back.png')}
                 leftPress={() => alert()}
@@ -80,11 +83,12 @@ export default class NewpayoutMethod extends Component {
               <View style={styles.TextInputWrapper}>
                 <TextInput style={styles.firstInput} placeholder="Canada" />
               </View>
-              <TouchableOpacity style={styles.btn}>
-                <Text style={styles.btntext}> SEND MESSAGE</Text>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate("paymentsandPayouts2")} style={styles.btn}>
+                <Text style={styles.btntext}>SAVE</Text>
               </TouchableOpacity>
             </View>
           )}
+          </ScrollView>
         </SafeAreaView>
       </View>
     );
@@ -138,6 +142,7 @@ const styles = StyleSheet.create({
   btn: {
     width: SCREEN.width - 40,
     height: 55,
+    marginBottom:10,
     backgroundColor: 'black',
     borderRadius: 27.5,
     alignSelf: 'center',

@@ -62,7 +62,7 @@ export default class findPeople extends Component {
                         backColor={WHITE.dark}
                         leftPress={() => this.props.navigation.openDrawer()}
                         leftIcon={require('../../assets/drawer.png')}
-                        rightPress={() => this.props.navigation.navigate('notification')}
+                        rightPress={() => this.props.navigation.navigate('lookFriends')}
                         searchIcon={require('../../assets/searchGrey.png')}
                         headerTitle={'Find People For'}
                        
@@ -79,7 +79,7 @@ export default class findPeople extends Component {
                       width: SCREEN.width,
                    
                     }}>
-                    <View style={[styles.flexRow, { width: SCREEN.width - 20 ,alignItems: 'center',}]}>
+                    <View style={[styles.flexRow, { width: SCREEN.width ,alignItems: 'center',}]}>
                     <View style={styles.imgView}>
                    
                    <Image source={require('../../assets/image2.jpg')} style={{borderRadius:44,height:60,width:60}} />
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     
   },
   detail: {
-    width: wp('55%'),
+    width: SCREEN.width*0.55,
   },
   next: {
     paddingTop: 15,

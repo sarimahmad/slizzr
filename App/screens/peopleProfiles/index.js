@@ -73,16 +73,16 @@ export default class peopleProfiles extends Component {
             backColor={WHITE.dark}
             leftPress={() => this.props.navigation.openDrawer()}
             leftIcon={require('../../assets/drawer.png')}
-            rightPress={() => this.props.navigation.navigate('createEvent')}
+            rightPress={() => this.props.navigation.navigate('lookFriends')}
             searchIcon={require('../../assets/searchGrey.png')}
             centerIcon={require('../../assets/homeLogo.png')}
           />
 
           <ScrollView>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('lookFriends')}
+              // onPress={() => this.props.navigation.navigate('lookFriends')}
               style={styles.inputSearch}>
-              <Text style={[styles.titleText, {fontSize: 11}]}>
+              <Text style={[styles.titleText, {fontSize: 11,marginTop:0}]}>
                 FINDING PEOPLE FOR MY PARTY
               </Text>
             </TouchableOpacity>
