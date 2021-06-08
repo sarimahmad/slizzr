@@ -5,6 +5,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import TextField from '../../component/TextField';
 import Header from '../../component/Header';
+import { BLACK, WHITE } from '../../helper/Color';
+import { FONT } from '../../helper/Constant';
 
 export default class forgetPassword extends Component {
   constructor(props) {
@@ -24,27 +26,26 @@ export default class forgetPassword extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
+        <SafeAreaView>
         <Header
           headerTitle={'Reset Password'}
           navigation={this.props.navigation}
           route={'ResetPass'}
         />
-        <SafeAreaView
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: '10%',
-          }}>
+        <View style={{alignItems:"center"}}>
+
+        
+        
           <Image
             source={require('../../assets/logo.png')}
             style={styles.logo}
           />
           <Text
             style={{
-              marginTop: '10%',
-              marginBottom: '10%',
-              color: '#8e8e93',
-              fontFamily: 'Nunito',
+              fontFamily:FONT.Nunito.regular,
+              fontSize:17,
+              color:BLACK.grey,
+              marginTop: 40
             }}>
             Select a new password.
           </Text>
@@ -61,6 +62,7 @@ export default class forgetPassword extends Component {
             parentCallBack={this.storeInputData}
           />
           <ButtonResetPassaword btnLabel={'Reset password'} />
+          </View>
         </SafeAreaView>
       </View>
     );
@@ -68,12 +70,14 @@ export default class forgetPassword extends Component {
 }
 const styles = StyleSheet.create({
   logo: {
+    marginTop:40,
+ 
     height: 70,
     width: 70,
   },
   wrapperView: {
     flex: 1,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: WHITE.dark,
     // justifyContent: 'center',
     // alignItems: 'center',
   },

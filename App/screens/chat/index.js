@@ -25,16 +25,17 @@ export default class chat extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <HeaderWithOptionBtn
 
-          borderBottom={true}
-          backColor={WHITE.dark}
-          headerTitle={'Cindy Ray'}
-          leftPress={() => this.props.navigation.goBack()}
-          leftIcon={require('../../assets/back.png')}
-          profileIcon={require('../../assets/profile1.png')}
-        />
         <SafeAreaView style={styles.contentView}>
+          <HeaderWithOptionBtn
+
+            borderBottom={true}
+            backColor={WHITE.dark}
+            headerTitle={'Cindy Ray'}
+            leftPress={() => this.props.navigation.goBack()}
+            leftIcon={require('../../assets/back.png')}
+            profileIcon={require('../../assets/profile1.png')}
+          />
           <KeyboardAvoidingView
             style={styles.wrapperView}
             enabled

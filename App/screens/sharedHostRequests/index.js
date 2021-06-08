@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
-import {FONT} from '../../helper/Constant';
+import {FONT, SCREEN} from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -82,6 +82,8 @@ export default class sharedHostRequests extends Component {
             <Text style={styles.titleText}>Shared Host Requests</Text>
             <View></View>
           </View> */}
+
+        <SafeAreaView style={styles.contentView}>
         <HeaderWithOptionBtn
           borderBottom={true}
           backColor={WHITE.dark}
@@ -89,7 +91,6 @@ export default class sharedHostRequests extends Component {
           leftPress={() => this.props.navigation.goBack()}
           leftIcon={require('../../assets/back.png')}
         />
-        <SafeAreaView style={styles.contentView}>
           <FlatList
             data={this.state.findpeople}
             keyExtractor={item => item.id}
@@ -99,22 +100,24 @@ export default class sharedHostRequests extends Component {
                   this.props.navigation.navigate('attendingEventInfo')
                 }
                 style={{
+                  width:SCREEN.width,
                   borderBottomWidth: 1,
                   borderBottomColor: 'lightgrey',
                 }}>
+                
                 <View style={styles.flexRow}>
+                  <View style={{flexDirection:"row"}}>
                   <View style={styles.imgView}>
-                    <Image source={require('../../assets/profile1.png')} />
-                    <Image
-                      style={{position: 'absolute', right: 15}}
-                      source={require('../../assets/private.png')}
-                    />
+                    <Image 
+                    style={{width:50, height:50, borderRadius:25}}
+                    source={require('../../assets/image2.jpg')} />
                   </View>
 
                   <View style={styles.detail}>
                     <Text style={styles.titleText}>{item.profileName}</Text>
                     <Text style={styles.subtitleText}>{item.adress}</Text>
                     <Text style={styles.purpleText}>{item.date}</Text>
+                  </View>
                   </View>
                   <View>
                     <TouchableOpacity
@@ -189,17 +192,20 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    width:SCREEN.width- 40,
+    alignSelf: 'center', height:80,
+    alignItems:'center',
+    justifyContent:'space-between'
+
   },
-  detail: {
-    width: wp('55%'),
-  },
-  next: {
-    paddingTop: 15,
-  },
+
   imgView: {
-    width: wp('25%'),
+    width:50,
+   height: 50,
+   borderRadius:25,
+
+    marginRight:20
+
   },
   shareView: {
     width: wp('20%'),
@@ -211,16 +217,21 @@ const styles = StyleSheet.create({
   },
   logo: {},
   titleText: {
-    color: BLACK.textInputTitle,
+    color: BLACK.grey,
     fontFamily: FONT.Nunito.bold,
     fontSize: 17,
+  },
+  subtitleText:{
+    color: BLACK.grey,
+    fontFamily: FONT.Nunito.regular,
+    fontSize: 12,
+
   },
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-    marginTop: 10,
     textDecorationLine: 'underline',
-    fontFamily: FONT.Nunito.semiBold,
+    fontFamily: FONT.Nunito.bold,
   },
   barChild: {
     borderWidth: 1,

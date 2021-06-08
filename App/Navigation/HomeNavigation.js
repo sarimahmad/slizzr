@@ -303,7 +303,7 @@ export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeStack"
+        initialRouteName="Splash"
         screenOptions={{
           headerShown: false,
         }}>

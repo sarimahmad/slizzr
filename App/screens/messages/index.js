@@ -143,12 +143,16 @@ export default class messages extends Component {
   };
   noEvent = () => {
     return (
-      <View style={{alignItems: 'center', marginTop: hp('30%')}}>
+      <View style={{width: SCREEN.width- 40,  alignSelf:'center', alignItems: 'center', marginTop: SCREEN.height * 0.277}}>
         <Text
           style={{
+
             fontSize: 20,
             fontFamily: FONT.Nunito.regular,
             textAlign: 'center',
+            color: BLACK.grey, 
+            
+
           }}>
           You are not hosting any events at the moment.
         </Text>

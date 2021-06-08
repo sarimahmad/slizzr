@@ -1,5 +1,6 @@
 import React from 'react';
 import {TouchableOpacity, Text, StyleSheet} from 'react-native';
+import { FONT, SCREEN } from '../../helper/Constant';
 
 const ButtonResetPassaword = props => {
   return (
@@ -12,18 +13,19 @@ export default ButtonResetPassaword;
 
 const styles = StyleSheet.create({
   btnContainer: {
-    width: '100%',
+    width: SCREEN.width - 40,
+    alignSelf:'center',
     borderRadius: 25,
     height: 55,
     justifyContent: 'center',
     backgroundColor: 'grey',
-
     marginTop: 26,
   },
   btnText: {
+    fontFamily:FONT.Nunito.bold,
     textAlignVertical: 'center',
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
-    color: '#f1f1f2',
+    color: '#FFFFFF',
   },
 });

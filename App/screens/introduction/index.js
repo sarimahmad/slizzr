@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   detailText: {
     fontSize: 20,
     fontFamily: FONT.Nunito.regular,
-    color: BLACK.textColor,
+    color: BLACK.grey,
     marginTop: 15,
     textAlign: 'center',
     alignSelf: 'center',
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 14,
-    color: BLACK.textColor,
+    color: BLACK.grey,
     fontFamily: FONT.Nunito.bold,
     alignSelf: 'center',
     marginTop: 20,

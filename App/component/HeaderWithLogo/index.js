@@ -10,7 +10,7 @@ function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor,
     <View
       style={{
         flexDirection: 'row',
-        height: isIphoneXorAbove ? 120 : 100,
+        height: 80,
         alignItems: 'flex-end',
         paddingBottom: 21,
         width: SCREEN.width,

@@ -5,6 +5,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import TextField from '../../component/TextField';
 import Header from '../../component/Header';
+import { BLACK, WHITE } from '../../helper/Color';
+import { FONT } from '../../helper/Constant';
 
 export default class resetPassword extends Component {
   constructor(props) {
@@ -25,17 +27,13 @@ export default class resetPassword extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
+         <SafeAreaView>
         <Header
           headerTitle={'Reset Password'}
           navigation={this.props.navigation}
           route={'Signin'}
         />
-        <SafeAreaView
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: '10%',
-          }}>
+       
           <Image
             source={require('../../assets/logo.png')}
             style={styles.logo}
@@ -49,6 +47,7 @@ export default class resetPassword extends Component {
             placeholder={'Your Email Adress'}
             type="email"
             parentCallBack={this.storeInputData}
+        
           />
           <ButtonResetPassaword
             btnLabel={'Reset password'}
@@ -61,16 +60,21 @@ export default class resetPassword extends Component {
 }
 const styles = StyleSheet.create({
   logo: {
+    marginTop:40,
+    alignSelf:"center",
     height: 70,
     width: 70,
   },
   wrapperView: {
     flex: 1,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: WHITE.dark,
   },
   textColor: {
-    margin: '15%',
+    fontSize:17,
+    fontFamily:FONT.Nunito.regular,
+    marginTop:40,
+    paddingHorizontal:50,
     textAlign: 'center',
-    color: '#8e8e93',
+    color: BLACK.grey,
   },
 });

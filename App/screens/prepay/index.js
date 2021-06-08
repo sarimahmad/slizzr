@@ -11,6 +11,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 export default class prepay extends Component {
   constructor(props) {
     super(props);
@@ -21,27 +22,14 @@ export default class prepay extends Component {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
-          <View
-            style={[
-              {
-                padding: 20,
-                alignItems: 'center',
-                borderBottomWidth: 1,
-                borderBottomColor: 'lightgrey',
-              },
-            ]}>
-            <View style={{position: 'absolute', left: 20, top: 10}}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={require('../../assets/back.png')}
-                  style={styles.logo}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Prepay to Attend</Text>
-          </View>
-          <ScrollView>
-            <View>
+        <HeaderWithOptionBtn 
+        headerTitle={"PreyPay to Attend"}
+        borderBottom={true}
+        backColor={WHITE.dark}
+        leftIcon={require('../../assets/back.png')}
+        leftPress={()=> this.props.navigation.goBack()}
+        />
+        <View style={{marginTop:20}}>
               <Image
                 source={require('../../assets/eventInfo.png')}
                 style={{width: SCREEN.width}}
@@ -78,9 +66,9 @@ export default class prepay extends Component {
                 <Text
                   style={[
                     {
-                      fontWeight: '400',
+                      fontFamily: FONT.Nunito.regular,
                       fontSize: 18,
-                      textAlign: 'center',
+                      color: BLACK.grey,
                       marginTop: 10,
                     },
                   ]}>
@@ -110,7 +98,7 @@ export default class prepay extends Component {
                 Pay now with Google Pay
               </Text>
 
-              <TouchableOpacity style={styles.btnMap}>
+              <TouchableOpacity style={[styles.btnMap]}>
                 <Image
                   source={require('../../assets/Gpay.png')}
                   style={{alignItems: 'center', justifyContent: 'center'}}
@@ -121,8 +109,7 @@ export default class prepay extends Component {
                   {
                     fontFamily: FONT.Nunito.extraBold,
                     textAlign: 'center',
-                    fontSize: 15,
-                    marginTop: 15,
+                    fontSize: 15, 
                   },
                 ]}>
                 Or use a card below
@@ -131,13 +118,14 @@ export default class prepay extends Component {
               <Text
                 style={[
                   styles.subtitleText,
-                  {textAlign: 'center', marginTop: 30},
+                  {textAlign: 'center', marginTop: SCREEN.height * 0.07, fontFamily: FONT.Nunito.regular, color: BLACK.grey,},
                 ]}>
                 ** put scrollable stripe card + billing address form here**
                 https://stripe.com/img/docs/elements/elements-demo-iphone.png
               </Text>
-
-              <TouchableOpacity style={[styles.btnPay, {alignSelf: 'center'}]}>
+            </View>
+            <View style={{flex:1, justifyContent:'flex-end'}}>
+              <TouchableOpacity style={[styles.btnPay, {alignSelf: 'center',marginBottom:29}]}>
                 <Text
                   style={[
                     {
@@ -151,8 +139,8 @@ export default class prepay extends Component {
                   PAY
                 </Text>
               </TouchableOpacity>
-            </View>
-          </ScrollView>
+              </View>
+              
         </SafeAreaView>
       </View>
     );

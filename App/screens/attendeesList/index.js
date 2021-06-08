@@ -63,15 +63,16 @@ export default class attendeesList extends Component {
     return (
       <View style={styles.wrapperView}>
   
-       <HeaderWithOptionBtn
+
+        <SafeAreaView style={styles.contentView}>
+        <HeaderWithOptionBtn
                     
                     borderBottom={true}
                     backColor={WHITE.dark}
                     headerTitle={'Attendee List'}
                     leftPress={() => this.props.navigation.goBack()}
                     leftIcon={require('../../assets/back.png')}
-                /> 
-        <SafeAreaView style={styles.contentView}>
+                />  
         <View
               style={styles.inputSearch}
               >
@@ -98,15 +99,18 @@ export default class attendeesList extends Component {
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
+
                   }}>
                   <View style={[styles.flexRow,{height:70}]}>
+                    <View style={{flexDirection:"row"}}>
                     <View style={styles.imgView}>
                       <Image style={{height:50,width:50}} source={require('../../assets/profile1.png')} />
                      
                     </View>
                     <View style={[styles.detail,{flexDirection:'row',alignItems: 'center',}]}>
-                      <Text style={[styles.titleText,{fontFamily:FONT.Nunito.semiBold}]}>{item.attendee}</Text>
+                      <Text style={[styles.titleText,{fontFamily:FONT.Nunito.semiBold, marginRight:7}]}>{item.attendee}</Text>
                       <Image style={{height:26,width:28,resizeMode:'contain'}} source={require('../../assets/option.png')} />
+                    </View>
                     </View>
                    
                     <View style={{height:30,width:80,borderRadius:24,justifyContent: 'center',alignItems: 'center',backgroundColor:'#F818D9',}}>
@@ -138,7 +142,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     justifyContent: 'flex-start',
     paddingLeft:5,
-    backgroundColor: 'lightgrey',
+    backgroundColor: BLACK.textInput,
 
     marginVertical: 10,
     borderRadius: 12,
@@ -201,10 +205,11 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
-    paddingVertical: 20,
-    paddingHorizontal:10,
+    width:SCREEN.width - 40,
+    alignSelf:"center",
     alignSelf: 'center',
     alignItems: 'center',
+    justifyContent:'space-between'
     
   },
   detail: {
@@ -214,7 +219,10 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   imgView: {
-    width: wp('20%'),
+    width:50, 
+    height: 50,
+    borderRadius:30,
+    marginRight:20
   },
   flex: {
     flexDirection: 'row',

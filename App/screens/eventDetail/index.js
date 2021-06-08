@@ -49,17 +49,17 @@ export default class eventDetail extends Component {
        
      
           <ScrollView bounces={false}>
-          <View style={{marginTop:20,alignSelf:'center'}}>
+          <View style={{marginTop:20,alignSelf:'center', alignItems:'center' ,width:SCREEN.width}}>
           <Image
                 source={require('../../assets/eventDetail.png')}
-                style={{width:SCREEN.width,height:335,borderRadius:12}}
+                style={{borderRadius:20}}
               />
             <TouchableOpacity  onPress={()=>this.props.navigation.navigate("eventDetail2")} 
             style={{
               position: 'absolute',
               top:30,height:35,
               width:35,borderRadius:60,
-              backgroundColor:'white',left:30,
+              backgroundColor:'white',left:SCREEN.width *0.16,
               justifyContent:'center',alignContent:'center'}}>    
           <Image style={{marginLeft:5}}
                 source={require('../../assets/group.png')}
@@ -207,7 +207,8 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     flex: {
-      flexDirection: 'row',
+  
+  flexDirection: 'row',
       justifyContent: 'space-between',
     },
     text:{

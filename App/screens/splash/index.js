@@ -23,8 +23,8 @@ export default splash;
 
 const styles = StyleSheet.create({
   logo: {
-    height: 70,
-    width: 70,
+    height: 100,
+    width: 100,
   },
   container: {
     flex: 1,

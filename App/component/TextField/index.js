@@ -56,7 +56,7 @@ export default TextField;
 
 const styles = StyleSheet.create({
   inputView: {
-    // width: wp('85%'),
+    alignSelf:"center",
     height: 53,
     marginTop:20
   },

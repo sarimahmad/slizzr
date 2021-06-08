@@ -3,7 +3,7 @@ import {Text, View, StyleSheet, FlatList, Image} from 'react-native';
 import {FONT} from '../../helper/Constant';
 import Header from '../../component/Header';
 import {SafeAreaView} from 'react-navigation';
-import {WHITE} from '../../helper/Color';
+import {BLACK, WHITE} from '../../helper/Color';
 
 export default class BlockedUser extends Component {
   constructor(props) {
@@ -79,12 +79,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginHorizontal: 20,
-    marginVertical: 20,
   },
   textView: {
     fontFamily: FONT.Nunito.regular,
     fontSize: 17,
-    color: '#494949',
+    color: BLACK.grey,
   },
   image2: {
     width: 35,

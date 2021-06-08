@@ -222,7 +222,7 @@ export default class home extends Component {
           this.state.index == 0 ? {opacity: 0.4} : {opacity: 1},
           {
             position: 'absolute',
-            top: SCREEN.height * 0.18,
+            top: 50 ,
             alignSelf: 'center',
           },
         ]}>
@@ -259,7 +259,7 @@ export default class home extends Component {
         <View
           style={{
             position: 'absolute',
-            top: SCREEN.height * 0.1,
+            top: SCREEN.height * 0.08,
             justifyContent: 'center',
             alignItems: 'center',
             width: SCREEN.width,
@@ -323,7 +323,7 @@ export default class home extends Component {
   };
   tapBar = () => {
     return (
-      <View style={{overflow: 'hidden', paddingBottom: 5}}>
+      <View style={{ paddingBottom: 5}}>
         <View
           style={[
             styles.flex,
@@ -548,7 +548,7 @@ export default class home extends Component {
             rightIcon={require('../../assets/bell.png')}
             centerIcon={require('../../assets/homeLogo.png')}
           />
-
+          <View style={styles.wrapperView}>
           {this.tapBar()}
 
           {(this.state.index === 5 && this.state.mapView==true) && this.mapView()}
@@ -570,8 +570,7 @@ export default class home extends Component {
             <View
               style={{
                 position: 'absolute',
-                bottom: isIphoneXorAbove ? 182 : 148,
-
+                bottom: 155,
                 right: 0,
               }}>
               <TouchableOpacity
@@ -581,6 +580,7 @@ export default class home extends Component {
               </TouchableOpacity>
             </View>
           )}
+          </View>
         </SafeAreaView>
       </View>
     );
@@ -598,7 +598,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingLeft: 20,
     backgroundColor: 'white',
-
     borderRadius: 24,
     borderColor: 'lightgrey',
     shadowColor: 'black',
@@ -716,7 +715,6 @@ const styles = StyleSheet.create({
     marginTop: 14,
     fontFamily: FONT.Nunito.semiBold,
   },
-
   logo: {
     //   height: 80,
     //   width: 100,

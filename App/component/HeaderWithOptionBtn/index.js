@@ -12,7 +12,7 @@ console.log(rightIconText)
     <View
       style={{
         flexDirection: 'row',
-        height: isIphoneXorAbove ? 100 : 80,
+        height: 80,
         alignItems: 'center',
         width: SCREEN.width,
         paddingHorizontal: 30,
@@ -58,7 +58,7 @@ console.log(rightIconText)
         <View style={{
           flexDirection: 'row', alignItems: 'center',
         }}>
-          <Text style={{ fontSize: 18, fontFamily: FONT.Nunito.bold, color: BLACK.app, marginLeft: 10 }}>{headerTitle}</Text>
+          <Text style={{ fontSize: 17, fontFamily: FONT.Nunito.bold, color: BLACK.app }}>{headerTitle}</Text>
         </View>
       </View>
 }

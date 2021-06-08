@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
   text: {
     color: '#F818D9',
     fontFamily: FONT.Nunito.regular,
+    textDecorationLine:'underline'
   },
   textPurple: {
     color: BLACK.textInputTitle,
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   },
   subtitletextbold: {
     color: BLACK.textInputTitle,
-    fontFamily: FONT.Nunito.bold,
+    fontFamily: FONT.Nunito.extraBold,
     fontSize: 14,
   },
   detailWrapper: {

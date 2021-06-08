@@ -131,7 +131,8 @@ const styles = StyleSheet.create({
     marginBottom: 26,
   },
   subtitleText: {
-    fontFamily: FONT.Nunito.regular,
+    fontFamily: FONT.Nunito.semiBold,
+    fontSize:15
   },
   btnContainer: {
     width: '100%',
@@ -152,7 +153,8 @@ const styles = StyleSheet.create({
   },
   subtitleTextBold: {
     marginVertical: 10,
-    fontFamily: FONT.Nunito.bold,
+    fontFamily: FONT.Nunito.extraBold,
+    fontSize:14
   },
 
   logo: {
@@ -176,6 +178,7 @@ const styles = StyleSheet.create({
     color: '#F818D9',
     fontFamily: FONT.Nunito.regular,
     fontSize: 14,
+    textDecorationLine:'underline'
   },
   titleText: {
     marginTop: 13,

@@ -136,8 +136,7 @@ topBar=()=>{
   render() {
     return (
       <View style={styles.wrapperView}>
-             <SafeAreaView style={styles.contentView}>
-       
+      <SafeAreaView style={styles.contentView}> 
       <HeaderWithOptionBtn
                     
                     borderBottom={true}
@@ -328,7 +327,8 @@ const styles = StyleSheet.create({
   barText: {
     borderColor: 'lightgrey',
     fontSize:11,
-    fontFamily: FONT.Nunito.bold,
+    fontFamily: FONT.Nunito.semiBold,
+    color:BLACK.grey,
     textAlign: 'center',
     alignItems: 'center',
   },
