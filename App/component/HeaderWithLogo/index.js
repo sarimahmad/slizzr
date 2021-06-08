@@ -38,12 +38,15 @@ function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor,
           <Image source={require('../../assets/homeLogo.png')} />
         </View>
       </View>
-      {rightIcon && <TouchableHighlight
+      {rightIcon && <TouchableOpacity
         underlayColor={backColor}
         onPress={rightPress}
         style={{
-          width: 20,
-          height: 20,
+          width: 35,
+          height: 35,
+          borderRadius:22,
+          backgroundColor:'white',
+          elevation:3,
           justifyContent: 'center',
           alignItems: 'center',
         }}>
@@ -51,7 +54,7 @@ function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor,
           source={rightIcon}
           style={{ height: 28, width: 40, resizeMode: 'contain' }}
         />
-      </TouchableHighlight>}
+      </TouchableOpacity>}
     </View>
   );
 }

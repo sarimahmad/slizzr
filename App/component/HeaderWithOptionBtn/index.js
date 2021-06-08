@@ -5,7 +5,9 @@ import { Image, Text, TouchableHighlight, View, TouchableOpacity } from 'react-n
 import { FONT, isIphoneXorAbove, SCREEN } from '../../helper/Constant';
 import { BLACK } from '../../helper/Color';
 
-function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rightPress, rightIcon, backColor, borderBottom,centerIcon,searchIcon }) {
+
+function HeaderWithOptionBtn({ leftPress, headerTitle,rightIconText, leftIcon,profileIcon, rightPress, rightIcon, backColor, borderBottom,centerIcon,searchIcon }) {
+console.log(rightIconText)
   return (
     <View
       style={{
@@ -60,6 +62,20 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rig
         </View>
       </View>
 }
+{rightIconText && <TouchableHighlight
+        underlayColor={backColor}
+        onPress={rightPress}
+        style={{
+          width: 35,
+          height: 35,
+          backgroundColor:'white',
+          elevation:5,
+          borderRadius:24,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+       <Text style={{fontFamily:FONT.Nunito.bold,fontSize:12,color:'#B2ABB1'}}>{rightIconText}</Text>
+      </TouchableHighlight>}
       {rightIcon && <TouchableHighlight
         underlayColor={backColor}
         onPress={rightPress}

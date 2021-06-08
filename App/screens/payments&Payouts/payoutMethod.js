@@ -43,7 +43,8 @@ export default class payoutMethod extends Component {
             borderBottom={true}
             leftIcon={require('../../assets/back.png')}
             leftPress={() => this.props.navigation.goBack()}
-            rightIcon={require('../../assets/Slizzer-icon/edit.png')}
+            rightIconText={this.state.editType == false ? 'EDIT' : 'DONE'}
+            
             rightPress={() => this.setState({editType: !this.state.editType})}
           />
           <FlatList
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'lightgrey',
     height: 80,
+     paddingRight:10,
     alignItems: 'center',
     justifyContent: 'space-between',
   },

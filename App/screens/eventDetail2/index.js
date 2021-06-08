@@ -65,7 +65,7 @@ export default class eventDetail2 extends Component {
     shadowOffset: {width: 0, height: 2},
     shadowRadius: 6,
     shadowOpacity: 0.1,
-    height: 380
+    height: 335
     }}>
          <TouchableOpacity onPress={()=>this.props.navigation.navigate("eventDetail")} style={{borderWidth:1,height:35,width:35,borderRadius:24,backgroundColor:'white',justifyContent:'center',alignItems: 'center',}}>
           <Image
@@ -74,8 +74,8 @@ export default class eventDetail2 extends Component {
               />
      </TouchableOpacity>
           <Text style={[styles.titleText,{textAlign:'center'}]}>Nitish Birthday Party </Text>
-          <Text style={[styles.subtitleText,{textAlign:'center',marginTop:12}]}>Fixie tote bag ethnic keytar. Neutra vinyl American Apparel kale chips tofu art party, cardigan raw denim quinoa. Cray paleo tattooed, Truffaut skateboard street art PBR jean shorts Shoreditch farm-to-table Austin lo-fi Odd Future occupy. Chia semiotics skateboard, Schlitz messenger bag master cleanse High Life occupy vegan polaroid tote bag leggings. Single-origin coffee mumblecore deep v salvia mlkshk. Organic photo booth cray tofu, vegan fixie bitters sriracha. Blog Austin Wes Anderson, deep v pour-over trust fund vinyl mlkshk +1. </Text>
-          <View style={{flexDirection:'row',backgroundColor:'rgba(178, 171, 177, 0.246039)',padding:20,margin:20,borderRadius:10}}>
+          <Text style={[styles.subtitleText,{textAlign:'center',fontSize:12}]}>Fixie tote bag ethnic keytar. Neutra vinyl American Apparel kale chips tofu art party, cardigan raw denim quinoa. Cray paleo tattooed, Truffaut skateboard street art PBR jean shorts Shoreditch farm-to-table Austin lo-fi Odd Future occupy. Chia semiotics skateboard, Schlitz messenger bag master cleanse High Life occupy vegan polaroid tote bag leggings. Single-origin coffee mumblecore deep v salvia mlkshk. Organic photo booth cray tofu, vegan fixie bitters sriracha. Blog Austin Wes Anderson, deep v pour-over trust fund vinyl mlkshk +1. </Text>
+          <View style={{flexDirection:'row',backgroundColor:'rgba(178, 171, 177, 0.246039)',padding:20,marginHorizontal:20,marginTop:5,borderRadius:10}}>
          <Image
                 source={require('../../assets/location.png')}
                 style={{height:16,width:12}}
@@ -88,7 +88,7 @@ export default class eventDetail2 extends Component {
           <View style={{width:SCREEN.width - 40,alignSelf:'center'}}>
           <View style={styles.flex}>
           <Text style={[styles.titleText]}>Brittney’s 18th Birthday </Text>
-          <Text style={[styles.titleText,{color:'#F818D9'}]}>prepaid</Text>
+          <Text style={[styles.titleText,{color:'#F818D9',fontSize:12}]}>PREPAID</Text>
           </View>
           <View style={[styles.flexRow,{paddingTop:5}]}>
           <Text style={[styles.titleText,{fontSize:12,fontFamily:FONT.Nunito.regular}]}>Host: </Text>
@@ -119,7 +119,7 @@ export default class eventDetail2 extends Component {
          </View>
           
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("prepay")} style={styles.btnMap}>
-              <Text style={styles.btnText}>Attend</Text>
+              <Text style={styles.btnText}>ATTEND</Text>
             </TouchableOpacity>
           
           

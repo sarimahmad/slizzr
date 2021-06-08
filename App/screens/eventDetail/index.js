@@ -52,7 +52,7 @@ export default class eventDetail extends Component {
           <View style={{marginTop:20,alignSelf:'center'}}>
           <Image
                 source={require('../../assets/eventDetail.png')}
-                style={{width:SCREEN.width,height:420}}
+                style={{width:SCREEN.width,height:335,borderRadius:12}}
               />
             <TouchableOpacity  onPress={()=>this.props.navigation.navigate("eventDetail2")} 
             style={{
@@ -101,7 +101,7 @@ export default class eventDetail extends Component {
          </View>
          
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("prepay")} style={styles.btnMap}>
-              <Text style={styles.btnText}>Attend</Text>
+              <Text style={styles.btnText}>ATTEND</Text>
             </TouchableOpacity>
             </ScrollView>
           </SafeAreaView>

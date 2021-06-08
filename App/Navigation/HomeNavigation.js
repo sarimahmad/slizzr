@@ -55,6 +55,7 @@ import settings from '../screens/settings/index';
 import myProfile from '../screens/myProfile';
 import editProfle from '../screens/myProfile/editProfle';
 import zicketDetail from '../screens/zicketDetail';
+import mutualConnections from '../screens/mutualConnections';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -284,6 +285,19 @@ function AccountNavigation() {
     </Stack.Navigator>
   );
 }
+function ProfileNavigation() {
+  return (
+    <Stack.Navigator
+      initialRouteName="myProfile"
+      screenOptions={{
+        headerShown: false,
+      }}>
+     <Stack.Screen name="myProfile" component={myProfile}></Stack.Screen>
+        <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>
+        <Stack.Screen name="mutualConnections" component={mutualConnections}></Stack.Screen>
+       </Stack.Navigator>
+  );
+}
 
 export const MainNavigation = () => {
   return (
@@ -302,8 +316,8 @@ export const MainNavigation = () => {
         <Stack.Screen
           name="SettingsNavigation"
           component={SettingsNavigation}></Stack.Screen>
-        <Stack.Screen name="myProfile" component={myProfile}></Stack.Screen>
-        <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>
+        <Stack.Screen name="myProfile" component={ProfileNavigation}></Stack.Screen>
+       
         <Stack.Screen name="HomeStack" component={DrawerContent}></Stack.Screen>
         <Stack.Screen
           name="AccountStack"

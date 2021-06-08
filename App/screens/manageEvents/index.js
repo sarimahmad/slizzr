@@ -191,39 +191,40 @@ topBar=()=>{
             />
           )}
            {this.state.index === 2 && (
-           
-           <FlatList
-           data={this.state.findpeople}
-           keyExtractor={item => item.id}
-           renderItem={({item}) => (
-             <TouchableOpacity onPress={()=>this.props.navigation.navigate("myEventInfo")}
-               style={{
-                 borderBottomWidth: 1,
-                 borderBottomColor: 'lightgrey',
-               }}>
-               <View style={styles.flexRow}>
-                 <View style={styles.imgView}>
-                   <Image source={require('../../assets/profile1.png')} />
-                   <Image
-                     style={{position: 'absolute', right: 15}}
-                     source={require('../../assets/private.png')}
-                   />
-            
-                 </View>
+            <FlatList
+            data={this.state.findpeople}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => (
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate("myEventInfo")}
+                style={{
+                  borderBottomWidth: 1,
+                  borderBottomColor: 'lightgrey',
+                }}>
+                <View style={styles.flexRow}>
+                <View style={styles.imgView}>
                  
-                 <View style={styles.detail}>
-                   <Text style={styles.titleText}>{item.profileName}</Text>
-                   <Text style={styles.subtitleText}>{item.adress}</Text>
-                   <Text style={[styles.purpleText,{marginTop:5}]}>{item.date}</Text>
-                 </View>
-                 <View style={styles.shareView}>
-                   <Image source={require('../../assets/messageIcon.png')} />
-                 </View>
-                  
+                 <Image source={require('../../assets/image2.jpg')} style={{borderRadius:44,height:60,width:60}} />
+                
+                 <Image
+                   style={{position: 'absolute',right:-10}}
+                   source={require('../../assets/private.png')}
+                 />
                </View>
-             </TouchableOpacity>
-           )}
-         />
+
+                  <View style={styles.detail}>
+                 <Text style={styles.titleText}>{item.profileName}</Text>
+                 <Text style={styles.subtitleText}>{item.adress}</Text>
+                 <Text style={[styles.purpleText,{marginTop:5}]}>{item.date}</Text>
+               </View>
+                  <View style={styles.shareView}>
+                  <Image source={require('../../assets/messageIcon.png')} />
+                  </View>
+                 
+                </View>
+              </TouchableOpacity>
+            )}
+          />
+    
        )}
         </SafeAreaView>
       </View>

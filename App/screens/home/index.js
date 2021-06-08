@@ -17,15 +17,20 @@ import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import {Marker} from 'react-native-maps';
 export default class home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      enableMap: false,
       listView: false,
       mapView: true,
       date: new Date(2300, 10, 20),
       index: 0,
+      markers: [
+        {lat: 31.52037, lng: 74.358749},
+        {lat: 31.64037, lng: 74.358749},
+        {lat: 31.7037, lng: 74.358749},
+      ],
       findpeople: [
         {
           imgProfile: '',
@@ -125,9 +130,9 @@ export default class home extends Component {
   listView = () => {
     return (
       <View style={{flex: 1}}>
-        {this.searchBar()}
         <View
           style={{
+            marginTop: 50,
             justifyContent: 'center',
             alignItems: 'center',
             flex: 1,
@@ -190,21 +195,37 @@ export default class home extends Component {
       <MapView
         style={{flex: 1}}
         initialRegion={{
-          latitude: 26.4788,
-          longitude: 80.292061,
-          latitudeDelta: 0.07,
-          longitudeDelta: 0.07,
-        }}
-      />
+          latitude: 31.52037,
+          longitude: 74.358749,
+          latitudeDelta: 1,
+          longitudeDelta: 1,
+        }}>
+        {this.state.markers.map((marker, index) => (
+          <MapView.Marker
+            coordinate={{
+              latitude: marker.lat,
+              longitude: 74.358749,
+            }}
+            title={'title'}
+            image={require('../../assets/marker.png')}
+            description={'description'}
+          />
+        ))}
+      </MapView>
     );
   };
+
   searchBar = () => {
     return (
       <View
-        style={{
-          alignSelf: 'center',
-          marginVertical: 10,
-        }}>
+        style={[
+          this.state.index == 0 ? {opacity: 0.4} : {opacity: 1},
+          {
+            position: 'absolute',
+            top: SCREEN.height * 0.18,
+            alignSelf: 'center',
+          },
+        ]}>
         <View style={styles.inputSearch}>
           <Image
             source={require('../../assets/magnify.png')}
@@ -223,35 +244,50 @@ export default class home extends Component {
     return (
       <View
         style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: SCREEN.width,
           flex: 1,
-          paddingTop: SCREEN.height * 0.035,
         }}>
-        <Image
-          source={require('../../assets/map-marker-outline.png')}
-          style={styles.logo}
+        <MapView
+          style={{flex: 1, opacity: 0.3}}
+          initialRegion={{
+            latitude: 31.52037,
+            longitude: 74.358749,
+            latitudeDelta: 1,
+            longitudeDelta: 1,
+          }}
         />
-        <Text style={[styles.titleText, {marginTop: 20, fontSize: 27}]}>
-          Enable Location
-        </Text>
-        <Text
+
+        <View
           style={{
-            color: BLACK.grey,
-            marginHorizontal: 50,
-            textAlign: 'center',
-            fontSize: 17,
-            fontFamily: FONT.Nunito.bold,
-            marginTop: 7,
+            position: 'absolute',
+            top: SCREEN.height * 0.1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: SCREEN.width,
           }}>
-          You will need to enable location to see events near you
-        </Text>
-        <TouchableOpacity
-          onPress={() => this.setState({index: 5})}
-          style={styles.btnLocation}>
-          <Text style={styles.btnTextLocation}>Allow Location</Text>
-        </TouchableOpacity>
+          <Image
+            source={require('../../assets/map-marker-outline.png')}
+            style={styles.logo}
+          />
+          <Text style={[styles.titleText, {marginTop: 20, fontSize: 27}]}>
+            Enable Location
+          </Text>
+          <Text
+            style={{
+              color: BLACK.grey,
+              marginHorizontal: 50,
+              textAlign: 'center',
+              fontSize: 17,
+              fontFamily: FONT.Nunito.bold,
+              marginTop: 7,
+            }}>
+            You will need to enable location to see events near you
+          </Text>
+          <TouchableOpacity
+            onPress={() => this.setState({mapView: true,index:5})}
+            style={styles.btnLocation}>
+            <Text style={styles.btnTextLocation}>Allow Location</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -515,7 +551,7 @@ export default class home extends Component {
 
           {this.tapBar()}
 
-          {this.state.index === 5 && this.mapView()}
+          {(this.state.index === 5 && this.state.mapView==true) && this.mapView()}
 
           {this.state.index === 0 &&
             this.state.listView === false &&
@@ -526,7 +562,8 @@ export default class home extends Component {
             this.state.index === 3 ||
             this.state.index === 4) &&
             this.noEvent()}
-
+          {(this.state.listView == true || this.state.mapView == true) &&
+            this.searchBar()}
           {(this.state.listView === true || this.state.mapView === true) &&
             this.bottomView()}
           {(this.state.listView === true || this.state.mapView === true) && (
@@ -642,7 +679,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: SCREEN.width - 40,
     borderRadius: 25,
-    height: 50,
+    height: 55,
     marginBottom: 20,
     backgroundColor: 'black',
     justifyContent: 'center',
@@ -657,7 +694,7 @@ const styles = StyleSheet.create({
     bottom: 20,
   },
   btnText: {
-    fontSize: 16,
+    fontSize: 17,
     textAlign: 'center',
     color: 'white',
     fontFamily: FONT.Nunito.bold,
