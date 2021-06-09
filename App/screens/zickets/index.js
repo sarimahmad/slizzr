@@ -158,13 +158,13 @@ export default class Zickets extends Component {
             />
           ) : (
             <View style={{alignItems: 'center', marginTop: hp('30%')}}>
-              <Text style={styles.det0ail}>
+              <Text style={styles.detail}>
                 You are not hosting any events at the moment.
               </Text>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('createEvent')}
+                onPress={() => this.props.navigation.navigate('Scan')}
                 style={styles.btnLocation}>
-                <Text style={styles.btnTextLocation}>Host?</Text>
+                <Text style={styles.btnTextLocation}>HOST?</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
     width: SCREEN.width * 0.55,
     alignSelf: 'center',
     textAlign: 'center',
+    lineHeight: 30,
   },
   next: {
     paddingTop: 15,

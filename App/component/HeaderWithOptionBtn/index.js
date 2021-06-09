@@ -2,12 +2,11 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { Image, Text, TouchableHighlight, View, TouchableOpacity } from 'react-native';
-import { FONT, isIphoneXorAbove, SCREEN } from '../../helper/Constant';
+import { FONT, SCREEN } from '../../helper/Constant';
 import { BLACK } from '../../helper/Color';
 
 
 function HeaderWithOptionBtn({ leftPress, headerTitle,rightIconText, leftIcon,profileIcon, rightPress, rightIcon, backColor, borderBottom,centerIcon,searchIcon }) {
-console.log(rightIconText)
   return (
     <View
       style={{

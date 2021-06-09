@@ -12,12 +12,11 @@ import {
   Image,
 } from 'react-native';
 import {BLACK, WHITE} from '../../helper/Color';
-import {FONT, SCREEN, isIphoneXorAbove} from '../../helper/Constant';
+import {FONT, SCREEN} from '../../helper/Constant';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import {Marker} from 'react-native-maps';
 export default class home extends Component {
   constructor(props) {
     super(props);
@@ -201,18 +200,16 @@ export default class home extends Component {
           longitudeDelta: 1,
         }}>
         {this.state.markers.map((marker, index) => (
-          
           <MapView.Marker
             coordinate={{
               latitude: marker.lat,
               longitude: 74.358749,
             }}
-            onPress={()=>this.props.navigation.navigate("eventDetail")}
+            onPress={() => this.props.navigation.navigate('eventDetail')}
             // title={'City'}
             image={require('../../assets/marker.png')}
             // description={'Description'}
-            
-            />
+          />
         ))}
       </MapView>
     );
@@ -222,10 +219,10 @@ export default class home extends Component {
     return (
       <View
         style={[
-          this.state.index == 0 ? {opacity: 0.4} : {opacity: 1},
+          this.state.index === 0 ? {opacity: 0.4} : {opacity: 1},
           {
             position: 'absolute',
-            top: 50 ,
+            top: 50,
             alignSelf: 'center',
           },
         ]}>
@@ -286,7 +283,7 @@ export default class home extends Component {
             You will need to enable location to see events near you
           </Text>
           <TouchableOpacity
-            onPress={() => this.setState({mapView: true,index:5})}
+            onPress={() => this.setState({mapView: true, index: 5})}
             style={styles.btnLocation}>
             <Text style={styles.btnTextLocation}>Allow Location</Text>
           </TouchableOpacity>
@@ -318,7 +315,9 @@ export default class home extends Component {
           ]}>
           No events to show{'\n'} in your area.
         </Text>
-        <TouchableOpacity     onPress={() => this.props.navigation.navigate('createEvent')}  style={[styles.btnMap, {marginTop: 30}]}>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('createEvent')}
+          style={[styles.btnMap, {marginTop: 30}]}>
           <Text style={styles.btnText}>HOST AN EVENT</Text>
         </TouchableOpacity>
       </View>
@@ -326,7 +325,7 @@ export default class home extends Component {
   };
   tapBar = () => {
     return (
-      <View style={{ paddingBottom: 5}}>
+      <View style={{paddingBottom: 5}}>
         <View
           style={[
             styles.flex,
@@ -343,7 +342,7 @@ export default class home extends Component {
           ]}>
           <TouchableOpacity
             style={
-              this.state.index === 0
+              this.state.index === 0 || this.state.index === 5
                 ? {
                     borderBottomColor: '#F818D9',
                     borderBottomWidth: 3,
@@ -366,7 +365,9 @@ export default class home extends Component {
             <Text
               style={[
                 styles.barChild,
-                this.state.index === 0 ? {color: '#F818D9'} : {color: 'black'},
+                this.state.index === 0 || this.state.index === 5
+                  ? {color: '#F818D9'}
+                  : {color: 'black'},
               ]}>
               ALL
             </Text>
@@ -552,37 +553,39 @@ export default class home extends Component {
             centerIcon={require('../../assets/homeLogo.png')}
           />
           <View style={styles.wrapperView}>
-          {this.tapBar()}
+            {this.tapBar()}
 
-          {(this.state.index === 5 && this.state.mapView==true) && this.mapView()}
+            {this.state.index === 5 &&
+              this.state.mapView === true &&
+              this.mapView()}
 
-          {this.state.index === 0 &&
-            this.state.listView === false &&
-            this.enableLocation()}
-          {this.state.listView === true && this.listView()}
+            {this.state.index === 0 &&
+              this.state.listView === false &&
+              this.enableLocation()}
+            {this.state.listView === true && this.listView()}
 
-          {(this.state.index === 2 ||
-            this.state.index === 3 ||
-            this.state.index === 4) &&
-            this.noEvent()}
-          {(this.state.listView == true || this.state.mapView == true) &&
-            this.searchBar()}
-          {(this.state.listView === true || this.state.mapView === true) &&
-            this.bottomView()}
-          {(this.state.listView === true || this.state.mapView === true) && (
-            <View
-              style={{
-                position: 'absolute',
-                bottom: 155,
-                right: 0,
-              }}>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('createEvent')}
-                style={styles.logoAdd}>
-                <Image source={require('../../assets/plus-circle.png')} />
-              </TouchableOpacity>
-            </View>
-          )}
+            {(this.state.index === 2 ||
+              this.state.index === 3 ||
+              this.state.index === 4) &&
+              this.noEvent()}
+            {(this.state.listView === true || this.state.mapView === true) &&
+              this.searchBar()}
+            {(this.state.listView === true || this.state.mapView === true) &&
+              this.bottomView()}
+            {(this.state.listView === true || this.state.mapView === true) && (
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 155,
+                  right: 0,
+                }}>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('createEvent')}
+                  style={styles.logoAdd}>
+                  <Image source={require('../../assets/plus-circle.png')} />
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
         </SafeAreaView>
       </View>

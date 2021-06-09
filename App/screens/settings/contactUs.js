@@ -8,20 +8,22 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {FONT, SCREEN} from '../../helper/Constant';
-import Header from '../../component/Header';
 import Textarea from 'react-native-textarea';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 
 export default class contactUs extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.wrapperView}>
-          <Header
+          <HeaderWithOptionBtn
+            backColor={WHITE.dark}
             headerTitle={'Contact Us'}
-            navigation={this.props.navigation}
-            route={'Home'}
+            borderBottom={true}
+            leftPress={() => this.props.navigation.pop()}
+            leftIcon={require('../../assets/back.png')}
           />
           <Text style={styles.textView}>
             Please fill out this form to contact us and we’ll get back to you as

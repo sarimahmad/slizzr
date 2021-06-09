@@ -1,9 +1,10 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   Text,
   View,
   StyleSheet,
-  FlatList,
+  Platform,
   Image,
   TouchableOpacity,
   ScrollView,
@@ -16,18 +17,17 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Textarea from 'react-native-textarea';
-import {Picker} from '@react-native-picker/picker';
 export default class editProfle extends Component {
   constructor(props) {
     super(props);
     this.state = {
       name: 'Zoya',
-      lname:'Rajput',
-      email:'zoya_rajput@slizzr.com',
-      birthDate:'11/26/1996',
-      gender:'Female',
-      adress:'Niagara Falls, ON',
-      message:'This gal loves to party',
+      lname: 'Rajput',
+      email: 'zoya_rajput@slizzr.com',
+      birthDate: '11/26/1996',
+      gender: 'Female',
+      adress: 'Niagara Falls, ON',
+      message: 'This gal loves to party',
       enableMap: false,
       date: new Date(),
       showDate: false,
@@ -35,9 +35,7 @@ export default class editProfle extends Component {
       event: 'Female',
     };
   }
-  onValueChangeCatagory=()=>{
-
-}
+  onValueChangeCatagory = () => {};
   showDatepicker = () => {
     this.setState({showDate: true});
   };
@@ -51,20 +49,20 @@ export default class editProfle extends Component {
     this.setState({showDate: true});
   };
   handleInput = (value, type) => {
-    if (type == 'name') {
-      this.setState({name: value})
-    } else if (type == 'lname') {
-        this.setState({lname: value})
-    } else if (type == 'email') {
-        this.setState({email: value})
-    } else if (type == 'birthDate') {
-        this.setState({birthDate: value})
-    } else if (type == 'gender') {
-        this.setState({gender: value})
-    } else if (type == 'adress') {
-        this.setState({adress: value})
-    } else if (type == 'message') {
-        this.setState({message: value})
+    if (type === 'name') {
+      this.setState({name: value});
+    } else if (type === 'lname') {
+      this.setState({lname: value});
+    } else if (type === 'email') {
+      this.setState({email: value});
+    } else if (type === 'birthDate') {
+      this.setState({birthDate: value});
+    } else if (type === 'gender') {
+      this.setState({gender: value});
+    } else if (type === 'adress') {
+      this.setState({adress: value});
+    } else if (type === 'message') {
+      this.setState({message: value});
     }
   };
 
@@ -150,12 +148,19 @@ export default class editProfle extends Component {
 
               <TextInput
                 value={this.state.name}
-               
                 onChangeText={value => this.handleInput(value, 'name')}
                 style={styles.inputTextView}
               />
-              <TextInput value={this.state.lname} style={styles.inputTextView} onChangeText={value => this.handleInput(value, 'lname')}/>
-              <TextInput value={this.state.email} style={styles.inputTextView} onChangeText={value => this.handleInput(value, 'email')}/>
+              <TextInput
+                value={this.state.lname}
+                style={styles.inputTextView}
+                onChangeText={value => this.handleInput(value, 'lname')}
+              />
+              <TextInput
+                value={this.state.email}
+                style={styles.inputTextView}
+                onChangeText={value => this.handleInput(value, 'email')}
+              />
               {Platform.OS === 'android' ? (
                 <TouchableOpacity
                   onPress={this.showDatepicker}
@@ -204,59 +209,37 @@ export default class editProfle extends Component {
                   </View>
                 </View>
               )}
-                        <View style={styles.form}>
-        <Picker
-              mode="dropdown"
-              placeholder="Female"
-              placeholderStyle={{fontFamily:  FONT.Nunito.regular,color:'#494949'}} 
-              style={{width: SCREEN.width-40}}
-              onValueChange={this.onValueChangeCatagory}>
-              <Picker.Item label="Female" value="Female" color="#494949" />
-              <Picker.Item label="Male" value="Male"  color="#494949"/>
-             
-            </Picker>
-            </View>
-              {/* <RNPickerSelect
-                style={{
-                  inputIOS: {
-                    width: '90%',
+              <View style={[styles.form, {paddingLeft: 10}]}>
+                <RNPickerSelect
+                  style={{
                     height: 53,
-                    borderWidth: 1,
-                    borderColor: 'lightgrey',
-                    borderRadius: 8,
-                    paddingLeft: 20,
+                    width: SCREEN.width - 40,
                     alignSelf: 'center',
-                  },
-                  inputAndroid: {
-                    width: '90%',
-                    height: 53,
-                    borderWidth: 1,
-                    borderColor: 'lightgrey',
-                    borderRadius: 8,
-                    marginTop: 8,
-                    paddingLeft: 20,
-                    alignSelf: 'center',
-                  },
-                }}
-                selectedValue={this.state.event}
-                onValueChange={(itemValue, itemIndex) =>
-                  this.setState({event: itemValue})
-                }
-                items={[
-                  {label: 'Female', value: 'Female'},
-                  {label: 'Male', value: 'Male'},
-                ]}
-              /> */}
+                    backgroundColor: WHITE.dark,
+                    borderWidth: 0.5,
+                    borderRadius: 10,
+                    paddingLeft: 15,
+                  }}
+                  onValueChange={value => console.log(value)}
+                  items={[
+                    {label: 'Female', value: 'Female'},
+                    {label: 'Male', value: 'Male'},
+                    {label: 'Other', value: 'Other'},
+                  ]}
+                />
+              </View>
               <TextInput
-               value={this.state.adress}
-               onChangeText={value => this.handleInput(value, 'adress')}
+                value={this.state.adress}
+                onChangeText={value => this.handleInput(value, 'adress')}
                 style={styles.inputTextView}
               />
               <Textarea
-               value={this.state.message}
-               onChangeText={value => this.handleInput(value, 'message')}
-                style={[styles.inputTextView, {height: 159,paddingBottom:130}]}
-               
+                value={this.state.message}
+                onChangeText={value => this.handleInput(value, 'message')}
+                style={[
+                  styles.inputTextView,
+                  {height: 159, paddingBottom: 130},
+                ]}
               />
               <TouchableOpacity style={styles.btn}>
                 <Text style={styles.btntext}>SAVE</Text>
@@ -278,13 +261,14 @@ const styles = StyleSheet.create({
     // alignItems: 'center'
   },
   form: {
-    marginVertical:5,
+    marginVertical: 5,
     borderWidth: 1,
     width: SCREEN.width - 40,
-    alignSelf:'center',
+    alignSelf: 'center',
     borderColor: 'lightgrey',
-
+    height: 53,
     borderRadius: 5,
+    justifyContent: 'center',
   },
   profileView: {
     height: 176,
@@ -337,28 +321,19 @@ const styles = StyleSheet.create({
     borderLeftColor: BLACK.border,
   },
   DateTimeInnerIOS: {
-    height: '100%',
-    width: '100%',
+    height: '90%',
+    width: '90%',
     alignSelf: 'center',
     borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
     shadowColor: BLACK.shadow,
     shadowOffset: {width: 1, height: 1},
+    backgroundColor: WHITE.dark,
     shadowRadius: 6,
     shadowOpacity: 0.3,
     elevation: 2,
-    marginLeft: 10,
-  },
-  logoAddCalenderView: {
-    position: 'absolute',
-    right: 0,
-    width: 58,
-    height: 53,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderLeftWidth: 1,
-    borderLeftColor: BLACK.border,
+    paddingLeft: 10,
   },
   btn: {
     width: SCREEN.width - 40,

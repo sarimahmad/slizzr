@@ -4,9 +4,9 @@ import {View, Text, StyleSheet, Image} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import TextField from '../../component/TextField';
-import Header from '../../component/Header';
-import { BLACK, WHITE } from '../../helper/Color';
-import { FONT } from '../../helper/Constant';
+import {BLACK, WHITE} from '../../helper/Color';
+import {FONT} from '../../helper/Constant';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 
 export default class forgetPassword extends Component {
   constructor(props) {
@@ -26,42 +26,40 @@ export default class forgetPassword extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView>
-        <Header
-          headerTitle={'Reset Password'}
-          navigation={this.props.navigation}
-          route={'ResetPass'}
-        />
-        <View style={{alignItems:"center"}}>
-
-        
-        
-          <Image
-            source={require('../../assets/logo.png')}
-            style={styles.logo}
+        <SafeAreaView style={styles.wrapperView}>
+          <HeaderWithOptionBtn
+            backColor={WHITE.dark}
+            headerTitle={'Notification'}
+            leftPress={() => this.props.navigation.openDrawer()}
+            leftIcon={require('../../assets/drawer.png')}
           />
-          <Text
-            style={{
-              fontFamily:FONT.Nunito.regular,
-              fontSize:17,
-              color:BLACK.grey,
-              marginTop: 40
-            }}>
-            Select a new password.
-          </Text>
-          <TextField
-            secure={'yes'}
-            placeholder={'New Password'}
-            type="newPassword"
-            parentCallBack={this.storeInputData}
-          />
-          <TextField
-            secure={'yes'}
-            placeholder={'Confirm Password'}
-            type="confirmPassword"
-            parentCallBack={this.storeInputData}
-          />
-          <ButtonResetPassaword btnLabel={'Reset password'} />
+          <View style={{alignItems: 'center'}}>
+            <Image
+              source={require('../../assets/logo.png')}
+              style={styles.logo}
+            />
+            <Text
+              style={{
+                fontFamily: FONT.Nunito.regular,
+                fontSize: 17,
+                color: BLACK.grey,
+                marginTop: 40,
+              }}>
+              Select a new password.
+            </Text>
+            <TextField
+              secure={'yes'}
+              placeholder={'New Password'}
+              type="newPassword"
+              parentCallBack={this.storeInputData}
+            />
+            <TextField
+              secure={'yes'}
+              placeholder={'Confirm Password'}
+              type="confirmPassword"
+              parentCallBack={this.storeInputData}
+            />
+            <ButtonResetPassaword btnLabel={'Reset password'} />
           </View>
         </SafeAreaView>
       </View>
@@ -70,8 +68,8 @@ export default class forgetPassword extends Component {
 }
 const styles = StyleSheet.create({
   logo: {
-    marginTop:40,
- 
+    marginTop: 40,
+
     height: 70,
     width: 70,
   },

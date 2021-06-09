@@ -25,7 +25,7 @@ export default class zicketDetail extends Component {
           <HeaderWithOptionBtn
             borderBottom={true}
             backColor={WHITE.dark}
-            headerTitle={'zicketsNavigation'}
+            headerTitle={'zickets'}
             leftPress={() => this.props.navigation.goBack()}
             leftIcon={require('../../assets/back.png')}
           />
@@ -128,6 +128,7 @@ export default class zicketDetail extends Component {
                 alignSelf: 'center',
                 marginTop: 26,
                 marginBottom: 10,
+                marginHorizontal: 5,
               }}>
               <Image
                 source={require('../../assets/invalid.png')}

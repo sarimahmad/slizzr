@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { Image, TouchableHighlight, View, TouchableOpacity } from 'react-native';
-import { isIphoneXorAbove, SCREEN } from '../../helper/Constant';
+import { Image, View, TouchableOpacity } from 'react-native';
+import { SCREEN } from '../../helper/Constant';
 import { BLACK } from '../../helper/Color';
 
 function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor, borderBottom }) {

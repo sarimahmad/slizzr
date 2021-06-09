@@ -1,32 +1,37 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
 import {FONT} from '../../helper/Constant';
-import Header from '../../component/Header';
 import {WHITE} from '../../helper/Color';
+import {SafeAreaView} from 'react-native';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 
 export default class about extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-        <Header
-          headerTitle={'About Slizzr'}
-          navigation={this.props.navigation}
-          route={'SettingsNavigation'}
-        />
-        <View style={styles.textView2}>
-          <Text style={styles.text}>
-            Tousled food truck polaroid, salvia bespoke small batch Pinterest
-            Marfa. Fingerstache authentic craft beer, food truck Banksy Carles
-            kale chips hoodie. Trust fund artisan master cleanse fingerstache
-            post-ironic, fashion axe art party Etsy direct trade retro organic.
-            Cliche Shoreditch Odd Future Pinterest, pug disrupt photo booth VHS
-            literally occupy gluten-free polaroid Intelligentsia PBR mustache.
-            Locavore fashion axe chia, iPhone cardigan disrupt Etsy
-            dreamcatcher. Craft beer selvage fanny pack, 8-bit post-ironic
-            keffiyeh iPhone mlkshk pop-up. Pug blog asymmetrical ethnic,
-            stumptown shabby chic chillwave ugh before they sold out.
-          </Text>
-        </View>
+        <SafeAreaView style={styles.wrapperView}>
+          <HeaderWithOptionBtn
+            backColor={WHITE.dark}
+            headerTitle={'About Slizzr'}
+            borderBottom={true}
+            leftPress={() => this.props.navigation.pop()}
+            leftIcon={require('../../assets/back.png')}
+          />
+          <View style={styles.textView2}>
+            <Text style={styles.text}>
+              Tousled food truck polaroid, salvia bespoke small batch Pinterest
+              Marfa. Fingerstache authentic craft beer, food truck Banksy Carles
+              kale chips hoodie. Trust fund artisan master cleanse fingerstache
+              post-ironic, fashion axe art party Etsy direct trade retro
+              organic. Cliche Shoreditch Odd Future Pinterest, pug disrupt photo
+              booth VHS literally occupy gluten-free polaroid Intelligentsia PBR
+              mustache. Locavore fashion axe chia, iPhone cardigan disrupt Etsy
+              dreamcatcher. Craft beer selvage fanny pack, 8-bit post-ironic
+              keffiyeh iPhone mlkshk pop-up. Pug blog asymmetrical ethnic,
+              stumptown shabby chic chillwave ugh before they sold out.
+            </Text>
+          </View>
+        </SafeAreaView>
       </View>
     );
   }
@@ -34,7 +39,6 @@ export default class about extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
-    marginTop: 20,
     backgroundColor: WHITE.dark,
   },
   textView2: {

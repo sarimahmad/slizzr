@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key></key>
-	<string></string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -23,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -41,6 +39,8 @@
 	<string>Your own description of the purpose</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need your location for finding event event near you</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need your microphone access so you can send voice message to anyone</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>App need to access photo access so we can identify your face.</string>
 	<key>UIAppFonts</key>

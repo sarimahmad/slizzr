@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {Text, View, StyleSheet, Linking, TouchableOpacity} from 'react-native';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -7,7 +8,7 @@ import {WHITE} from '../../helper/Color';
 export default class help extends Component {
   render() {
     return (
-      <View style={styles.wrapperView}>
+      <View style={[styles.wrapperView, {paddingTop: 20, marginTop: 0}]}>
         <Header
           headerTitle={'Help'}
           navigation={this.props.navigation}
@@ -21,7 +22,9 @@ export default class help extends Component {
           onPress={() => Linking.openURL('https://slizzrapp.com/#faq')}>
           OPEN https://slizzrapp.com/#faq on this page
         </Text>
-        <TouchableOpacity onPress={() => this.props.navigation.navigate('contactUs')} style={styles.btn}>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('contactUs')}
+          style={styles.btn}>
           <Text style={styles.btntext}> CONTACT US</Text>
         </TouchableOpacity>
       </View>
