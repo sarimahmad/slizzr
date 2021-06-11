@@ -10,14 +10,27 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
- export default class SignUp extends Component {
+import Validations from '../../helper/Validations';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
+// import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-community/google-signin';
+GoogleSignin.configure({
+  webClientId: '473629197290-3374lal9f0nk1cjcec4u41nns049jcfo.apps.googleusercontent.com',
+
+});
+export default class SignUp extends Component {
    constructor(props) {
      super(props);
      this.state = {
-       firstName: 'tayyab',
-       lastName: 'jamil',
-       email: 'tayyab@gmail.com',
-       password: '231231312',
+       firstName: '',
+       lastName: '',
+       email: '',
+       password: '',
        confirmPassword: ''
      };
    }
@@ -34,42 +47,110 @@ import firestore from '@react-native-firebase/firestore';
       this.setState({confirmPassword: text});
     }
   };
+  isFormFilled() {
+    let checkPassword = Validations.checkPassword(this.state.password)
+    let checkEmail = Validations.checkEmail(this.state.email)
+    let checkfirstName = Validations.checkUsername(this.state.firstName)
+    let checklastName = Validations.checkUsername(this.state.lastName)
+    if (checkEmail && checkPassword  && checkfirstName && checklastName) {
+      return true
+    }
+    if (!checkfirstName) {
+      alert('firstName required')
+    } else if (!checkEmail) {
+      alert('invalid email')
+    }
+      else if (!checklastName) {
+        alert('lastname required')
+       
+    } else if (!checkPassword) {
+      alert('invalid password')
+    }
+    return false
+  }
+  handleSubmit = () => {
+   
   
-componentDidMount(){
-  auth()
-  .createUserWithEmailAndPassword('tayyabd@gmail.com','6324786')
-  .then((response) => {
-    
-      console.log('responce'+JSON.stringify(response))
-      const uid = response.user.uid
+    if(this.isFormFilled()){
+    auth()
+    .createUserWithEmailAndPassword(this.state.email,this.state.password)
+    .then((response) => {
       
-      const data = {
-          first_name: this.state.firstName,
-          last_name: this.state.lastName,
-          id: uid,
-          email:this.state.email,
+        console.log('responce'+JSON.stringify(response))
+        const uid = response.user.uid
         
-      };
-      const usersRef = firestore().collection('users')
-      usersRef
-          .doc(uid)
-          .set(data)
-          .then(async firestoreDocument  =>{
-            this.props.navigation.navigate("signIn")
-              // console.log(firestoreDocument)
-          }
-          )
-          .catch((error) => {
-              alert(error)
-          });
-  })
-  .catch((error) => {
-      alert(error)
-})  
-}
-   handleSubmit = () => {
-     this.props.navigation.navigate("BirthDate")
-   }
+        const data = {
+            first_name: this.state.firstName,
+            last_name: this.state.lastName,
+            id: uid,
+            email:this.state.email,
+          
+        };
+        const usersRef = firestore().collection('users')
+        usersRef
+            .doc(uid)
+            .set(data)
+            .then(async firestoreDocument  =>{
+              this.props.navigation.navigate("BirthDate")
+                // console.log(firestoreDocument)
+            }
+            )
+            .catch((error) => {
+                alert(error)
+            });
+    })
+    .catch((error) => {
+        alert(error)
+})
+    }else{
+      
+    }
+  };  
+  facebookLogin =async ()=>{
+
+    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+      
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+  
+    // Once signed in, get the users AccesToken
+    const data = await AccessToken.getCurrentAccessToken();
+  
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+  
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+  
+    // Sign-in the user with the credential
+    return auth().signInWithCredential(facebookCredential);
+  }
+  googleLogin= async ()=>{
+   
+    let provider ='google'  
+  try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      setUser(userInfo)
+      console.log('result:', userData);
+      props.userSignin(userInfo.user,provider)
+     
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        alert("user cancelled the login flow")
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        alert("operation (e.g. sign in) is in progress already")
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        alert("play services not available or outdated")
+      } else {
+        alert("Google Social Login Failed")
+        console.log(error)
+      }
+    }
+    
+  }
    render() {
      return (
        <View style={styles.wrapperView}>
@@ -85,16 +166,16 @@ componentDidMount(){
               <View style={{flexDirection:'row',justifyContent: 'space-between',marginTop:'5%'}}>
                
                <View style={{marginRight:6}}>
-               <TextField  placeholder='First Name' type="small"/>
+               <TextField  placeholder='First Name'   type={'firstName'} typeSize="small" parentCallBack={this.storeInputData}/>
                </View>
                <View style={{marginLeft:6}}>
               
-               <TextField  placeholder='Last Name' type="small"/>
+               <TextField  placeholder='Last Name' type={'lastName'} typeSize="small" parentCallBack={this.storeInputData}/>
                </View>
                </View>
-               <TextField  placeholder='Email adress' />
-               <TextField  placeholder='Password' />
-               <TextField  placeholder='ConfirmPassword' />
+               <TextField  placeholder='Email adress' type={'email'} parentCallBack={this.storeInputData}/>
+               <TextField  placeholder='Password' type={'password'} parentCallBack={this.storeInputData}/>
+               <TextField  placeholder='ConfirmPassword' type={'confirmPassword'}  parentCallBack={this.storeInputData}/>
                <ButtonResetPassaword btnLabel={'SIGN UP'} data={this.handleSubmit}/>
                <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signin")} style={{marginTop:26,flexDirection:'row'}}>
             
@@ -117,7 +198,7 @@ componentDidMount(){
                   }}>
                   <Image source={require('../../assets/facebook.png')} />
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.facebookLogin()}>
                   <Text style={styles.btnText}>Continue with Facebook</Text>
                 </TouchableOpacity>
               </View>
@@ -137,7 +218,7 @@ componentDidMount(){
                   }}>
                   <Image source={require('../../assets/google.png')} />
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.googleLogin()}>
                   <Text style={styles.btnText}>Continue with Google</Text>
                 </TouchableOpacity>
               </View>

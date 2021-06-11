@@ -6,7 +6,6 @@ import { BLACK,WHITE } from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
 
 
-
 export default class index extends Component {
     constructor() {
         super();
@@ -25,6 +24,7 @@ export default class index extends Component {
             </TouchableOpacity>
         )
     }
+   
     render() {
         return (
             <View style={styles.wrapperView}>

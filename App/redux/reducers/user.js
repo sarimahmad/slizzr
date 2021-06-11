@@ -4,7 +4,7 @@ import {
   ALTER_JUST_USER,
   SET_TOKEN,
 } from '../actions/types';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TOKEN, USERDETAIL } from '../../helper/Constant';
 
 const INITIAL_USER = {
@@ -21,8 +21,8 @@ const userReducer = (state = INITIAL_USER, action) => {
         userToken:action.payload.uid,
         loading: false,
       });
-      // AsyncStorage.setItem(USERDETAIL, JSON.stringify(action.payload));
-      // AsyncStorage.setItem(TOKEN, JSON.stringify(action.payload.uid));
+      AsyncStorage.setItem(USERDETAIL, JSON.stringify(action.payload));
+      AsyncStorage.setItem(TOKEN, JSON.stringify(action.payload.uid));
      
       return state;
 

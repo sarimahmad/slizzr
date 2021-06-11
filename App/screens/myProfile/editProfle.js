@@ -8,7 +8,12 @@ import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Textarea from 'react-native-textarea'
 
-export default class editProfle extends Component {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {connect} from 'react-redux';
+import * as userActions from '../../redux/actions/user';
+
+class editProfle extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,7 +37,11 @@ export default class editProfle extends Component {
     showDatepicker = () => {
         this.setState({ showDate: true });
     };
-
+    async componentDidMount(){
+        const userDetail = await AsyncStorage.getItem('userdetail');
+       this.setState({profileData:JSON.parse(userDetail.user)})
+      console.log(this.state.userDetail)
+    }
 
     render() {
         return (
@@ -180,6 +189,23 @@ export default class editProfle extends Component {
         )
     }
 }
+
+const mapStateToProps = (state, ownProps) => {
+ 
+    return {  
+    };
+  };
+  
+  const mapDispatchToProps = (dispatch) => {
+    return {
+     
+   
+      callApi: (user,uid) => dispatch(userActions.alterUser({user,uid})),
+     
+    };
+  };
+  export default connect(mapStateToProps, mapDispatchToProps)(editProfle);
+  
 const styles = StyleSheet.create({
     wrapperView: {
         flex: 1,

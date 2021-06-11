@@ -16,8 +16,14 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import Validations from '../../helper/Validations';
+import {connect} from 'react-redux';
+import * as userActions from '../../redux/actions/user';
 
-export default class SignIn extends Component {
+
+ class SignIn extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,8 +47,51 @@ export default class SignIn extends Component {
       this.setState({confirmPassword: text});
     }
   };
+  isFormFilled() {
+    let checkPassword = Validations.checkPassword(this.state.password)
+    let checkEmail = Validations.checkEmail(this.state.email)
+   
+    if (checkEmail && checkPassword  ) {
+      return true
+    }
+    if (!checkEmail) {
+      alert('invalid email')
+    } else if (!checkPassword) {
+      alert('invalid password')
+    }
+    return false
+  }
   handleSubmit = () => {
-    this.props.navigation.navigate('HomeStack');
+    if(this.isFormFilled()){
+    auth()
+    .signInWithEmailAndPassword(this.state.email, this.state.password)
+    .then((response) => {
+        const uid = response.user.uid
+        console.log(response)
+        const usersRef = firestore().collection('users')
+        usersRef
+            .doc(uid)
+            .get()
+            .then( async firestoreDocument => {
+                if (!firestoreDocument.exists) { 
+                    alert("User does not exist.")
+                    return;
+                }
+                console.log(firestoreDocument)
+                const user = firestoreDocument._data
+                console.log(user)
+                this.props.callApi(user,uid)
+                 this.props.navigation.navigate("HomeStack") 
+               
+            })
+            .catch(error => {
+                alert(error)
+            });
+    })
+    .catch(error => {
+        alert(error)
+    })
+    }
   };
   render() {
     return (
@@ -58,8 +107,8 @@ export default class SignIn extends Component {
                 <Text style={styles.titleText}>WELCOME BACK!</Text>
               </View>
 
-              <TextField placeholder="Email adress" />
-              <TextField placeholder="Password" />
+              <TextField placeholder="Email adress"  type={'email'} parentCallBack={this.storeInputData}/>
+              <TextField placeholder="Password" type={'password'} parentCallBack={this.storeInputData}/>
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('ResetPass')}>
                 <Text style={[styles.textPurple, {marginTop: 10}]}>
@@ -244,3 +293,16 @@ const styles = StyleSheet.create({
   //       marginTop: 19,
   //     }
 });
+
+const mapStateToProps = (state, ownProps) => {
+  return {  
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    callApi: (user,uid) => dispatch(userActions.setUser({user,uid})),
+   
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

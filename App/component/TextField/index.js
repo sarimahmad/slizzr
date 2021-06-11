@@ -21,7 +21,7 @@ const TextField = props => {
   return (
     <View>
          {/* {props.secure === 'no' && ( */}
-        <View style={[styles.inputView,props.type== "small" ?  {width:(SCREEN.width-40)/2.1} : {width:SCREEN.width-40}]}>
+        <View style={[styles.inputView,props.typeSize== "small" ?  {width:(SCREEN.width-40)/2.1} : {width:SCREEN.width-40}]}>
           <TextInput
             style={styles.input}
             placeholder={props.placeholder}
