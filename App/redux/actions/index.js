@@ -4,7 +4,6 @@ import {
   setApplicationLanguage,
   setBottomIndexOftabBar,
 } from './appState';
-import {setFeeds} from './feeds';
 
 export {
   setUser,
@@ -14,5 +13,4 @@ export {
   setOpacityOfTabBar,
   setBottomIndexOftabBar,
   setApplicationLanguage,
-  setFeeds,
 };

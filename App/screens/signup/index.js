@@ -8,31 +8,65 @@ import { BLACK, BLUE, WHITE } from '../../helper/Color';
 import { FONT, SCREEN } from '../../helper/Constant';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
-
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
  export default class SignUp extends Component {
    constructor(props) {
      super(props);
      this.state = {
-       firstName: '',
-       lastName: '',
-       email: '',
-       password: '',
+       firstName: 'tayyab',
+       lastName: 'jamil',
+       email: 'tayyab@gmail.com',
+       password: '231231312',
        confirmPassword: ''
      };
    }
    storeInputData = (text, type) => {
-     if (type === "firstName") {
-       this.setState({ firstName: text });
-     } else if (type === "lastName") {
-       this.setState({ lastName: text });
-     } else if (type === "email") {
-       this.setState({ email: text });
-     } else if (type === "password") {
-       this.setState({ password: text });
-     } else if (type === "confirmPassword") {
-       this.setState({ confirmPassword: text });
-     }
-   };
+    if (type === 'firstName') {
+      this.setState({firstName: text});
+    } else if (type === 'lastName') {
+      this.setState({lastName: text});
+    } else if (type === 'email') {
+      this.setState({email: text});
+    } else if (type === 'password') {
+      this.setState({password: text});
+    } else if (type === 'confirmPassword') {
+      this.setState({confirmPassword: text});
+    }
+  };
+  
+componentDidMount(){
+  auth()
+  .createUserWithEmailAndPassword('tayyabd@gmail.com','6324786')
+  .then((response) => {
+    
+      console.log('responce'+JSON.stringify(response))
+      const uid = response.user.uid
+      
+      const data = {
+          first_name: this.state.firstName,
+          last_name: this.state.lastName,
+          id: uid,
+          email:this.state.email,
+        
+      };
+      const usersRef = firestore().collection('users')
+      usersRef
+          .doc(uid)
+          .set(data)
+          .then(async firestoreDocument  =>{
+            this.props.navigation.navigate("signIn")
+              // console.log(firestoreDocument)
+          }
+          )
+          .catch((error) => {
+              alert(error)
+          });
+  })
+  .catch((error) => {
+      alert(error)
+})  
+}
    handleSubmit = () => {
      this.props.navigation.navigate("BirthDate")
    }

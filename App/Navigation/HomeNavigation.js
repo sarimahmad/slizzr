@@ -47,13 +47,6 @@ import index from '../screens/directInvites';
 import zickets from '../screens/zickets';
 import scan from '../screens/scan';
 import notification from '../screens/notification';
-
-
-
-
-
-
-
 import newPaymentMethods from '../screens/payments&Payouts/newPaymentMethods';
 import paymentMethod from '../screens/payments&Payouts/paymentMethod';
 import paymentsandPayouts from '../screens/payments&Payouts/paymentsandPayouts';
@@ -276,7 +269,7 @@ export const MainNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeStack"
+        initialRouteName="Splash"
         screenOptions={{
           headerShown: false,
         }}>

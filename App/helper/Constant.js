@@ -6,6 +6,8 @@ export const BASE_URL = '';
 
 export const IMAGE_BASE_URL = '';
 
+export const USERDETAIL='userdetail'
+export const TOKEN='token'
 export const SCREEN = {
   width: Dimensions.get('screen').width,
   height: Dimensions.get('screen').height,

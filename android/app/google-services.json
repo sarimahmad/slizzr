@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "746836088803",
+    "project_id": "slizzr-376fd",
+    "storage_bucket": "slizzr-376fd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746836088803:android:1a44a4bca684fdf657b2d6",
+        "android_client_info": {
+          "package_name": "com.app.Slizzr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "746836088803-liaobra29avo8m40irtkue8enlvqtiqe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl5OeEHPEwdEd8zj9yjoLmDb5TqpBahtE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "746836088803-liaobra29avo8m40irtkue8enlvqtiqe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
