@@ -1,31 +1,28 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-alert */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
-import TextField from '../../component/TextField';
-import Header from '../../component/Header';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
 import {BLACK, BLUE, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import firestore from '@react-native-firebase/firestore';
+import {Alert} from 'react-native';
 
 export default class BirthDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: new Date(2300, 10, 20),
+      date: new Date(),
       showDate: false,
     };
   }
 
   onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate || this.state.date;
 
     this.setState({date: currentDate});
-    this.setState({showDate: false});
   };
 
   showDatepicker = () => {
@@ -33,8 +30,27 @@ export default class BirthDate extends Component {
     this.setState({showDate: true});
   };
   handleSubmit = () => {
-    this.props.navigation.navigate('ConfirmEmail');
+    const dataRecieved = this.props.route.params.userData;
+    if (dataRecieved.verification) {
+      dataRecieved.verification.sendEmailVerification();
+      this.props.navigation.navigate('ConfirmEmail');
+    } else {
+      this.firestoreLinking(dataRecieved);
+    }
   };
+
+  firestoreLinking = data => {
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(data.id)
+      .set(data)
+      .then(this.props.navigation.navigate('HomeStack'))
+      .catch(error => {
+        this.setState({loading: false});
+        alert(error);
+      });
+  };
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -53,7 +69,7 @@ export default class BirthDate extends Component {
 
           <TouchableOpacity
             onPress={this.showDatepicker}
-            style={{flexDirection: 'row',alignSelf:'center' }}>
+            style={{flexDirection: 'row', alignSelf: 'center'}}>
             <View style={styles.input}>
               <Text
                 style={{
@@ -87,7 +103,7 @@ const styles = StyleSheet.create({
     width: 70,
   },
   input: {
-    width:SCREEN.width-80, // marginHorizontal: '5%',
+    width: SCREEN.width - 80, // marginHorizontal: '5%',
     borderWidth: 1,
     height: 50,
     marginVertical: 10,

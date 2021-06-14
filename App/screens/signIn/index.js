@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   View,
@@ -8,22 +10,20 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import TextField from '../../component/TextField/index';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import Validations from '../../helper/Validations';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {LoginManager, AccessToken} from 'react-native-fbsdk';
 import {connect} from 'react-redux';
+
+import TextField from '../../component/TextField/index';
+import {BLACK, WHITE} from '../../helper/Color';
+import {FONT} from '../../helper/Constant';
+import ButtonResetPassaword from '../../component/ButtonResetPassword';
+import Validations from '../../helper/Validations';
 import * as userActions from '../../redux/actions/user';
 
-
- class SignIn extends Component {
+class SignIn extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,8 +32,17 @@ import * as userActions from '../../redux/actions/user';
       email: '',
       password: '',
       confirmPassword: '',
+      loading: false,
     };
   }
+
+  componentDidMount() {
+    GoogleSignin.configure({
+      webClientId:
+        '473629197290-3374lal9f0nk1cjcec4u41nns049jcfo.apps.googleusercontent.com',
+    });
+  }
+
   storeInputData = (text, type) => {
     if (type === 'firstName') {
       this.setState({firstName: text});
@@ -47,52 +56,125 @@ import * as userActions from '../../redux/actions/user';
       this.setState({confirmPassword: text});
     }
   };
+
   isFormFilled() {
-    let checkPassword = Validations.checkPassword(this.state.password)
-    let checkEmail = Validations.checkEmail(this.state.email)
-   
-    if (checkEmail && checkPassword  ) {
-      return true
+    let checkPassword = Validations.checkPassword(this.state.password);
+    let checkEmail = Validations.checkEmail(this.state.email);
+
+    if (checkEmail && checkPassword) {
+      return true;
     }
     if (!checkEmail) {
-      alert('invalid email')
+      alert('invalid email');
     } else if (!checkPassword) {
-      alert('invalid password')
+      alert('invalid password');
     }
-    return false
+    return false;
   }
+
   handleSubmit = () => {
-    if(this.isFormFilled()){
-    auth()
-    .signInWithEmailAndPassword(this.state.email, this.state.password)
-    .then((response) => {
-        const uid = response.user.uid
-        console.log(response)
-        const usersRef = firestore().collection('users')
-        usersRef
+    if (this.isFormFilled()) {
+      auth()
+        .signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then(response => {
+          const uid = response.user.uid;
+          console.log(response);
+          const usersRef = firestore().collection('users');
+          usersRef
             .doc(uid)
             .get()
-            .then( async firestoreDocument => {
-                if (!firestoreDocument.exists) { 
-                    alert("User does not exist.")
-                    return;
-                }
-                console.log(firestoreDocument)
-                const user = firestoreDocument._data
-                console.log(user)
-                this.props.callApi(user,uid)
-                 this.props.navigation.navigate("HomeStack") 
-               
+            .then(async firestoreDocument => {
+              if (!firestoreDocument.exists) {
+                alert('User does not exist.');
+                return;
+              }
+              console.log(firestoreDocument);
+              const user = firestoreDocument._data;
+              console.log(user);
+              this.props.callApi(user, uid);
+              this.props.navigation.navigate('HomeStack');
             })
             .catch(error => {
-                alert(error)
+              alert(error);
             });
-    })
-    .catch(error => {
-        alert(error)
-    })
+        })
+        .catch(error => {
+          alert(error);
+        });
     }
   };
+
+  firestoreLinking = data => {
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(data.id)
+      .set(data)
+      .then(this.props.navigation.navigate('HomeStack'))
+      .catch(error => {
+        this.setState({loading: false});
+        alert(error);
+      });
+  };
+
+  googleSignInBtn = async () => {
+    this.setState({loading: true});
+    const {idToken} = await GoogleSignin.signIn();
+    const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
+    auth()
+      .signInWithCredential(googleCredential)
+      .then(response => {
+        const data = {
+          Email: response.user._user.email,
+          FirstName: response.user._user.displayName,
+          LastName: response.user._user.displayName,
+          Profile: response.user._user.photoURL,
+          id: response.user._user.uid,
+          Id: response.user._user.uid,
+          type: 'google',
+          displayName: response.user._user.displayName,
+          email_verified: true,
+          socialLogin: true,
+        };
+        this.firestoreLinking(data);
+      })
+      .catch(error => {
+        this.setState({loading: false});
+        alert(error);
+      });
+  };
+
+  facebookSignIn = async () => {
+    this.setState({loading: true});
+    const result = await LoginManager.logInWithPermissions([
+      'public_profile',
+      'email',
+    ]);
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+
+    // Once signed in, get the users AccesToken
+    const data = await AccessToken.getCurrentAccessToken();
+
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(
+      data.accessToken,
+    );
+    auth()
+      .signInWithCredential(facebookCredential)
+      .then(response => {
+        console.log('responseFb', JSON.stringify(response));
+      })
+      .catch(error => {
+        this.setState({loading: false});
+        alert(error);
+      });
+  };
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -107,8 +189,16 @@ import * as userActions from '../../redux/actions/user';
                 <Text style={styles.titleText}>WELCOME BACK!</Text>
               </View>
 
-              <TextField placeholder="Email adress"  type={'email'} parentCallBack={this.storeInputData}/>
-              <TextField placeholder="Password" type={'password'} parentCallBack={this.storeInputData}/>
+              <TextField
+                placeholder="Email adress"
+                type={'email'}
+                parentCallBack={this.storeInputData}
+              />
+              <TextField
+                placeholder="Password"
+                type={'password'}
+                parentCallBack={this.storeInputData}
+              />
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('ResetPass')}>
                 <Text style={[styles.textPurple, {marginTop: 10}]}>
@@ -123,7 +213,10 @@ import * as userActions from '../../redux/actions/user';
                 Other login up options
               </Text>
 
-              <View style={styles.btnFaceBook}>
+              <TouchableOpacity
+                style={styles.btnFaceBook}
+                activeOpacit={1}
+                onPress={() => this.facebookSignIn()}>
                 <View
                   style={{
                     position: 'absolute',
@@ -137,13 +230,15 @@ import * as userActions from '../../redux/actions/user';
                   }}>
                   <Image source={require('../../assets/facebook.png')} />
                 </View>
-                <TouchableOpacity>
+                <View>
                   <Text style={styles.btnText}>Continue with Facebook</Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
 
-
-              <View style={styles.btnGoogle}>
+              <TouchableOpacity
+                style={styles.btnGoogle}
+                activeOpacity={1}
+                onPress={() => this.googleSignInBtn()}>
                 <View
                   style={{
                     position: 'absolute',
@@ -157,10 +252,10 @@ import * as userActions from '../../redux/actions/user';
                   }}>
                   <Image source={require('../../assets/google.png')} />
                 </View>
-                <TouchableOpacity>
+                <View>
                   <Text style={styles.btnText}>Continue with Google</Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('Signup')}
@@ -175,6 +270,7 @@ import * as userActions from '../../redux/actions/user';
     );
   }
 }
+
 const styles = StyleSheet.create({
   topView: {
     // height:hp('35%'),
@@ -198,10 +294,9 @@ const styles = StyleSheet.create({
   btnText: {
     textAlignVertical: 'center',
     fontSize: 16,
-    color: 'white',
     textAlign: 'center',
     // paddingTop:'5%',
-    fontFamily:FONT.Nunito.bold,
+    fontFamily: FONT.Nunito.bold,
     color: '#f1f1f2',
   },
   subtitleTextBold: {
@@ -261,7 +356,6 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
   },
   btnFaceBook: {
-    height: 55,
     backgroundColor: '#3664A2',
     width: '100%',
     borderRadius: 25,
@@ -270,7 +364,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   btnGoogle: {
-    height: 55,
     backgroundColor: '#FF3B30',
     width: '100%',
     borderRadius: 25,
@@ -295,14 +388,12 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, ownProps) => {
-  return {  
-  };
+  return {};
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    callApi: (user,uid) => dispatch(userActions.setUser({user,uid})),
-   
+    callApi: (user, uid) => dispatch(userActions.setUser({user, uid})),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
