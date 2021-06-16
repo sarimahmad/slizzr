@@ -2,15 +2,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { Image, Text, TouchableHighlight, View, TouchableOpacity } from 'react-native';
-import { FONT, isIphoneXorAbove, SCREEN } from '../../helper/Constant';
+import { FONT, SCREEN } from '../../helper/Constant';
 import { BLACK } from '../../helper/Color';
 
-function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rightPress, rightIcon, backColor, borderBottom,centerIcon,searchIcon }) {
+
+function HeaderWithOptionBtn({ leftPress, headerTitle,rightIconText, leftIcon,profileIcon, rightPress, rightIcon, backColor, borderBottom,centerIcon,searchIcon }) {
   return (
     <View
       style={{
         flexDirection: 'row',
-        height: isIphoneXorAbove ? 100 : 80,
+        height: 80,
         alignItems: 'center',
         width: SCREEN.width,
         paddingHorizontal: 30,
@@ -26,7 +27,7 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rig
           <Image source={leftIcon} style={{ height: 40, width: 40, justifyContent: 'center' }} />
         </TouchableOpacity>}
         {profileIcon &&
-      
+
       <Image
       style={{position: 'absolute',left: 60, justifyContent: 'center', alignItems: 'center', height: 40, width: 40}}
       source={require('../../assets/profile1.png')}
@@ -43,11 +44,11 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rig
         flexDirection: 'row', alignItems: 'center',
       }}>
       <Image source={centerIcon} style={{  justifyContent: 'center' }} />
-      </View>    
+      </View>
     </View>
       }
 {headerTitle &&
-      <View 
+      <View
         style={{
           flex: 1,
           justifyContent: 'center',
@@ -56,10 +57,24 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rig
         <View style={{
           flexDirection: 'row', alignItems: 'center',
         }}>
-          <Text style={{ fontSize: 18, fontFamily: FONT.Nunito.bold, color: BLACK.app, marginLeft: 10 }}>{headerTitle}</Text>
+          <Text style={{ fontSize: 17, fontFamily: FONT.Nunito.bold, color: BLACK.app }}>{headerTitle}</Text>
         </View>
       </View>
 }
+{rightIconText && <TouchableHighlight
+        underlayColor={backColor}
+        onPress={rightPress}
+        style={{
+          width: 35,
+          height: 35,
+          backgroundColor:'white',
+          elevation:5,
+          borderRadius:24,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+       <Text style={{fontFamily:FONT.Nunito.bold,fontSize:12,color:'#B2ABB1'}}>{rightIconText}</Text>
+      </TouchableHighlight>}
       {rightIcon && <TouchableHighlight
         underlayColor={backColor}
         onPress={rightPress}
@@ -85,7 +100,7 @@ function HeaderWithOptionBtn({ leftPress, headerTitle, leftIcon,profileIcon, rig
         }}>
        <View
               style={[
-               
+
                 {
                   elevation: 6,
                   marginRight: 5,

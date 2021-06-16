@@ -17,6 +17,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import { HeaderBackButton } from 'react-navigation-stack';
 export default class newMessage extends Component {
   constructor(props) {
     super(props);
@@ -71,12 +72,13 @@ export default class newMessage extends Component {
        
           <View
               style={{
-                backgroundColor:'lightgrey',
+                backgroundColor:BLACK.textInput,
                 flexDirection: 'row',
                  marginBottom:5,
                 alignItems: 'center',  
                 borderRadius:12,
-                marginHorizontal:20
+                marginHorizontal:20,
+                height: 36
               }}>
               <Image style={{marginHorizontal:10}}
                 source={require('../../assets/searchWhite.png')}
@@ -98,7 +100,7 @@ export default class newMessage extends Component {
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('chat')}
                 style={{
-                  borderWidth: 1,
+                  borderBottomWidth: 1,
                   borderColor: 'lightgrey',
                   justifyContent: 'center',
                 }}>
@@ -112,7 +114,7 @@ export default class newMessage extends Component {
                   <View style={styles.detail}>
                     <Text style={styles.titleText}>{item.name}</Text>
                     <Image
-                      style={{height: 26, width: 28,marginLeft:5,resizeMode:'contain'}}
+                      style={{height: 26, width: 28,marginLeft:8,resizeMode:'contain'}}
                       source={require('../../assets/newProfile.png')}
                     />
                   </View>
@@ -121,7 +123,7 @@ export default class newMessage extends Component {
               </TouchableOpacity>
             )}
           />
-             <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("attendeesList")}>
+             <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("chat")}>
               <Text style={styles.btnText}>MESSAGE ALL 87 ATTENDEES</Text>
             </TouchableOpacity>
         </SafeAreaView>
@@ -166,8 +168,7 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    height:80,
     alignItems: 'center',
   },
   detail: {
@@ -184,18 +185,20 @@ const styles = StyleSheet.create({
     backgroundColor:WHITE.dark
   },
   imgView: {
-    width: wp('20%'),
-  },
+    marginHorizontal:20,
+   width:50, height:50,
+   borderRadius: 25
+
+    },
   flex: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   logo: {},
   titleText: {
-    color: BLACK.textInputTitle,
+    color: BLACK.grey,
     fontFamily: FONT.Nunito.semiBold,
     fontSize: 17,
-  
   },
   purpleText: {
     fontSize: 12,
@@ -215,4 +218,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
   },
+  inputSearch:{
+    
+  }
 });

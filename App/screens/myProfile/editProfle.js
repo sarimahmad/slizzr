@@ -1,8 +1,18 @@
-import React, { Component } from 'react'
-import { Text, View, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, TextInput } from 'react-native'
-import { FONT, SCREEN } from '../../helper/Constant'
-import { SafeAreaView } from 'react-navigation';
-import { BLACK, WHITE } from '../../helper/Color';
+/* eslint-disable react-native/no-inline-styles */
+import React, {Component} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Platform,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  TextInput,
+} from 'react-native';
+import {FONT, SCREEN} from '../../helper/Constant';
+import {SafeAreaView} from 'react-navigation';
+import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -186,8 +196,11 @@ class editProfle extends Component {
                     </ScrollView>
                 </SafeAreaView>
             </View>
-        )
-    }
+          </ScrollView>
+        </SafeAreaView>
+      </View>
+    );
+  }
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -207,107 +220,104 @@ const mapStateToProps = (state, ownProps) => {
   export default connect(mapStateToProps, mapDispatchToProps)(editProfle);
   
 const styles = StyleSheet.create({
-    wrapperView: {
-        flex: 1,
-        backgroundColor: WHITE.dark
-       
-    },
-    blockView: {
-        
-        marginTop: 30,
-        // alignItems: 'center'
-
-    },
-    profileView: {
-        height: 176,
-        width: 50,
-    },
-    inputTextView: {
-        shadowOpacity: 0.6,
-        shadowRadius: 10,
-        shadowOffset: { width: 1, height: 1 },
-        width: SCREEN.width - 40,
-        height: 53,
-        borderWidth: 1,
-        borderRadius: 10,
-        paddingLeft: 20,
-        borderColor: 'lightgrey',
-        fontSize: 16,
-        fontFamily: FONT.Nunito.regular,
-        marginTop: 20,
-        alignSelf:'center'
-    },
-    DataTimeWrapper: {
-        backgroundColor: WHITE.dark,
-        height: 53,
-        width: SCREEN.width - 40,
-        alignSelf: 'center',
-        borderWidth: 0.3,
-        borderRadius: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        shadowColor: BLACK.shadow,
-        shadowOffset: { width: 1, height: 1 },
-        shadowRadius: 6,
-        shadowOpacity: 0.3,
-        elevation: 2,
-        marginVertical: 20,
-    },
-    input: {
-        width: '100%',
-        marginHorizontal: '5%',
-        height: '100%',
-    },
-    logoAddCalenderView: {
-        position: 'absolute',
-        right: 0,
-        width: 58,
-        height: 53,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderLeftWidth: 1,
-        borderLeftColor: BLACK.border,
-    },
-    DateTimeInnerIOS: {
-        height: '100%',
-        width: '100%',
-        alignSelf: 'center',
-        borderRadius: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        shadowColor: BLACK.shadow,
-        shadowOffset: { width: 1, height: 1 },
-        shadowRadius: 6,
-        shadowOpacity: 0.3,
-        elevation: 2,
-        marginLeft:10
-    },
-    logoAddCalenderView: {
-        position: 'absolute',
-        right: 0,
-        width: 58,
-        height: 53,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderLeftWidth: 1,
-        borderLeftColor: BLACK.border,
-    },
-    btn: {
-        width: SCREEN.width - 40,
-        height: 55,
-        backgroundColor: 'black',
-        borderRadius: 27.5,
-        alignSelf: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 40,
-    },
-    btntext: {
-        color: '#FFFFFF',
-        fontFamily: FONT.Nunito.bold,
-        fontSize: 14,
-        letterSpacing: 0.7,
-        fontWeight: 'bold'
-    }
-
-})
+  wrapperView: {
+    flex: 1,
+    backgroundColor: WHITE.dark,
+  },
+  blockView: {
+    marginTop: 30,
+    // alignItems: 'center'
+  },
+  form: {
+    marginVertical: 5,
+    borderWidth: 1,
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
+    borderColor: 'lightgrey',
+    height: 53,
+    borderRadius: 5,
+    justifyContent: 'center',
+  },
+  profileView: {
+    height: 176,
+    width: 50,
+  },
+  inputTextView: {
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    shadowOffset: {width: 1, height: 1},
+    width: SCREEN.width - 40,
+    height: 53,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingLeft: 20,
+    borderColor: 'lightgrey',
+    fontSize: 16,
+    fontFamily: FONT.Nunito.regular,
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+  DataTimeWrapper: {
+    backgroundColor: WHITE.dark,
+    height: 53,
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
+    borderWidth: 0.3,
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: BLACK.shadow,
+    shadowOffset: {width: 1, height: 1},
+    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    elevation: 2,
+    marginVertical: 20,
+  },
+  input: {
+    width: '100%',
+    marginHorizontal: '5%',
+    height: '100%',
+  },
+  logoAddCalenderView: {
+    position: 'absolute',
+    right: 0,
+    width: 58,
+    height: 53,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderLeftWidth: 1,
+    borderLeftColor: BLACK.border,
+  },
+  DateTimeInnerIOS: {
+    height: '90%',
+    width: '90%',
+    alignSelf: 'center',
+    borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: BLACK.shadow,
+    shadowOffset: {width: 1, height: 1},
+    backgroundColor: WHITE.dark,
+    shadowRadius: 6,
+    shadowOpacity: 0.3,
+    elevation: 2,
+    paddingLeft: 10,
+  },
+  btn: {
+    width: SCREEN.width - 40,
+    height: 55,
+    backgroundColor: 'black',
+    borderRadius: 27.5,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
+  },
+  btntext: {
+    color: '#FFFFFF',
+    fontFamily: FONT.Nunito.bold,
+    fontSize: 14,
+    letterSpacing: 0.7,
+    fontWeight: 'bold',
+  },
+});

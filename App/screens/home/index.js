@@ -1,8 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 
 import {
   View,
-  Button,
   Text,
   StyleSheet,
   TouchableOpacity,
@@ -11,12 +11,9 @@ import {
   FlatList,
   Image,
 } from 'react-native';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
+import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
@@ -24,11 +21,15 @@ export default class home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      enableMap: false,
       listView: false,
       mapView: true,
       date: new Date(2300, 10, 20),
       index: 0,
+      markers: [
+        {lat: 31.52037, lng: 74.358749},
+        {lat: 31.64037, lng: 74.358749},
+        {lat: 31.7037, lng: 74.358749},
+      ],
       findpeople: [
         {
           imgProfile: '',
@@ -90,7 +91,7 @@ export default class home extends Component {
     };
   }
   onChange = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
+    const currentDate = selectedDate || this.state.date;
 
     this.setState({date: currentDate});
     this.setState({showDate: false});
@@ -127,14 +128,14 @@ export default class home extends Component {
 
   listView = () => {
     return (
-      <View>
-        {this.searchBar()}
+      <View style={{flex: 1}}>
         <View
           style={{
+            marginTop: 50,
             justifyContent: 'center',
             alignItems: 'center',
-
-            marginBottom: 60,
+            flex: 1,
+            // marginBottom: SCREEN.height*0.15,
           }}>
           <FlatList
             data={this.state.findpeople}
@@ -149,9 +150,13 @@ export default class home extends Component {
                 }}>
                 <View style={[styles.flexRow, {width: SCREEN.width - 20}]}>
                   <View style={styles.imgView}>
-                    <Image source={require('../../assets/profile1.png')} />
                     <Image
-                      style={{position: 'absolute', right: 15}}
+                      source={require('../../assets/image2.jpg')}
+                      style={{borderRadius: 44, height: 60, width: 60}}
+                    />
+
+                    <Image
+                      style={{position: 'absolute', right: -10}}
                       source={require('../../assets/private.png')}
                     />
                   </View>
@@ -189,21 +194,38 @@ export default class home extends Component {
       <MapView
         style={{flex: 1}}
         initialRegion={{
-          latitude: 26.4788,
-          longitude: 80.292061,
-          latitudeDelta: 0.07,
-          longitudeDelta: 0.07,
-        }}
-      />
+          latitude: 31.52037,
+          longitude: 74.358749,
+          latitudeDelta: 1,
+          longitudeDelta: 1,
+        }}>
+        {this.state.markers.map((marker, index) => (
+          <MapView.Marker
+            coordinate={{
+              latitude: marker.lat,
+              longitude: 74.358749,
+            }}
+            onPress={() => this.props.navigation.navigate('eventDetail')}
+            // title={'City'}
+            image={require('../../assets/marker.png')}
+            // description={'Description'}
+          />
+        ))}
+      </MapView>
     );
   };
+
   searchBar = () => {
     return (
       <View
-        style={{
-          alignSelf: 'center',
-          marginVertical: 10,
-        }}>
+        style={[
+          this.state.index === 0 ? {opacity: 0.4} : {opacity: 1},
+          {
+            position: 'absolute',
+            top: 50,
+            alignSelf: 'center',
+          },
+        ]}>
         <View style={styles.inputSearch}>
           <Image
             source={require('../../assets/magnify.png')}
@@ -213,7 +235,7 @@ export default class home extends Component {
             placeholder={'Try “western homecoming party”'}
             placeholderTextColor={'#8e8e93'}
             // onChangeText={handleText}
-          ></TextInput>
+          />
         </View>
       </View>
     );
@@ -222,27 +244,50 @@ export default class home extends Component {
     return (
       <View
         style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: SCREEN.width,
-          marginTop: 40,
-          paddingHorizontal: 20,
+          flex: 1,
         }}>
-        <Image
-          source={require('../../assets/map-marker-outline.png')}
-          style={styles.logo}
+        <MapView
+          style={{flex: 1, opacity: 0.3}}
+          initialRegion={{
+            latitude: 31.52037,
+            longitude: 74.358749,
+            latitudeDelta: 1,
+            longitudeDelta: 1,
+          }}
         />
-        <Text style={[styles.titleText, {marginTop: 20, fontSize: 27}]}>
-          Enable Location
-        </Text>
-        <Text style={[styles.subtitleText, {textAlign: 'center'}]}>
-          You will need to enable location to see events near you
-        </Text>
-        <TouchableOpacity
-          onPress={() => this.setState({index: 5})}
-          style={styles.btnLocation}>
-          <Text style={styles.btnTextLocation}>Allow Location</Text>
-        </TouchableOpacity>
+
+        <View
+          style={{
+            position: 'absolute',
+            top: SCREEN.height * 0.08,
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: SCREEN.width,
+          }}>
+          <Image
+            source={require('../../assets/map-marker-outline.png')}
+            style={styles.logo}
+          />
+          <Text style={[styles.titleText, {marginTop: 20, fontSize: 27}]}>
+            Enable Location
+          </Text>
+          <Text
+            style={{
+              color: BLACK.grey,
+              marginHorizontal: 50,
+              textAlign: 'center',
+              fontSize: 17,
+              fontFamily: FONT.Nunito.bold,
+              marginTop: 7,
+            }}>
+            You will need to enable location to see events near you
+          </Text>
+          <TouchableOpacity
+            onPress={() => this.setState({mapView: true, index: 5})}
+            style={styles.btnLocation}>
+            <Text style={styles.btnTextLocation}>Allow Location</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   };
@@ -265,11 +310,14 @@ export default class home extends Component {
               fontSize: 20,
               fontFamily: FONT.Nunito.regular,
               textAlign: 'center',
+              color: BLACK.grey,
             },
           ]}>
           No events to show{'\n'} in your area.
         </Text>
-        <TouchableOpacity style={[styles.btnMap, {marginTop: 30}]}>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('createEvent')}
+          style={[styles.btnMap, {marginTop: 30}]}>
           <Text style={styles.btnText}>HOST AN EVENT</Text>
         </TouchableOpacity>
       </View>
@@ -277,7 +325,7 @@ export default class home extends Component {
   };
   tapBar = () => {
     return (
-      <View style={{overflow: 'hidden', paddingBottom: 5}}>
+      <View style={{paddingBottom: 5}}>
         <View
           style={[
             styles.flex,
@@ -286,15 +334,15 @@ export default class home extends Component {
               backgroundColor: '#fff',
 
               shadowColor: '#000',
-              shadowOffset: {width: 1, height: 1},
-              shadowOpacity: 0.4,
-              shadowRadius: 3,
+              shadowOffset: {width: 2, height: 3},
+              shadowOpacity: 0.1,
+              shadowRadius: 6,
               elevation: 5,
             },
           ]}>
           <TouchableOpacity
             style={
-              this.state.index == 0
+              this.state.index === 0 || this.state.index === 5
                 ? {
                     borderBottomColor: '#F818D9',
                     borderBottomWidth: 3,
@@ -317,14 +365,16 @@ export default class home extends Component {
             <Text
               style={[
                 styles.barChild,
-                this.state.index == 0 ? {color: '#F818D9'} : {color: 'black'},
+                this.state.index === 0 || this.state.index === 5
+                  ? {color: '#F818D9'}
+                  : {color: 'black'},
               ]}>
               ALL
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={
-              this.state.index == 2
+              this.state.index === 2
                 ? {
                     borderBottomColor: '#F818D9',
                     borderBottomWidth: 3,
@@ -347,14 +397,14 @@ export default class home extends Component {
             <Text
               style={[
                 styles.barChild,
-                this.state.index == 2 ? {color: '#F818D9'} : {color: 'black'},
+                this.state.index === 2 ? {color: '#F818D9'} : {color: 'black'},
               ]}>
               PREPAID
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={
-              this.state.index == 3
+              this.state.index === 3
                 ? {
                     borderBottomColor: '#F818D9',
                     borderBottomWidth: 3,
@@ -377,7 +427,7 @@ export default class home extends Component {
             <Text
               style={[
                 styles.barChild,
-                this.state.index == 3
+                this.state.index === 3
                   ? {color: '#F818D9', width: SCREEN.width * 0.45}
                   : {color: 'black', width: SCREEN.width * 0.45},
               ]}>
@@ -386,7 +436,7 @@ export default class home extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={
-              this.state.index == 4
+              this.state.index === 4
                 ? {
                     borderBottomColor: '#F818D9',
                     borderBottomWidth: 3,
@@ -409,7 +459,7 @@ export default class home extends Component {
             <Text
               style={[
                 styles.barChild,
-                this.state.index == 4
+                this.state.index === 4
                   ? {color: '#F818D9', width: SCREEN.width * 0.15}
                   : {color: 'black', width: SCREEN.width * 0.15},
               ]}>
@@ -422,12 +472,7 @@ export default class home extends Component {
   };
   bottomView = () => {
     return (
-      <View style={{position: 'absolute', bottom: 0,height:189}}>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('createEvent')}
-          style={styles.logoAdd}>
-          <Image source={require('../../assets/plus-circle.png')} />
-        </TouchableOpacity>
+      <View style={{height: 151, justifyContent: 'center'}}>
         <View
           style={{
             backgroundColor: 'white',
@@ -456,7 +501,8 @@ export default class home extends Component {
                     height: 53,
                     width: 1,
                     backgroundColor: 'lightgrey',
-                  }}></View>
+                  }}
+                />
               </View>
               <Image
                 style={styles.logoAddCalender}
@@ -475,18 +521,18 @@ export default class home extends Component {
               />
             )}
           </TouchableOpacity>
-          {this.state.mapView == true && (
+          {this.state.mapView === true && (
             <TouchableOpacity
               style={styles.btnMap}
               onPress={() => this.setState({mapView: false, listView: true})}>
-              <Text style={styles.btnText}>List View</Text>
+              <Text style={styles.btnText}>LIST VIEW</Text>
             </TouchableOpacity>
           )}
-          {this.state.listView == true && (
+          {this.state.listView === true && (
             <TouchableOpacity
               style={styles.btnMap}
               onPress={() => this.setState({listView: false, mapView: true})}>
-              <Text style={styles.btnText}>Map View</Text>
+              <Text style={styles.btnText}>MAP VIEW</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -496,36 +542,51 @@ export default class home extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
-      
         <SafeAreaView style={styles.contentView}>
-        <HeaderWithOptionBtn
-                    
-                        borderBottom={true}
-                        backColor={WHITE.dark}
-                        leftPress={() => this.props.navigation.openDrawer()}
-                        leftIcon={require('../../assets/drawer.png')}
-                        rightPress={() => this.props.navigation.navigate('Notifications')}
-                        rightIcon={require('../../assets/bell.png')}
-                        centerIcon={require('../../assets/homeLogo.png')}
-                    />
-   
+          <HeaderWithOptionBtn
+            borderBottom={true}
+            backColor={WHITE.dark}
+            leftPress={() => this.props.navigation.openDrawer()}
+            leftIcon={require('../../assets/drawer.png')}
+            rightPress={() => this.props.navigation.navigate('Notifications')}
+            rightIcon={require('../../assets/bell.png')}
+            centerIcon={require('../../assets/homeLogo.png')}
+          />
+          <View style={styles.wrapperView}>
+            {this.tapBar()}
 
-          {this.tapBar()}
+            {this.state.index === 5 &&
+              this.state.mapView === true &&
+              this.mapView()}
 
-          {this.state.index == 5 && this.mapView()}
+            {this.state.index === 0 &&
+              this.state.listView === false &&
+              this.enableLocation()}
+            {this.state.listView === true && this.listView()}
 
-          {this.state.index === 0 &&
-            this.state.listView === false &&
-            this.enableLocation()}
-          {this.state.listView === true && this.listView()}
-
-          {(this.state.index == 2 ||
-            this.state.index == 3 ||
-            this.state.index == 4) &&
-            this.noEvent()}
-
-          {(this.state.listView === true || this.state.mapView === true) &&
-            this.bottomView()}
+            {(this.state.index === 2 ||
+              this.state.index === 3 ||
+              this.state.index === 4) &&
+              this.noEvent()}
+            {(this.state.listView === true || this.state.mapView === true) &&
+              this.searchBar()}
+            {(this.state.listView === true || this.state.mapView === true) &&
+              this.bottomView()}
+            {(this.state.listView === true || this.state.mapView === true) && (
+              <View
+                style={{
+                  position: 'absolute',
+                  bottom: 155,
+                  right: 0,
+                }}>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('createEvent')}
+                  style={styles.logoAdd}>
+                  <Image source={require('../../assets/plus-circle.png')} />
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
         </SafeAreaView>
       </View>
     );
@@ -543,7 +604,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     paddingLeft: 20,
     backgroundColor: 'white',
-
     borderRadius: 24,
     borderColor: 'lightgrey',
     shadowColor: 'black',
@@ -567,9 +627,10 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   imgView: {
-    width: SCREEN.width * 0.25,
-    // justifyContent: 'center',
-    // alignSelf:'center'
+    marginHorizontal: 20,
+    alignItems: 'center',
+
+    alignSelf: 'center',
   },
   shareView: {
     width: wp('20%'),
@@ -579,7 +640,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  logo: {},
   titleText: {
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,
@@ -603,35 +663,29 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   detail: {
-    width: SCREEN.width * 0.6,
+    width: SCREEN.width * 0.55,
   },
   btnLocation: {
-    width: SCREEN.width - 100,
-    borderRadius: 25,
-    marginTop: 60,
+    width: SCREEN.width - 98,
+    marginTop: SCREEN.height * 0.078,
     height: 55,
     backgroundColor: WHITE.dark,
-
-    // shadowColor: 'black',
-    // shadowOffset: {width: 0, height: 2},
-    // shadowRadius: 6,
-    // shadowOpacity: 0.1,
-    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {width: 1, height: 1},
+    shadowOpacity: 0.6,
+    shadowRadius: 3,
     justifyContent: 'center',
-
     borderWidth: 1,
     borderRadius: 24,
     borderColor: BLACK.light,
     bottom: 10,
   },
   btnMap: {
+    marginTop: 10,
     width: SCREEN.width - 40,
-    // marginHorizontal: '5%',
     borderRadius: 25,
-
-    height: 50,
+    height: 55,
     marginBottom: 20,
-
     backgroundColor: 'black',
     justifyContent: 'center',
   },
@@ -642,15 +696,13 @@ const styles = StyleSheet.create({
   },
   bottomView: {
     position: 'absolute',
-
     bottom: 20,
   },
   btnText: {
-    fontSize: 16,
-    color: 'white',
+    fontSize: 17,
     textAlign: 'center',
     color: 'white',
-    fontFamily: FONT.Nunito.regular,
+    fontFamily: FONT.Nunito.bold,
   },
   btnTextLocation: {
     fontSize: 16,
@@ -667,10 +719,8 @@ const styles = StyleSheet.create({
   subtitleText: {
     fontSize: 14,
     marginTop: 14,
-
     fontFamily: FONT.Nunito.semiBold,
   },
-
   logo: {
     //   height: 80,
     //   width: 100,

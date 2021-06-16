@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   View,
@@ -7,9 +8,8 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Animated,
 } from 'react-native';
-import Header from '../../component/Header';
+import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 
@@ -24,23 +24,16 @@ export default class settings extends Component {
     return (
       <View style={styles.wrapperview}>
         <SafeAreaView style={styles.contentView}>
-          <View style={[styles.flex]}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                source={require('../../assets/drawer.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
-            <Image
-              source={require('../../assets/homeLogo.png')}
-              style={styles.logo}
-            />
-            <Image
-              source={require('../../assets/bell.png')}
-              style={styles.logo}
-            />
-          </View>
+          <HeaderWithOptionBtn
+            borderBottom={true}
+            backColor={WHITE.dark}
+            leftPress={() => this.props.navigation.openDrawer()}
+            leftIcon={require('../../assets/drawer.png')}
+            rightPress={() => this.props.navigation.navigate('Notifications')}
+            rightIcon={require('../../assets/bell.png')}
+            centerIcon={require('../../assets/homeLogo.png')}
+          />
+
           <ScrollView styel={styles.contentView} bounces={false}>
             <Image
               source={require('../../assets/Slizzer-icon/locationIcon.png')}
@@ -57,7 +50,9 @@ export default class settings extends Component {
 
             <View style={styles.verticalView}>
               <TouchableOpacity
-              onPress={()=>this.props.navigation.navigate("paymentsandPayouts")}
+                onPress={() =>
+                  this.props.navigation.navigate('paymentsandPayouts')
+                }
                 style={[
                   styles.rowView,
                   {borderTopColor: 'lightgrey', borderTopWidth: 1},
@@ -68,21 +63,23 @@ export default class settings extends Component {
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity  onPress={()=>this.props.navigation.navigate("BlockedUser")} style={styles.rowView}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('BlockedUser')}
+                style={styles.rowView}>
                 <Text style={styles.textView}>Blocked User</Text>
                 <Image
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("")} style={styles.rowView}>
+              <TouchableOpacity style={styles.rowView}>
                 <Text style={styles.textView}>Push Notifications</Text>
                 <Image
                   style={[styles.icon, {width: 55, height: 37}]}
                   source={require('../../assets/Slizzer-icon/RightCopy.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("")} style={styles.rowView}>
+              <TouchableOpacity style={styles.rowView}>
                 <Text style={styles.textView}>
                   Profile Visibility in People Radar
                 </Text>
@@ -91,42 +88,50 @@ export default class settings extends Component {
                   source={require('../../assets/Slizzer-icon/off.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("contactUs")} style={styles.rowView}>
+              <TouchableOpacity style={styles.rowView}>
                 <Text style={styles.textView}>Privacy Policy</Text>
                 <Image
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("")} style={styles.rowView}>
+              <TouchableOpacity style={styles.rowView}>
                 <Text style={styles.textView}>Term of Service</Text>
                 <Image
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("aboutSlizzr")} style={styles.rowView}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('aboutSlizzr')}
+                style={styles.rowView}>
                 <Text style={styles.textView}>About Slizzr</Text>
                 <Image
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("help")} style={styles.rowView}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('help')}
+                style={styles.rowView}>
                 <Text style={styles.textView}>Help</Text>
                 <Image
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("")} style={styles.rowView}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('Intro')}
+                style={styles.rowView}>
                 <Text style={styles.textView}>Logout</Text>
                 <Image
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <View style={[styles.rowView, {borderBottomWidth: 0}]}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('Intro')}
+                style={[styles.rowView, {borderBottomWidth: 0}]}>
                 <Text
                   style={[
                     styles.textView,
@@ -138,7 +143,7 @@ export default class settings extends Component {
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
-              </View>
+              </TouchableOpacity>
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -149,8 +154,7 @@ export default class settings extends Component {
 const styles = StyleSheet.create({
   wrapperview: {
     flex: 1,
-    marginTop: 20,
-    backgroundColor:WHITE.dark,
+    backgroundColor: WHITE.dark,
   },
   contentView: {
     flex: 1,

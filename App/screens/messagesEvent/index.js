@@ -89,16 +89,16 @@ export default class messagesEvent extends Component {
                 onPress={() => this.props.navigation.navigate('chat')}>
              
                <View style={styles.flexRow}>
+                 <View style={{flexDirection:"row", alignItems:"center"}}>
                     <View style={styles.imgView}>
                       <Image style={{height:50,width:50}} source={require('../../assets/profile1.png')} />
-                     
                     </View>
                     <View style={styles.detail}>
                       <Text style={[styles.titleText,{fontFamily:FONT.Nunito.semiBold}]}>{item.message}</Text>
                       <Text style={{color:'#B2ABB1',fontSize:12}}>{item.adress}</Text>
-                
                     </View>
-                    <View style={{height:23,width:23,borderRadius:24,justifyContent: 'center',alignItems: 'center',backgroundColor:'#F818D9',}}>
+                    </View>
+                    <View style={{height:23,width:23,borderRadius:24,justifyContent: 'center',alignItems: 'center',backgroundColor:'#F818D9',marginRight:9}}>
                        <Text style={[styles.titleText,{color:'white'}]}>{item.count}</Text>
                   </View>
                   </View>
@@ -133,32 +133,18 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
 
   },
-  btnLocation: {
-    // width: wp('80%'),
-    marginHorizontal: '10%',
-    borderRadius: 25,
-    marginTop: hp('5%'),
-    height: 50,
-    elevation: 1,
-    justifyContent:'center',
-    backgroundColor:'black',
-    borderWidth: 1,
-    borderRadius: 24,
-    borderColor: BLACK.light,
-    bottom: 10,
-  },
+
   flexRow: {
+    width:SCREEN.width - 40,
+
     flexDirection: 'row',
     paddingVertical: 20,
-    paddingHorizontal:10,
     alignSelf: 'center',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     
   },
-  detail: {
-    width: wp('55%'),
-  },
+
   next: {
     paddingTop: 15,
   },
@@ -166,7 +152,11 @@ const styles = StyleSheet.create({
     width: wp('60%'),
   },
   imgView: {
-    width: wp('20%'),
+
+    width: 50,
+    height:50, 
+    borderRadius:25,
+    marginRight: 20
   },
   flex: {
     flexDirection: 'row',

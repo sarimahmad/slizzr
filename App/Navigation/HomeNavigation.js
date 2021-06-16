@@ -1,4 +1,5 @@
 /* eslint-disable no-shadow */
+/* eslint-disable react/self-closing-comp */
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -37,6 +38,7 @@ import index from '../screens/directInvites';
 import zickets from '../screens/zickets';
 import scan from '../screens/scan';
 import notification from '../screens/notification';
+
 import newPaymentMethods from '../screens/payments&Payouts/newPaymentMethods';
 import paymentMethod from '../screens/payments&Payouts/paymentMethod';
 import paymentsandPayouts from '../screens/payments&Payouts/paymentsandPayouts';
@@ -53,7 +55,9 @@ import settings from '../screens/settings/index';
 import myProfile from '../screens/myProfile';
 import editProfle from '../screens/myProfile/editProfle';
 import zicketDetail from '../screens/zicketDetail';
-
+import mutualConnections from '../screens/mutualConnections';
+import directInvites from '../screens/directInvites';
+import NewpayoutMethod from '../screens/payments&Payouts/NewpayoutMethod';
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
@@ -63,14 +67,16 @@ const HomeNavigation = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="drawer" component={DrawerContent} />
-      <Stack.Screen name="Home" component={home} />
-      <Stack.Screen name="createEvent" component={CreateEvent} />
-      <Stack.Screen name="peopleProfiles" component={PeopleProfiles} />
-      <Stack.Screen name="lookFriends" component={lookFriends} />
-      <Stack.Screen name="eventDetail" component={eventDetail} />
-      <Stack.Screen name="eventDetail2" component={eventDetail2} />
-      <Stack.Screen name="prepay" component={prepay} />
+      <Stack.Screen name="drawer" component={DrawerContent}></Stack.Screen>
+      <Stack.Screen name="Home" component={home}></Stack.Screen>
+      <Stack.Screen name="createEvent" component={CreateEvent}></Stack.Screen>
+      <Stack.Screen
+        name="peopleProfiles"
+        component={PeopleProfiles}></Stack.Screen>
+      <Stack.Screen name="lookFriends" component={lookFriends}></Stack.Screen>
+      <Stack.Screen name="eventDetail" component={eventDetail}></Stack.Screen>
+      <Stack.Screen name="eventDetail2" component={eventDetail2}></Stack.Screen>
+      <Stack.Screen name="prepay" component={prepay}></Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -81,12 +87,14 @@ const SettingsNavigation = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Settings" component={settings} />
-      <Stack.Screen name="paymentsandPayouts" component={PaymentsNavigation} />
-      <Stack.Screen name="BlockedUser" component={BlockedUser} />
-      <Stack.Screen name="aboutSlizzr" component={aboutSlizzr} />
-      <Stack.Screen name="contactUs" component={contactUs} />
-      <Stack.Screen name="help" component={help} />
+      <Stack.Screen name="Settings" component={settings}></Stack.Screen>
+      <Stack.Screen
+        name="paymentsandPayouts"
+        component={PaymentsNavigation}></Stack.Screen>
+      <Stack.Screen name="BlockedUser" component={BlockedUser}></Stack.Screen>
+      <Stack.Screen name="aboutSlizzr" component={aboutSlizzr}></Stack.Screen>
+      <Stack.Screen name="contactUs" component={contactUs}></Stack.Screen>
+      <Stack.Screen name="help" component={help}></Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -97,20 +105,26 @@ const PaymentsNavigation = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="paymentsandPayouts" component={paymentsandPayouts} />
-      <Stack.Screen name="newPaymentMethods" component={newPaymentMethods} />
-      <Stack.Screen name="paymentMethod" component={paymentMethod} />
-      <Stack.Screen name="event" component={event} />
+      <Stack.Screen
+        name="paymentsandPayouts"
+        component={paymentsandPayouts}></Stack.Screen>
+      <Stack.Screen
+        name="newPaymentMethods"
+        component={newPaymentMethods}></Stack.Screen>
+      <Stack.Screen
+        name="paymentMethod"
+        component={paymentMethod}></Stack.Screen>
+      <Stack.Screen name="event" component={event}></Stack.Screen>
       <Stack.Screen
         name="paymentsandPayouts2"
-        component={paymentsandPayouts2}
-      />
+        component={paymentsandPayouts2}></Stack.Screen>
+
+      <Stack.Screen name="paymentsandPayouts3"   component={paymentsandPayouts3}></Stack.Screen>
+      <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
+      <Stack.Screen name="payoutMethod" component={payoutMethod}></Stack.Screen>
       <Stack.Screen
-        name="paymentsandPayouts3"
-        component={paymentsandPayouts3}
-      />
-      <Stack.Screen name="payouts" component={payouts} />
-      <Stack.Screen name="payoutMethod" component={payoutMethod} />
+        name="NewpayoutMethod"
+        component={NewpayoutMethod}></Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -121,12 +135,18 @@ const ManageEventNavigation = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="manageEvent" component={manageEvents} />
-      <Stack.Screen name="attendingEventInfo" component={attendingEventInfo} />
-      <Stack.Screen name="myEventInfo" component={myEventInfo} />
-      <Stack.Screen name="attendeesList" component={attendeesList} />
-      <Stack.Screen name="sharedHosts" component={sharedHosts} />
-      <Stack.Screen name="sharedHostRequests" component={sharedHostRequests} />
+      <Stack.Screen name="manageEvent" component={manageEvents}></Stack.Screen>
+      <Stack.Screen
+        name="attendingEventInfo"
+        component={attendingEventInfo}></Stack.Screen>
+      <Stack.Screen name="myEventInfo" component={myEventInfo}></Stack.Screen>
+      <Stack.Screen
+        name="attendeesList"
+        component={attendeesList}></Stack.Screen>
+      <Stack.Screen name="sharedHosts" component={sharedHosts}></Stack.Screen>
+      <Stack.Screen
+        name="sharedHostRequests"
+        component={sharedHostRequests}></Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -154,7 +174,7 @@ function DrawerContent(props) {
         component={HomeNavigation}
       />
       <Drawer.Screen
-        name="Find People"
+        name="FindPeople"
         options={{
           title: 'Find People',
           drawerIcon: ({focused, size}) => (
@@ -218,7 +238,6 @@ function DrawerContent(props) {
     </Drawer.Navigator>
   );
 }
-
 function messagesNavigation() {
   return (
     <Stack.Navigator
@@ -226,10 +245,12 @@ function messagesNavigation() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="messages" component={messages} />
-      <Stack.Screen name="messagesEvent" component={messagesEvent} />
-      <Stack.Screen name="newMessage" component={newMessage} />
-      <Stack.Screen name="chat" component={chat} />
+      <Stack.Screen name="messages" component={messages}></Stack.Screen>
+      <Stack.Screen
+        name="messagesEvent"
+        component={messagesEvent}></Stack.Screen>
+      <Stack.Screen name="newMessage" component={newMessage}></Stack.Screen>
+      <Stack.Screen name="chat" component={chat}></Stack.Screen>
     </Stack.Navigator>
   );
 }
@@ -240,9 +261,9 @@ function zicketsNavigation() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Zickets" component={zickets} />
+      <Stack.Screen name="Zickets" component={zickets}></Stack.Screen>
 
-      <Stack.Screen name="zicketDetail" component={zicketDetail} />
+      <Stack.Screen name="zicketDetail" component={zicketDetail}></Stack.Screen>
     </Stack.Navigator>
   );
 }
@@ -253,14 +274,31 @@ function AccountNavigation() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Intro" component={introduction} />
-      <Stack.Screen name="Signin" component={signIn} />
-      <Stack.Screen name="Signup" component={signUp} />
-      <Stack.Screen name="ResetPass" component={resetPassword} />
-      <Stack.Screen name="PassConfirm" component={resetPasswordForm} />
-      <Stack.Screen name="BirthDate" component={birthDate} />
-      <Stack.Screen name="ConfirmEmail" component={confirmEmail} />
-      <Stack.Screen name="index" component={index} />
+      <Stack.Screen name="Intro" component={introduction}></Stack.Screen>
+      <Stack.Screen name="Signin" component={signIn}></Stack.Screen>
+      <Stack.Screen name="Signup" component={signUp}></Stack.Screen>
+      <Stack.Screen name="ResetPass" component={resetPassword}></Stack.Screen>
+      <Stack.Screen
+        name="PassConfirm"
+        component={resetPasswordForm}></Stack.Screen>
+      <Stack.Screen name="BirthDate" component={birthDate}></Stack.Screen>
+      <Stack.Screen name="ConfirmEmail" component={confirmEmail}></Stack.Screen>
+      <Stack.Screen name="index" component={index}></Stack.Screen>
+    </Stack.Navigator>
+  );
+}
+function ProfileNavigation() {
+  return (
+    <Stack.Navigator
+      initialRouteName="myProfile"
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <Stack.Screen name="myProfile" component={myProfile}></Stack.Screen>
+      <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>
+      <Stack.Screen
+        name="mutualConnections"
+        component={mutualConnections}></Stack.Screen>
     </Stack.Navigator>
   );
 }
@@ -273,18 +311,33 @@ export const MainNavigation = () => {
         screenOptions={{
           headerShown: false,
         }}>
-        <Stack.Screen name="Splash" component={splash} />
-        <Stack.Screen name="index" component={index} />
-        <Stack.Screen name="Scan" component={scan} />
-        <Stack.Screen name="Notifications" component={notification} />
+        <Stack.Screen name="Splash" component={splash}></Stack.Screen>
+        <Stack.Screen name="index" component={index}></Stack.Screen>
+        <Stack.Screen name="Scan" component={scan}></Stack.Screen>
+        <Stack.Screen name="Intro" component={introduction}></Stack.Screen>
+        <Stack.Screen name="paymentsandPayouts3"   component={paymentsandPayouts3}></Stack.Screen>
+        <Stack.Screen
+          name="Notifications"
+          component={notification}></Stack.Screen>
         <Stack.Screen
           name="SettingsNavigation"
-          component={SettingsNavigation}
-        />
-        <Stack.Screen name="myProfile" component={myProfile} />
-        <Stack.Screen name="editProfle" component={editProfle} />
-        <Stack.Screen name="HomeStack" component={DrawerContent} />
-        <Stack.Screen name="AccountStack" component={AccountNavigation} />
+          component={SettingsNavigation}></Stack.Screen>
+        <Stack.Screen
+          name="myProfile"
+          component={ProfileNavigation}></Stack.Screen>
+
+        <Stack.Screen name="HomeStack" component={DrawerContent}></Stack.Screen>
+        <Stack.Screen
+          name="directInvites"
+          component={directInvites}></Stack.Screen>
+        <Stack.Screen name="chat" component={chat}></Stack.Screen>
+
+        <Stack.Screen
+          name="zicketDetail"
+          component={zicketDetail}></Stack.Screen>
+        <Stack.Screen
+          name="AccountStack"
+          component={AccountNavigation}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -30,11 +30,14 @@ export default class newPaymentMethods extends Component {
                         data={this.state.paymentMethod}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
-                            <TouchableOpacity style={styles.blockView}>
-                                <Text style={styles.textView}>{item.name}</Text>
+                            <View  style={styles.blockView}>
+                            <Text style={styles.textView}>{item.name}</Text>
+                                <TouchableOpacity  onPress={()=>this.props.navigation.navigate("paymentsandPayouts3")} >
+                               
                                 <Image
                                     style={styles.sideImage} source={require('../../assets/listDetail.png')} />
                             </TouchableOpacity>
+                            </View>
                         )}
                     />
                 </SafeAreaView>

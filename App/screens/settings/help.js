@@ -1,7 +1,9 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {Text, View, StyleSheet, Linking, TouchableOpacity} from 'react-native';
 import {FONT, SCREEN} from '../../helper/Constant';
 import Header from '../../component/Header';
+import {WHITE} from '../../helper/Color';
 
 export default class help extends Component {
   render() {

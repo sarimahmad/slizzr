@@ -11,9 +11,11 @@ export const BLACK = {
   transParent: 'rgba(31, 32, 43, 0.5)',
   textColor: '#979797',
   textColor2: '#F818D9',
-  lightgrey:'#B2ABB1',
-  grey:'#494949',
+  lightgrey: '#B2ABB1',
+  grey: '#494949',
   shadow: 'rgba(0, 0, 0, 0.247487)',
+  textColor3: '#3E3E3E',
+  textInput: 'rgba(231, 231, 231, 1)',
 };
 
 export const WHITE = {

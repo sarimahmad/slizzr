@@ -90,16 +90,16 @@ export default class index extends Component {
                         <Text style={styles.text3}>BIO:</Text>
                         <Text style={styles.bio}>Tousled food truck polaroid, salvia bespoke small batch Pinterest Marfa. Fingerstache authentic craft beer, food truck Banksy Carles kale chips hoodie. Trust fund artisan master cleanse fingerstache post-ironic, fashion axe art party Etsy direct trade retro organic. Cliche Shoreditch Odd Future Pinterest, pug disrupt photo booth VHS literally occupy gluten-free polaroid Intelligentsia PBR mustache. Locavore fashion axe chia, iPhone cardigan disrupt Etsy dreamcatcher. Craft beer selvage fanny pack, 8-bit post-ironic keffiyeh iPhone mlkshk pop-up. Pug blog asymmetrical ethnic, stumptown shabby chic chillwave ugh before they sold out.</Text>
                         <View style={{ alignSelf: 'flex-start', marginLeft: 40, }}>
-                            <Text style={[styles.titleText, { marginTop: 10, }]}>Mututal Attendes</Text>
+                            <Text style={[styles.titleText, { marginTop: 10, }]}>Mututal Connections</Text>
                             <View style={{ height: 50, width: SCREEN.width, marginTop: 11, }}>
                                 <FlatList
                                     data={this.state.image}
                                     horizontal
                                     keyExtractor={(item, index) => index.toString()}
                                     renderItem={({ item }) => (
-                                        <View style={styles.listView}>
+                                        <TouchableOpacity onPress={()=>this.props.navigation.navigate("mutualConnections")} style={styles.listView}>
                                             <Image style={styles.ImageView} source={item.image} />
-                                        </View>
+                                        </TouchableOpacity>
                                     )}
                                 />
                             </View>

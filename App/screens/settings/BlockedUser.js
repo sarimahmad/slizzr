@@ -3,6 +3,7 @@ import {Text, View, StyleSheet, FlatList, Image} from 'react-native';
 import {FONT} from '../../helper/Constant';
 import Header from '../../component/Header';
 import {SafeAreaView} from 'react-navigation';
+import {BLACK, WHITE} from '../../helper/Color';
 
 export default class BlockedUser extends Component {
   constructor(props) {
@@ -27,7 +28,6 @@ export default class BlockedUser extends Component {
             headerTitle={'Blocked Users'}
             navigation={this.props.navigation}
             route={'SettingsNavigation'}
-        
           />
           <FlatList
             data={this.state.blockedUser}
@@ -58,6 +58,7 @@ export default class BlockedUser extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+    backgroundColor: WHITE.dark,
   },
   contextView: {
     flex: 1,
@@ -78,12 +79,11 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     marginHorizontal: 20,
-    marginVertical: 20,
   },
   textView: {
     fontFamily: FONT.Nunito.regular,
     fontSize: 17,
-    color: '#494949',
+    color: BLACK.grey,
   },
   image2: {
     width: 35,

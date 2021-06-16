@@ -18,7 +18,7 @@ import {
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
   import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class lookFriends extends Component {
+export default class mutualConnections extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,35 +60,19 @@ export default class lookFriends extends Component {
                     
                     borderBottom={true}
                     backColor={WHITE.dark}
-                    headerTitle={'Look for Friends'}
+                    headerTitle={'Mutual Connections'}
                     leftPress={() => this.props.navigation.goBack()}
                     leftIcon={require('../../assets/back.png')}
                 />   
        
 
        
-
-       <View style={styles.searchBar}>
-       <TouchableOpacity onPress={()=>this.props.navigation.navigate('lookFriends')}
-              style={[
-                styles.logo,
-                {
-                  marginRight: 5,
-                  padding: 10,
-                  borderRadius: 24,
-                 
-                },
-              ]}>
-              <Image source={require('../../assets/searchBlack.png')} />
-            </TouchableOpacity>
-  <TextInput style={{color:'grey',fontFamily:FONT.Nunito.regular}} placeholderTextColor='grey' placeholder={'Search'}/>
-      </View>
-      <FlatList
+  <FlatList
           
           data={this.state.findpeople}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={()=>this.props.navigation.navigate("myProfile")} >
+            <View >
             <View style={styles.flexRow}>
               <View style={styles.imgView}>
                 <Image source={require('../../assets/lookFriend1.png')} />
@@ -96,13 +80,12 @@ export default class lookFriends extends Component {
               </View>
               <View style={styles.detail}>
                 <Text style={styles.titleText}>{item.profileName}</Text>
-                <Text style={styles.subtitleText}>{item.adress}</Text>
               
               </View>
              
             </View>
            <View style={{hiehgt:1,borderBottomWidth:1,borderBottomColor:'lightgrey',width:SCREEN.width}}></View>
-            </TouchableOpacity>
+            </View>
           )}
         /> 
    
@@ -272,7 +255,7 @@ const styles = StyleSheet.create({
      },
      titleText: {
        color: BLACK.textInputTitle,
-       fontFamily: FONT.Nunito.bold,
+       fontFamily: FONT.Nunito.regular,
        fontSize: 17,
        marginTop:12
      },

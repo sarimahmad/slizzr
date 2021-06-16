@@ -115,12 +115,12 @@ export const FONT = {
     regular: 'Nunito-Regular',
     semiBold: 'Nunito-SemiBold',
   },
-}
+};
 
 export const isIphoneXorAbove =
   SCREEN.height === 812 ||
-  SCREEN.width === 812 ||
+  SCREEN.height > 812 ||
   SCREEN.height === 896 ||
-  SCREEN.width === 896
+  SCREEN.height > 896
     ? true
     : false;

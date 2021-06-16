@@ -1,8 +1,8 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   Text,
   View,
-  Button,
   SafeAreaView,
   Image,
   TouchableOpacity,
@@ -15,9 +15,7 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import RNPickerSelect from 'react-native-picker-select';
 import Header from '../../component/Header';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import { heightPercentageToDP } from 'react-native-responsive-screen';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {BLACK, WHITE} from '../../helper/Color';
 export default class CreateEvent extends Component {
   constructor() {
     super();
@@ -40,7 +38,10 @@ export default class CreateEvent extends Component {
       console.log('imageDeatail', JSON.stringify(image));
     });
   }
-
+  directInvites = () => {
+    this.props.navigation.navigate('directInvites');
+    this.RBSheet.close();
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -237,11 +238,11 @@ export default class CreateEvent extends Component {
                   {label: 'Public', value: 'Public'},
                 ]}
               />
-              <View style={{marginBottom:20}}>
+              <View style={{marginBottom: 20}}>
                 <TouchableOpacity
                   onPress={() => this.RBSheet.open()}
                   style={styles.button}>
-                  <Text style={styles.text}> Create Event</Text>
+                  <Text style={styles.text}> CREATE EVENT</Text>
                 </TouchableOpacity>
               </View>
               <RBSheet
@@ -251,57 +252,61 @@ export default class CreateEvent extends Component {
                 height={SCREEN.height}
                 openDuration={250}
                 customStyles={{
-                  container: {
-                  },
+                  container: {},
                 }}>
-                <View>
-                <View style={[styles.flex,{padding:10}]}>
-            <TouchableOpacity
-              onPress={() => this.RBSheet.close()}>
-              <Image
-                source={require('../../assets/back.png')}
-                style={styles.logo}
-              />
-            </TouchableOpacity>
+                <SafeAreaView>
+                  <View style={[styles.flex, {padding: 10}]}>
+                    <TouchableOpacity onPress={() => this.RBSheet.close()}>
+                      <Image
+                        source={require('../../assets/back.png')}
+                        style={styles.logo}
+                      />
+                    </TouchableOpacity>
 
-            <Image
-              source={require('../../assets/homeLogo.png')}
-              style={styles.logo}
-            />
-            <Image
-              source={require('../../assets/bell.png')}
-              style={styles.logo}
-            />
-          </View>
-         <View style={{marginTop:100}}>
-                  <Image
-                    style={{alignSelf: 'center'}}
-                    source={require('../../assets/Oval.png')}
-                  />
-                  <Text style={[styles.titleText,{marginTop:100}]}> Event Created!</Text>
-                  {this.state.skip == false && (
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={styles.text}> Share event</Text>
-                    </TouchableOpacity>
-                  )}
-                  {this.state.skip == true && (
-                    <TouchableOpacity style={styles.button}>
-                      <Text style={styles.text}> Send Direct Invites</Text>
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity onPress={() => this.setState({skip: true})}>
-                    <Text
-                      style={{
-                        marginVertical: 20,
-                        textAlign: 'center',
-                        color: '#F818D9',
-                        textDecorationLine: 'underline',
-                      }}>
-                      Skip
+                    <Image
+                      source={require('../../assets/homeLogo.png')}
+                      style={styles.logo}
+                    />
+                    <Image
+                      source={require('../../assets/bell.png')}
+                      style={styles.logo}
+                    />
+                  </View>
+                  <View style={{marginTop: 100}}>
+                    <Image
+                      style={{alignSelf: 'center'}}
+                      source={require('../../assets/Oval.png')}
+                    />
+                    <Text style={[styles.titleText, {marginTop: 100}]}>
+                      {' '}
+                      Event Created!
                     </Text>
-                  </TouchableOpacity>
-                </View>
-                </View>
+                    {this.state.skip === false && (
+                      <TouchableOpacity
+                        onPress={this.directInvites}
+                        style={styles.button}>
+                        <Text style={styles.text}> SHARE EVENT</Text>
+                      </TouchableOpacity>
+                    )}
+                    {this.state.skip === true && (
+                      <TouchableOpacity style={styles.button}>
+                        <Text style={styles.text}> Send Direct Invites</Text>
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                      onPress={() => this.setState({skip: true})}>
+                      <Text
+                        style={{
+                          marginVertical: 20,
+                          textAlign: 'center',
+                          color: '#F818D9',
+                          textDecorationLine: 'underline',
+                        }}>
+                        SKIP
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </SafeAreaView>
               </RBSheet>
             </View>
           </ScrollView>
@@ -316,14 +321,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: WHITE.dark,
   },
-  flex: {
-    // backgroundColor:'red',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    // borderBottomColor:'lightgrey',
-    borderBottomWidth:1,
-  },
-  
+
   add: {
     justifyContent: 'center',
     backgroundColor: 'lightgrey',
@@ -339,8 +337,8 @@ const styles = StyleSheet.create({
   flex: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomColor:'lightgrey',
-    borderBottomWidth:1
+    borderBottomColor: 'lightgrey',
+    borderBottomWidth: 1,
   },
   imageafter: {
     width: '100%',

@@ -28,19 +28,6 @@ export default class myEventInfo extends Component {
   render() {
     return (
         <View style={styles.wrapperView}>
-         {/* <View
-            style={[{padding: 20, alignItems: 'center', alignItems: 'center',marginTop:20}]}>
-            <View style={{position: 'absolute', left: 20, top: 10}}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={require('../../assets/back.png')}
-                  style={styles.logo}
-                />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.titleText}>Event</Text>
-           
-          </View> */}
       <HeaderWithOptionBtn
                     
                     borderBottom={true}
@@ -77,10 +64,10 @@ export default class myEventInfo extends Component {
             </View>
             <Text style={[styles.titleText,{textAlign:'center'}]}>Description:</Text>
             <Text style={[styles.text,{textAlign:'center',marginHorizontal:36,marginVertical:10}]}>Tousled food truck polaroid, salvia bespoke small batch Pinterest Marfa. Fingerstache authentic craft beer, food  </Text>
-            <TouchableOpacity style={styles.btnMap}>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("FindPeople")} style={styles.btnMap}>
               <Text style={styles.btnText}>Find PEOPLE</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap}>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("Scan")} style={styles.btnMap}>
               <Text style={styles.btnText}>ZICKET SCANNER</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("attendeesList")}>
@@ -89,7 +76,7 @@ export default class myEventInfo extends Component {
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHosts")} style={styles.btnMap}>
               <Text style={styles.btnText}>SHARED HOSTS</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap}>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("createEvent")} style={styles.btnMap}>
               <Text style={styles.btnText}>EDIT</Text>
             </TouchableOpacity>
           

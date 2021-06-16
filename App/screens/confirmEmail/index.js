@@ -32,13 +32,13 @@ export default class ConfirmEmail extends Component {
            <Text style={styles.titleColor}>
            Confirm your email address  
           </Text>
-          <Text style={[styles.textColor],{marginTop:22}}>
+          <Text style={[styles.textColor,{marginTop:22,fontSize:20}]}>
           We sent a confirmation email to:
           </Text>
           <Text style={styles.subtitletextbold}>
           email@email.com
           </Text>
-          <Text style={[styles.textColor,{marginTop:26}]}>
+          <Text style={[styles.textColor,{marginTop:26, paddingHorizontal:50}]}>
           Check your email and click on the confirmation link to continue,
           </Text>
           <Text style={styles.textPurple}>
@@ -71,17 +71,17 @@ const styles = StyleSheet.create({
   },
  textColor:{
       fontSize:16,
-       textAlign: 'center',
-      color:'#494949',
+      textAlign: 'center',
+      color:BLACK.grey,
       fontFamily:FONT.Nunito.regular
   },
   titleColor:{
     fontSize:26,
     marginTop: 26, textAlign: 'center',
-    color:'#494949',
+    color:BLACK.grey,
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,
-    fontSize: 24,
+    fontSize: 28,
 },
  text:{
     color:'#F818D9',
@@ -111,9 +111,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   subtitletextbold:{
-    color: BLACK.textInputTitle,
+    color: BLACK.grey,
     fontFamily: FONT.Nunito.bold,
-    fontSize: 14,
+    fontSize: 20,
     marginTop:26
   },
 });
