@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
 import {connect} from 'react-redux';
 
@@ -37,10 +36,6 @@ class SignIn extends Component {
   }
 
   componentDidMount() {
-    GoogleSignin.configure({
-      webClientId:
-        '473629197290-3374lal9f0nk1cjcec4u41nns049jcfo.apps.googleusercontent.com',
-    });
   }
 
   storeInputData = (text, type) => {
@@ -117,30 +112,30 @@ class SignIn extends Component {
   };
 
   googleSignInBtn = async () => {
-    this.setState({loading: true});
-    const {idToken} = await GoogleSignin.signIn();
-    const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
-    auth()
-      .signInWithCredential(googleCredential)
-      .then(response => {
-        const data = {
-          Email: response.user._user.email,
-          FirstName: response.user._user.displayName,
-          LastName: response.user._user.displayName,
-          Profile: response.user._user.photoURL,
-          id: response.user._user.uid,
-          Id: response.user._user.uid,
-          type: 'google',
-          displayName: response.user._user.displayName,
-          email_verified: true,
-          socialLogin: true,
-        };
-        this.firestoreLinking(data);
-      })
-      .catch(error => {
-        this.setState({loading: false});
-        alert(error);
-      });
+    // this.setState({loading: true});
+    // const {idToken} = await GoogleSignin.signIn();
+    // const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
+    // auth()
+    //   .signInWithCredential(googleCredential)
+    //   .then(response => {
+    //     const data = {
+    //       Email: response.user._user.email,
+    //       FirstName: response.user._user.displayName,
+    //       LastName: response.user._user.displayName,
+    //       Profile: response.user._user.photoURL,
+    //       id: response.user._user.uid,
+    //       Id: response.user._user.uid,
+    //       type: 'google',
+    //       displayName: response.user._user.displayName,
+    //       email_verified: true,
+    //       socialLogin: true,
+    //     };
+    //     this.firestoreLinking(data);
+    //   })
+    //   .catch(error => {
+    //     this.setState({loading: false});
+    //     alert(error);
+    //   });
   };
 
   facebookSignIn = async () => {

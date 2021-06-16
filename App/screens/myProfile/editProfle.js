@@ -195,9 +195,9 @@ class editProfle extends Component {
                         </View>
                     </ScrollView>
                 </SafeAreaView>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
+           
+         
+     
       </View>
     );
   }

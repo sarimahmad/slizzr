@@ -1,4 +1,4 @@
-package com.slizzr;
+  package com.slizzr;
 
 import com.facebook.react.ReactActivity;
 
