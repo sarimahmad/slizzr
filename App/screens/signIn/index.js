@@ -79,14 +79,14 @@ class SignIn extends Component {
             .doc(uid)
             .get()
             .then(async firestoreDocument => {
-              if (!firestoreDocument.exists) {
-                alert('User does not exist.');
-                return;
-              }
-              console.log(firestoreDocument);
-              const user = firestoreDocument._data;
-              console.log(user);
-              this.props.callApi(user, uid);
+              // if (firestoreDocument.exists) {
+              //   alert('User does not exist.');
+              //   return;
+              // }
+              // console.log(firestoreDocument);
+              // const user = firestoreDocument._data;
+              // console.log(user);
+              this.props.callApi(this.state, uid);
               this.props.navigation.navigate('HomeStack');
             })
             .catch(error => {
@@ -187,6 +187,7 @@ class SignIn extends Component {
               <TextField
                 placeholder="Email adress"
                 type={'email'}
+                
                 parentCallBack={this.storeInputData}
               />
               <TextField

@@ -23,7 +23,7 @@ const splash = (props) => {
     setTimeout(async () => {
       
       if (userDetail) {
-        
+        AsyncStorage.clear()
         props.navigation.navigate('HomeStack');
         props.callApi(JSON.parse(userDetail.user),JSON.parse(TOKEN))
       }else if (!userDetail) {

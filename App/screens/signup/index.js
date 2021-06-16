@@ -11,7 +11,7 @@ import {
   Linking,
   Image,
 } from 'react-native';
-// import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
 import auth from '@react-native-firebase/auth';
 
@@ -20,7 +20,7 @@ import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import Validations from '../../helper/Validations';
-
+import firestore from '@react-native-firebase/firestore';
 export default class SignUp extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +33,10 @@ export default class SignUp extends Component {
       loading: false,
     };
   }
-
+componentDidMount(){
+  GoogleSignin.configure({
+    webClientId: '473629197290-3374lal9f0nk1cjcec4u41nns049jcfo.apps.googleusercontent.com',
+  });}
   storeInputData = (text, type) => {
     if (type === 'firstName') {
       this.setState({firstName: text});
@@ -76,19 +79,30 @@ export default class SignUp extends Component {
           const uid = response.user.uid;
 
           const data = {
-            FirstName: this.state.firstName,
-            LastName: this.state.lastName,
+            first_name: this.state.firstName,
+            last_name: this.state.lastName,
             id: uid,
             Id: uid,
-            Email: this.state.email,
+            email: this.state.email,
             type: 'google',
             displayName: this.state.firstName + ' ' + this.state.lastName,
             email_verified: false,
             socialLogin: false,
-            verification: response.user,
+            verification: 'true',
           };
-
-          this.props.navigation.navigate('BirthDate', {userData: data});
+          const usersRef = firestore().collection('users');
+          usersRef
+            .doc(uid)
+            .set(data)
+            .then(async firestoreDocument => {
+            
+              this.props.navigation.navigate('BirthDate', {userData: data});
+              // console.log(firestoreDocument)
+            })
+            .catch(error => {
+              alert(error);
+            });
+        
         })
         .catch(error => {
           alert(error);
@@ -98,8 +112,10 @@ export default class SignUp extends Component {
   };
 
   googleSignInBtn = async () => {
+  
     this.setState({loading: true});
     const {idToken} = await GoogleSignin.signIn();
+    console.log(idToken)
     const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
     auth()
       .signInWithCredential(googleCredential)

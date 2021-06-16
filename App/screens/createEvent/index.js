@@ -16,6 +16,9 @@ import RNPickerSelect from 'react-native-picker-select';
 import Header from '../../component/Header';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {BLACK, WHITE} from '../../helper/Color';
+import firestore from '@react-native-firebase/firestore';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export default class CreateEvent extends Component {
   constructor() {
     super();
@@ -25,6 +28,21 @@ export default class CreateEvent extends Component {
       event: 'Prepaid',
       eventis: 'Private',
       skip: false,
+      Address: '',
+      AttendeeLimit: '',
+      DateTime:'',
+      Description: '',
+      EventType: '',
+      Fee: '',
+      Host: '',
+      Latitude: 0,
+      Longitude: 0,
+      Name: '',
+      PublicPrivate: '',
+      disbaleDateTimeFormate: '',
+      duration: '',
+      userId: '',
+      userName: '',
     };
   }
 
@@ -42,6 +60,70 @@ export default class CreateEvent extends Component {
     this.props.navigation.navigate('directInvites');
     this.RBSheet.close();
   };
+  isFormFilled() {
+    let checkPassword = Validations.checkPassword(this.state.password);
+    let checkEmail = Validations.checkEmail(this.state.email);
+    let checkfirstName = Validations.checkUsername(this.state.firstName);
+    let checklastName = Validations.checkUsername(this.state.lastName);
+    if (checkEmail && checkPassword && checkfirstName && checklastName) {
+      return true;
+    }
+    if (!checkfirstName) {
+      alert('firstName required');
+    } else if (!checkEmail) {
+      alert('invalid email');
+    } else if (!checklastName) {
+      alert('lastname required');
+    } else if (!checkPassword) {
+      alert('invalid password');
+    }
+    return false;
+  }
+ async componentDidMount(){
+    const TOKEN = await AsyncStorage.getItem('token');
+    const userDetail = await AsyncStorage.getItem('userdetail');
+   console.log(JSON.parse(userDetail).user.firstName)
+    this.setState({userName:JSON.parse(userDetail).user.firstName})
+   this.setState({userId:JSON.parse(TOKEN)})
+   console.log(this.state.userName,this.state.userId)
+  }
+  handleSubmit = () => {
+  
+    console.log(this.state)
+         
+          const data = {
+            Address: this.state.Address,
+            AttendeeLimit: this.state.lastName,
+            DateTime: this.state.DateTime,
+            Description: this.state.Description,
+            EventType: this.state.email,
+            Fee: this.state.Fee,
+            Host: this.state.Host,
+            Latitude: this.state.Latitude,
+            Longitude: this.state.Longitude,
+            Name: this.state.Name,
+            PublicPrivate: this.state.PublicPrivate,
+            disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
+            duration: this.state.duration,
+            userId: this.state.userId,
+            userName: this.state.userName,
+          };
+          const usersRef = firestore().collection('events');
+          usersRef
+            .doc(this.state.userId)
+            .set(data)
+            .then(async firestoreDocument => {
+             
+              this.RBSheet.open();
+            })
+           
+      
+        .catch(error => {
+          alert(error);
+        });
+   
+  };
+ 
   render() {
     return (
       <View style={styles.container}>
@@ -82,6 +164,8 @@ export default class CreateEvent extends Component {
               <View style={styles.TextInputWrapper}>
                 <TextInput
                   style={styles.firstInput}
+                  value={this.state.Name}
+                  onChangeText={(value)=>this.setState({Name:value})}
                   placeholder="Enter a name for you Event"
                 />
                 <View style={styles.AbsoluteRightIcon}>
@@ -94,6 +178,9 @@ export default class CreateEvent extends Component {
               <View style={styles.TextInputWrapper}>
                 <TextInput
                   style={styles.firstInput}
+                  onChangeText={(value)=>this.setState({Description:value})}
+                  value={this.state.Description}
+                 
                   placeholder="Breif Description of your Event"
                 />
                 <View style={styles.AbsoluteRightIcon}>
@@ -104,14 +191,41 @@ export default class CreateEvent extends Component {
               </View>
 
               <Text style={styles.TextInputTitle}>Date and Time:</Text>
-              <View style={styles.TextInputWrapper}>
-                <TextInput style={styles.firstInput} placeholder="+ Add" />
+              <TouchableOpacity
+            onPress={this.showDatepicker}
+            style={{flexDirection: 'row', alignSelf: 'center'}}>
+            <View style={styles.input}>
+              <Text
+                style={{
+                  paddingTop: 15,
+                  paddingLeft: 20,
+                  fontSize: 17,
+                  fontFamily: FONT.Nunito.regular,
+                  color: '#B2ABB1',
+                }}>
+                Birth Date
+              </Text>
+              <Image
+                style={styles.logoAddCalender}
+                source={require('../../assets/calendar-range.png')}
+                onPress={this.showDatepicker}
+              />
+            </View>
+          </TouchableOpacity>
+         
+              {/* <View style={styles.TextInputWrapper}>
+                <TextInput style={styles.firstInput} 
+                placeholder="+ Add" 
+                onChangeText={(value)=>this.setState({DateTime:value})}
+                value={this.state.DateTime}
+             
+                />
                 <View style={styles.AbsoluteRightIcon}>
                   <Image
                     source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
                   />
                 </View>
-              </View>
+              </View> */}
               <View style={styles.RowView}>
                 <View style={{flex: 1}}>
                   <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
@@ -137,9 +251,9 @@ export default class CreateEvent extends Component {
                         paddingLeft: 7,
                       },
                     }}
-                    selectedValue={this.state.event}
+                    selectedValue={this.state.EventType}
                     onValueChange={(itemValue, itemIndex) =>
-                      this.setState({event: itemValue})
+                      this.setState({EventType: itemValue})
                     }
                     items={[
                       {label: 'Prepaid', value: 'Prepaid'},
@@ -156,7 +270,10 @@ export default class CreateEvent extends Component {
                       style={styles.feeicon}
                     />
                   </View>
-                  <TextInput style={[styles.secondinput]} placeholder="$" />
+                  <TextInput style={[styles.secondinput]} placeholder="$"  
+                   onChangeText={(value)=>this.setState({Fee:value})}
+                value={this.state.Fee}
+             />
                 </View>
               </View>
               <View style={styles.RowView}>
@@ -168,6 +285,9 @@ export default class CreateEvent extends Component {
                   <View style={styles.TextInputWrapper2}>
                     <TextInput
                       placeholder="+ Add"
+                      // onChangeText={(value)=>this.setState({Location:value})}
+                      // value={this.state.}
+              
                       style={[styles.thirdinput]}
                     />
                     <View style={styles.AbsoluteRightIcon}>
@@ -183,7 +303,10 @@ export default class CreateEvent extends Component {
                     Attendee Limit
                   </Text>
                   <View style={styles.TextInputWrapper2}>
-                    <TextInput placeholder="50" style={[styles.thirdinput]} />
+                    <TextInput placeholder="50" style={[styles.thirdinput]}      
+                          onChangeText={(value)=>this.setState({AttendeeLimit:value})}
+                value={this.state.AttendeeLimit}
+        />
                     <View style={styles.AbsoluteRightIcon}>
                       <Image
                         source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
@@ -196,7 +319,10 @@ export default class CreateEvent extends Component {
                     Duration (HRS)
                   </Text>
                   <View style={styles.TextInputWrapper2}>
-                    <TextInput placeholder="50" style={styles.thirdinput} />
+                    <TextInput placeholder="50" style={styles.thirdinput}     
+                                    onChangeText={(value)=>this.setState({duration:value})}
+                value={this.state.duration}
+      />
                     <View style={styles.AbsoluteRightIcon}>
                       <Image
                         source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
@@ -229,9 +355,9 @@ export default class CreateEvent extends Component {
                     marginLeft: 15,
                   },
                 }}
-                selectedValue={this.state.eventis}
+                selectedValue={this.state.PublicPrivate}
                 onValueChange={(itemValue, itemIndex) =>
-                  this.setState({eventis: itemValue})
+                  this.setState({PublicPrivate: itemValue})
                 }
                 items={[
                   {label: 'Private', value: 'Private'},
@@ -240,7 +366,7 @@ export default class CreateEvent extends Component {
               />
               <View style={{marginBottom: 20}}>
                 <TouchableOpacity
-                  onPress={() => this.RBSheet.open()}
+                  onPress={() => this.handleSubmit()}
                   style={styles.button}>
                   <Text style={styles.text}> CREATE EVENT</Text>
                 </TouchableOpacity>
