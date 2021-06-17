@@ -5,6 +5,7 @@ import {
   View,
   SafeAreaView,
   Image,
+  Modal,
   TouchableOpacity,
   ScrollView,
   TextInput,
@@ -14,15 +15,25 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {FONT, SCREEN} from '../../helper/Constant';
 import RNPickerSelect from 'react-native-picker-select';
 import Header from '../../component/Header';
+import GoogleSearchBar from '../../component/GoogleSearchBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {BLACK, WHITE} from '../../helper/Color';
 import firestore from '@react-native-firebase/firestore';
-
+import storage from '@react-native-firebase/storage';
+import * as Progress from 'react-native-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateAndTimePicker from '../../component/DateAndTimePicker';
 export default class CreateEvent extends Component {
   constructor() {
     super();
     this.state = {
+      imageUploaded:false,
+      selectLocationFlag:false,
+      currentLocationPlace:'',
+      localErrorLocation:null,
+      location:null,
+      uploading: false,
+      transfered: 0,
       pic: '',
       imageUri: '',
       event: 'Prepaid',
@@ -30,7 +41,8 @@ export default class CreateEvent extends Component {
       skip: false,
       Address: '',
       AttendeeLimit: '',
-      DateTime:'',
+      date: new Date(),
+      DateTime: '',
       Description: '',
       EventType: '',
       Fee: '',
@@ -45,17 +57,35 @@ export default class CreateEvent extends Component {
       userName: '',
     };
   }
-
-  PicMultiple() {
+  selectImage = async() => {
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true,
-    }).then(image => {
-      this.setState({imageUri: image.path});
-      console.log('imageDeatail', JSON.stringify(image));
-    });
-  }
+          width: 300,
+          height: 400,
+          cropping: true,
+        }).then(image => {
+          this.setState({imageUri: image.path});
+      
+         
+        });
+  
+      };
+  uploadImage = async () => {
+    const uri = this.state.imageUri;
+          console.log(uri)
+          const filename = uri.substring(uri.lastIndexOf('/') + 1);
+          const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+         
+          const task = storage().ref(filename).putFile(uploadUri);
+          task.on('state_changed', snapshot => {
+         this.setState({imageUploaded:true})
+         
+          });
+         
+        
+        
+  
+  };
+
   directInvites = () => {
     this.props.navigation.navigate('directInvites');
     this.RBSheet.close();
@@ -79,51 +109,80 @@ export default class CreateEvent extends Component {
     }
     return false;
   }
- async componentDidMount(){
+  async componentDidMount() {
     const TOKEN = await AsyncStorage.getItem('token');
     const userDetail = await AsyncStorage.getItem('userdetail');
-   console.log(JSON.parse(userDetail).user.firstName)
-    this.setState({userName:JSON.parse(userDetail).user.firstName})
-   this.setState({userId:JSON.parse(TOKEN)})
-   console.log(this.state.userName,this.state.userId)
+    console.log(JSON.parse(userDetail).user.firstName);
+    this.setState({userName: JSON.parse(userDetail).user.firstName});
+    this.setState({userId: JSON.parse(TOKEN)});
+    console.log(this.state.userName, this.state.userId);
   }
-  handleSubmit = () => {
-  
-    console.log(this.state)
-         
-          const data = {
-            Address: this.state.Address,
-            AttendeeLimit: this.state.lastName,
-            DateTime: this.state.DateTime,
-            Description: this.state.Description,
-            EventType: this.state.email,
-            Fee: this.state.Fee,
-            Host: this.state.Host,
-            Latitude: this.state.Latitude,
-            Longitude: this.state.Longitude,
-            Name: this.state.Name,
-            PublicPrivate: this.state.PublicPrivate,
-            disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
-            duration: this.state.duration,
-            userId: this.state.userId,
-            userName: this.state.userName,
-          };
-          const usersRef = firestore().collection('events');
-          usersRef
-            .doc(this.state.userId)
-            .set(data)
-            .then(async firestoreDocument => {
-             
-              this.RBSheet.open();
-            })
-           
-      
-        .catch(error => {
-          alert(error);
-        });
-   
-  };
+  handleSubmit = async() => {
+   await this.uploadImage()
+    
  
+if(this.state.imageUploaded==true){
+  alert(
+    'Photo uploaded!',
+    'Your photo has been uploaded to Firebase Cloud Storage!',
+  );
+
+
+  console.log(this.state);
+    const data = {
+      Address: this.state.Address,
+      AttendeeLimit: this.state.AttendeeLimit,
+      DateTime: this.state.DateTime,
+      Description: this.state.Description,
+      EventType: this.state.EventType,
+      Fee: this.state.Fee,
+      Host: this.state.Host,
+      // Latitude: this.state.Latitude,
+      // Longitude: this.state.Longitude,
+      location:this.state.location,
+      Name: this.state.Name,
+      PublicPrivate: this.state.PublicPrivate,
+      disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
+      duration: this.state.duration,
+      userId: this.state.userId,
+      userName: this.state.userName,
+      image:this.state.imageUri
+    };
+    const usersRef = firestore().collection('events');
+    usersRef
+      .doc(this.state.userId)
+      .set(data)
+      .then(async firestoreDocument => {
+        this.RBSheet.open();
+      })
+
+      .catch(error => {
+        alert(error);
+      });
+    }else{
+      alert("image upload failed")
+    }
+  };
+  setLocation = (latitude, longitude) => {
+   console.log(latitude,longitude)
+    this.setState({
+      selectLocationFlag: false,
+      localErrorLocation: null,
+      location: {
+        latitude: latitude,
+        longitude: longitude,
+      },
+    });
+  };
+  getAdress = (address) => {
+    // alert(address);
+    console.log(address)
+ 
+    this.setState({
+      currentLocationPlace: address,
+      Address: address,
+    });
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -136,7 +195,7 @@ export default class CreateEvent extends Component {
           <ScrollView style={[styles.container]} bounces={false}>
             <TouchableOpacity
               style={styles.add}
-              onPress={() => this.PicMultiple()}>
+              onPress={() => this.selectImage()}>
               <View style={styles.addimage}>
                 <Image
                   style={[
@@ -159,13 +218,14 @@ export default class CreateEvent extends Component {
                 )}
               </View>
             </TouchableOpacity>
+           
             <View style={styles.Textfields}>
               <Text style={styles.TextInputTitle}>Event Titles:</Text>
               <View style={styles.TextInputWrapper}>
                 <TextInput
                   style={styles.firstInput}
                   value={this.state.Name}
-                  onChangeText={(value)=>this.setState({Name:value})}
+                  onChangeText={value => this.setState({Name: value})}
                   placeholder="Enter a name for you Event"
                 />
                 <View style={styles.AbsoluteRightIcon}>
@@ -178,9 +238,8 @@ export default class CreateEvent extends Component {
               <View style={styles.TextInputWrapper}>
                 <TextInput
                   style={styles.firstInput}
-                  onChangeText={(value)=>this.setState({Description:value})}
+                  onChangeText={value => this.setState({Description: value})}
                   value={this.state.Description}
-                 
                   placeholder="Breif Description of your Event"
                 />
                 <View style={styles.AbsoluteRightIcon}>
@@ -191,28 +250,17 @@ export default class CreateEvent extends Component {
               </View>
 
               <Text style={styles.TextInputTitle}>Date and Time:</Text>
-              <TouchableOpacity
-            onPress={this.showDatepicker}
-            style={{flexDirection: 'row', alignSelf: 'center'}}>
-            <View style={styles.input}>
-              <Text
-                style={{
-                  paddingTop: 15,
-                  paddingLeft: 20,
-                  fontSize: 17,
-                  fontFamily: FONT.Nunito.regular,
-                  color: '#B2ABB1',
-                }}>
-                Birth Date
-              </Text>
-              <Image
-                style={styles.logoAddCalender}
-                source={require('../../assets/calendar-range.png')}
-                onPress={this.showDatepicker}
-              />
-            </View>
-          </TouchableOpacity>
-         
+              <View style={styles.TextInputWrapper}>
+              <DateAndTimePicker
+
+          format="MMM DD, YYYY - ddd "
+          mode="date"
+          value={this.state.date}
+          setDateAndTime={(value) => this.setState({DateTime:value})}
+          showPlaceholder="+ Add"
+          datebutton={styles.datebutton}
+        />
+        </View>
               {/* <View style={styles.TextInputWrapper}>
                 <TextInput style={styles.firstInput} 
                 placeholder="+ Add" 
@@ -270,43 +318,46 @@ export default class CreateEvent extends Component {
                       style={styles.feeicon}
                     />
                   </View>
-                  <TextInput style={[styles.secondinput]} placeholder="$"  
-                   onChangeText={(value)=>this.setState({Fee:value})}
-                value={this.state.Fee}
-             />
+                  <TextInput
+                    style={[styles.secondinput]}
+                    placeholder="$"
+                    onChangeText={value => this.setState({Fee: value})}
+                    value={this.state.Fee}
+                  />
                 </View>
               </View>
+              
               <View style={styles.RowView}>
-                <View style={{flex: 1.5}}>
+                 <View style={{flex: 1}}>
                   <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
-                    {' '}
                     Location
                   </Text>
-                  <View style={styles.TextInputWrapper2}>
-                    <TextInput
-                      placeholder="+ Add"
-                      // onChangeText={(value)=>this.setState({Location:value})}
-                      // value={this.state.}
-              
-                      style={[styles.thirdinput]}
-                    />
-                    <View style={styles.AbsoluteRightIcon}>
-                      <Image
-                        source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
-                      />
-                    </View>
-                  </View>
+                  <TouchableOpacity
+                    style={[styles.TextInputWrapper2,{width:SCREEN.width*0.3}]}     
+                     onPress={() =>
+                        this.setState({ selectLocationFlag: true })
+                      }
+                    >
+                   <Text   style={[styles.thirdinput,{paddingTop:15}]}
+                    >+ADD</Text>
+                  
+                  </TouchableOpacity>
                 </View>
+                
                 <View style={{flex: 1}}>
                   <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
                     {' '}
                     Attendee Limit
                   </Text>
-                  <View style={styles.TextInputWrapper2}>
-                    <TextInput placeholder="50" style={[styles.thirdinput]}      
-                          onChangeText={(value)=>this.setState({AttendeeLimit:value})}
-                value={this.state.AttendeeLimit}
-        />
+                  <View style={[styles.TextInputWrapper2,{width:SCREEN.width*0.25}]}>
+                    <TextInput
+                      placeholder="50"
+                      style={[styles.thirdinput]}
+                      onChangeText={value =>
+                        this.setState({AttendeeLimit: value})
+                      }
+                      value={this.state.AttendeeLimit}
+                    />
                     <View style={styles.AbsoluteRightIcon}>
                       <Image
                         source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
@@ -318,11 +369,13 @@ export default class CreateEvent extends Component {
                   <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
                     Duration (HRS)
                   </Text>
-                  <View style={styles.TextInputWrapper2}>
-                    <TextInput placeholder="50" style={styles.thirdinput}     
-                                    onChangeText={(value)=>this.setState({duration:value})}
-                value={this.state.duration}
-      />
+                  <View style={[styles.TextInputWrapper2,{width:SCREEN.width*0.25}]}>
+                    <TextInput
+                      placeholder="50"
+                      style={styles.thirdinput}
+                      onChangeText={value => this.setState({duration: value})}
+                      value={this.state.duration}
+                    />
                     <View style={styles.AbsoluteRightIcon}>
                       <Image
                         source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
@@ -331,6 +384,7 @@ export default class CreateEvent extends Component {
                   </View>
                 </View>
               </View>
+            
               <Text style={[styles.TextInputTitle]}>Public or Private</Text>
               <RNPickerSelect
                 style={{
@@ -434,6 +488,33 @@ export default class CreateEvent extends Component {
                   </View>
                 </SafeAreaView>
               </RBSheet>
+              <Modal
+                      visible={this.state.selectLocationFlag}
+                      onRequestClose={() =>
+                        this.setState({ selectLocationFlag: false })
+                      }
+                      animationType={"slide"}
+                    >
+                      <View
+                        style={{
+                          marginTop: "10%",
+                          flex: 1,
+                          justifyContent: "flex-start",
+                          alignItems: "center",
+                        }}
+                      >
+                        <GoogleSearchBar
+                          closeLocationModal={() => {
+                            this.setState({ selectLocationFlag: false });
+                          }}
+                          getAddress={this.getAdress}
+                          setLocation={this.setLocation}
+                          clearGoogleSearch={this.state.clearGoogleSearch}
+                          inputValue={'Address'}
+                        />
+                      </View>
+                    </Modal>
+                   
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -515,7 +596,7 @@ const styles = StyleSheet.create({
   RowView: {
     flexDirection: 'row',
     width: SCREEN.width - 40,
-    alignItems: 'center',
+    // alignItems: 'center',
     alignSelf: 'center',
   },
   TextInputTitle: {
@@ -562,7 +643,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   TextInputWrapper2: {
-    width: '90%',
     flexDirection: 'row',
     alignSelf: 'center',
   },
