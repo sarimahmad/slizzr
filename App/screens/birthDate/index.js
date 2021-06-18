@@ -1,12 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-alert */
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateAndTimePicker from '../../component/DateAndTimePicker';
 import firestore from '@react-native-firebase/firestore';
 
 export default class BirthDate extends Component {
@@ -15,6 +15,7 @@ export default class BirthDate extends Component {
     this.state = {
       date: new Date(),
       showDate: false,
+      age: 20,
     };
   }
 
@@ -29,14 +30,26 @@ export default class BirthDate extends Component {
     this.setState({showDate: true});
   };
   handleSubmit = () => {
-    
+    const current_date = new Date();
+    const difference_date =
+      current_date.getTime() - new Date(this.state.date).getTime();
+    const difference_in_days = difference_date / (1000 * 3600 * 24);
+    const age_in_year = difference_in_days / 365;
+    if (age_in_year > 16) {
+      this.firestoreLinking(age_in_year);
+    } else {
+      Alert.alert(
+        'Age not Valid',
+        'you need to be more than 16 year old to use this app',
+      );
+    }
   };
 
   firestoreLinking = data => {
     const usersRef = firestore().collection('users');
     usersRef
       .doc(data.id)
-      .set(data)
+      .update({age: this.state.age})
       .then(this.props.navigation.navigate('HomeStack'))
       .catch(error => {
         this.setState({loading: false});
@@ -48,39 +61,17 @@ export default class BirthDate extends Component {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
-          {this.state.showDate && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={this.state.date}
-              mode={'date'}
-              is24Hour={true}
-              display="default"
-              onChange={this.onChange}
-            />
-          )}
           <Text style={styles.titleText}>How old are you?</Text>
 
-          <TouchableOpacity
-            onPress={this.showDatepicker}
-            style={{flexDirection: 'row', alignSelf: 'center'}}>
-            <View style={styles.input}>
-              <Text
-                style={{
-                  paddingTop: 15,
-                  paddingLeft: 20,
-                  fontSize: 17,
-                  fontFamily: FONT.Nunito.regular,
-                  color: '#B2ABB1',
-                }}>
-                Birth Date
-              </Text>
-              <Image
-                style={styles.logoAddCalender}
-                source={require('../../assets/calendar-range.png')}
-                onPress={this.showDatepicker}
-              />
-            </View>
-          </TouchableOpacity>
+          <DateAndTimePicker
+            testID="dateTimePicker"
+            value={this.state.date}
+            mode={'date'}
+            is24Hour={true}
+            display="default"
+            setDateAndTime={date => this.setState({date})}
+            onChange={this.onChange}
+          />
           <ButtonResetPassaword
             btnLabel={'Continue'}
             data={this.handleSubmit}

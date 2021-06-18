@@ -151,7 +151,7 @@ class SignIn extends Component {
         } else {
           this.props.callApi(firestoreDocument.data(), data.id);
           this.setState({loading: false});
-          this.props.navigation.navigate('HomeStack');
+          this.props.navigation.push('HomeStack');
         }
       })
       .catch(error => {
