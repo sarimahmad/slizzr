@@ -119,7 +119,9 @@ const PaymentsNavigation = () => {
         name="paymentsandPayouts2"
         component={paymentsandPayouts2}></Stack.Screen>
 
-      <Stack.Screen name="paymentsandPayouts3"   component={paymentsandPayouts3}></Stack.Screen>
+      <Stack.Screen
+        name="paymentsandPayouts3"
+        component={paymentsandPayouts3}></Stack.Screen>
       <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
       <Stack.Screen name="payoutMethod" component={payoutMethod}></Stack.Screen>
       <Stack.Screen
@@ -315,7 +317,9 @@ export const MainNavigation = () => {
         <Stack.Screen name="index" component={index}></Stack.Screen>
         <Stack.Screen name="Scan" component={scan}></Stack.Screen>
         <Stack.Screen name="Intro" component={introduction}></Stack.Screen>
-        <Stack.Screen name="paymentsandPayouts3"   component={paymentsandPayouts3}></Stack.Screen>
+        <Stack.Screen
+          name="paymentsandPayouts3"
+          component={paymentsandPayouts3}></Stack.Screen>
         <Stack.Screen
           name="Notifications"
           component={notification}></Stack.Screen>
@@ -338,6 +342,9 @@ export const MainNavigation = () => {
         <Stack.Screen
           name="AccountStack"
           component={AccountNavigation}></Stack.Screen>
+        <Stack.Screen
+          name="BirthDateSplash"
+          component={birthDate}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

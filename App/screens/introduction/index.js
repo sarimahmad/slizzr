@@ -1,8 +1,16 @@
-import React, { Component } from 'react';
-import { View, Image, StyleSheet, StatusBar, SafeAreaView, Text, TouchableOpacity } from 'react-native';
-import { BLACK, WHITE } from '../../helper/Color';
-import { FONT, SCREEN } from '../../helper/Constant';
-import Swiper from 'react-native-swiper'
+import React, {Component} from 'react';
+import {
+  View,
+  Image,
+  StyleSheet,
+  StatusBar,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import {BLACK, WHITE} from '../../helper/Color';
+import {FONT, SCREEN} from '../../helper/Constant';
+import Swiper from 'react-native-swiper';
 class introduction extends Component {
   state = {};
   componentDidMount() {
@@ -11,35 +19,60 @@ class introduction extends Component {
     }, 3000);
   }
   render() {
-    return (  
+    return (
       <View style={styles.container}>
         <StatusBar hidden={true} />
         <SafeAreaView style={styles.container}>
-          <Image source={require('../../assets/logo.png')} style={styles.logo} />
-        
-          <Text style={styles.detailText}>Revolutionize the way you host and attend events!</Text>
-        
-          <Swiper  style={styles.wrapper} showsButtons={false}
-            paginationStyle={styles.paginationStyle}
+          <Image
+            source={require('../../assets/logo.png')}
+            style={styles.logo}
+          />
 
+          <Text style={styles.detailText}>
+            Revolutionize the way you host and attend events!
+          </Text>
+
+          <Swiper
+            style={styles.wrapper}
+            showsButtons={false}
+            paginationStyle={styles.paginationStyle}
             activeDot={<View style={styles.selectedDotView} />}
             dot={<View style={styles.unselectedDotView} />}>
-        <View style={styles.slide1}>
-        <Image style={styles.getStartedImg} source={require('../../assets/get_started_mobile.png')} />
-        </View>
-        <View style={styles.slide2}>
-        <Image style={styles.getStartedImg} source={require('../../assets/slider2.png')} />
-           </View>
-        <View style={styles.slide3}>
-        <Image style={styles.getStartedImg} source={require('../../assets/slider3.png')} />
-           </View>
-      </Swiper>
-        
-         <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signup")} style={styles.getStartedBtn} activeOpacity={0.8}>
+            <View style={styles.slide1}>
+              <View style={styles.ImageWrapper}>
+                <Image
+                  style={styles.getStartedImg}
+                  source={require('../../assets/9.png')}
+                />
+              </View>
+            </View>
+            <View style={styles.slide2}>
+              <View style={styles.ImageWrapper}>
+                <Image
+                  style={styles.getStartedImg}
+                  source={require('../../assets/8.png')}
+                />
+              </View>
+            </View>
+            <View style={styles.slide3}>
+              <View style={styles.ImageWrapper}>
+                <Image
+                  style={styles.getStartedImg}
+                  source={require('../../assets/1472.png')}
+                />
+              </View>
+            </View>
+          </Swiper>
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Signup')}
+            style={styles.getStartedBtn}
+            activeOpacity={0.8}>
             <Text style={styles.getStartedText}>GET STARTED</Text>
           </TouchableOpacity>
-         <TouchableOpacity onPress={()=>this.props.navigation.navigate("Signin")}>
-          <Text style={styles.loginText}>LOG IN</Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('Signin')}>
+            <Text style={styles.loginText}>LOG IN</Text>
           </TouchableOpacity>
         </SafeAreaView>
       </View>
@@ -53,12 +86,10 @@ const styles = StyleSheet.create({
   logo: {
     height: 70,
     width: 70,
-    marginTop:20
+    marginTop: 20,
   },
   paginationStyle: {
-  
     // backgroundColor:'green',
-  
   },
   selectedDotView: {
     backgroundColor: 'grey',
@@ -90,23 +121,23 @@ const styles = StyleSheet.create({
     marginTop: 3,
     marginBottom: 3,
   },
-  wrapper:{
- backgroundColor:WHITE.dark,
-  height:379,
+  wrapper: {
+    backgroundColor: WHITE.dark,
+    height: 379,
   },
   slide1: {
-    elevation:10
+    elevation: 10,
   },
   slide2: {
-    elevation:10
+    elevation: 10,
   },
   slide3: {
-    elevation:10
+    elevation: 10,
   },
   text: {
     color: '#fff',
     fontSize: 30,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   container: {
     flex: 1,
@@ -125,10 +156,26 @@ const styles = StyleSheet.create({
   },
   getStartedImg: {
     alignSelf: 'center',
-    resizeMode: 'contain',
+    resizeMode: 'stretch',
     marginTop: 30,
-    height:379,
-    elevation:10
+    height: SCREEN.height / 2.2,
+    width: SCREEN.width - 180,
+    borderRadius: 15,
+  },
+  ImageWrapper: {
+    alignSelf: 'center',
+    marginTop: 30,
+    height: SCREEN.height / 2.2,
+    width: SCREEN.width - 180,
+    borderRadius: 15,
+    shadowColor: BLACK.border,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 1,
+    shadowRadius: 3.84,
+    elevation: 10,
   },
   getStartedBtn: {
     height: 55,
@@ -151,5 +198,5 @@ const styles = StyleSheet.create({
     color: WHITE.dark,
     fontFamily: FONT.Nunito.bold,
     alignSelf: 'center',
-  }
+  },
 });

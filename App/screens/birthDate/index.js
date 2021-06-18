@@ -4,11 +4,10 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
+import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import firestore from '@react-native-firebase/firestore';
-import {Alert} from 'react-native';
 
 export default class BirthDate extends Component {
   constructor(props) {
@@ -30,13 +29,7 @@ export default class BirthDate extends Component {
     this.setState({showDate: true});
   };
   handleSubmit = () => {
-    const dataRecieved = this.props.route.params.userData;
-    if (dataRecieved.verification) {
-      dataRecieved.verification.sendEmailVerification();
-      this.props.navigation.navigate('ConfirmEmail');
-    } else {
-      this.firestoreLinking(dataRecieved);
-    }
+    
   };
 
   firestoreLinking = data => {
@@ -103,7 +96,7 @@ const styles = StyleSheet.create({
     width: 70,
   },
   input: {
-    width: SCREEN.width - 80, // marginHorizontal: '5%',
+    width: SCREEN.width - 80,
     borderWidth: 1,
     height: 50,
     marginVertical: 10,
@@ -118,10 +111,7 @@ const styles = StyleSheet.create({
   logoAddCalender: {
     position: 'absolute',
     right: 5,
-
     top: 13,
-    // alignSelf:'flex-end',
-    // marginRight:'5%',
   },
 
   wrapperView: {

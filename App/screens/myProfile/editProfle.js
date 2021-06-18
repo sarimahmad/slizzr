@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-mount-set-state */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
@@ -16,7 +17,7 @@ import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Textarea from 'react-native-textarea'
+import Textarea from 'react-native-textarea';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -24,201 +25,227 @@ import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
 
 class editProfle extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            enableMap: false,
-            date: new Date(),
-            showDate: false,
-            events: false,
-            event: 'Female',
-        }
-    }
-
-    showDatepicker = () => {
-        this.setState({ showDate: true });
+  constructor(props) {
+    super(props);
+    this.state = {
+      enableMap: false,
+      date: new Date(),
+      showDate: false,
+      events: false,
+      event: 'Female',
     };
-    onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || this.state.date;
+  }
 
-        this.setState({ date: currentDate });
-        this.setState({ showDate: false });
-    };
-    showDatepicker = () => {
-        this.setState({ showDate: true });
-    };
-    async componentDidMount(){
-        const userDetail = await AsyncStorage.getItem('userdetail');
-       this.setState({profileData:JSON.parse(userDetail.user)})
-      console.log(this.state.userDetail)
-    }
+  showDatepicker = () => {
+    this.setState({showDate: true});
+  };
+  onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || this.state.date;
 
-    render() {
-        return (
-            <View style={styles.wrapperView}>
-                <SafeAreaView style={styles.wrapperView}>
-                    <HeaderWithOptionBtn
-                       backColor={WHITE.dark}
-                        borderBottom={true}
-                        leftIcon={require('../../assets/back.png')}
-                        leftPress={() => this.props.navigation.navigate("myProfile")}
-                        headerTitle={"Edit Profile"}
+    this.setState({date: currentDate});
+    this.setState({showDate: false});
+  };
+  showDatepicker = () => {
+    this.setState({showDate: true});
+  };
+  async componentDidMount() {
+    const userDetail = await AsyncStorage.getItem('userdetail');
+    this.setState({profileData: JSON.parse(userDetail.user)});
+    console.log(this.state.userDetail);
+  }
+
+  render() {
+    return (
+      <View style={styles.wrapperView}>
+        <SafeAreaView style={styles.wrapperView}>
+          <HeaderWithOptionBtn
+            backColor={WHITE.dark}
+            borderBottom={true}
+            leftIcon={require('../../assets/back.png')}
+            leftPress={() => this.props.navigation.navigate('myProfile')}
+            headerTitle={'Edit Profile'}
+          />
+          <ScrollView style={styles.wrapperView} bounces={true}>
+            <View style={styles.blockView}>
+              <View style={{height: 200, width: SCREEN.width}}>
+                <Image
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    height: 140,
+                    width: 140,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/profileImage1.png')}
+                />
+
+                <Image
+                  style={{
+                    position: 'absolute',
+                    left: 30,
+                    height: 170,
+                    width: 170,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/profileImage2.png')}
+                />
+
+                <Image
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    height: 140,
+                    width: 140,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/profileImage1.png')}
+                />
+                <Image
+                  style={{
+                    position: 'absolute',
+                    right: 30,
+                    height: 170,
+                    width: 170,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/profileImage2.png')}
+                />
+
+                <Image
+                  style={{
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    height: 200,
+                    width: 200,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/profileImage3.png')}
+                />
+                <Image
+                  style={{
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    bottom: 10,
+                    height: 35,
+                    width: 35,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/edit.png')}
+                />
+              </View>
+
+              <TextInput value={'Zoya'} style={styles.inputTextView} />
+              <TextInput value={'Rajput'} style={styles.inputTextView} />
+              <TextInput value={'Rajput'} style={styles.inputTextView} />
+              {Platform.OS === 'android' ? (
+                <TouchableOpacity
+                  onPress={this.showDatepicker}
+                  style={styles.DataTimeWrapper}>
+                  <View style={styles.input}>
+                    <Text style={{paddingTop: 15, paddingLeft: 20}}>
+                      {this.state.date.toDateString()}
+                    </Text>
+                  </View>
+
+                  <View style={styles.logoAddCalenderView}>
+                    <Image
+                      source={require('../../assets/calendar-range.png')}
                     />
-                    <ScrollView style={styles.wrapperView} bounces={true}>
-                        <View style={styles.blockView}>
-                        <View style={{height:200,width:SCREEN.width}}>
-                                 <Image
-                            style={{position: 'absolute',left:0,height:140,width:140,borderRadius:50}}
-                            source={require('../../assets/profileImage1.png')}/>
-                            
-                          <Image
-                            style={{position: 'absolute',left:30,height:170,width:170,borderRadius:50}}
-                            source={require('../../assets/profileImage2.png')}/>
-                      
-                           <Image
-                            style={{position: 'absolute',right:0,height:140,width:140,borderRadius:50}}
-                            source={require('../../assets/profileImage1.png')}/>
-                            <Image
-                            style={{position: 'absolute',right:30,height:170,width:170,borderRadius:50}}
-                            source={require('../../assets/profileImage2.png')}/>
-                        
-                            
-                           <Image
-                            style={{position: 'absolute',alignSelf: 'center',height:200,width:200,borderRadius:50}}
-                            source={require('../../assets/profileImage3.png')}/>
-                            <Image
-                            style={{position: 'absolute',alignSelf: 'center',bottom:10,height:35,width:35,borderRadius:50}}
-                            source={require('../../assets/edit.png')}/>
-                           </View>
-                           
-                            <TextInput
-                                value={"Zoya"}
-                                style={styles.inputTextView}
-                            />
-                            <TextInput
-                                value={"Rajput"}
-                                style={styles.inputTextView}
-                            />
-                            <TextInput
-                                value={"Rajput"}
-                                style={styles.inputTextView}
-                            />
-                            {Platform.OS === 'android' ? (
-                                <TouchableOpacity
-                                    onPress={this.showDatepicker}
-                                    style={styles.DataTimeWrapper}>
-                                    <View style={styles.input}>
-                                        <Text style={{ paddingTop: 15, paddingLeft: 20 }}>
-                                            {this.state.date.toDateString()}
-                                        </Text>
-                                    </View>
+                  </View>
+                  {this.state.showDate && (
+                    <DateTimePicker
+                      testID="dateTimePicker"
+                      value={this.state.date}
+                      mode={'date'}
+                      is24Hour={true}
+                      display="default"
+                      onChange={this.onChange}
+                    />
+                  )}
 
-                                    <View style={styles.logoAddCalenderView}>
-                                        <Image
-                                            source={require('../../assets/calendar-range.png')}/>
-                                    </View>
-                                    {this.state.showDate && (
-                                        <DateTimePicker
-                                            testID="dateTimePicker"
-                                            value={this.state.date}
-                                            mode={'date'}
-                                            is24Hour={true}
-                                            display="default"
-                                            onChange={this.onChange}
-                                        />
-                                    )}
-
-                                    <View />
-                                </TouchableOpacity>
-                            ) : (
-                                <View style={styles.DataTimeWrapper}>
-                                    <DateTimePicker
-                                        style={styles.DateTimeInnerIOS}
-                                        testID="dateTimePicker"
-                                        value={this.state.date}
-                                        mode={'date'}
-                                        is24Hour={true}
-                                        display="default"
-                                        textColor="black"
-                                        themeVariant="light"
-                                        onChange={this.onChange}
-                                    />
-                                    <View style={styles.logoAddCalenderView}>
-                                        <Image
-                                            source={require('../../assets/calendar-range.png')}
-                                        />
-                                    </View>
-                                </View>
-                            )}
-                            <RNPickerSelect
-                                style={{
-                                    inputIOS: {
-                                        width: '90%',
-                                        height: 53,
-                                        borderWidth: 1,
-                                        borderColor: 'lightgrey',
-                                        borderRadius: 8,
-                                        paddingLeft: 20,
-                                        alignSelf: 'center'
-                                    },
-                                    inputAndroid: {
-                                        width: '90%',
-                                        height: 53,
-                                        borderWidth: 1,
-                                        borderColor: 'lightgrey',
-                                        borderRadius: 8,
-                                        marginTop: 8,
-                                        paddingLeft: 20,
-                                        alignSelf: 'center'
-                                    },
-                                }}
-                                selectedValue={this.state.event}
-                                onValueChange={(itemValue, itemIndex) =>
-                                    this.setState({ event: itemValue })
-                                }
-                                items={[
-                                    { label: 'Female', value: 'Female' },
-                                    { label: 'Male', value: 'Male' },
-                                ]}
-                            />
-                            <TextInput
-                                value={"Niagara Falls, ON"}
-                                style={styles.inputTextView}
-                            />
-                        <Textarea
-                        style={[styles.inputTextView,{height: 159}]}
-                        placeholder="Message"
-                        />
-                         <TouchableOpacity style={styles.btn}>
-                                <Text style={styles.btntext}>SAVE</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </ScrollView>
-                </SafeAreaView>
-           
-         
-     
+                  <View />
+                </TouchableOpacity>
+              ) : (
+                <View style={styles.DataTimeWrapper}>
+                  <DateTimePicker
+                    style={styles.DateTimeInnerIOS}
+                    testID="dateTimePicker"
+                    value={this.state.date}
+                    mode={'date'}
+                    is24Hour={true}
+                    display="default"
+                    textColor="black"
+                    themeVariant="light"
+                    onChange={this.onChange}
+                  />
+                  <View style={styles.logoAddCalenderView}>
+                    <Image
+                      source={require('../../assets/calendar-range.png')}
+                    />
+                  </View>
+                </View>
+              )}
+              <RNPickerSelect
+                style={{
+                  inputIOS: {
+                    width: '90%',
+                    height: 53,
+                    borderWidth: 1,
+                    borderColor: 'lightgrey',
+                    borderRadius: 8,
+                    paddingLeft: 20,
+                    alignSelf: 'center',
+                  },
+                  inputAndroid: {
+                    width: '90%',
+                    height: 53,
+                    borderWidth: 1,
+                    borderColor: 'lightgrey',
+                    borderRadius: 8,
+                    marginTop: 8,
+                    paddingLeft: 20,
+                    alignSelf: 'center',
+                  },
+                }}
+                selectedValue={this.state.event}
+                onValueChange={(itemValue, itemIndex) =>
+                  this.setState({event: itemValue})
+                }
+                items={[
+                  {label: 'Female', value: 'Female'},
+                  {label: 'Male', value: 'Male'},
+                ]}
+              />
+              <TextInput
+                value={'Niagara Falls, ON'}
+                style={styles.inputTextView}
+              />
+              <Textarea
+                style={[styles.inputTextView, {height: 159}]}
+                placeholder="Message"
+              />
+              <TouchableOpacity style={styles.btn}>
+                <Text style={styles.btntext}>SAVE</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
       </View>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => {
- 
-    return {  
-    };
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.alterUser({user, uid})),
   };
-  
-  const mapDispatchToProps = (dispatch) => {
-    return {
-     
-   
-      callApi: (user,uid) => dispatch(userActions.alterUser({user,uid})),
-     
-    };
-  };
-  export default connect(mapStateToProps, mapDispatchToProps)(editProfle);
-  
+};
+export default connect(mapStateToProps, mapDispatchToProps)(editProfle);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
