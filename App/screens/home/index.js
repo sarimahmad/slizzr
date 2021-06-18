@@ -17,12 +17,17 @@ import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import WaitingFor from '../../component/WaitingFor';
 export default class home extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading:true,
       listView: false,
       mapView: true,
+      enableLocation: false,
       date: new Date(2300, 10, 20),
       index: 0,
       markers: [
@@ -30,65 +35,67 @@ export default class home extends Component {
         {lat: 31.64037, lng: 74.358749},
         {lat: 31.7037, lng: 74.358749},
       ],
-      findpeople: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
+      allEvents: [],
+      prepaidEvents: [],
+      scanEvents: [],
+      freeEvents: [],
+      allLocations: [],
+      currentData: [],
     };
+  }
+  async componentDidMount() {
+    const usersRef = firestore().collection('events');
+    usersRef
+      .where('PublicPrivate', '==', 'Public')
+      // .orderBy("createdAt", "desc")
+
+      .get()
+      .then(async querySnapShot => {
+        let allEvents = [];
+        let prepaidEvents = [];
+        let scanEvents = [];
+        let freeEvents = [];
+        for (const doc of querySnapShot.docs) {
+          this.getImageUrl(doc.data().image).then(res => {
+            let event = {
+              Description: doc.data().Description,
+              id: doc.id,
+              Name: doc.data().Name,
+              EventType: doc.data().EventType,
+              imageUrl: res,
+              coordinate: {
+                latitude: doc.data().Latitude,
+                longitude: doc.data().Longitude,
+              },
+              Address: doc.data().Address,
+              DateTime: doc.data().DateTime,
+              userName: doc.data().userName,
+              ...doc.data(),
+            };
+
+            allEvents.push(event);
+            if (event.EventType === 'PREPAID') {
+              prepaidEvents.push(event);
+            } else if (event.EventType === 'SCAN') {
+              scanEvents.push(event);
+            } else if (event.EventType === 'FREE') {
+              freeEvents.push(event);
+            }
+          });
+  this.setState({currentData: allEvents});
+        
+          this.setState({allEvents: allEvents});
+          this.setState({prepaidEvents: prepaidEvents});
+          this.setState({scanEvents: scanEvents});
+          this.setState({freeEvents: freeEvents});
+          this.setState({loading:false})
+          console.log(this.state);
+        }
+      })
+
+      .catch(error => {
+        alert(error);
+      });
   }
   onChange = (event, selectedDate) => {
     const currentDate = selectedDate || this.state.date;
@@ -100,29 +107,30 @@ export default class home extends Component {
   showDatepicker = () => {
     this.setState({showDate: true});
   };
+  getImageUrl = async imageName => {
+    let imageRef = storage().ref('/' + imageName);
+    return imageRef
+      .getDownloadURL()
+      .catch(e => console.log('getting downloadURL of image error => ', e));
+  };
+
   barTapped = indexTap => {
     if (indexTap === 0) {
       this.setState({index: 0});
-      this.setState({listView: false});
-      this.setState({mapView: true});
+      this.setState({currentData: this.state.allEvents});
     } else if (indexTap === 1) {
       this.setState({index: 1});
-      this.setState({listView: false});
-      this.setState({mapView: false});
     } else if (indexTap === 2) {
       this.setState({index: 2});
-      this.setState({listView: false});
-      this.setState({mapView: false});
+      this.setState({currentData: this.state.prepaidEvents});
     }
     if (indexTap === 3) {
       this.setState({index: 3});
-      this.setState({listView: false});
-      this.setState({mapView: false});
+      this.setState({currentData: this.state.scanEvents});
     }
     if (indexTap === 4) {
       this.setState({index: 4});
-      this.setState({listView: false});
-      this.setState({mapView: false});
+      this.setState({currentData: this.state.freeEvents});
     }
   };
 
@@ -137,54 +145,57 @@ export default class home extends Component {
             flex: 1,
             // marginBottom: SCREEN.height*0.15,
           }}>
-          <FlatList
-            data={this.state.findpeople}
-            keyExtractor={item => item.id}
-            renderItem={({item}) => (
-              <View
-                style={{
-                  height: 80,
-                  borderBottomColor: 'lightgrey',
-                  borderBottomWidth: 1,
-                  width: SCREEN.width,
-                }}>
-                <View style={[styles.flexRow, {width: SCREEN.width - 20}]}>
-                  <View style={styles.imgView}>
-                    <Image
-                      source={require('../../assets/image2.jpg')}
-                      style={{borderRadius: 44, height: 60, width: 60}}
-                    />
-
-                    <Image
-                      style={{position: 'absolute', right: -10}}
-                      source={require('../../assets/private.png')}
-                    />
-                  </View>
-
-                  <View style={styles.detail}>
-                    <Text style={styles.titleText}>{item.profileName}</Text>
-                    <Text style={styles.adressText}>{item.adress}</Text>
-                    <Text style={styles.purpleText}>{item.date}</Text>
-                    <View style={styles.flexRow}>
+          {this.state.currentData.length !== 0 && (
+            <FlatList
+              data={this.state.currentData}
+              renderItem={({item}) => (
+                <View
+                  style={{
+                    minHeight: 80,
+                    borderBottomColor: 'lightgrey',
+                    borderBottomWidth: 1,
+                    width: SCREEN.width,
+                  }}>
+                  <View style={[styles.flexRow, {width: SCREEN.width - 20}]}>
+                    <View style={styles.imgView}>
                       <Image
-                        style={{height: 16, width: 12, marginRight: 5}}
-                        source={require('../../assets/location.png')}
+                        source={{uri: item.imageUrl}}
+                        style={{borderRadius: 44, height: 60, width: 60}}
                       />
 
-                      <Text>15 KM away</Text>
+                      <Image
+                        style={{position: 'absolute', right: -10}}
+                        source={require('../../assets/private.png')}
+                      />
                     </View>
+
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>{item.name}</Text>
+                      <Text style={styles.adressText}>{item.Address}</Text>
+                      {/* <Text style={styles.purpleText}>{item.datetime}</Text> */}
+                      <View style={styles.flexRow}>
+                        <Image
+                          style={{height: 16, width: 12, marginRight: 5}}
+                          source={require('../../assets/location.png')}
+                        />
+
+                        <Text>15 KM away</Text>
+                      </View>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('eventDetail', {
+                          detailItem: item,
+                        })
+                      }
+                      style={styles.shareView}>
+                      <Image source={require('../../assets/Right.png')} />
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('eventDetail')
-                    }
-                    style={styles.shareView}>
-                    <Image source={require('../../assets/Right.png')} />
-                  </TouchableOpacity>
                 </View>
-              </View>
-            )}
-          />
+              )}
+            />
+          )}
         </View>
       </View>
     );
@@ -199,14 +210,17 @@ export default class home extends Component {
           latitudeDelta: 1,
           longitudeDelta: 1,
         }}>
-        {this.state.markers.map((marker, index) => (
+        {this.state.currentData.map((marker, index) => (
           <MapView.Marker
             coordinate={{
-              latitude: marker.lat,
-              longitude: 74.358749,
+              latitude: marker.location.latitude,
+              longitude: marker.location.longitude,
             }}
-            onPress={() => this.props.navigation.navigate('eventDetail')}
-            // title={'City'}
+            onPress={() =>
+              this.props.navigation.navigate('eventDetail', {
+                detailItem: marker,
+              })
+            }
             image={require('../../assets/marker.png')}
             // description={'Description'}
           />
@@ -219,7 +233,7 @@ export default class home extends Component {
     return (
       <View
         style={[
-          this.state.index === 0 ? {opacity: 0.4} : {opacity: 1},
+          this.state.enableLocation === false ? {opacity: 0.4} : {opacity: 1},
           {
             position: 'absolute',
             top: 50,
@@ -283,7 +297,7 @@ export default class home extends Component {
             You will need to enable location to see events near you
           </Text>
           <TouchableOpacity
-            onPress={() => this.setState({mapView: true, index: 5})}
+            onPress={() => this.setState({mapView: true, enableLocation: true})}
             style={styles.btnLocation}>
             <Text style={styles.btnTextLocation}>Allow Location</Text>
           </TouchableOpacity>
@@ -552,42 +566,64 @@ export default class home extends Component {
             rightIcon={require('../../assets/bell.png')}
             centerIcon={require('../../assets/homeLogo.png')}
           />
+         {this.state.loading === true && 
+         
+          <WaitingFor type="Events" />
+  }
+          {this.state.loading === false && 
           <View style={styles.wrapperView}>
             {this.tapBar()}
 
-            {this.state.index === 5 &&
+            {this.state.currentData.length !== 0 &&
+              this.state.enableLocation === true &&
               this.state.mapView === true &&
+              (this.state.index === 0 ||
+                this.state.index === 2 ||
+                this.state.index === 3 ||
+                this.state.index === 4) &&
               this.mapView()}
-
-            {this.state.index === 0 &&
-              this.state.listView === false &&
+           
+            {this.state.currentData.length !== 0 &&
+              this.state.enableLocation === false &&
+              this.state.mapView === true &&
               this.enableLocation()}
-            {this.state.listView === true && this.listView()}
+          
+            {this.state.currentData.length === 0 && 
+            this.noEvent()}
+          
+            {this.state.listView === true &&
+              (this.state.index === 0 ||
+                this.state.index === 2 ||
+                this.state.index === 3 ||
+                this.state.index === 4) &&
+              this.listView()}
 
-            {(this.state.index === 2 ||
-              this.state.index === 3 ||
-              this.state.index === 4) &&
-              this.noEvent()}
-            {(this.state.listView === true || this.state.mapView === true) &&
-              this.searchBar()}
-            {(this.state.listView === true || this.state.mapView === true) &&
-              this.bottomView()}
-            {(this.state.listView === true || this.state.mapView === true) && (
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 155,
-                  right: 0,
-                }}>
-                <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate('createEvent')}
-                  style={styles.logoAdd}>
-                  <Image source={require('../../assets/plus-circle.png')} />
-                </TouchableOpacity>
-              </View>
-            )}
+            {this.state.currentData.length !== 0 && 
+            this.searchBar()}
+
+            {this.state.currentData.length !== 0 && 
+            this.bottomView()}
+            {this.state.currentData.length !== 0 &&
+              (this.state.listView === true || this.state.mapView === true) && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: 155,
+                    right: 0,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('createEvent')
+                    }
+                    style={styles.logoAdd}>
+                    <Image source={require('../../assets/plus-circle.png')} />
+                  </TouchableOpacity>
+                </View>
+              )}
+         
           </View>
-        </SafeAreaView>
+  }
+       </SafeAreaView>
       </View>
     );
   }

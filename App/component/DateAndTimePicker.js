@@ -69,7 +69,7 @@ export default class DateAndTimePicker extends React.Component {
           transparent={false}
           visible={this.state.show}
         >
-          <View style={styles.iosPicker}>
+          <View >
             <DateTimePicker
               testID="dateTimePicker"
               value={this.state.dateTime}
@@ -78,14 +78,14 @@ export default class DateAndTimePicker extends React.Component {
               display="spinner"
               onChange={this.OnChange}
             />
-            <View style={styles.buttonContainer}>
+            {/* <View style={styles.buttonContainer}>
               <FormButton
                 buttonType="outline"
                 onPress={this._onConfirm}
                 title="CONFRIM"
                 buttonColor="#F57C00"
               />
-            </View>
+            </View> */}
           </View>
         </Modal>
       );
@@ -96,17 +96,14 @@ export default class DateAndTimePicker extends React.Component {
     return (
       <View style={styles.content}>
     
-        <View style={styles.inputRight}>
+        <View >
           <TouchableOpacity
+           style={styles.inputRight}
             onPress={() => {
               this.setState({ show: true });
             }}
           >
-            <Image source={require('../assets/calendar-range.png')} width={15.37} height={20} style={{marginRight:10,marginBottom:5}}/>
-          </TouchableOpacity>
-        </View>
-
-        {this.state.dateTime != null ? (
+          {this.state.dateTime != null ? (
           <Moment
             style={this.props.datebutton}
             element={Text}
@@ -116,19 +113,16 @@ export default class DateAndTimePicker extends React.Component {
           </Moment>
         ) : (
           <View style={this.props.datebutton}>
-            {/* <Text
-              style={{
-                // fontFamily: fonts.fbo,
-                fontSize: 20,
-                marginLeft: 20,
-              }}
-            >
-              {"Birth Date"}
-            </Text> */}
+            <Text style={{color:'grey'}}>+ Add</Text>
           </View>
         )
         }
 
+        <Image source={require('../assets/calendar-range.png')} width={15.37} height={20} style={{marginRight:10,marginBottom:5,marginTop:5}}/>
+          </TouchableOpacity>
+        </View>
+
+      
         {this.datePicker()}
       </View>
     );
@@ -168,16 +162,15 @@ const styles = StyleSheet.create({
     borderColor: "rgba(0, 0, 0, 0.247487)",
     borderWidth: 1,
     width:SCREEN.width-40,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-   
+  flexDirection:'row',
+  alignItems:'center',
+  justifyContent: 'space-between', 
     borderRadius: 10,
     borderRadius: 10,
     padding: 0,
-    fontSize: 17,
     height: 53,
   
-    paddingLeft: 0,
+    paddingLeft: 10,
     paddingRight: 0,
   },
 });

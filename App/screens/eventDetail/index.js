@@ -18,7 +18,7 @@ import {
   } from 'react-native-responsive-screen';
 import { ScrollView } from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-
+import FlipImage from '../../component/FlipImage';
 export default class eventDetail extends Component {
   constructor(props) {
     super(props);
@@ -27,11 +27,20 @@ export default class eventDetail extends Component {
       { id: 2, image: require('../../assets/Slizzer-icon/testImage.webp') },
       { id: 3, image: require('../../assets/Slizzer-icon/testImage.webp') },
       { id: 4, image: require('../../assets/Slizzer-icon/testImage.webp') },
-      { id: 5, image: require('../../assets/Slizzer-icon/testImage.webp') },]
+      { id: 5, image: require('../../assets/Slizzer-icon/testImage.webp') },],
+      detailItem:{},
+      date:''
+    }
+  
   }
-
+  componentDidMount(){
+   
+    let detailItem = this.props.route.params.detailItem;
+      
+    this.setState({detailItem:detailItem})
+    this.setState({date:detailItem.DateTime.toDate().toLocaleTimeString()})
   }
-
+  
   render() {
     return (
         <View style={styles.wrapperView}>
@@ -50,34 +59,31 @@ export default class eventDetail extends Component {
      
           <ScrollView bounces={false}>
           <View style={{marginTop:20,alignSelf:'center', alignItems:'center' ,width:SCREEN.width}}>
-          <Image
-                source={require('../../assets/eventDetail.png')}
-                style={{borderRadius:20}}
-              />
-            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("eventDetail2")} 
-            style={{
-              position: 'absolute',
-              top:30,height:35,
-              width:35,borderRadius:60,
-              backgroundColor:'white',left:SCREEN.width *0.16,
-              justifyContent:'center',alignContent:'center'}}>    
-          <Image style={{marginLeft:5}}
-                source={require('../../assets/group.png')}
-              
-              />  
-              </TouchableOpacity>
+                <FlipImage
+          imageUrl={this.state.detailItem.imageUrl}
+          Name={this.state.detailItem.Name}
+          Description={this.state.detailItem.Description}
+          Address={this.state.detailItem.Address}
+        />
+       
           </View>
           <View style={{width:SCREEN.width - 40,alignSelf:'center'}}>
           <View style={styles.flex}>
-          <Text style={[styles.titleText]}>Brittney’s 18th Birthday </Text>
-          <Text style={[styles.purpleText]}>SCAN-&-pay at door</Text>
+          <Text style={[styles.titleText]}>{this.state.detailItem.Name}</Text>
+          {this.state.detailItem.EventType!=="SCAN" &&
+          <Text style={[styles.purpleText]}>{this.state.detailItem.EventType}</Text>
+  }
+          {this.state.detailItem.EventType==="SCAN" &&
+          <Text style={[styles.purpleText]}>      SCAN-&-PAY AT DOOR
+          </Text>
+    }
           </View>
           <View style={[styles.flexRow,{paddingTop:8}]}>
           <Text style={[styles.titleText,{fontSize:12,fontFamily:FONT.Nunito.regular}]}>Host: </Text>
           <Text style={[styles.purpleText,{textDecorationLine:'underline',fontFamily:FONT.Nunito.regular,paddingLeft:4}]}>Holly Smith</Text>
           </View>
-          <Text style={{fontFamily:FONT.Nunito.bold, fontSize: 12, color: BLACK.textColor3, marginTop:3}}>11:30 PM | FEB 25, 2020 - WED | 2 HRS</Text>
-          <View style={[styles.flexRow,{justifyContent:'space-between'}]}>
+          <Text style={{fontFamily:FONT.Nunito.bold, fontSize: 12, color: BLACK.textColor3, marginTop:3}}>{this.state.date}</Text>
+        <View style={[styles.flexRow,{justifyContent:'space-between'}]}>
           <View style={[styles.flexRow,{paddingTop: 5}]}>
             <Image style={{width:12, height: 16, marginRight: 5}} source={require('../../assets/location.png')}/>
             <Text style={{fontFamily: FONT.Nunito.semiBold, fontSize: 12, color: BLACK.grey}}>15 KM away</Text>

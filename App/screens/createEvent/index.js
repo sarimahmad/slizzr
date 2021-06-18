@@ -27,11 +27,11 @@ export default class CreateEvent extends Component {
   constructor() {
     super();
     this.state = {
-      imageUploaded:false,
-      selectLocationFlag:false,
-      currentLocationPlace:'',
-      localErrorLocation:null,
-      location:null,
+      imageUploaded: false,
+      selectLocationFlag: false,
+      currentLocationPlace: '',
+      localErrorLocation: null,
+      location: null,
       uploading: false,
       transfered: 0,
       pic: '',
@@ -57,33 +57,26 @@ export default class CreateEvent extends Component {
       userName: '',
     };
   }
-  selectImage = async() => {
+  selectImage = async () => {
     ImagePicker.openPicker({
-          width: 300,
-          height: 400,
-          cropping: true,
-        }).then(image => {
-          this.setState({imageUri: image.path});
-      
-         
-        });
-  
-      };
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then(image => {
+      this.setState({imageUri: image.path});
+    });
+  };
   uploadImage = async () => {
     const uri = this.state.imageUri;
-          console.log(uri)
-          const filename = uri.substring(uri.lastIndexOf('/') + 1);
-          const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-         
-          const task = storage().ref(filename).putFile(uploadUri);
-          task.on('state_changed', snapshot => {
-         this.setState({imageUploaded:true})
-         
-          });
-         
-        
-        
-  
+    console.log(uri);
+    const filename = uri.substring(uri.lastIndexOf('/') + 1);
+    this.setState({imageUri: filename});
+    const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+
+    const task = storage().ref(filename).putFile(uploadUri);
+    task.on('state_changed', snapshot => {
+      this.setState({imageUploaded: true});
+    });
   };
 
   directInvites = () => {
@@ -117,54 +110,49 @@ export default class CreateEvent extends Component {
     this.setState({userId: JSON.parse(TOKEN)});
     console.log(this.state.userName, this.state.userId);
   }
-  handleSubmit = async() => {
-   await this.uploadImage()
-    
- 
-if(this.state.imageUploaded==true){
-  alert(
-    'Photo uploaded!',
-    'Your photo has been uploaded to Firebase Cloud Storage!',
-  );
+  handleSubmit = async () => {
+    await this.uploadImage();
 
+    if (this.state.imageUploaded == true) {
+      alert(
+        'Photo uploaded!',
+        'Your photo has been uploaded to Firebase Cloud Storage!',
+      );
 
-  console.log(this.state);
-    const data = {
-      Address: this.state.Address,
-      AttendeeLimit: this.state.AttendeeLimit,
-      DateTime: this.state.DateTime,
-      Description: this.state.Description,
-      EventType: this.state.EventType,
-      Fee: this.state.Fee,
-      Host: this.state.Host,
-      // Latitude: this.state.Latitude,
-      // Longitude: this.state.Longitude,
-      location:this.state.location,
-      Name: this.state.Name,
-      PublicPrivate: this.state.PublicPrivate,
-      disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
-      duration: this.state.duration,
-      userId: this.state.userId,
-      userName: this.state.userName,
-      image:this.state.imageUri
-    };
-    const usersRef = firestore().collection('events');
-    usersRef
-      .doc(this.state.userId)
-      .set(data)
-      .then(async firestoreDocument => {
-        this.RBSheet.open();
-      })
+      console.log(this.state);
+      const data = {
+        Address: this.state.Address,
+        AttendeeLimit: this.state.AttendeeLimit,
+        DateTime: this.state.DateTime,
+        Description: this.state.Description,
+        EventType: this.state.EventType,
+        Fee: this.state.Fee,
+        Host: this.state.Host,
+        location: this.state.location,
+        Name: this.state.Name,
+        PublicPrivate: this.state.PublicPrivate,
+        disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
+        duration: this.state.duration,
+        userId: this.state.userId,
+        userName: this.state.userName,
+        image: this.state.imageUri,
+      };
+      const usersRef = firestore().collection('events');
+      usersRef
+        .add(data)
+        .then(async firestoreDocument => {
+          this.RBSheet.open();
+        })
 
-      .catch(error => {
-        alert(error);
-      });
-    }else{
-      alert("image upload failed")
+        .catch(error => {
+          alert(error);
+        });
+    } else {
+      alert('image upload failed');
     }
   };
   setLocation = (latitude, longitude) => {
-   console.log(latitude,longitude)
+    console.log(latitude, longitude);
     this.setState({
       selectLocationFlag: false,
       localErrorLocation: null,
@@ -174,10 +162,10 @@ if(this.state.imageUploaded==true){
       },
     });
   };
-  getAdress = (address) => {
+  getAdress = address => {
     // alert(address);
-    console.log(address)
- 
+    console.log(address);
+
     this.setState({
       currentLocationPlace: address,
       Address: address,
@@ -218,7 +206,7 @@ if(this.state.imageUploaded==true){
                 )}
               </View>
             </TouchableOpacity>
-           
+
             <View style={styles.Textfields}>
               <Text style={styles.TextInputTitle}>Event Titles:</Text>
               <View style={styles.TextInputWrapper}>
@@ -251,51 +239,32 @@ if(this.state.imageUploaded==true){
 
               <Text style={styles.TextInputTitle}>Date and Time:</Text>
               <View style={styles.TextInputWrapper}>
-              <DateAndTimePicker
-
-          format="MMM DD, YYYY - ddd "
-          mode="date"
-          value={this.state.date}
-          setDateAndTime={(value) => this.setState({DateTime:value})}
-          showPlaceholder="+ Add"
-          datebutton={styles.datebutton}
-        />
-        </View>
-              {/* <View style={styles.TextInputWrapper}>
-                <TextInput style={styles.firstInput} 
-                placeholder="+ Add" 
-                onChangeText={(value)=>this.setState({DateTime:value})}
-                value={this.state.DateTime}
-             
+                <DateAndTimePicker
+                  format="MMM DD, YYYY - ddd "
+                  mode="date"
+                  value={this.state.date}
+                  setDateAndTime={value => this.setState({DateTime: value})}
+                  showPlaceholder="+ Add"
+                  datebutton={styles.datebutton}
                 />
-                <View style={styles.AbsoluteRightIcon}>
-                  <Image
-                    source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
-                  />
-                </View>
-              </View> */}
+              </View>
               <View style={styles.RowView}>
                 <View style={{flex: 1}}>
                   <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
                     Event Types:
                   </Text>
+                 <View style={{ width: '90%',
+                        height: 53,
+                        borderWidth: 1,
+                        borderColor: 'lightgrey',
+                        borderRadius: 8,
+                       }}>
                   <RNPickerSelect
                     style={{
                       inputIOS: {
-                        width: '90%',
-                        height: 53,
-                        borderWidth: 1,
-                        borderColor: 'lightgrey',
-                        borderRadius: 8,
                         paddingLeft: 7,
                       },
                       inputAndroid: {
-                        width: '90%',
-                        height: 53,
-                        borderWidth: 1,
-                        borderColor: 'lightgrey',
-                        borderRadius: 8,
-                        marginTop: 8,
                         paddingLeft: 7,
                       },
                     }}
@@ -304,11 +273,13 @@ if(this.state.imageUploaded==true){
                       this.setState({EventType: itemValue})
                     }
                     items={[
-                      {label: 'Prepaid', value: 'Prepaid'},
-                      {label: 'Billing', value: 'Billing'},
-                      {label: 'Postpaid', value: 'Postpaid'},
+                      {label: 'ALL', value: 'ALL'},
+                      {label: 'PREPAID', value: 'PREPAID'},
+                      {label: 'SCAN', value: 'SCAN'},
+                      {label: 'FREE', value: 'FREE'},
                     ]}
                   />
+                  </View>
                 </View>
                 <View style={{flex: 1}}>
                   <View style={{flexDirection: 'row', marginVertical: 11}}>
@@ -326,30 +297,48 @@ if(this.state.imageUploaded==true){
                   />
                 </View>
               </View>
-              
+
               <View style={styles.RowView}>
-                 <View style={{flex: 1}}>
+                <View style={{flex: 1}}>
                   <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
                     Location
                   </Text>
                   <TouchableOpacity
-                    style={[styles.TextInputWrapper2,{width:SCREEN.width*0.3}]}     
-                     onPress={() =>
-                        this.setState({ selectLocationFlag: true })
-                      }
-                    >
-                   <Text   style={[styles.thirdinput,{paddingTop:15}]}
-                    >+ADD</Text>
-                  
+                    style={[
+                      styles.TextInputWrapper2,
+                      {width: SCREEN.width * 0.3},
+                    ]}
+                    onPress={() => this.setState({selectLocationFlag: true})}>
+                    {this.state.Address === '' ? (
+                      <Text
+                        style={[
+                          styles.thirdinput,
+                          {paddingTop: 15, color: 'grey'},
+                        ]}>
+                        + Add
+                      </Text>
+                    ) : (
+                      <Text
+                        style={[
+                          styles.thirdinput,
+                          {paddingTop: 10, color: 'grey'},
+                        ]}>
+                        {this.state.Address}
+                      </Text>
+                    )}
                   </TouchableOpacity>
                 </View>
-                
+
                 <View style={{flex: 1}}>
                   <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
                     {' '}
                     Attendee Limit
                   </Text>
-                  <View style={[styles.TextInputWrapper2,{width:SCREEN.width*0.25}]}>
+                  <View
+                    style={[
+                      styles.TextInputWrapper2,
+                      {width: SCREEN.width * 0.25},
+                    ]}>
                     <TextInput
                       placeholder="50"
                       style={[styles.thirdinput]}
@@ -369,7 +358,11 @@ if(this.state.imageUploaded==true){
                   <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
                     Duration (HRS)
                   </Text>
-                  <View style={[styles.TextInputWrapper2,{width:SCREEN.width*0.25}]}>
+                  <View
+                    style={[
+                      styles.TextInputWrapper2,
+                      {width: SCREEN.width * 0.25},
+                    ]}>
                     <TextInput
                       placeholder="50"
                       style={styles.thirdinput}
@@ -384,40 +377,43 @@ if(this.state.imageUploaded==true){
                   </View>
                 </View>
               </View>
-            
+
               <Text style={[styles.TextInputTitle]}>Public or Private</Text>
-              <RNPickerSelect
+              <View
                 style={{
-                  inputIOS: {
-                    width: '90%',
-                    height: 53,
-                    borderWidth: 1,
-                    borderColor: 'lightgrey',
-                    borderRadius: 8,
-                    paddingLeft: 7,
-                    marginLeft: 15,
-                  },
-                  inputAndroid: {
-                    width: '90%',
-                    height: 53,
-                    backgroundColor: 'red',
-                    borderWidth: 2,
-                    borderColor: 'lightgrey',
-                    borderRadius: 8,
-                    marginTop: 8,
-                    paddingLeft: 7,
-                    marginLeft: 15,
-                  },
-                }}
-                selectedValue={this.state.PublicPrivate}
-                onValueChange={(itemValue, itemIndex) =>
-                  this.setState({PublicPrivate: itemValue})
-                }
-                items={[
-                  {label: 'Private', value: 'Private'},
-                  {label: 'Public', value: 'Public'},
-                ]}
-              />
+                  borderRadius: 8,
+                  height: 53,
+                  width: SCREEN.width - 40,
+                  alignSelf: 'center',
+                  borderWidth: 2,
+                  borderColor: 'lightgrey',
+                }}>
+                <RNPickerSelect
+                 placeholder={{
+                  label: '+Add',
+                  value: this.state.PublicPrivate,
+              }}
+                  style={{
+                    inputIOS: {
+                      paddingLeft: 7,
+                      marginLeft: 15,
+                    },
+                    inputAndroid: {
+                      paddingLeft: 7,
+                      marginLeft: 15,
+                    },
+                  }}
+                  selectedValue={this.state.PublicPrivate}
+                  onValueChange={(itemValue) =>
+                    this.setState({PublicPrivate: itemValue})
+                  }
+                  items={[
+                    {label: 'Private', value: 'Private'},
+                    {label: 'Public', value: 'Public'},
+                  ]}
+                />
+              </View>
+
               <View style={{marginBottom: 20}}>
                 <TouchableOpacity
                   onPress={() => this.handleSubmit()}
@@ -489,32 +485,29 @@ if(this.state.imageUploaded==true){
                 </SafeAreaView>
               </RBSheet>
               <Modal
-                      visible={this.state.selectLocationFlag}
-                      onRequestClose={() =>
-                        this.setState({ selectLocationFlag: false })
-                      }
-                      animationType={"slide"}
-                    >
-                      <View
-                        style={{
-                          marginTop: "10%",
-                          flex: 1,
-                          justifyContent: "flex-start",
-                          alignItems: "center",
-                        }}
-                      >
-                        <GoogleSearchBar
-                          closeLocationModal={() => {
-                            this.setState({ selectLocationFlag: false });
-                          }}
-                          getAddress={this.getAdress}
-                          setLocation={this.setLocation}
-                          clearGoogleSearch={this.state.clearGoogleSearch}
-                          inputValue={'Address'}
-                        />
-                      </View>
-                    </Modal>
-                   
+                visible={this.state.selectLocationFlag}
+                onRequestClose={() =>
+                  this.setState({selectLocationFlag: false})
+                }
+                animationType={'slide'}>
+                <View
+                  style={{
+                    marginTop: '10%',
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                  }}>
+                  <GoogleSearchBar
+                    closeLocationModal={() => {
+                      this.setState({selectLocationFlag: false});
+                    }}
+                    getAddress={this.getAdress}
+                    setLocation={this.setLocation}
+                    clearGoogleSearch={this.state.clearGoogleSearch}
+                    inputValue={'Address'}
+                  />
+                </View>
+              </Modal>
             </View>
           </ScrollView>
         </SafeAreaView>

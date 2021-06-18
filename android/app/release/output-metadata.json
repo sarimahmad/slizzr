@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.slizzr",
+  "applicationId": "com.slizzrapp.slizzr",
   "variantName": "processReleaseResources",
   "elements": [
     {
