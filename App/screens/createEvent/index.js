@@ -84,20 +84,36 @@ export default class CreateEvent extends Component {
     this.RBSheet.close();
   };
   isFormFilled() {
-    let checkPassword = Validations.checkPassword(this.state.password);
-    let checkEmail = Validations.checkEmail(this.state.email);
-    let checkfirstName = Validations.checkUsername(this.state.firstName);
-    let checklastName = Validations.checkUsername(this.state.lastName);
-    if (checkEmail && checkPassword && checkfirstName && checklastName) {
+    let checkAddress = Validations.checkUsername(this.state.Address);
+    let checkAttendeeLimit = Validations.checkUsername(this.state.AttendeeLimit);
+    let checkDateTime = Validations.checkUsername(this.state.DateTime);
+    let checkDescription = Validations.checkUsername(this.state.Description);
+    let checkEventType = Validations.checkUsername(this.state.EventType);
+    let checkFee = Validations.checkUsername(this.state.Fee);
+    let checkPublicPrivate = Validations.checkUsername(this.state.PublicPrivate);
+    let checkduration = Validations.checkUsername(this.state.duration);
+    
+    if (checkAddress && checkAttendeeLimit && checkDateTime && checkDescription && checkduration && 
+       checkPublicPrivate&& checkFee&& checkEventType) {
       return true;
     }
-    if (!checkfirstName) {
+    if (!checkAddress) {
       alert('firstName required');
-    } else if (!checkEmail) {
+    } else if (!checkAttendeeLimit) {
       alert('invalid email');
-    } else if (!checklastName) {
+    } else if (!checkDateTime) {
       alert('lastname required');
-    } else if (!checkPassword) {
+    } else if (!checkDescription) {
+      alert('invalid password');
+    }else if (!checkEventType) {
+      alert('invalid password');
+    }else if (!checkPublicPrivate) {
+      alert('invalid password');
+    }else if (!checkFee) {
+      alert('invalid password');
+    }else if (!checkPublicPrivate) {
+      alert('invalid password');
+    }else if (!checkduration) {
       alert('invalid password');
     }
     return false;
@@ -275,7 +291,7 @@ export default class CreateEvent extends Component {
                     items={[
                       {label: 'ALL', value: 'ALL'},
                       {label: 'PREPAID', value: 'PREPAID'},
-                      {label: 'SCAN', value: 'SCAN'},
+                      {label: 'SCAN-&-PAY AT DOOR', value: 'SCAN'},
                       {label: 'FREE', value: 'FREE'},
                     ]}
                   />

@@ -4,7 +4,7 @@ import { FONT,  SCREEN } from '../../helper/Constant'
 import { SafeAreaView } from 'react-navigation';
 import { BLACK,WHITE } from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class index extends Component {
     constructor() {
@@ -24,7 +24,12 @@ export default class index extends Component {
             </TouchableOpacity>
         )
     }
-   
+   async componentDidMount(){
+    const userDetail = await AsyncStorage.getItem('userdetail');
+    const TOKEN = await AsyncStorage.getItem('token');
+   this.setState({userDetail:JSON.parse(userDetail)})
+   console.log(this.state.userDetail.user)
+   }
     render() {
         return (
             <View style={styles.wrapperView}>
@@ -79,7 +84,7 @@ export default class index extends Component {
                             </View>
                         </View>
                         <Text style={styles.text1}>
-                            Dwayne Johnson
+                            {this.state.userDetail && this.state.userDetail.user.email}
                     </Text>
                         <Text style={styles.text2}>28 years,Male</Text>
                         <View style={{ flexDirection: 'row', marginBottom: 30, marginTop: 5 }}>

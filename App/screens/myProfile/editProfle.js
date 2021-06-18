@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Modal,
   TextInput,
 } from 'react-native';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -19,17 +20,21 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Textarea from 'react-native-textarea'
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import GoogleSearchBar from '../../component/GoogleSearchBar';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
+import DateAndTimePicker from '../../component/DateAndTimePicker';
 
 class editProfle extends Component {
     constructor(props) {
         super(props);
         this.state = {
+          location:{},
+          Address:'',
             enableMap: false,
-            date: new Date(),
+            DateTime: new Date(),
             showDate: false,
+            selectLocationFlag:false,
             events: false,
             event: 'Female',
         }
@@ -52,7 +57,27 @@ class editProfle extends Component {
        this.setState({profileData:JSON.parse(userDetail.user)})
       console.log(this.state.userDetail)
     }
-
+    setLocation = (latitude, longitude) => {
+      console.log(latitude, longitude);
+      this.setState({
+        selectLocationFlag: false,
+        localErrorLocation: null,
+        location: {
+          latitude: latitude,
+          longitude: longitude,
+        },
+      });
+    };
+    getAdress = address => {
+      // alert(address);
+      console.log(address);
+  
+      this.setState({
+        currentLocationPlace: address,
+        Address: address,
+      });
+    };
+   
     render() {
         return (
             <View style={styles.wrapperView}>
@@ -103,7 +128,18 @@ class editProfle extends Component {
                                 value={"Rajput"}
                                 style={styles.inputTextView}
                             />
-                            {Platform.OS === 'android' ? (
+                                                 <View style={styles.TextInputWrapper}>
+                <DateAndTimePicker
+                  format="MMM DD, YYYY - ddd "
+                  mode="date"
+                  value={this.state.date}
+                  setDateAndTime={value => this.setState({DateTime: value})}
+                  showPlaceholder="+ Add"
+                  datebutton={styles.datebutton}
+                />
+              </View>
+             
+                            {/* {Platform.OS === 'android' ? (
                                 <TouchableOpacity
                                     onPress={this.showDatepicker}
                                     style={styles.DataTimeWrapper}>
@@ -117,6 +153,7 @@ class editProfle extends Component {
                                         <Image
                                             source={require('../../assets/calendar-range.png')}/>
                                     </View>
+               
                                     {this.state.showDate && (
                                         <DateTimePicker
                                             testID="dateTimePicker"
@@ -149,30 +186,25 @@ class editProfle extends Component {
                                         />
                                     </View>
                                 </View>
-                            )}
+                            )} */}
+                            <View style={{  width: '90%',
+                                        height: 53,
+                                        borderWidth: 1,
+                                        borderColor: 'lightgrey',
+                                        borderRadius: 8,
+                                        alignSelf:'center',
+                                        marginVertical:20
+                                      }}>
                             <RNPickerSelect
                                 style={{
                                     inputIOS: {
-                                        width: '90%',
-                                        height: 53,
-                                        borderWidth: 1,
-                                        borderColor: 'lightgrey',
-                                        borderRadius: 8,
                                         paddingLeft: 20,
-                                        alignSelf: 'center'
                                     },
                                     inputAndroid: {
-                                        width: '90%',
-                                        height: 53,
-                                        borderWidth: 1,
-                                        borderColor: 'lightgrey',
-                                        borderRadius: 8,
-                                        marginTop: 8,
                                         paddingLeft: 20,
-                                        alignSelf: 'center'
                                     },
                                 }}
-                                selectedValue={this.state.event}
+                                selectedValue={this.state.event}  
                                 onValueChange={(itemValue, itemIndex) =>
                                     this.setState({ event: itemValue })
                                 }
@@ -181,10 +213,36 @@ class editProfle extends Component {
                                     { label: 'Male', value: 'Male' },
                                 ]}
                             />
-                            <TextInput
+                            </View>
+                                       <TouchableOpacity
+                    style={[
+                      styles.TextInputWrapper2,
+                      {width: SCREEN.width-40},
+                    ]}
+                    onPress={() => this.setState({selectLocationFlag: true})}>
+                    {this.state.Address === '' ? (
+                      <Text
+                        style={[
+                          styles.thirdinput,
+                          {paddingTop: 15, color: 'grey'},
+                        ]}>
+                        Add Location
+                      </Text>
+                    ) : (
+                      <Text
+                        style={[
+                          styles.thirdinput,
+                          {paddingTop: 10, color: 'grey'},
+                        ]}>
+                        {this.state.Address}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+       
+                            {/* <TextInput
                                 value={"Niagara Falls, ON"}
                                 style={styles.inputTextView}
-                            />
+                            /> */}
                         <Textarea
                         style={[styles.inputTextView,{height: 159}]}
                         placeholder="Message"
@@ -193,6 +251,31 @@ class editProfle extends Component {
                                 <Text style={styles.btntext}>SAVE</Text>
                             </TouchableOpacity>
                         </View>
+                        <Modal
+                visible={this.state.selectLocationFlag}
+                onRequestClose={() =>
+                  this.setState({selectLocationFlag: false})
+                }
+                animationType={'slide'}>
+                <View
+                  style={{
+                    marginTop: '10%',
+                    flex: 1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                  }}>
+                  <GoogleSearchBar
+                    closeLocationModal={() => {
+                      this.setState({selectLocationFlag: false});
+                    }}
+                    getAddress={this.getAdress}
+                    setLocation={this.setLocation}
+                    clearGoogleSearch={this.state.clearGoogleSearch}
+                    inputValue={'Address'}
+                  />
+                </View>
+              </Modal>
+    
                     </ScrollView>
                 </SafeAreaView>
            
@@ -224,10 +307,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: WHITE.dark,
   },
+  TextInputWrapper: {
+    marginTop:20,
+    justifyContent: 'center',
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
+  },
+  
+  thirdinput: {
+    borderWidth: 1,
+    borderColor: 'lightgrey',
+    height: 53,
+    borderRadius: 10,
+    width: '100%',
+    paddingLeft: 20,
+  },
   blockView: {
     marginTop: 30,
     // alignItems: 'center'
   },
+  TextInputWrapper2: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+  },
+ 
   form: {
     marginVertical: 5,
     borderWidth: 1,
