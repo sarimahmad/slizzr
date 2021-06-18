@@ -105,7 +105,10 @@ class SignIn extends Component {
             .then(firestoreDocument => {
               this.props.callApi(firestoreDocument.data(), uid);
               this.setState({loading: false});
-              this.checkTheUserCheck(firestoreDocument.data());
+              this.checkTheUserCheck(
+                firestoreDocument.data(),
+                response.user.emailVerified
+              );
             })
             .catch(error => {
               this.setState({loading: false});
@@ -156,8 +159,29 @@ class SignIn extends Component {
       });
   };
 
-  checkTheUserCheck(userParsed) {
+  checkTheUserCheck(userParsed, verifiedEmail) {
     if (userParsed.email_verified === true) {
+      if (userParsed.age && parseInt(userParsed.age) > 16) {
+        this.props.navigation.navigate('HomeStack');
+      } else {
+        this.props.navigation.navigate('BirthDate', {from: 'SignIn'});
+      }
+    } else if (verifiedEmail === true) {
+      const usersRef = firestore().collection('users');
+      usersRef
+        .doc(userParsed.id)
+        .update({email_verified: true})
+        .then(firestoreDocument => {
+          this.props.callApi(firestoreDocument.data(), userParsed.id);
+          this.setState({loading: false});
+          this.props.navigation.navigate('BirthDate', {
+            from: 'signUp',
+          });
+        })
+        .catch(error => {
+          this.setState({loading: false});
+          Alert.alert('User error', error);
+        });
       if (userParsed.age && parseInt(userParsed.age) > 16) {
         this.props.navigation.navigate('HomeStack');
       } else {
@@ -166,9 +190,7 @@ class SignIn extends Component {
     } else {
       Alert.alert(
         'Email not Verified',
-        'Please verify your email ' +
-          userParsed.user.email +
-          ' and sign in again',
+        'Please verify your email ' + userParsed.email + ' and sign in again',
         [
           {
             text: 'Ok',

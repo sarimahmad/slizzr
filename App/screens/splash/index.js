@@ -16,7 +16,7 @@ const splash = props => {
   });
 
   const checkUSer = async () => {
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
     const userDetail = await AsyncStorage.getItem('userdetail');
     const TOKEN = await AsyncStorage.getItem('token');
 
@@ -25,10 +25,10 @@ const splash = props => {
         const userParsed = JSON.parse(userDetail);
         if (userParsed.user.email_verified === true) {
           if (userParsed.user.age && parseInt(userParsed.user.age) > 16) {
-            props.callApi(JSON.parse(userDetail.user), TOKEN);
+            props.callApi(JSON.parse(userDetail).user, JSON.parse(TOKEN));
             props.navigation.navigate('HomeStack');
           } else {
-            props.callApi(JSON.parse(userDetail).user, TOKEN);
+            props.callApi(JSON.parse(userDetail).user, JSON.parse(TOKEN));
             props.navigation.navigate('BirthDateSplash', {from: 'splash'});
           }
         } else {
