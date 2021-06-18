@@ -4,11 +4,10 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
+import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import firestore from '@react-native-firebase/firestore';
-import {Alert} from 'react-native';
 
 export default class BirthDate extends Component {
   constructor(props) {

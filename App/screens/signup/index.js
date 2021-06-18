@@ -10,18 +10,23 @@ import {
   ScrollView,
   Linking,
   Image,
+  Alert,
 } from 'react-native';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
 import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+import {connect} from 'react-redux';
 
 import TextField from '../../component/TextField/index';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
+import * as userActions from '../../redux/actions/user';
 import Validations from '../../helper/Validations';
-import firestore from '@react-native-firebase/firestore';
-export default class SignUp extends Component {
+import Loader from '../../component/Loader';
+
+class SignUp extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,10 +38,14 @@ export default class SignUp extends Component {
       loading: false,
     };
   }
-componentDidMount(){
-  GoogleSignin.configure({
-    webClientId: '473629197290-3374lal9f0nk1cjcec4u41nns049jcfo.apps.googleusercontent.com',
-  });}
+  componentDidMount() {
+    GoogleSignin.configure({
+      iosClientId:
+        '473629197290-h6orl8ujajl2r6a2075bhu1bs8dt5900.apps.googleusercontent.com',
+      webClientId:
+        '473629197290-3374lal9f0nk1cjcec4u41nns049jcfo.apps.googleusercontent.com',
+    });
+  }
   storeInputData = (text, type) => {
     if (type === 'firstName') {
       this.setState({firstName: text});
@@ -50,6 +59,23 @@ componentDidMount(){
       this.setState({confirmPassword: text});
     }
   };
+
+  isFormFilledCheck() {
+    let checkPassword = Validations.checkPassword(this.state.password);
+    let checkEmail = Validations.checkEmail(this.state.email);
+    let checkfirstName = Validations.checkUsername(this.state.firstName);
+    let checklastName = Validations.checkUsername(this.state.lastName);
+    if (
+      checkEmail &&
+      checkPassword &&
+      checkfirstName &&
+      checklastName &&
+      this.state.password === this.state.confirmPassword
+    ) {
+      return true;
+    }
+    return false;
+  }
 
   isFormFilled() {
     let checkPassword = Validations.checkPassword(this.state.password);
@@ -73,9 +99,11 @@ componentDidMount(){
 
   handleSubmit = () => {
     if (this.isFormFilled()) {
+      this.setState({loading: true});
       auth()
         .createUserWithEmailAndPassword(this.state.email, this.state.password)
         .then(response => {
+          response.user.sendEmailVerification();
           const uid = response.user.uid;
 
           const data = {
@@ -84,39 +112,48 @@ componentDidMount(){
             id: uid,
             Id: uid,
             email: this.state.email,
-            type: 'google',
+            type: 'email',
             displayName: this.state.firstName + ' ' + this.state.lastName,
             email_verified: false,
             socialLogin: false,
-            verification: 'true',
+            age: '14',
           };
           const usersRef = firestore().collection('users');
           usersRef
             .doc(uid)
             .set(data)
             .then(async firestoreDocument => {
-            
-              this.props.navigation.navigate('BirthDate', {userData: data});
-              // console.log(firestoreDocument)
+              this.props.callApi(data, uid);
+              this.setState({loading: false});
+              this.props.navigation.navigate('BirthDate', {
+                from: 'signUp',
+              });
             })
             .catch(error => {
-              alert(error);
+              this.setState({loading: false});
+              Alert.alert('User error', error);
             });
-        
         })
         .catch(error => {
-          alert(error);
+          if (error.code === 'auth/email-already-in-use') {
+            Alert.alert(
+              'Already have user',
+              'There is already a user register with this email',
+            );
+          }
+          this.setState({loading: false});
+          Alert.alert('Internet Issue', 'Please Check your Internet');
         });
     } else {
+      this.setState({loading: false});
     }
   };
 
   googleSignInBtn = async () => {
-  
     this.setState({loading: true});
     const {idToken} = await GoogleSignin.signIn();
-    console.log(idToken)
     const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
+    const usersRef = firestore().collection('users');
     auth()
       .signInWithCredential(googleCredential)
       .then(response => {
@@ -131,12 +168,41 @@ componentDidMount(){
           displayName: response.user._user.displayName,
           email_verified: true,
           socialLogin: true,
+          age: '13',
         };
-        this.props.navigation.navigate('BirthDate', {userData: data});
+
+        usersRef
+          .doc(data.id)
+          .get()
+          .then(firestoreDocument => {
+            if (!firestoreDocument.exists) {
+              usersRef
+                .doc(data.id)
+                .set(data)
+                .then(firestoreDocuments => {
+                  this.props.callApi(firestoreDocuments.data(), data.id);
+                  this.setState({loading: false});
+                  this.props.navigation.navigate('BirthDate', {from: 'signUp'});
+                })
+                .catch(error => {
+                  this.setState({loading: false});
+                  alert(error);
+                });
+              return;
+            } else {
+              this.props.callApi(firestoreDocument.data(), data.id);
+              this.setState({loading: false});
+              this.props.navigation.navigate('HomeStack');
+            }
+          })
+          .catch(error => {
+            this.setState({loading: false});
+            Alert.alert('User error', error);
+          });
       })
       .catch(error => {
         this.setState({loading: false});
-        alert(error);
+        Alert.alert('User error', error);
       });
   };
 
@@ -150,12 +216,16 @@ componentDidMount(){
       throw 'User cancelled the login process';
     }
 
+    this.setState({loading: false});
+
     // Once signed in, get the users AccesToken
     const data = await AccessToken.getCurrentAccessToken();
 
     if (!data) {
       throw 'Something went wrong obtaining access token';
     }
+
+    this.setState({loading: false});
 
     // Create a Firebase credential with the AccessToken
     const facebookCredential = auth.FacebookAuthProvider.credential(
@@ -164,12 +234,12 @@ componentDidMount(){
     auth()
       .signInWithCredential(facebookCredential)
       .then(response => {
-        console.log('responseFb', JSON.stringify(response));
+        this.setState({loading: false});
         this.props.navigation.navigate('BirthDate', {userData: response});
       })
       .catch(error => {
         this.setState({loading: false});
-        alert(error);
+        Alert.alert('Facebook Error', error);
       });
   };
 
@@ -226,8 +296,13 @@ componentDidMount(){
                 parentCallBack={this.storeInputData}
               />
               <ButtonResetPassaword
+                validate={this.isFormFilledCheck()}
                 btnLabel={'SIGN UP'}
-                data={this.handleSubmit}
+                data={
+                  this.isFormFilledCheck()
+                    ? this.handleSubmit
+                    : console.log('ok')
+                }
               />
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('Signin')}
@@ -287,11 +362,21 @@ componentDidMount(){
                   By signing up, you agree to Slizzr’s{' '}
                 </Text>
                 <View style={{flexDirection: 'row'}}>
-                  <Text style={[styles.text, {fontSize: 12}]} onPress={() =>  Linking.openURL('https://slizzrapp.com/#terms-of-service')}>
+                  <Text
+                    style={[styles.text, {fontSize: 12}]}
+                    onPress={() =>
+                      Linking.openURL('https://slizzrapp.com/#terms-of-service')
+                    }>
                     Terms of Service
                   </Text>
                   <Text style={{fontSize: 12}}> and </Text>
-                  <Text style={[styles.text, {fontSize: 12}]} onPress={() =>  Linking.openURL('https://slizzrapp.com/#privacy-and-cookie-policy')}>
+                  <Text
+                    style={[styles.text, {fontSize: 12}]}
+                    onPress={() =>
+                      Linking.openURL(
+                        'https://slizzrapp.com/#privacy-and-cookie-policy',
+                      )
+                    }>
                     Privacy Policy.
                   </Text>
                 </View>
@@ -299,6 +384,7 @@ componentDidMount(){
             </View>
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
@@ -357,14 +443,6 @@ const styles = StyleSheet.create({
     width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
   },
-  //     btnText: {
-  //       fontSize: 16,
-  //       alignSelf: 'center',
-  //       fontFamily: FONT.Nunito.medium,
-  //       fontSize: 14,
-  //       color: BLACK.textInputTitle,
-  //
-  //     },
   policyText: {
     alignSelf: 'center',
     marginTop: '2%',
@@ -395,18 +473,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 19,
   },
-  //     absoluteLeftIcon: {
-  //       position: 'absolute',
-  //       left: 10,
-  //     },
-  //     flex: {
-  //       flexDirection: 'row'
-  //     },
-  //     alreadyHaveAccount: {
-  //       fontSize: 14,
-  //       fontFamily: FONT.Nunito.regular,
-  //       color: BLACK.textInputTitle,
-  //       alignSelf: 'center',
-  //       marginTop: 19,
-  //     }
 });
+
+const mapStateToProps = (state, ownProps) => {
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.setUser({user, uid})),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
