@@ -5,7 +5,7 @@ import {
   SET_TOKEN,
 } from '../actions/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TOKEN, USERDETAIL } from '../../helper/Constant';
+import {TOKEN, USERDETAIL} from '../../helper/Constant';
 
 const INITIAL_USER = {
   userDetail: '',
@@ -18,17 +18,16 @@ const userReducer = (state = INITIAL_USER, action) => {
     case SET_USER:
       state = Object.assign({}, state, {
         userDetail: action.payload.user,
-        userToken:action.payload.uid,
+        userToken: action.payload.uid,
         loading: false,
       });
       AsyncStorage.setItem(USERDETAIL, JSON.stringify(action.payload));
       AsyncStorage.setItem(TOKEN, JSON.stringify(action.payload.uid));
-     
+
       return state;
 
     case ALTER_USER:
-      console.log(action.payload.user,action.payload.uid)
-      state = new Object.assign({}, state, {
+      state = Object.assign({}, state, {
         userDetail: action.payload.user,
         userToken: action.payload.uid,
         loading: false,

@@ -1,4 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component} from 'react';
 import {
   View,
@@ -9,6 +10,8 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import {CommonActions} from '@react-navigation/native';
+
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -130,7 +133,16 @@ export default class settings extends Component {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Intro')}
+                onPress={() => {
+                  AsyncStorage.clear();
+                  this.props.navigation.dispatch(
+                    CommonActions.reset({
+                      index: 1,
+                      routes: [{name: 'Splash'}],
+                    }),
+                  );
+                  this.props.navigation.push('Splash');
+                }}
                 style={[styles.rowView, {borderBottomWidth: 0}]}>
                 <Text
                   style={[

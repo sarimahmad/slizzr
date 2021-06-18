@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
@@ -13,6 +14,7 @@ import {
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {connect} from 'react-redux';
 
 import TextField from '../../component/TextField/index';
@@ -21,6 +23,9 @@ import {FONT} from '../../helper/Constant';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import Validations from '../../helper/Validations';
 import * as userActions from '../../redux/actions/user';
+import Loader from '../../component/Loader';
+import {Alert} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class SignIn extends Component {
   constructor(props) {
@@ -36,6 +41,12 @@ class SignIn extends Component {
   }
 
   componentDidMount() {
+    GoogleSignin.configure({
+      iosClientId:
+        '473629197290-h6orl8ujajl2r6a2075bhu1bs8dt5900.apps.googleusercontent.com',
+      webClientId:
+        '473629197290-3374lal9f0nk1cjcec4u41nns049jcfo.apps.googleusercontent.com',
+    });
   }
 
   storeInputData = (text, type) => {
@@ -67,75 +78,156 @@ class SignIn extends Component {
     return false;
   }
 
+  isFormFilledCheck() {
+    let checkPassword = Validations.checkPassword(this.state.password);
+    let checkEmail = Validations.checkEmail(this.state.email);
+
+    if (checkEmail && checkPassword) {
+      return true;
+    }
+    if (!checkEmail) {
+    } else if (!checkPassword) {
+    }
+    return false;
+  }
+
   handleSubmit = () => {
     if (this.isFormFilled()) {
+      this.setState({loading: true});
       auth()
         .signInWithEmailAndPassword(this.state.email, this.state.password)
         .then(response => {
           const uid = response.user.uid;
-          console.log(response);
           const usersRef = firestore().collection('users');
           usersRef
             .doc(uid)
             .get()
-            .then(async firestoreDocument => {
-              // if (firestoreDocument.exists) {
-              //   alert('User does not exist.');
-              //   return;
-              // }
-              // console.log(firestoreDocument);
-              // const user = firestoreDocument._data;
-              // console.log(user);
-              this.props.callApi(this.state, uid);
-              this.props.navigation.navigate('HomeStack');
+            .then(firestoreDocument => {
+              this.props.callApi(firestoreDocument.data(), uid);
+              this.setState({loading: false});
+              this.checkTheUserCheck(
+                firestoreDocument.data(),
+                response.user.emailVerified
+              );
             })
             .catch(error => {
-              alert(error);
+              this.setState({loading: false});
+              Alert.alert('Internet Issue', 'Please check your internet');
             });
         })
         .catch(error => {
-          alert(error);
+          this.setState({loading: false});
+          if (error.code === 'auth/wrong-password') {
+            Alert.alert('Password wrong', 'Please check your password');
+          } else {
+            Alert.alert('User Not Exist');
+          }
         });
     }
+    this.setState({loading: true});
   };
 
   firestoreLinking = data => {
+    this.setState({loading: true});
     const usersRef = firestore().collection('users');
     usersRef
       .doc(data.id)
-      .set(data)
-      .then(this.props.navigation.navigate('HomeStack'))
+      .get()
+      .then(firestoreDocument => {
+        if (!firestoreDocument.exists) {
+          usersRef
+            .doc(data.id)
+            .set(data)
+            .then(firestoreDocuments => {
+              this.props.callApi(firestoreDocuments.data(), data.id);
+              this.setState({loading: false});
+              this.checkTheUserCheck(firestoreDocuments.data());
+            })
+            .catch(error => {
+              this.setState({loading: false});
+              alert(error);
+            });
+          return;
+        } else {
+          this.props.callApi(firestoreDocument.data(), data.id);
+          this.setState({loading: false});
+          this.props.navigation.navigate('HomeStack');
+        }
+      })
       .catch(error => {
-        this.setState({loading: false});
         alert(error);
       });
   };
 
+  checkTheUserCheck(userParsed, verifiedEmail) {
+    if (userParsed.email_verified === true) {
+      if (userParsed.age && parseInt(userParsed.age) > 16) {
+        this.props.navigation.navigate('HomeStack');
+      } else {
+        this.props.navigation.navigate('BirthDate', {from: 'SignIn'});
+      }
+    } else if (verifiedEmail === true) {
+      const usersRef = firestore().collection('users');
+      usersRef
+        .doc(userParsed.id)
+        .update({email_verified: true})
+        .then(firestoreDocument => {
+          this.props.callApi(firestoreDocument.data(), userParsed.id);
+          this.setState({loading: false});
+          this.props.navigation.navigate('BirthDate', {
+            from: 'signUp',
+          });
+        })
+        .catch(error => {
+          this.setState({loading: false});
+          Alert.alert('User error', error);
+        });
+      if (userParsed.age && parseInt(userParsed.age) > 16) {
+        this.props.navigation.navigate('HomeStack');
+      } else {
+        this.props.navigation.navigate('BirthDate', {from: 'SignIn'});
+      }
+    } else {
+      Alert.alert(
+        'Email not Verified',
+        'Please verify your email ' + userParsed.email + ' and sign in again',
+        [
+          {
+            text: 'Ok',
+            onPress: () => {
+              AsyncStorage.clear();
+            },
+          },
+        ],
+      );
+    }
+  }
+
   googleSignInBtn = async () => {
-    // this.setState({loading: true});
-    // const {idToken} = await GoogleSignin.signIn();
-    // const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
-    // auth()
-    //   .signInWithCredential(googleCredential)
-    //   .then(response => {
-    //     const data = {
-    //       Email: response.user._user.email,
-    //       FirstName: response.user._user.displayName,
-    //       LastName: response.user._user.displayName,
-    //       Profile: response.user._user.photoURL,
-    //       id: response.user._user.uid,
-    //       Id: response.user._user.uid,
-    //       type: 'google',
-    //       displayName: response.user._user.displayName,
-    //       email_verified: true,
-    //       socialLogin: true,
-    //     };
-    //     this.firestoreLinking(data);
-    //   })
-    //   .catch(error => {
-    //     this.setState({loading: false});
-    //     alert(error);
-    //   });
+    this.setState({loading: true});
+    const {idToken} = await GoogleSignin.signIn();
+    const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
+    auth()
+      .signInWithCredential(googleCredential)
+      .then(response => {
+        const data = {
+          Email: response.user._user.email,
+          FirstName: response.user._user.displayName,
+          LastName: response.user._user.displayName,
+          Profile: response.user._user.photoURL,
+          id: response.user._user.uid,
+          Id: response.user._user.uid,
+          type: 'google',
+          displayName: response.user._user.displayName,
+          email_verified: true,
+          socialLogin: true,
+        };
+        this.firestoreLinking(data);
+      })
+      .catch(error => {
+        this.setState({loading: false});
+        alert(error);
+      });
   };
 
   facebookSignIn = async () => {
@@ -187,7 +279,6 @@ class SignIn extends Component {
               <TextField
                 placeholder="Email adress"
                 type={'email'}
-                
                 parentCallBack={this.storeInputData}
               />
               <TextField
@@ -202,8 +293,13 @@ class SignIn extends Component {
                 </Text>
               </TouchableOpacity>
               <ButtonResetPassaword
+                validate={this.isFormFilledCheck()}
                 btnLabel={'LOG IN'}
-                data={this.handleSubmit}
+                data={
+                  this.isFormFilledCheck()
+                    ? this.handleSubmit
+                    : console.log('ok')
+                }
               />
               <Text style={styles.subtitleTextBold}>
                 Other login up options
@@ -262,6 +358,7 @@ class SignIn extends Component {
             </View>
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
@@ -277,7 +374,7 @@ const styles = StyleSheet.create({
   },
   subtitleText: {
     fontFamily: FONT.Nunito.semiBold,
-    fontSize:15
+    fontSize: 15,
   },
   btnContainer: {
     width: '100%',
@@ -299,7 +396,7 @@ const styles = StyleSheet.create({
   subtitleTextBold: {
     marginVertical: 10,
     fontFamily: FONT.Nunito.extraBold,
-    fontSize:14
+    fontSize: 14,
   },
 
   logo: {
@@ -323,7 +420,7 @@ const styles = StyleSheet.create({
     color: '#F818D9',
     fontFamily: FONT.Nunito.regular,
     fontSize: 14,
-    textDecorationLine:'underline'
+    textDecorationLine: 'underline',
   },
   titleText: {
     marginTop: 13,
@@ -370,20 +467,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 19,
   },
-  //     absoluteLeftIcon: {
-  //       position: 'absolute',
-  //       left: 10,
-  //     },
-  //     flex: {
-  //       flexDirection: 'row'
-  //     },
-  //     alreadyHaveAccount: {
-  //       fontSize: 14,
-  //       fontFamily: FONT.Nunito.regular,
-  //       color: BLACK.textInputTitle,
-  //       alignSelf: 'center',
-  //       marginTop: 19,
-  //     }
 });
 
 const mapStateToProps = (state, ownProps) => {
