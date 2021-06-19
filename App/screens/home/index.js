@@ -20,6 +20,7 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import WaitingFor from '../../component/WaitingFor';
+import moment from 'moment';
 export default class home extends Component {
   constructor(props) {
     super(props);
@@ -156,7 +157,7 @@ export default class home extends Component {
                     borderBottomWidth: 1,
                     width: SCREEN.width,
                   }}>
-                  <View style={[styles.flexRow, {width: SCREEN.width - 20}]}>
+                  <View style={[styles.flexRow, {width: SCREEN.width - 20, alignItems:'center'}]}>
                     <View style={styles.imgView}>
                       <Image
                         source={{uri: item.imageUrl}}
@@ -171,8 +172,8 @@ export default class home extends Component {
 
                     <View style={styles.detail}>
                       <Text style={styles.titleText}>{item.Name}</Text>
-                      <Text style={styles.adressText}>{item.Host.displayName}</Text>
-                      {/* <Text style={styles.purpleText}>{item.datetime}</Text> */}
+                      <Text style={styles.adressText}>Host: {item.Host.displayName}</Text>
+                      <Text style={styles.purpleText}>{moment(item.datetime).format('hh:mm A | MMM DD, YYYY - ddd')}</Text>
                       <View style={styles.flexRow}>
                         <Image
                           style={{height: 16, width: 12, marginRight: 5}}
@@ -659,7 +660,7 @@ const styles = StyleSheet.create({
   imgView: {
     marginHorizontal: 20,
     alignItems: 'center',
-
+    marginTop:10,
     alignSelf: 'center',
   },
   shareView: {
