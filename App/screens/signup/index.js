@@ -254,7 +254,7 @@ class SignUp extends Component {
                   style={styles.logo}
                   source={require('../../assets/logo.png')}
                 />
-                <Text style={styles.titleText}>ing Up</Text>
+                <Text style={styles.titleText}>ign Up</Text>
               </View>
 
               <View
@@ -281,7 +281,7 @@ class SignUp extends Component {
                 </View>
               </View>
               <TextField
-                placeholder="Email adress"
+                placeholder="Email address"
                 type={'email'}
                 parentCallBack={this.storeInputData}
               />
@@ -291,7 +291,7 @@ class SignUp extends Component {
                 parentCallBack={this.storeInputData}
               />
               <TextField
-                placeholder="ConfirmPassword"
+                placeholder="Confirm Password"
                 type={'confirmPassword'}
                 parentCallBack={this.storeInputData}
               />

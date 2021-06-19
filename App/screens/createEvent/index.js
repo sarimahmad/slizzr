@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -12,12 +12,12 @@ import {
   StyleSheet,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import {FONT, SCREEN} from '../../helper/Constant';
+import { FONT, SCREEN } from '../../helper/Constant';
 import RNPickerSelect from 'react-native-picker-select';
 import Header from '../../component/Header';
 import GoogleSearchBar from '../../component/GoogleSearchBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {BLACK, WHITE} from '../../helper/Color';
+import { BLACK, WHITE } from '../../helper/Color';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import * as Progress from 'react-native-progress';
@@ -63,19 +63,19 @@ export default class CreateEvent extends Component {
       height: 400,
       cropping: true,
     }).then(image => {
-      this.setState({imageUri: image.path});
+      this.setState({ imageUri: image.path });
     });
   };
   uploadImage = async () => {
     const uri = this.state.imageUri;
     console.log(uri);
     const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    this.setState({imageUri: filename});
+    this.setState({ imageUri: filename });
     const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 
     const task = storage().ref(filename).putFile(uploadUri);
     task.on('state_changed', snapshot => {
-      this.setState({imageUploaded: true});
+      this.setState({ imageUploaded: true });
     });
   };
 
@@ -92,9 +92,9 @@ export default class CreateEvent extends Component {
     let checkFee = Validations.checkUsername(this.state.Fee);
     let checkPublicPrivate = Validations.checkUsername(this.state.PublicPrivate);
     let checkduration = Validations.checkUsername(this.state.duration);
-    
-    if (checkAddress && checkAttendeeLimit && checkDateTime && checkDescription && checkduration && 
-       checkPublicPrivate&& checkFee&& checkEventType) {
+
+    if (checkAddress && checkAttendeeLimit && checkDateTime && checkDescription && checkduration &&
+      checkPublicPrivate && checkFee && checkEventType) {
       return true;
     }
     if (!checkAddress) {
@@ -105,15 +105,15 @@ export default class CreateEvent extends Component {
       alert('lastname required');
     } else if (!checkDescription) {
       alert('invalid password');
-    }else if (!checkEventType) {
+    } else if (!checkEventType) {
       alert('invalid password');
-    }else if (!checkPublicPrivate) {
+    } else if (!checkPublicPrivate) {
       alert('invalid password');
-    }else if (!checkFee) {
+    } else if (!checkFee) {
       alert('invalid password');
-    }else if (!checkPublicPrivate) {
+    } else if (!checkPublicPrivate) {
       alert('invalid password');
-    }else if (!checkduration) {
+    } else if (!checkduration) {
       alert('invalid password');
     }
     return false;
@@ -122,8 +122,8 @@ export default class CreateEvent extends Component {
     const TOKEN = await AsyncStorage.getItem('token');
     const userDetail = await AsyncStorage.getItem('userdetail');
     console.log(JSON.parse(userDetail).user.firstName);
-    this.setState({userName: JSON.parse(userDetail).user.firstName});
-    this.setState({userId: JSON.parse(TOKEN)});
+    this.setState({ userName: JSON.parse(userDetail).user.firstName });
+    this.setState({ userId: JSON.parse(TOKEN) });
     console.log(this.state.userName, this.state.userId);
   }
   handleSubmit = async () => {
@@ -135,7 +135,13 @@ export default class CreateEvent extends Component {
         'Your photo has been uploaded to Firebase Cloud Storage!',
       );
 
-      console.log(this.state);
+      // Get Host Object From User's
+      firestore().collection('users').doc(this.state.userId).get()
+        .then((docRef) => {
+          this.setState({ Host: docRef.data() })
+          console.warn(docRef.data())
+        }).catch((error) => alert(error));
+
       const data = {
         Address: this.state.Address,
         AttendeeLimit: this.state.AttendeeLimit,
@@ -209,7 +215,7 @@ export default class CreateEvent extends Component {
                   ]}
                   source={
                     this.state.imageUri !== ''
-                      ? {uri: this.state.imageUri}
+                      ? { uri: this.state.imageUri }
                       : require('../../assets/Slizzer-icon/plus.png')
                   }
                 />
@@ -229,8 +235,9 @@ export default class CreateEvent extends Component {
                 <TextInput
                   style={styles.firstInput}
                   value={this.state.Name}
-                  onChangeText={value => this.setState({Name: value})}
+                  onChangeText={value => this.setState({ Name: value })}
                   placeholder="Enter a name for you Event"
+                  placeholderTextColor={'#B2ABB1'}
                 />
                 <View style={styles.AbsoluteRightIcon}>
                   <Image
@@ -242,9 +249,10 @@ export default class CreateEvent extends Component {
               <View style={styles.TextInputWrapper}>
                 <TextInput
                   style={styles.firstInput}
-                  onChangeText={value => this.setState({Description: value})}
+                  onChangeText={value => this.setState({ Description: value })}
                   value={this.state.Description}
                   placeholder="Breif Description of your Event"
+                  placeholderTextColor={'#B2ABB1'}
                 />
                 <View style={styles.AbsoluteRightIcon}>
                   <Image
@@ -259,47 +267,54 @@ export default class CreateEvent extends Component {
                   format="MMM DD, YYYY - ddd "
                   mode="date"
                   value={this.state.date}
-                  setDateAndTime={value => this.setState({DateTime: value})}
+                  setDateAndTime={value => this.setState({ DateTime: value })}
                   showPlaceholder="+ Add"
                   datebutton={styles.datebutton}
                 />
               </View>
               <View style={styles.RowView}>
-                <View style={{flex: 1}}>
-                  <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.TextInputTitle, { marginLeft: 0 }]}>
                     Event Types:
                   </Text>
-                 <View style={{ width: '90%',
-                        height: 53,
-                        borderWidth: 1,
-                        borderColor: 'lightgrey',
-                        borderRadius: 8,
-                       }}>
-                  <RNPickerSelect
-                    style={{
-                      inputIOS: {
-                        paddingLeft: 7,
-                      },
-                      inputAndroid: {
-                        paddingLeft: 7,
-                      },
-                    }}
-                    selectedValue={this.state.EventType}
-                    onValueChange={(itemValue, itemIndex) =>
-                      this.setState({EventType: itemValue})
-                    }
-                    items={[
-                      {label: 'ALL', value: 'ALL'},
-                      {label: 'PREPAID', value: 'PREPAID'},
-                      {label: 'SCAN-&-PAY AT DOOR', value: 'SCAN'},
-                      {label: 'FREE', value: 'FREE'},
-                    ]}
-                  />
+                  <View style={{
+                    width: '90%',
+                    borderWidth: 1,
+                    borderColor: 'lightgrey',
+                    borderRadius: 8,
+                  }}>
+                    <RNPickerSelect
+
+                      style={{
+                        inputIOS: {
+                          paddingLeft: 7,
+                          color: 'black',
+                          textAlignVertical: 'center',
+                          height: 51,
+                        },
+                        inputAndroid: {
+                          paddingLeft: 7,
+                          color: 'black',
+                          height: 51,
+                          textAlignVertical: 'center',
+                        },
+                      }}
+                      selectedValue={this.state.EventType}
+                      onValueChange={(itemValue, itemIndex) =>
+                        this.setState({ EventType: itemValue })
+                      }
+                      items={[
+                        // {label: 'ALL', value: 'ALL'},
+                        { label: 'PREPAID', value: 'PREPAID' },
+                        { label: 'SCAN-&-PAY AT DOOR', value: 'SCAN' },
+                        { label: 'FREE', value: 'FREE' },
+                      ]}
+                    />
                   </View>
                 </View>
-                <View style={{flex: 1}}>
-                  <View style={{flexDirection: 'row', marginVertical: 11}}>
-                    <Text style={[{marginLeft: 0, marginTop: 1}]}>Fee</Text>
+                <View style={{ flex: 1 }}>
+                  <View style={{ flexDirection: 'row', marginVertical: 11 }}>
+                    <Text style={[{ marginLeft: 0, marginTop: -2 }]}>Fee</Text>
                     <Image
                       source={require('../../assets/Slizzer-icon/Shape.png')}
                       style={styles.feeicon}
@@ -308,28 +323,31 @@ export default class CreateEvent extends Component {
                   <TextInput
                     style={[styles.secondinput]}
                     placeholder="$"
-                    onChangeText={value => this.setState({Fee: value})}
-                    value={this.state.Fee}
+                    onChangeText={value => this.setState({ Fee: value.slice(2) })}
+                    value={`$ ${this.state.Fee}`}
+                    placeholderTextColor={'#B2ABB1'}
+                    keyboardType={'numeric'}
                   />
+
                 </View>
               </View>
 
               <View style={styles.RowView}>
-                <View style={{flex: 1}}>
-                  <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.TextInputTitle, { marginLeft: 0 }]}>
                     Location
                   </Text>
                   <TouchableOpacity
                     style={[
                       styles.TextInputWrapper2,
-                      {width: SCREEN.width * 0.3},
+                      { width: SCREEN.width * 0.3 },
                     ]}
-                    onPress={() => this.setState({selectLocationFlag: true})}>
+                    onPress={() => this.setState({ selectLocationFlag: true })}>
                     {this.state.Address === '' ? (
                       <Text
                         style={[
                           styles.thirdinput,
-                          {paddingTop: 15, color: 'grey'},
+                          { paddingTop: 15, color: 'grey' },
                         ]}>
                         + Add
                       </Text>
@@ -337,7 +355,7 @@ export default class CreateEvent extends Component {
                       <Text
                         style={[
                           styles.thirdinput,
-                          {paddingTop: 10, color: 'grey'},
+                          { paddingTop: 10, color: 'grey' },
                         ]}>
                         {this.state.Address}
                       </Text>
@@ -345,23 +363,25 @@ export default class CreateEvent extends Component {
                   </TouchableOpacity>
                 </View>
 
-                <View style={{flex: 1}}>
-                  <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
+                <View style={{ flex: 1 }}>
+                  <Text style={[styles.TextInputTitle, { marginLeft: 13 }]}>
                     {' '}
                     Attendee Limit
                   </Text>
                   <View
                     style={[
                       styles.TextInputWrapper2,
-                      {width: SCREEN.width * 0.25},
+                      { width: SCREEN.width * 0.25 },
                     ]}>
                     <TextInput
                       placeholder="50"
                       style={[styles.thirdinput]}
                       onChangeText={value =>
-                        this.setState({AttendeeLimit: value})
+                        this.setState({ AttendeeLimit: value })
                       }
                       value={this.state.AttendeeLimit}
+                      placeholderTextColor={'#B2ABB1'}
+                      keyboardType={'numeric'}
                     />
                     <View style={styles.AbsoluteRightIcon}>
                       <Image
@@ -370,20 +390,22 @@ export default class CreateEvent extends Component {
                     </View>
                   </View>
                 </View>
-                <View style={{flex: 1, alignItems: 'flex-end'}}>
-                  <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
+                <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                  <Text style={[styles.TextInputTitle, { marginRight: 11 }]}>
                     Duration (HRS)
                   </Text>
                   <View
                     style={[
                       styles.TextInputWrapper2,
-                      {width: SCREEN.width * 0.25},
+                      { width: SCREEN.width * 0.25 },
                     ]}>
                     <TextInput
                       placeholder="50"
                       style={styles.thirdinput}
-                      onChangeText={value => this.setState({duration: value})}
+                      onChangeText={value => this.setState({ duration: value })}
                       value={this.state.duration}
+                      placeholderTextColor={'#B2ABB1'}
+                      keyboardType={'numeric'}
                     />
                     <View style={styles.AbsoluteRightIcon}>
                       <Image
@@ -398,39 +420,42 @@ export default class CreateEvent extends Component {
               <View
                 style={{
                   borderRadius: 8,
-                  height: 53,
                   width: SCREEN.width - 40,
                   alignSelf: 'center',
                   borderWidth: 2,
                   borderColor: 'lightgrey',
                 }}>
                 <RNPickerSelect
-                 placeholder={{
-                  label: '+Add',
-                  value: this.state.PublicPrivate,
-              }}
+                  placeholder={{
+                    label: '+Add',
+                    value: this.state.PublicPrivate,
+                  }}
                   style={{
                     inputIOS: {
                       paddingLeft: 7,
-                      marginLeft: 15,
+                      color: 'black',
+                      textAlignVertical: 'center',
+                      height: 51,
                     },
                     inputAndroid: {
                       paddingLeft: 7,
-                      marginLeft: 15,
+                      color: 'black',
+                      height: 51,
+                      textAlignVertical: 'center',
                     },
                   }}
                   selectedValue={this.state.PublicPrivate}
                   onValueChange={(itemValue) =>
-                    this.setState({PublicPrivate: itemValue})
+                    this.setState({ PublicPrivate: itemValue })
                   }
                   items={[
-                    {label: 'Private', value: 'Private'},
-                    {label: 'Public', value: 'Public'},
+                    { label: 'Private', value: 'Private' },
+                    { label: 'Public', value: 'Public' },
                   ]}
                 />
               </View>
 
-              <View style={{marginBottom: 20}}>
+              <View style={{ marginBottom: 20 }}>
                 <TouchableOpacity
                   onPress={() => this.handleSubmit()}
                   style={styles.button}>
@@ -447,7 +472,7 @@ export default class CreateEvent extends Component {
                   container: {},
                 }}>
                 <SafeAreaView>
-                  <View style={[styles.flex, {padding: 10}]}>
+                  <View style={[styles.flex, { padding: 10 }]}>
                     <TouchableOpacity onPress={() => this.RBSheet.close()}>
                       <Image
                         source={require('../../assets/back.png')}
@@ -464,12 +489,12 @@ export default class CreateEvent extends Component {
                       style={styles.logo}
                     />
                   </View>
-                  <View style={{marginTop: 100}}>
+                  <View style={{ marginTop: 100 }}>
                     <Image
-                      style={{alignSelf: 'center'}}
+                      style={{ alignSelf: 'center' }}
                       source={require('../../assets/Oval.png')}
                     />
-                    <Text style={[styles.titleText, {marginTop: 100}]}>
+                    <Text style={[styles.titleText, { marginTop: 100 }]}>
                       {' '}
                       Event Created!
                     </Text>
@@ -486,7 +511,7 @@ export default class CreateEvent extends Component {
                       </TouchableOpacity>
                     )}
                     <TouchableOpacity
-                      onPress={() => this.setState({skip: true})}>
+                      onPress={() => this.setState({ skip: true })}>
                       <Text
                         style={{
                           marginVertical: 20,
@@ -503,7 +528,7 @@ export default class CreateEvent extends Component {
               <Modal
                 visible={this.state.selectLocationFlag}
                 onRequestClose={() =>
-                  this.setState({selectLocationFlag: false})
+                  this.setState({ selectLocationFlag: false })
                 }
                 animationType={'slide'}>
                 <View
@@ -515,7 +540,7 @@ export default class CreateEvent extends Component {
                   }}>
                   <GoogleSearchBar
                     closeLocationModal={() => {
-                      this.setState({selectLocationFlag: false});
+                      this.setState({ selectLocationFlag: false });
                     }}
                     getAddress={this.getAdress}
                     setLocation={this.setLocation}
@@ -610,7 +635,7 @@ const styles = StyleSheet.create({
   },
   TextInputTitle: {
     fontSize: 12,
-    marginTop: 20,
+    marginTop: 15,
     marginBottom: 10,
     marginLeft: 20,
   },

@@ -22,8 +22,10 @@ const TextField = props => {
         <TextInput
           style={styles.input}
           placeholder={props.placeholder}
-          placeholderTextColor={'lightgrey'}
-          onChangeText={handleText}></TextInput>
+          placeholderTextColor={'#B2ABB1'}
+          onChangeText={handleText}
+          autoCapitalize='none'
+          autoCorrect={false}></TextInput>
       </View>
     </View>
   );

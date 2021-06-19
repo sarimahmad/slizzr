@@ -6,30 +6,33 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 import firestore from '@react-native-firebase/firestore';
-
+import moment from 'moment';
+import Validations from '../../helper/Validations';
 export default class BirthDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: new Date(),
+      date:new Date(),
       showDate: false,
+      ageCheck: false,
     };
   }
 
   onChange = (event, selectedDate) => {
     const currentDate = selectedDate || this.state.date;
-
     this.setState({date: currentDate});
+    if(Validations.checkAge(currentDate)) this.setState({ageCheck: true});
   };
 
   showDatepicker = () => {
-    console.log('show');
     this.setState({showDate: true});
   };
   handleSubmit = () => {
-    
+    if(Validations.checkAge(this.state.date)){
+      // Navigate From here to confirmation email page...
+    }
   };
 
   firestoreLinking = data => {
@@ -49,13 +52,13 @@ export default class BirthDate extends Component {
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
           {this.state.showDate && (
-            <DateTimePicker
+            <RNDateTimePicker
               testID="dateTimePicker"
               value={this.state.date}
-              mode={'date'}
               is24Hour={true}
               display="default"
               onChange={this.onChange}
+              themeVariant="light"
             />
           )}
           <Text style={styles.titleText}>How old are you?</Text>
@@ -72,7 +75,7 @@ export default class BirthDate extends Component {
                   fontFamily: FONT.Nunito.regular,
                   color: '#B2ABB1',
                 }}>
-                Birth Date
+                {this.state.showDate ? moment(this.state.date).format('ll') : 'Birth Date'}
               </Text>
               <Image
                 style={styles.logoAddCalender}
@@ -84,7 +87,8 @@ export default class BirthDate extends Component {
           <ButtonResetPassaword
             btnLabel={'Continue'}
             data={this.handleSubmit}
-          />
+            validate={this.state.ageCheck}
+          />       
         </SafeAreaView>
       </View>
     );
@@ -102,11 +106,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 12,
     borderColor: 'lightgrey',
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 6,
-    shadowOpacity: 0.1,
-    elevation: 2,
+    
   },
   logoAddCalender: {
     position: 'absolute',

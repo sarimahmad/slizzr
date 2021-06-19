@@ -273,11 +273,11 @@ class SignIn extends Component {
                   style={styles.logo}
                   source={require('../../assets/logo.png')}
                 />
-                <Text style={styles.titleText}>WELCOME BACK!</Text>
+                <Text style={styles.titleText}>Welcome Back!</Text>
               </View>
 
               <TextField
-                placeholder="Email adress"
+                placeholder="Email address"
                 type={'email'}
                 parentCallBack={this.storeInputData}
               />
