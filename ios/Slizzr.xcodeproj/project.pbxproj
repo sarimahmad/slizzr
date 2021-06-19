@@ -12,11 +12,11 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1D1B56F6267E69200024DC95 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1D1B56F5267E69200024DC95 /* GoogleService-Info.plist */; };
 		219CCEE4C09A466CB64E7421 /* Nunito-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4C73E83AEFE447FA8E3F794 /* Nunito-Regular.ttf */; };
 		312D256B2D6646F2808F5B51 /* Nunito-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5491BF9C0E0E4027B1EBE7E3 /* Nunito-Light.ttf */; };
 		4A2D9AE56CDE400784989D12 /* Nunito-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 79CA84FD8EC8413293F11BAC /* Nunito-SemiBoldItalic.ttf */; };
 		539E4D99866E49168EF526B4 /* Nunito-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 630769AA786A4F168ECA3623 /* Nunito-BoldItalic.ttf */; };
-		5E77338A267A193C00E2D402 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5E773389267A193B00E2D402 /* GoogleService-Info.plist */; };
 		5E787D4C267B73AC00FA7505 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E787D4B267B73AC00FA7505 /* File.swift */; };
 		6AA410750EB3A2C2B22016C2 /* libPods-Slizzr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E963C12559068DBB8038CEC0 /* libPods-Slizzr.a */; };
 		77F2BCDFD69691A528EAC03C /* libPods-Slizzr-SlizzrTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D30AF793E27196D4F56BAA5 /* libPods-Slizzr-SlizzrTests.a */; };
@@ -52,6 +52,7 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Slizzr/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Slizzr/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Slizzr/main.m; sourceTree = "<group>"; };
+		1D1B56F5267E69200024DC95 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		250F169EF5B94B21BA02604E /* Nunito-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-Bold.ttf"; path = "../App/assets/fonts/Nunito-Bold.ttf"; sourceTree = "<group>"; };
 		324EFA571E7D4CE8B4F62E87 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		340DAEA16D3E4C149F44431A /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Brands.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
@@ -66,7 +67,6 @@
 		5881810ECA553E6002BB36B1 /* Pods-Slizzr.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Slizzr.release.xcconfig"; path = "Target Support Files/Pods-Slizzr/Pods-Slizzr.release.xcconfig"; sourceTree = "<group>"; };
 		5CEA732734D34ADEBBA44D20 /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		5E773330267A179B00E2D402 /* Slizzr-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Slizzr-Bridging-Header.h"; sourceTree = "<group>"; };
-		5E773389267A193B00E2D402 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Design/Slizzr/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5E787D4B267B73AC00FA7505 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		5F98AAD224F643A5BD6F0135 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		630769AA786A4F168ECA3623 /* Nunito-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Nunito-BoldItalic.ttf"; path = "../App/assets/fonts/Nunito-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -135,7 +135,7 @@
 		13B07FAE1A68108700A75B9A /* Slizzr */ = {
 			isa = PBXGroup;
 			children = (
-				5E773389267A193B00E2D402 /* GoogleService-Info.plist */,
+				1D1B56F5267E69200024DC95 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -343,7 +343,7 @@
 				03463E4987C34E0183FC20E1 /* Nunito-ExtraLightItalic.ttf in Resources */,
 				90FD4BC930A349949E49A90B /* Nunito-Italic.ttf in Resources */,
 				312D256B2D6646F2808F5B51 /* Nunito-Light.ttf in Resources */,
-				5E77338A267A193C00E2D402 /* GoogleService-Info.plist in Resources */,
+				1D1B56F6267E69200024DC95 /* GoogleService-Info.plist in Resources */,
 				A414BE3D6E104D3AB386F958 /* Nunito-LightItalic.ttf in Resources */,
 				219CCEE4C09A466CB64E7421 /* Nunito-Regular.ttf in Resources */,
 				A8FD454F2A8046B4B29DA6AF /* Nunito-SemiBold.ttf in Resources */,
@@ -574,6 +574,7 @@
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 8WAFT5WQ92;
 				ENABLE_BITCODE = NO;
+				EXCLUDED_ARCHS = arm64;
 				INFOPLIST_FILE = Slizzr/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -604,6 +605,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 8WAFT5WQ92;
+				EXCLUDED_ARCHS = arm64;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = Slizzr/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -656,7 +659,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;

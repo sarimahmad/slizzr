@@ -1,4 +1,4 @@
-package com.slizzr;
+package com.slizzrapp.slizzr;
 
 import android.app.Application;
 import android.content.Context;
