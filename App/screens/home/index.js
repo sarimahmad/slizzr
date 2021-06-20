@@ -212,6 +212,7 @@ export default class home extends Component {
           longitudeDelta: 1,
         }}>
         {this.state.currentData.map((marker, index) => (
+         
           <MapView.Marker
             coordinate={{
               latitude: marker.location.latitude,

@@ -136,7 +136,7 @@ export default class CreateEvent extends Component {
       );
 
       // Get Host Object From User's
-      firestore().collection('users').doc(this.state.userId).get()
+      await firestore().collection('users').doc(this.state.userId).get()
         .then((docRef) => {
           this.setState({ Host: docRef.data() })
           console.warn(docRef.data())
