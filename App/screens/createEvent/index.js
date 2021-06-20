@@ -23,6 +23,9 @@ import storage from '@react-native-firebase/storage';
 import * as Progress from 'react-native-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
+import uuid from 'react-native-uuid';
+import moment from 'moment';
+
 export default class CreateEvent extends Component {
   constructor() {
     super();
@@ -142,6 +145,7 @@ export default class CreateEvent extends Component {
           console.warn(docRef.data())
         }).catch((error) => alert(error));
 
+      const uniqueId = uuid.v4()
       const data = {
         Address: this.state.Address,
         AttendeeLimit: this.state.AttendeeLimit,
@@ -156,12 +160,18 @@ export default class CreateEvent extends Component {
         disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
         duration: this.state.duration,
         userId: this.state.userId,
-        userName: this.state.userName,
+        userName: this.state.Host.displayName,
         image: this.state.imageUri,
+        id: uniqueId,
+        Attendees: [],
+        job: "scheduled",
+        Start_date: this.state.DateTime,
+        End_date: moment(this.state.DateTime).add(this.state.duration, 'hours').format('X') // TimeStamp
       };
+      console.warn(data)
       const usersRef = firestore().collection('events');
-      usersRef
-        .add(data)
+      usersRef.doc(uniqueId)
+        .set(data)
         .then(async firestoreDocument => {
           this.RBSheet.open();
         })

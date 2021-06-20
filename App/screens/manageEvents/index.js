@@ -226,7 +226,7 @@ export default class manageEvents extends Component {
               keyExtractor={item => item.id}
               ListEmptyComponent={this.emptyListComponent}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => this.props.navigation.navigate("attendingEventInfo")}
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("myEventInfo")}
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
@@ -264,7 +264,7 @@ export default class manageEvents extends Component {
               keyExtractor={item => item.id}
               ListEmptyComponent={this.emptyListComponent}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => this.props.navigation.navigate("myEventInfo")}
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("attendingEventInfo")}
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
