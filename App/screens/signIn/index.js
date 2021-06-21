@@ -10,12 +10,14 @@ import {
   SafeAreaView,
   ScrollView,
   Image,
+  Alert,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {connect} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import TextField from '../../component/TextField/index';
 import {BLACK, WHITE} from '../../helper/Color';
@@ -24,8 +26,6 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import Validations from '../../helper/Validations';
 import * as userActions from '../../redux/actions/user';
 import Loader from '../../component/Loader';
-import {Alert} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class SignIn extends Component {
   constructor(props) {
@@ -107,7 +107,7 @@ class SignIn extends Component {
               this.setState({loading: false});
               this.checkTheUserCheck(
                 firestoreDocument.data(),
-                response.user.emailVerified
+                response.user.emailVerified,
               );
             })
             .catch(error => {
@@ -171,12 +171,17 @@ class SignIn extends Component {
       usersRef
         .doc(userParsed.id)
         .update({email_verified: true})
-        .then(firestoreDocument => {
-          this.props.callApi(firestoreDocument.data(), userParsed.id);
-          this.setState({loading: false});
-          this.props.navigation.navigate('BirthDate', {
-            from: 'signUp',
-          });
+        .then(() => {
+          usersRef
+            .doc(userParsed.id)
+            .get()
+            .then(firestoreDocument => {
+              this.props.callApi(firestoreDocument.data(), userParsed.id);
+              this.setState({loading: false});
+              this.props.navigation.navigate('BirthDate', {
+                from: 'signIn',
+              });
+            });
         })
         .catch(error => {
           this.setState({loading: false});

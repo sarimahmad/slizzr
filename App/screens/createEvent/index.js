@@ -1,3 +1,5 @@
+/* eslint-disable react/no-did-mount-set-state */
+/* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
@@ -10,19 +12,24 @@ import {
   ScrollView,
   TextInput,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {FONT, SCREEN} from '../../helper/Constant';
 import RNPickerSelect from 'react-native-picker-select';
+import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import Header from '../../component/Header';
 import GoogleSearchBar from '../../component/GoogleSearchBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {BLACK, WHITE} from '../../helper/Color';
-import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
-import * as Progress from 'react-native-progress';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
+import Validations from '../../helper/Validations';
+import {Alert} from 'react-native';
+import Loader from '../../component/Loader';
+
 export default class CreateEvent extends Component {
   constructor() {
     super();
@@ -42,7 +49,7 @@ export default class CreateEvent extends Component {
       Address: '',
       AttendeeLimit: '',
       date: new Date(),
-      DateTime: '',
+      DateTime: new Date(),
       Description: '',
       EventType: '',
       Fee: '',
@@ -50,11 +57,13 @@ export default class CreateEvent extends Component {
       Latitude: 0,
       Longitude: 0,
       Name: '',
-      PublicPrivate: '',
-      disbaleDateTimeFormate: '',
+      PublicPrivate: 'public',
+      disbaleDateTimeFormate: new Date(),
       duration: '',
       userId: '',
       userName: '',
+      imageName: '',
+      loading: false,
     };
   }
   selectImage = async () => {
@@ -68,9 +77,10 @@ export default class CreateEvent extends Component {
   };
   uploadImage = async () => {
     const uri = this.state.imageUri;
-    console.log(uri);
+
     const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    this.setState({imageUri: filename});
+    this.setState({imageName: filename});
+
     const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 
     const task = storage().ref(filename).putFile(uploadUri);
@@ -85,16 +95,28 @@ export default class CreateEvent extends Component {
   };
   isFormFilled() {
     let checkAddress = Validations.checkUsername(this.state.Address);
-    let checkAttendeeLimit = Validations.checkUsername(this.state.AttendeeLimit);
+    let checkAttendeeLimit = Validations.checkUsername(
+      this.state.AttendeeLimit,
+    );
     let checkDateTime = Validations.checkUsername(this.state.DateTime);
     let checkDescription = Validations.checkUsername(this.state.Description);
     let checkEventType = Validations.checkUsername(this.state.EventType);
     let checkFee = Validations.checkUsername(this.state.Fee);
-    let checkPublicPrivate = Validations.checkUsername(this.state.PublicPrivate);
+    let checkPublicPrivate = Validations.checkUsername(
+      this.state.PublicPrivate,
+    );
     let checkduration = Validations.checkUsername(this.state.duration);
-    
-    if (checkAddress && checkAttendeeLimit && checkDateTime && checkDescription && checkduration && 
-       checkPublicPrivate&& checkFee&& checkEventType) {
+
+    if (
+      checkAddress &&
+      checkAttendeeLimit &&
+      checkDateTime &&
+      checkDescription &&
+      checkduration &&
+      checkPublicPrivate &&
+      checkFee &&
+      checkEventType
+    ) {
       return true;
     }
     if (!checkAddress) {
@@ -105,15 +127,15 @@ export default class CreateEvent extends Component {
       alert('lastname required');
     } else if (!checkDescription) {
       alert('invalid password');
-    }else if (!checkEventType) {
+    } else if (!checkEventType) {
       alert('invalid password');
-    }else if (!checkPublicPrivate) {
+    } else if (!checkPublicPrivate) {
       alert('invalid password');
-    }else if (!checkFee) {
+    } else if (!checkFee) {
       alert('invalid password');
-    }else if (!checkPublicPrivate) {
+    } else if (!checkPublicPrivate) {
       alert('invalid password');
-    }else if (!checkduration) {
+    } else if (!checkduration) {
       alert('invalid password');
     }
     return false;
@@ -122,49 +144,55 @@ export default class CreateEvent extends Component {
     const TOKEN = await AsyncStorage.getItem('token');
     const userDetail = await AsyncStorage.getItem('userdetail');
     console.log(JSON.parse(userDetail).user.firstName);
-    this.setState({userName: JSON.parse(userDetail).user.firstName});
+    this.setState({userName: JSON.parse(userDetail).user.FirstName});
     this.setState({userId: JSON.parse(TOKEN)});
     console.log(this.state.userName, this.state.userId);
   }
   handleSubmit = async () => {
-    await this.uploadImage();
+    if (
+      this.state.Address.trim().length > 0 &&
+      this.state.AttendeeLimit.trim().length > 0 &&
+      this.state.Description.trim().length > 0 &&
+      this.state.Fee.trim().length > 0 &&
+      this.state.Name.trim().length > 0 &&
+      this.state.duration.trim().length > 0 &&
+      this.state.imageUri.trim().length > 0
+    ) {
+      this.setState({loading: true});
+      this.uploadImage().then(() => {
+        const data = {
+          Address: this.state.Address,
+          AttendeeLimit: this.state.AttendeeLimit,
+          DateTime: this.state.DateTime,
+          Description: this.state.Description,
+          EventType: this.state.EventType,
+          Fee: this.state.Fee,
+          Host: this.state.userName,
+          location: this.state.location,
+          Name: this.state.Name,
+          PublicPrivate: this.state.PublicPrivate,
+          disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
+          duration: this.state.duration,
+          userId: this.state.userId,
+          userName: this.state.userName,
+          image: this.state.imageName,
+        };
+        const usersRef = firestore().collection('events');
+        usersRef
+          .add(data)
+          .then(async firestoreDocument => {
+            this.setState({loading: false});
+            this.RBSheet.open();
+          })
 
-    if (this.state.imageUploaded == true) {
-      alert(
-        'Photo uploaded!',
-        'Your photo has been uploaded to Firebase Cloud Storage!',
-      );
-
-      console.log(this.state);
-      const data = {
-        Address: this.state.Address,
-        AttendeeLimit: this.state.AttendeeLimit,
-        DateTime: this.state.DateTime,
-        Description: this.state.Description,
-        EventType: this.state.EventType,
-        Fee: this.state.Fee,
-        Host: this.state.Host,
-        location: this.state.location,
-        Name: this.state.Name,
-        PublicPrivate: this.state.PublicPrivate,
-        disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
-        duration: this.state.duration,
-        userId: this.state.userId,
-        userName: this.state.userName,
-        image: this.state.imageUri,
-      };
-      const usersRef = firestore().collection('events');
-      usersRef
-        .add(data)
-        .then(async firestoreDocument => {
-          this.RBSheet.open();
-        })
-
-        .catch(error => {
-          alert(error);
-        });
+          .catch(error => {
+            this.setState({loading: false});
+            alert(error);
+          });
+      });
     } else {
-      alert('image upload failed');
+      this.setState({loading: false});
+      Alert.alert('Plaese Fill all data');
     }
   };
   setLocation = (latitude, longitude) => {
@@ -269,32 +297,38 @@ export default class CreateEvent extends Component {
                   <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
                     Event Types:
                   </Text>
-                 <View style={{ width: '90%',
-                        height: 53,
-                        borderWidth: 1,
-                        borderColor: 'lightgrey',
-                        borderRadius: 8,
-                       }}>
-                  <RNPickerSelect
+                  <View
                     style={{
-                      inputIOS: {
-                        paddingLeft: 7,
-                      },
-                      inputAndroid: {
-                        paddingLeft: 7,
-                      },
-                    }}
-                    selectedValue={this.state.EventType}
-                    onValueChange={(itemValue, itemIndex) =>
-                      this.setState({EventType: itemValue})
-                    }
-                    items={[
-                      {label: 'ALL', value: 'ALL'},
-                      {label: 'PREPAID', value: 'PREPAID'},
-                      {label: 'SCAN-&-PAY AT DOOR', value: 'SCAN'},
-                      {label: 'FREE', value: 'FREE'},
-                    ]}
-                  />
+                      width: '90%',
+                      height: 53,
+                      borderWidth: 1,
+                      borderColor: 'lightgrey',
+                      borderRadius: 8,
+                    }}>
+                    <RNPickerSelect
+                      style={{
+                        inputIOS: {
+                          paddingLeft: 7,
+                          height: '100%',
+                          width: '100%',
+                        },
+                        inputAndroid: {
+                          paddingLeft: 7,
+                          height: '100%',
+                          width: '100%',
+                        },
+                      }}
+                      selectedValue={this.state.EventType}
+                      onValueChange={(itemValue, itemIndex) =>
+                        this.setState({EventType: itemValue})
+                      }
+                      items={[
+                        {label: 'ALL', value: 'ALL'},
+                        {label: 'PREPAID', value: 'PREPAID'},
+                        {label: 'SCAN-&-PAY AT DOOR', value: 'SCAN'},
+                        {label: 'FREE', value: 'FREE'},
+                      ]}
+                    />
                   </View>
                 </View>
                 <View style={{flex: 1}}>
@@ -405,22 +439,26 @@ export default class CreateEvent extends Component {
                   borderColor: 'lightgrey',
                 }}>
                 <RNPickerSelect
-                 placeholder={{
-                  label: '+Add',
-                  value: this.state.PublicPrivate,
-              }}
+                  placeholder={{
+                    label: 'public',
+                    value: this.state.PublicPrivate,
+                  }}
                   style={{
                     inputIOS: {
                       paddingLeft: 7,
                       marginLeft: 15,
+                      height: '100%',
+                      width: '100%',
                     },
                     inputAndroid: {
                       paddingLeft: 7,
                       marginLeft: 15,
+                      height: '100%',
+                      width: '100%',
                     },
                   }}
                   selectedValue={this.state.PublicPrivate}
-                  onValueChange={(itemValue) =>
+                  onValueChange={itemValue =>
                     this.setState({PublicPrivate: itemValue})
                   }
                   items={[
@@ -527,6 +565,7 @@ export default class CreateEvent extends Component {
             </View>
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
@@ -610,7 +649,7 @@ const styles = StyleSheet.create({
   },
   TextInputTitle: {
     fontSize: 12,
-    marginTop: 20,
+    marginTop: 15,
     marginBottom: 10,
     marginLeft: 20,
   },

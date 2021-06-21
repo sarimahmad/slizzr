@@ -52,7 +52,7 @@ import aboutSlizzr from '../screens/settings/aboutSlizzr';
 import contactUs from '../screens/settings/contactUs';
 import help from '../screens/settings/help';
 import settings from '../screens/settings/index';
-import myProfile from '../screens/myProfile';
+import Profile from '../screens/myProfile';
 import editProfle from '../screens/myProfile/editProfle';
 import zicketDetail from '../screens/zicketDetail';
 import mutualConnections from '../screens/mutualConnections';
@@ -296,7 +296,7 @@ function ProfileNavigation() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="myProfile" component={myProfile}></Stack.Screen>
+      <Stack.Screen name="myProfile" component={Profile}></Stack.Screen>
       <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>
       <Stack.Screen
         name="mutualConnections"

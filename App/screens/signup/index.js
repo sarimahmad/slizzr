@@ -107,7 +107,7 @@ class SignUp extends Component {
           const uid = response.user.uid;
 
           const data = {
-            first_name: this.state.firstName,
+            FirstName: this.state.firstName,
             last_name: this.state.lastName,
             id: uid,
             Id: uid,

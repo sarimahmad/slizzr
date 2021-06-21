@@ -1,15 +1,19 @@
-/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-alert */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {connect} from 'react-redux';
+
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import firestore from '@react-native-firebase/firestore';
+import * as userActions from '../../redux/actions/user';
+import Loader from '../../component/Loader';
 
-export default class BirthDate extends Component {
+class BirthDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +30,6 @@ export default class BirthDate extends Component {
   };
 
   showDatepicker = () => {
-    console.log('show');
     this.setState({showDate: true});
   };
   handleSubmit = () => {
@@ -45,12 +48,30 @@ export default class BirthDate extends Component {
     }
   };
 
-  firestoreLinking = data => {
+  firestoreLinking = async data => {
+    this.setState({loading: true});
+    const userDetail = await AsyncStorage.getItem('userdetail');
     const usersRef = firestore().collection('users');
     usersRef
-      .doc(data.id)
-      .update({age: this.state.age})
-      .then(this.props.navigation.navigate('HomeStack'))
+      .doc(JSON.parse(userDetail).user.id)
+      .update({age: data})
+      .then(() => {
+        usersRef
+          .doc(JSON.parse(userDetail).user.id)
+          .get()
+          .then(firestoreDocument => {
+            this.props.callApi(
+              firestoreDocument.data(),
+              JSON.parse(userDetail).user.id,
+            );
+            if (this.props.route.params === 'signUp') {
+              this.props.navigation.navigate('ConfirmEmail');
+            } else {
+              this.props.navigation.navigate('HomeStack');
+            }
+            this.setState({loading: false});
+          });
+      })
       .catch(error => {
         this.setState({loading: false});
         alert(error);
@@ -77,10 +98,22 @@ export default class BirthDate extends Component {
             data={this.handleSubmit}
           />
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => {
+  return {};
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.setUser({user, uid})),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(BirthDate);
 const styles = StyleSheet.create({
   logo: {
     height: 70,

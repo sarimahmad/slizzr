@@ -16,7 +16,7 @@ import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default class index extends Component {
+export default class Profile extends Component {
   constructor() {
     super();
     this.state = {

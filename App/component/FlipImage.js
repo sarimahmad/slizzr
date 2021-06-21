@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   Text,
@@ -62,8 +63,7 @@ export default class FlipImage extends Component {
             />
           </TouchableOpacity>
         </View>
-        <View
-          style={styles.imageHeader2}>
+        <View style={styles.imageHeader2}>
           <TouchableOpacity
             onPress={() => this.flipCard()}
             style={{
@@ -81,14 +81,15 @@ export default class FlipImage extends Component {
             />
           </TouchableOpacity>
 
-          <Text style={[styles.titleText, {textAlign: 'center'}]}>
-            {Name}
-          </Text>
-         <View style={{minHeight:80}}>
-          <Text
-            style={[styles.subtitleText, {textAlign: 'center', fontSize: 12}]}>
-          {Description}
-          </Text>
+          <Text style={[styles.titleText, {textAlign: 'center'}]}>{Name}</Text>
+          <View style={{minHeight: 80}}>
+            <Text
+              style={[
+                styles.subtitleText,
+                {textAlign: 'center', fontSize: 12},
+              ]}>
+              {Description}
+            </Text>
           </View>
           <View
             style={{
@@ -104,9 +105,7 @@ export default class FlipImage extends Component {
               style={{height: 16, width: 12}}
             />
 
-            <Text style={{marginLeft: 5}}>
-           {Address}
-            </Text>
+            <Text style={{marginLeft: 5}}>{Address}</Text>
           </View>
         </View>
       </FlipCard>
@@ -119,7 +118,8 @@ const styles = StyleSheet.create({
     flex: 1,
     // paddingHorizontal: 10,
   },
-  imageHeader2:{  elevation: 5,
+  imageHeader2: {
+    elevation: 5,
     marginHorizontal: 20,
     borderRadius: 12,
     marginBottom: 20,
@@ -136,10 +136,9 @@ const styles = StyleSheet.create({
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 2},
     shadowRadius: 6,
-    marginBottom:20,
+    marginBottom: 20,
     shadowOpacity: 0.1,
     height: 335,
-
   },
   options: {
     width: 35,

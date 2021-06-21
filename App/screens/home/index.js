@@ -10,25 +10,31 @@ import {
   TextInput,
   FlatList,
   Image,
+  Alert,
 } from 'react-native';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import WaitingFor from '../../component/WaitingFor';
+
+let allEvents = [];
+let prepaidEvents = [];
+let scanEvents = [];
+let freeEvents = [];
 export default class home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading:true,
+      loading: true,
       listView: false,
       mapView: true,
       enableLocation: false,
-      date: new Date(2300, 10, 20),
+      date: new Date(),
       index: 0,
       markers: [
         {lat: 31.52037, lng: 74.358749},
@@ -43,7 +49,15 @@ export default class home extends Component {
       currentData: [],
     };
   }
-  async componentDidMount() {
+  componentDidMount() {
+    this.getEvents();
+  }
+
+  async getEvents() {
+    allEvents = [];
+    prepaidEvents = [];
+    scanEvents = [];
+    freeEvents = [];
     const usersRef = firestore().collection('events');
     usersRef
       .where('PublicPrivate', '==', 'Public')
@@ -51,12 +65,8 @@ export default class home extends Component {
 
       .get()
       .then(async querySnapShot => {
-        let allEvents = [];
-        let prepaidEvents = [];
-        let scanEvents = [];
-        let freeEvents = [];
-        for (const doc of querySnapShot.docs) {
-          this.getImageUrl(doc.data().image).then(res => {
+        await querySnapShot._docs.forEach(async doc => {
+          await this.getImageUrl(doc.data().image).then(async res => {
             let event = {
               Description: doc.data().Description,
               id: doc.id,
@@ -81,20 +91,23 @@ export default class home extends Component {
             } else if (event.EventType === 'FREE') {
               freeEvents.push(event);
             }
+            if (allEvents.length === querySnapShot._docs.length) {
+              this.setState({currentData: allEvents});
+              this.setState({allEvents: allEvents});
+              this.setState({prepaidEvents: prepaidEvents});
+              this.setState({scanEvents: scanEvents});
+              this.setState({freeEvents: freeEvents});
+              this.setState({loading: false});
+            }
           });
-  this.setState({currentData: allEvents});
-        
-          this.setState({allEvents: allEvents});
-          this.setState({prepaidEvents: prepaidEvents});
-          this.setState({scanEvents: scanEvents});
-          this.setState({freeEvents: freeEvents});
-          this.setState({loading:false})
-          console.log(this.state);
-        }
+        });
+      })
+      .then(() => {
+        console.log(this.state.allEvents);
       })
 
       .catch(error => {
-        alert(error);
+        Alert.alert('Intrnet Issue', JSON.stringify(error));
       });
   }
   onChange = (event, selectedDate) => {
@@ -496,44 +509,15 @@ export default class home extends Component {
           <TouchableOpacity
             onPress={this.showDatepicker}
             style={{flexDirection: 'row'}}>
-            <View style={styles.input}>
-              <View style={{flexDirection: 'row'}}>
-                <Text
-                  style={{
-                    height: 53,
-                    width: SCREEN.width * 0.75,
-                    paddingLeft: 20,
-                    paddingTop: 15,
-                    alignItems: 'center',
-                    fontFamily: FONT.Nunito.semiBold,
-                    fontSize: 16,
-                  }}>
-                  Thursday, August 24, 2020
-                </Text>
-                <View
-                  style={{
-                    height: 53,
-                    width: 1,
-                    backgroundColor: 'lightgrey',
-                  }}
-                />
-              </View>
-              <Image
-                style={styles.logoAddCalender}
-                source={require('../../assets/calendar-range.png')}
-                onPress={this.showDatepicker}
-              />
-            </View>
-            {this.state.showDate && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={this.state.date}
-                mode={'date'}
-                is24Hour={true}
-                display="default"
-                onChange={this.onChange}
-              />
-            )}
+            <DateAndTimePicker
+              testID="dateTimePicker"
+              value={this.state.date}
+              mode={'datetime'}
+              is24Hour={true}
+              display="default"
+              setDateAndTime={date => this.setState({date})}
+              onChange={this.onChange}
+            />
           </TouchableOpacity>
           {this.state.mapView === true && (
             <TouchableOpacity
@@ -566,64 +550,58 @@ export default class home extends Component {
             rightIcon={require('../../assets/bell.png')}
             centerIcon={require('../../assets/homeLogo.png')}
           />
-         {this.state.loading === true && 
-         
-          <WaitingFor type="Events" />
-  }
-          {this.state.loading === false && 
-          <View style={styles.wrapperView}>
-            {this.tapBar()}
+          {this.state.loading === true && <WaitingFor type="Events" />}
+          {this.state.loading === false && (
+            <View style={styles.wrapperView}>
+              {this.tapBar()}
 
-            {this.state.currentData.length !== 0 &&
-              this.state.enableLocation === true &&
-              this.state.mapView === true &&
-              (this.state.index === 0 ||
-                this.state.index === 2 ||
-                this.state.index === 3 ||
-                this.state.index === 4) &&
-              this.mapView()}
-           
-            {this.state.currentData.length !== 0 &&
-              this.state.enableLocation === false &&
-              this.state.mapView === true &&
-              this.enableLocation()}
-          
-            {this.state.currentData.length === 0 && 
-            this.noEvent()}
-          
-            {this.state.listView === true &&
-              (this.state.index === 0 ||
-                this.state.index === 2 ||
-                this.state.index === 3 ||
-                this.state.index === 4) &&
-              this.listView()}
+              {this.state.currentData.length !== 0 &&
+                this.state.enableLocation === true &&
+                this.state.mapView === true &&
+                (this.state.index === 0 ||
+                  this.state.index === 2 ||
+                  this.state.index === 3 ||
+                  this.state.index === 4) &&
+                this.mapView()}
 
-            {this.state.currentData.length !== 0 && 
-            this.searchBar()}
+              {this.state.currentData.length !== 0 &&
+                this.state.enableLocation === false &&
+                this.state.mapView === true &&
+                this.enableLocation()}
 
-            {this.state.currentData.length !== 0 && 
-            this.bottomView()}
-            {this.state.currentData.length !== 0 &&
-              (this.state.listView === true || this.state.mapView === true) && (
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: 155,
-                    right: 0,
-                  }}>
-                  <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('createEvent')
-                    }
-                    style={styles.logoAdd}>
-                    <Image source={require('../../assets/plus-circle.png')} />
-                  </TouchableOpacity>
-                </View>
-              )}
-         
-          </View>
-  }
-       </SafeAreaView>
+              {this.state.currentData.length < 1 && this.noEvent()}
+
+              {this.state.listView === true &&
+                (this.state.index === 0 ||
+                  this.state.index === 2 ||
+                  this.state.index === 3 ||
+                  this.state.index === 4) &&
+                this.listView()}
+
+              {this.state.currentData.length > 0 && this.searchBar()}
+
+              {this.state.currentData.length > 0 && this.bottomView()}
+              {this.state.currentData.length > 0 &&
+                (this.state.listView === true ||
+                  this.state.mapView === true) && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 155,
+                      right: 0,
+                    }}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('createEvent')
+                      }
+                      style={styles.logoAdd}>
+                      <Image source={require('../../assets/plus-circle.png')} />
+                    </TouchableOpacity>
+                  </View>
+                )}
+            </View>
+          )}
+        </SafeAreaView>
       </View>
     );
   }
