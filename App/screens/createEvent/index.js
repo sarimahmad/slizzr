@@ -13,6 +13,7 @@ import {
   TextInput,
   StyleSheet,
   Platform,
+  Alert,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -20,14 +21,15 @@ import RNPickerSelect from 'react-native-picker-select';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
+import moment from 'moment';
 
 import Header from '../../component/Header';
 import GoogleSearchBar from '../../component/GoogleSearchBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {BLACK, WHITE} from '../../helper/Color';
-import DateAndTimePicker from '../../component/DateAndTimePicker';
 import Validations from '../../helper/Validations';
-import {Alert} from 'react-native';
+import DateAndTimePicker from '../../component/DateAndTimePicker';
 import Loader from '../../component/Loader';
 
 export default class CreateEvent extends Component {
@@ -79,8 +81,7 @@ export default class CreateEvent extends Component {
     const uri = this.state.imageUri;
 
     const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    this.setState({imageName: filename});
-
+    this.setState({imageUri: filename});
     const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 
     const task = storage().ref(filename).putFile(uploadUri);
@@ -144,52 +145,68 @@ export default class CreateEvent extends Component {
     const TOKEN = await AsyncStorage.getItem('token');
     const userDetail = await AsyncStorage.getItem('userdetail');
     console.log(JSON.parse(userDetail).user.firstName);
-    this.setState({userName: JSON.parse(userDetail).user.FirstName});
+    this.setState({userName: JSON.parse(userDetail).user.firstName});
     this.setState({userId: JSON.parse(TOKEN)});
     console.log(this.state.userName, this.state.userId);
   }
   handleSubmit = async () => {
-    if (
-      this.state.Address.trim().length > 0 &&
-      this.state.AttendeeLimit.trim().length > 0 &&
-      this.state.Description.trim().length > 0 &&
-      this.state.Fee.trim().length > 0 &&
-      this.state.Name.trim().length > 0 &&
-      this.state.duration.trim().length > 0 &&
-      this.state.imageUri.trim().length > 0
-    ) {
-      this.setState({loading: true});
-      this.uploadImage().then(() => {
-        const data = {
-          Address: this.state.Address,
-          AttendeeLimit: this.state.AttendeeLimit,
-          DateTime: this.state.DateTime,
-          Description: this.state.Description,
-          EventType: this.state.EventType,
-          Fee: this.state.Fee,
-          Host: this.state.userName,
-          location: this.state.location,
-          Name: this.state.Name,
-          PublicPrivate: this.state.PublicPrivate,
-          disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
-          duration: this.state.duration,
-          userId: this.state.userId,
-          userName: this.state.userName,
-          image: this.state.imageName,
-        };
-        const usersRef = firestore().collection('events');
-        usersRef
-          .add(data)
-          .then(async firestoreDocument => {
-            this.setState({loading: false});
-            this.RBSheet.open();
-          })
+    await this.uploadImage();
 
-          .catch(error => {
-            this.setState({loading: false});
-            alert(error);
-          });
-      });
+    if (this.state.imageUploaded == true) {
+      alert(
+        'Photo uploaded!',
+        'Your photo has been uploaded to Firebase Cloud Storage!',
+      );
+
+      // Get Host Object From User's
+      await firestore()
+        .collection('users')
+        .doc(this.state.userId)
+        .get()
+        .then(docRef => {
+          this.setState({Host: docRef.data()});
+          console.warn(docRef.data());
+        })
+        .catch(error => alert(error));
+
+      const uniqueId = uuid.v4();
+      const data = {
+        Address: this.state.Address,
+        AttendeeLimit: this.state.AttendeeLimit,
+        DateTime: this.state.DateTime,
+        Description: this.state.Description,
+        EventType: this.state.EventType,
+        Fee: this.state.Fee,
+        Host: this.state.Host,
+        location: this.state.location,
+        Name: this.state.Name,
+        PublicPrivate: this.state.PublicPrivate,
+        disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
+        duration: this.state.duration,
+        userId: this.state.userId,
+        userName: this.state.Host.displayName,
+        image: this.state.imageUri,
+        id: uniqueId,
+        Attendees: [],
+        job: 'scheduled',
+        Start_date: this.state.DateTime,
+        End_date: moment(this.state.DateTime)
+          .add(this.state.duration, 'hours')
+          .format('X'), // TimeStamp
+      };
+      console.warn(data);
+      const usersRef = firestore().collection('events');
+      usersRef
+        .doc(uniqueId)
+        .set(data)
+        .then(async firestoreDocument => {
+          this.RBSheet.open();
+        })
+
+        .catch(error => {
+          this.setState({loading: false});
+          alert(error);
+        });
     } else {
       this.setState({loading: false});
       Alert.alert('Plaese Fill all data');
@@ -259,6 +276,7 @@ export default class CreateEvent extends Component {
                   value={this.state.Name}
                   onChangeText={value => this.setState({Name: value})}
                   placeholder="Enter a name for you Event"
+                  placeholderTextColor={'#B2ABB1'}
                 />
                 <View style={styles.AbsoluteRightIcon}>
                   <Image
@@ -273,6 +291,7 @@ export default class CreateEvent extends Component {
                   onChangeText={value => this.setState({Description: value})}
                   value={this.state.Description}
                   placeholder="Breif Description of your Event"
+                  placeholderTextColor={'#B2ABB1'}
                 />
                 <View style={styles.AbsoluteRightIcon}>
                   <Image
@@ -300,7 +319,6 @@ export default class CreateEvent extends Component {
                   <View
                     style={{
                       width: '90%',
-                      height: 53,
                       borderWidth: 1,
                       borderColor: 'lightgrey',
                       borderRadius: 8,
@@ -309,13 +327,15 @@ export default class CreateEvent extends Component {
                       style={{
                         inputIOS: {
                           paddingLeft: 7,
-                          height: '100%',
-                          width: '100%',
+                          color: 'black',
+                          textAlignVertical: 'center',
+                          height: 51,
                         },
                         inputAndroid: {
                           paddingLeft: 7,
-                          height: '100%',
-                          width: '100%',
+                          color: 'black',
+                          height: 51,
+                          textAlignVertical: 'center',
                         },
                       }}
                       selectedValue={this.state.EventType}
@@ -323,7 +343,7 @@ export default class CreateEvent extends Component {
                         this.setState({EventType: itemValue})
                       }
                       items={[
-                        {label: 'ALL', value: 'ALL'},
+                        // {label: 'ALL', value: 'ALL'},
                         {label: 'PREPAID', value: 'PREPAID'},
                         {label: 'SCAN-&-PAY AT DOOR', value: 'SCAN'},
                         {label: 'FREE', value: 'FREE'},
@@ -333,7 +353,7 @@ export default class CreateEvent extends Component {
                 </View>
                 <View style={{flex: 1}}>
                   <View style={{flexDirection: 'row', marginVertical: 11}}>
-                    <Text style={[{marginLeft: 0, marginTop: 1}]}>Fee</Text>
+                    <Text style={[{marginLeft: 0, marginTop: -2}]}>Fee</Text>
                     <Image
                       source={require('../../assets/Slizzer-icon/Shape.png')}
                       style={styles.feeicon}
@@ -342,8 +362,10 @@ export default class CreateEvent extends Component {
                   <TextInput
                     style={[styles.secondinput]}
                     placeholder="$"
-                    onChangeText={value => this.setState({Fee: value})}
-                    value={this.state.Fee}
+                    onChangeText={value => this.setState({Fee: value.slice(2)})}
+                    value={`$ ${this.state.Fee}`}
+                    placeholderTextColor={'#B2ABB1'}
+                    keyboardType={'numeric'}
                   />
                 </View>
               </View>
@@ -380,7 +402,7 @@ export default class CreateEvent extends Component {
                 </View>
 
                 <View style={{flex: 1}}>
-                  <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
+                  <Text style={[styles.TextInputTitle, {marginLeft: 13}]}>
                     {' '}
                     Attendee Limit
                   </Text>
@@ -396,6 +418,8 @@ export default class CreateEvent extends Component {
                         this.setState({AttendeeLimit: value})
                       }
                       value={this.state.AttendeeLimit}
+                      placeholderTextColor={'#B2ABB1'}
+                      keyboardType={'numeric'}
                     />
                     <View style={styles.AbsoluteRightIcon}>
                       <Image
@@ -405,7 +429,7 @@ export default class CreateEvent extends Component {
                   </View>
                 </View>
                 <View style={{flex: 1, alignItems: 'flex-end'}}>
-                  <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
+                  <Text style={[styles.TextInputTitle, {marginRight: 11}]}>
                     Duration (HRS)
                   </Text>
                   <View
@@ -418,6 +442,8 @@ export default class CreateEvent extends Component {
                       style={styles.thirdinput}
                       onChangeText={value => this.setState({duration: value})}
                       value={this.state.duration}
+                      placeholderTextColor={'#B2ABB1'}
+                      keyboardType={'numeric'}
                     />
                     <View style={styles.AbsoluteRightIcon}>
                       <Image
@@ -432,7 +458,6 @@ export default class CreateEvent extends Component {
               <View
                 style={{
                   borderRadius: 8,
-                  height: 53,
                   width: SCREEN.width - 40,
                   alignSelf: 'center',
                   borderWidth: 2,
@@ -452,9 +477,9 @@ export default class CreateEvent extends Component {
                     },
                     inputAndroid: {
                       paddingLeft: 7,
-                      marginLeft: 15,
-                      height: '100%',
-                      width: '100%',
+                      color: 'black',
+                      height: 51,
+                      textAlignVertical: 'center',
                     },
                   }}
                   selectedValue={this.state.PublicPrivate}

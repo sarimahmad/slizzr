@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -7,22 +7,28 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
+import { SafeAreaView } from 'react-navigation';
+import { BLACK, BLUE, WHITE } from '../../helper/Color';
+import { FONT, SCREEN } from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
+import moment from 'moment';
+
 export default class manageEvents extends Component {
   constructor(props) {
     super(props);
     this.state = {
 
-        attendingEvents:true,
-        myevents:false,
-        index:1,
+      attendingEvents: true,
+      myevents: false,
+      index: 1,
+      userEvents: [],
+      userAttendedEvents: [],
       messages: [
         {
           imgProfile: '',
@@ -30,201 +36,267 @@ export default class manageEvents extends Component {
           adress: 'Host: Tallah Cotton',
           date: '11:30 PM | Feb 25, 2020 - WED',
         },
-    ],
-        findpeople: [
-            {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-              {
-                imgProfile: '',
-                profileName: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                date: '11:30 PM | Feb 25, 2020 - WED',
-              },  
-      
-        ]
-      
+      ],
+      findpeople: [
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+      ]
+
     };
+  }
+
+  componentDidMount() {
+    this.getUserEvents()
+    this.getUserAttendedEvents()
+  }
+
+  async getUserEvents() {
+    const TOKEN = await AsyncStorage.getItem('token');
+    await firestore().collection('events').where('userId','==',`${JSON.parse(TOKEN)}`)
+    .onSnapshot(async (querySnapshot) => {
+      const userEvents = []
+      await querySnapshot.forEach((doc) => {
+        userEvents.push(doc.data())
+      })
+      this.setState({ userEvents: userEvents })
+    })
+  }
+
+  async getUserAttendedEvents(){
+    // Code for Attending events
+  }
+
+  barTapped = (indexTap) => {
+    if (indexTap === 1) {
+      this.setState({ index: 1 })
+    } else if (indexTap === 2) {
+      this.setState({ index: 2 })
+    } if (indexTap === 3) {
+      this.setState({ index: 3 })
+    } if (indexTap === 4) {
+      this.setState({ index: 4 })
+    }
+  }
+
+  myevents = () => {
+    this.setState({ myevents: true })
+    this.setState({ attendingEvents: false })
+  }
+  attendingEvents = () => {
+    this.setState({ myevents: false })
+    this.setState({ attendingEvents: true })
 
   }
-  barTapped=(indexTap)=>{
-    if(indexTap===1){
-     this.setState({index:1})
-    }else if(indexTap===2){
-      this.setState({index:2})
-     }if(indexTap===3){
-      this.setState({index:3})
-     }if(indexTap===4){
-      this.setState({index:4})
-     } 
+  topBar = () => {
+    return (
+      <View style={styles.flexRow}>
+
+        <TouchableOpacity
+          style={
+            this.state.index == 1
+              ? { borderBottomColor: '#F818D9', borderBottomWidth: 3, borderColor: 'lightgrey', justifyContent: 'center', borderWidth: 1, width: SCREEN.width * 0.5, height: 39 }
+              : { color: 'black', width: SCREEN.width * 0.5, height: 39, borderColor: 'lightgrey', borderWidth: 1, justifyContent: 'center' }
+          }
+          onPress={() => this.barTapped(1)}>
+          <Text
+            style={[
+              styles.barText,
+              this.state.index == 1
+                ? { color: '#F818D9' }
+                : { color: 'black' },
+            ]}>
+            MY EVENTS
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={
+            this.state.index == 2
+              ? { borderBottomColor: '#F818D9', borderBottomWidth: 3, borderColor: 'grey', justifyContent: 'center', borderWidth: 1, width: SCREEN.width * 0.5, height: 39 }
+              : { color: 'black', width: SCREEN.width * 0.5, height: 39, borderColor: 'grey', justifyContent: 'center', borderWidth: 1 }
+          }
+          onPress={() => this.barTapped(2)}>
+          <Text
+            style={[
+              styles.barText,
+              this.state.index == 2
+                ? { color: '#F818D9' }
+                : { color: 'black' },
+            ]}>
+            ATTENDING EVENTS
+          </Text>
+        </TouchableOpacity>
+      </View>
+    )
   }
- 
-myevents = ()=>{
-this.setState({myevents:true})
-this.setState({attendingEvents:false})
-}
-attendingEvents = ()=>{
-  this.setState({myevents:false})
-  this.setState({attendingEvents:true})
-  
-}
-topBar=()=>{
-  return(
-    <View style={styles.flexRow}>
-           
-    <TouchableOpacity
-      style={
-        this.state.index == 1
-          ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,borderColor:'lightgrey',justifyContent: 'center',borderWidth:1,width:SCREEN.width*0.5,height:39}
-          : { color: 'black' ,width:SCREEN.width*0.5,height:39,borderColor:'lightgrey',borderWidth:1,justifyContent: 'center'}
-      }
-      onPress={()=>this.barTapped(1)}>
-      <Text
-        style={[
-          styles.barText,
-          this.state.index == 1
-            ? { color: '#F818D9' }
-            : { color: 'black' },
-        ]}>
-        MY EVENTS
-      </Text>
-    </TouchableOpacity>
-  
-          <TouchableOpacity
-      style={
-        this.state.index == 2
-          ? { borderBottomColor: '#F818D9', borderBottomWidth: 3 ,borderColor:'grey',justifyContent: 'center',borderWidth:1,width:SCREEN.width*0.5,height:39}
-          : { color: 'black' ,width:SCREEN.width*0.5,height:39,borderColor:'grey',justifyContent: 'center',borderWidth:1}
-      }
-      onPress={()=>this.barTapped(2)}>
-      <Text
-        style={[
-          styles.barText,
-          this.state.index == 2
-            ? { color: '#F818D9' }
-            : { color: 'black' },
-        ]}>
-        ATTENDING EVENTS
-      </Text>
-    </TouchableOpacity>
-  </View>
-  )
-}
+
+  // Empty Component
+  emptyListComponent = () => {
+    return(
+      <View style={{
+        flex:1,
+        alignItems:'center',
+        alignSelf:'center',
+        justifyContent:'center',
+        flexGrow:1,
+        display:'flex',
+        marginTop: SCREEN.height / 4
+      }}>
+        {this.state.index === 1 && (
+          <View>
+            <Text>
+            You are not hosting any events at the moment.
+            </Text>
+            <TouchableOpacity style={styles.btnMap}>
+              <Text style={styles.btnText}>HOST?</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {this.state.index == 2 && (
+          <View>
+            <Text style={styles.emptyFont}>
+              You are not attending any events at the moment.
+            </Text>
+            <TouchableOpacity style={styles.btnMap}>
+              <Text style={styles.btnText}>LOOK FOR EVENTS</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    )
+  }
   render() {
     return (
       <View style={styles.wrapperView}>
-      <SafeAreaView style={styles.contentView}> 
-      <HeaderWithOptionBtn
-                    
-                    borderBottom={true}
-                    backColor={WHITE.dark}
-                    leftPress={() => this.props.navigation.openDrawer()}
-                    leftIcon={require('../../assets/drawer.png')}
-                    rightPress={() => this.props.navigation.navigate('createEvent')}
-                    rightIcon={require('../../assets/plus.png')}
-                    headerTitle={'Manage Events'}
-                   
-                />
-       
-       {this.topBar()}
-          <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
-           <Text style={{color:'white',paddingLeft:20}}>SHARED HOST REQUESTS</Text>
-           <Text style={{color:'white',paddingRight:20}}>+2</Text>
-          </TouchableOpacity>
+        <SafeAreaView style={styles.contentView}>
+          <HeaderWithOptionBtn
+
+            borderBottom={true}
+            backColor={WHITE.dark}
+            leftPress={() => this.props.navigation.openDrawer()}
+            leftIcon={require('../../assets/drawer.png')}
+            rightPress={() => this.props.navigation.navigate('createEvent')}
+            rightIcon={require('../../assets/plus.png')}
+            headerTitle={'Manage Events'}
+
+          />
+
+          {this.topBar()}
+
+          {/* Shared Host */}
+          {/* <TouchableOpacity onPress={() => this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
+            <Text style={{ color: 'white', paddingLeft: 20 }}>SHARED HOST REQUESTS</Text>
+            <Text style={{ color: 'white', paddingRight: 20 }}>+2</Text>
+          </TouchableOpacity> */}
+
           {this.state.index === 1 && (
             <FlatList
-              data={this.state.findpeople}
+              data={this.state.userEvents}
               keyExtractor={item => item.id}
-              renderItem={({item}) => (
-                <TouchableOpacity onPress={()=>this.props.navigation.navigate("attendingEventInfo")}
+              ListEmptyComponent={this.emptyListComponent}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("myEventInfo")}
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
                   }}>
                   <View style={styles.flexRow}>
-                  <View style={styles.imgView}>
-                   
-                   <Image source={require('../../assets/image2.jpg')} style={{borderRadius:44,height:60,width:60}} />
-                  
-                   <Image
-                     style={{position: 'absolute',right:-10}}
-                     source={require('../../assets/private.png')}
-                   />
-                 </View>
+                    <View style={styles.imgView}>
+
+                      <Image source={require('../../assets/image2.jpg')} style={{ borderRadius: 44, height: 60, width: 60 }} />
+
+                      <Image
+                        style={{ position: 'absolute', right: -10 }}
+                        source={require('../../assets/private.png')}
+                      />
+                    </View>
 
                     <View style={styles.detail}>
-                   <Text style={styles.titleText}>{item.profileName}</Text>
-                   <Text style={styles.subtitleText}>{item.adress}</Text>
-                   <Text style={[styles.purpleText,{marginTop:5}]}>{item.date}</Text>
-                 </View>
-                 <TouchableOpacity onPress={()=>this.props.navigation.navigate("directInvites")} style={styles.shareView}>
-                   <Image source={require('../../assets/share.png')} />
+                      <Text style={styles.titleText}>{item.Name}</Text>
+                      <Text style={styles.subtitleText}>{item.EventType === 'SCAN' ? 'SCAN-&-PAY AT DOOR' : item.EventType}</Text>
+                      <Text style={[styles.purpleText, { marginTop: 5 }]}>{moment(item.datetime).format('hh:mm A | MMM DD, YYYY - ddd')}</Text>
+                    </View>
+                    <TouchableOpacity
+                      //  onPress={()=>this.props.navigation.navigate("directInvites")} 
+                      style={styles.shareView}>
+                      <Image source={require('../../assets/share.png')} />
                     </TouchableOpacity>
-                   
+
                   </View>
                 </TouchableOpacity>
               )}
             />
           )}
-           {this.state.index === 2 && (
+          {this.state.index === 2 && (
             <FlatList
-            data={this.state.findpeople}
-            keyExtractor={item => item.id}
-            renderItem={({item}) => (
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("myEventInfo")}
-                style={{
-                  borderBottomWidth: 1,
-                  borderBottomColor: 'lightgrey',
-                }}>
-                <View style={styles.flexRow}>
-                <View style={styles.imgView}>
-                 
-                 <Image source={require('../../assets/image2.jpg')} style={{borderRadius:44,height:60,width:60}} />
-                
-                 <Image
-                   style={{position: 'absolute',right:-10}}
-                   source={require('../../assets/private.png')}
-                 />
-               </View>
+              data={this.state.userAttendedEvents}
+              keyExtractor={item => item.id}
+              ListEmptyComponent={this.emptyListComponent}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("attendingEventInfo")}
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'lightgrey',
+                  }}>
+                  <View style={styles.flexRow}>
+                    <View style={styles.imgView}>
 
-                  <View style={styles.detail}>
-                 <Text style={styles.titleText}>{item.profileName}</Text>
-                 <Text style={styles.subtitleText}>{item.adress}</Text>
-                 <Text style={[styles.purpleText,{marginTop:5}]}>{item.date}</Text>
-               </View>
-                  <TouchableOpacity onPress={()=>this.props.navigation.navigate("directInvites")} style={styles.shareView}>
-                  <Image source={require('../../assets/messageIcon.png')} />
-                  </TouchableOpacity>
-                 
-                </View>
-              </TouchableOpacity>
-            )}
-          />
-    
-       )}
+                      <Image source={require('../../assets/image2.jpg')} style={{ borderRadius: 44, height: 60, width: 60 }} />
+
+                      <Image
+                        style={{ position: 'absolute', right: -10 }}
+                        source={require('../../assets/private.png')}
+                      />
+                    </View>
+
+                    <View style={styles.detail}>
+                    <Text style={styles.titleText}>{item.Name}</Text>
+                      <Text style={styles.subtitleText}>Host: {item.Host.displayName}</Text>
+                      <Text style={[styles.purpleText, { marginTop: 5 }]}>{moment(item.datetime).format('hh:mm A | MMM DD, YYYY - ddd')}</Text>
+                    </View>
+                    <TouchableOpacity
+                      // onPress={()=>this.props.navigation.navigate("directInvites")} 
+                      style={styles.shareView}>
+                      <Image source={require('../../assets/messageIcon.png')} />
+                    </TouchableOpacity>
+
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+
+          )}
         </SafeAreaView>
       </View>
     );
@@ -236,13 +308,13 @@ const styles = StyleSheet.create({
 
     backgroundColor: WHITE.dark,
   },
-  sharedView:{
-    width:SCREEN.width, height:40,alignItems: 'center',backgroundColor:'#FF9500',flexDirection:'row',justifyContent: 'space-between',
-  
+  sharedView: {
+    width: SCREEN.width, height: 40, alignItems: 'center', backgroundColor: '#FF9500', flexDirection: 'row', justifyContent: 'space-between',
+
   },
   contentView: {
     flex: 1,
-  
+
     // width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
   }, btnTextLocation: {
@@ -252,6 +324,31 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
 
   },
+  btnText: {
+    fontSize: 16,
+    color: 'white',
+    textAlign: 'center',
+    color: 'white',
+    fontFamily: FONT.Nunito.regular,
+  },
+  emptyFont:{
+    fontSize: 20,
+    color: '#494949',
+    textAlign: 'center',
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    marginBottom:20,
+  },
+  btnMap: {
+      
+    borderRadius: 25,
+     height: 50,
+     alignSelf:'center',
+     marginBottom:20,
+     width:SCREEN.width-40,
+     backgroundColor: 'black',
+     justifyContent: 'center'
+   },
   btnLocation: {
     width: wp('80%'),
     marginHorizontal: '10%',
@@ -259,8 +356,8 @@ const styles = StyleSheet.create({
     marginTop: hp('5%'),
     height: 50,
     elevation: 1,
-    justifyContent:'center',
-    backgroundColor:'black',
+    justifyContent: 'center',
+    backgroundColor: 'black',
     borderWidth: 1,
     borderRadius: 24,
     borderColor: BLACK.light,
@@ -268,13 +365,13 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
-   
-   
-  
+
+
+
     alignItems: 'center',
   },
-  subtitleText:{
-    color: BLACK.lightgrey,
+  subtitleText: {
+    color: '#494949',
     fontFamily: FONT.Nunito.regular,
     fontSize: 12,
   },
@@ -284,12 +381,14 @@ const styles = StyleSheet.create({
   },
   detail: {
     width: wp('55%'),
-    height: 80
+    height: 80,
+    flexDirection:'column',
+    justifyContent:'center'
   },
   imgView: {
-    marginHorizontal:20,
-    alignItems:'center',
-        alignSelf:'center'
+    marginHorizontal: 20,
+    alignItems: 'center',
+    alignSelf: 'center'
   },
   shareView: {
 
@@ -309,15 +408,15 @@ const styles = StyleSheet.create({
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-    
-  
+
+
     fontFamily: FONT.Nunito.bold,
   },
   barChild: {
     borderWidth: 1,
     width: wp('50%'),
     height: 36,
-    height:40,
+    height: 40,
     borderColor: 'lightgrey',
     paddingTop: 12,
     fontFamily: FONT.Nunito.regular,
@@ -326,9 +425,9 @@ const styles = StyleSheet.create({
   },
   barText: {
     borderColor: 'lightgrey',
-    fontSize:11,
+    fontSize: 11,
     fontFamily: FONT.Nunito.semiBold,
-    color:BLACK.grey,
+    color: BLACK.grey,
     textAlign: 'center',
     alignItems: 'center',
   },

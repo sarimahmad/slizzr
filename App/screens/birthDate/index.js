@@ -17,7 +17,7 @@ class BirthDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: new Date(),
+      date:new Date(),
       showDate: false,
       age: 20,
     };
@@ -25,8 +25,8 @@ class BirthDate extends Component {
 
   onChange = (event, selectedDate) => {
     const currentDate = selectedDate || this.state.date;
-
     this.setState({date: currentDate});
+    if(Validations.checkAge(currentDate)) this.setState({ageCheck: true});
   };
 
   showDatepicker = () => {
@@ -96,7 +96,8 @@ class BirthDate extends Component {
           <ButtonResetPassaword
             btnLabel={'Continue'}
             data={this.handleSubmit}
-          />
+            validate={this.state.ageCheck}
+          />       
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
@@ -126,11 +127,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 12,
     borderColor: 'lightgrey',
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 6,
-    shadowOpacity: 0.1,
-    elevation: 2,
+    
   },
   logoAddCalender: {
     position: 'absolute',

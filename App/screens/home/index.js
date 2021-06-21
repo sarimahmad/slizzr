@@ -21,6 +21,7 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import WaitingFor from '../../component/WaitingFor';
+import moment from 'moment';
 
 let allEvents = [];
 let prepaidEvents = [];
@@ -169,7 +170,11 @@ export default class home extends Component {
                     borderBottomWidth: 1,
                     width: SCREEN.width,
                   }}>
-                  <View style={[styles.flexRow, {width: SCREEN.width - 20}]}>
+                  <View
+                    style={[
+                      styles.flexRow,
+                      {width: SCREEN.width - 20, alignItems: 'center'},
+                    ]}>
                     <View style={styles.imgView}>
                       <Image
                         source={{uri: item.imageUrl}}
@@ -183,9 +188,15 @@ export default class home extends Component {
                     </View>
 
                     <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.name}</Text>
-                      <Text style={styles.adressText}>{item.Address}</Text>
-                      {/* <Text style={styles.purpleText}>{item.datetime}</Text> */}
+                      <Text style={styles.titleText}>{item.Name}</Text>
+                      <Text style={styles.adressText}>
+                        Host: {item.Host.displayName}
+                      </Text>
+                      <Text style={styles.purpleText}>
+                        {moment(item.datetime).format(
+                          'hh:mm A | MMM DD, YYYY - ddd',
+                        )}
+                      </Text>
                       <View style={styles.flexRow}>
                         <Image
                           style={{height: 16, width: 12, marginRight: 5}}
@@ -359,7 +370,6 @@ export default class home extends Component {
             {
               alignItems: 'center',
               backgroundColor: '#fff',
-
               shadowColor: '#000',
               shadowOffset: {width: 2, height: 3},
               shadowOpacity: 0.1,
@@ -625,25 +635,20 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     shadowOpacity: 0.1,
     elevation: 2,
+    zIndex: 999,
   },
   input: {
     width: SCREEN.width - 40,
     borderWidth: 1,
     height: 53,
-
     marginVertical: 10,
     borderRadius: 12,
     borderColor: 'lightgrey',
-    shadowColor: 'black',
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 6,
-    shadowOpacity: 0.1,
-    elevation: 2,
   },
   imgView: {
     marginHorizontal: 20,
     alignItems: 'center',
-
+    marginTop: 10,
     alignSelf: 'center',
   },
   shareView: {
