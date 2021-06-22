@@ -31,6 +31,7 @@ import {BLACK, WHITE} from '../../helper/Color';
 import Validations from '../../helper/Validations';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import Loader from '../../component/Loader';
+import ErrorPopup from '../../component/ErrorPopup';
 
 export default class CreateEvent extends Component {
   constructor() {
@@ -66,6 +67,8 @@ export default class CreateEvent extends Component {
       userName: '',
       imageName: '',
       loading: false,
+      isModalVisible: false,
+      errorModel: '',
     };
   }
   selectImage = async () => {
@@ -75,6 +78,12 @@ export default class CreateEvent extends Component {
       cropping: true,
     }).then(image => {
       this.setState({imageUri: image.path});
+    });
+  };
+  showModal = id => {
+    this.setState({
+      selectedEventId: id,
+      isModalVisible: true,
     });
   };
   uploadImage = async () => {
@@ -121,23 +130,38 @@ export default class CreateEvent extends Component {
       return true;
     }
     if (!checkAddress) {
-      alert('firstName required');
+      this.setState({errorTitle: 'Invalid Form'});
+      this.setState({errorText: 'Add Title in form'});
+      this.setState({isModalVisible: true});
     } else if (!checkAttendeeLimit) {
       alert('invalid email');
+      this.setState({errorTitle: 'Invalid Form'});
+      this.setState({errorText: 'Add AttendeeLimit in form'});
+      this.setState({isModalVisible: true});
     } else if (!checkDateTime) {
-      alert('lastname required');
+      this.setState({errorTitle: 'Invalid Form'});
+      this.setState({errorText: 'Add Date Time in form'});
+      this.setState({isModalVisible: true});
     } else if (!checkDescription) {
-      alert('invalid password');
+      this.setState({errorTitle: 'Invalid Form'});
+      this.setState({errorText: 'Add Description in form'});
+      this.setState({isModalVisible: true});
     } else if (!checkEventType) {
-      alert('invalid password');
+      this.setState({errorTitle: 'Invalid Form'});
+      this.setState({errorText: 'Add EventType in form'});
+      this.setState({isModalVisible: true});
     } else if (!checkPublicPrivate) {
-      alert('invalid password');
+      this.setState({errorTitle: 'Invalid Form'});
+      this.setState({errorText: 'Add Public Private in form'});
+      this.setState({isModalVisible: true});
     } else if (!checkFee) {
-      alert('invalid password');
-    } else if (!checkPublicPrivate) {
-      alert('invalid password');
+      this.setState({errorTitle: 'Invalid Form'});
+      this.setState({errorText: 'Add Fee in form'});
+      this.setState({isModalVisible: true});
     } else if (!checkduration) {
-      alert('invalid password');
+      this.setState({errorTitle: 'Invalid Form'});
+      this.setState({errorText: 'Add Duration in form'});
+      this.setState({isModalVisible: true});
     }
     return false;
   }
@@ -150,61 +174,67 @@ export default class CreateEvent extends Component {
     console.log(this.state.userName, this.state.userId);
   }
   handleSubmit = async () => {
-    await this.uploadImage();
+    if (this.isFormFilled()) {
+      await this.uploadImage();
 
-    if (this.state.imageUploaded === true) {
-      // Get Host Object From User's
-      await firestore()
-        .collection('users')
-        .doc(this.state.userId)
-        .get()
-        .then(docRef => {
-          this.setState({Host: docRef.data()});
-          console.warn(docRef.data());
-        })
-        .catch(error => alert(error));
+      if (this.state.imageUploaded === true) {
+        // Get Host Object From User's
+        await firestore()
+          .collection('users')
+          .doc(this.state.userId)
+          .get()
+          .then(docRef => {
+            this.setState({Host: docRef.data()});
+            console.warn(docRef.data());
+          })
+          .catch(error => alert(error));
 
-      const uniqueId = uuid.v4();
-      const data = {
-        Address: this.state.Address,
-        AttendeeLimit: this.state.AttendeeLimit,
-        DateTime: this.state.DateTime,
-        Description: this.state.Description,
-        EventType: this.state.EventType,
-        Fee: this.state.Fee,
-        Host: this.state.Host,
-        location: this.state.location,
-        Name: this.state.Name,
-        PublicPrivate: this.state.PublicPrivate,
-        disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
-        duration: this.state.duration,
-        userId: this.state.userId,
-        userName: this.state.Host.displayName,
-        image: this.state.imageUri,
-        id: uniqueId,
-        Attendees: [],
-        job: 'scheduled',
-        Start_date: this.state.DateTime,
-        End_date: moment(this.state.DateTime)
-          .add(this.state.duration, 'hours')
-          .format('X'), // TimeStamp
-      };
-      console.warn(data);
-      const usersRef = firestore().collection('events');
-      usersRef
-        .doc(uniqueId)
-        .set(data)
-        .then(async firestoreDocument => {
-          this.RBSheet.open();
-        })
+        const uniqueId = uuid.v4();
+        const data = {
+          Address: this.state.Address,
+          AttendeeLimit: this.state.AttendeeLimit,
+          DateTime: this.state.DateTime,
+          Description: this.state.Description,
+          EventType: this.state.EventType,
+          Fee: this.state.Fee,
+          Host: this.state.Host,
+          location: this.state.location,
+          Name: this.state.Name,
+          PublicPrivate: this.state.PublicPrivate,
+          disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
+          duration: this.state.duration,
+          userId: this.state.userId,
+          userName: this.state.Host.displayName,
+          image: this.state.imageUri,
+          id: uniqueId,
+          Attendees: [],
+          job: 'scheduled',
+          Start_date: this.state.DateTime,
+          End_date: moment(this.state.DateTime)
+            .add(this.state.duration, 'hours')
+            .format('X'), // TimeStamp
+        };
+        console.warn(data);
+        const usersRef = firestore().collection('events');
+        usersRef
+          .doc(uniqueId)
+          .set(data)
+          .then(async firestoreDocument => {
+            this.RBSheet.open();
+          })
 
-        .catch(error => {
-          this.setState({loading: false});
-          alert(error);
-        });
-    } else {
-      this.setState({loading: false});
-      Alert.alert('Plaese Fill all data');
+          .catch(error => {
+            this.setState({loading: false});
+            alert(error);
+          });
+      } else {
+        this.setState({loading: false});
+        this.setState({errorTitle: 'Invalid Form'});
+        this.setState({errorText: 'Add Image in form'});
+        this.setState({isModalVisible: true});
+
+        // Alert.alert('Plaese Fill all data');
+      }
     }
   };
   setLocation = (latitude, longitude) => {
@@ -229,12 +259,28 @@ export default class CreateEvent extends Component {
   render() {
     return (
       <View style={styles.container}>
+        {this.state.isModalVisible === true && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.isModalVisible}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() => this.setState({isModalVisible: false})}
+              doneButtonPress={() => this.setState({isModalVisible: false})}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+            />
+          </Modal>
+        )}
+
         <SafeAreaView style={styles.container}>
           <Header
             headerTitle={'Create Events'}
             navigation={this.props.navigation}
             route={'Home'}
           />
+
           <ScrollView style={[styles.container]} bounces={false}>
             <View style={{flex: 1, marginTop: 20}}>
               <TouchableOpacity
@@ -588,6 +634,7 @@ export default class CreateEvent extends Component {
             </View>
           </ScrollView>
         </SafeAreaView>
+
         {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
