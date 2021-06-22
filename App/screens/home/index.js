@@ -234,21 +234,24 @@ export default class home extends Component {
           latitudeDelta: 1,
           longitudeDelta: 1,
         }}>
-        {this.state.currentData.map((marker, index) => (
-          <MapView.Marker
-            coordinate={{
-              latitude: marker.location.latitude,
-              longitude: marker.location.longitude,
-            }}
-            onPress={() =>
-              this.props.navigation.navigate('eventDetail', {
-                detailItem: marker,
-              })
-            }
-            image={require('../../assets/marker.png')}
-            // description={'Description'}
-          />
-        ))}
+        {this.state.currentData.map(
+          (marker, index) =>
+            marker.location && (
+              <MapView.Marker
+                coordinate={{
+                  latitude: marker.location.latitude,
+                  longitude: marker.location.longitude,
+                }}
+                onPress={() =>
+                  this.props.navigation.navigate('eventDetail', {
+                    detailItem: marker,
+                  })
+                }
+                image={require('../../assets/marker.png')}
+                // description={'Description'}
+              />
+            ),
+        )}
       </MapView>
     );
   };
@@ -741,9 +744,6 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.semiBold,
   },
   logo: {
-    //   height: 80,
-    //   width: 100,
-    //   resizeMode: 'contain',
     marginTop: 25,
 
     alignSelf: 'center',
@@ -756,8 +756,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     top: 13,
-    // alignSelf:'flex-end',
-    // marginRight:'5%',
   },
 
   detailWrapper: {
@@ -765,14 +763,10 @@ const styles = StyleSheet.create({
   },
   wrapperView: {
     flex: 1,
-
     backgroundColor: WHITE.dark,
   },
   contentView: {
     flex: 1,
-    // alignSelf: 'center',
-    // alignItems: 'center',
-    // width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
   },
   policyText: {

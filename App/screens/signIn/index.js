@@ -149,9 +149,17 @@ class SignIn extends Component {
             });
           return;
         } else {
-          this.props.callApi(firestoreDocument.data(), data.id);
+          if (
+            firestoreDocument.data().age &&
+            parseInt(firestoreDocument.data().age) > 16
+          ) {
+            this.props.callApi(firestoreDocument.data(), data.id);
+            this.props.navigation.push('HomeStack');
+          } else {
+            this.props.callApi(firestoreDocument.data(), data.id);
+            this.props.navigation.push('BirthDateSplash', {from: 'splash'});
+          }
           this.setState({loading: false});
-          this.props.navigation.push('HomeStack');
         }
       })
       .catch(error => {
@@ -226,6 +234,9 @@ class SignIn extends Component {
           displayName: response.user._user.displayName,
           email_verified: true,
           socialLogin: true,
+          age: 14,
+          STRIPE_CUST_ID: '',
+          STRIPE_HOST_ID: '',
         };
         this.firestoreLinking(data);
       })
@@ -271,7 +282,7 @@ class SignIn extends Component {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.wrapperView}>
-          <ScrollView>
+          <ScrollView bounces={false}>
             <View style={{alignItems: 'center'}}>
               <View style={styles.topView}>
                 <Image

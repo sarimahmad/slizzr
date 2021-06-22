@@ -4,12 +4,13 @@ import {View, Text, StyleSheet, Alert} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {connect} from 'react-redux';
+import firestore from '@react-native-firebase/firestore';
 
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
-import firestore from '@react-native-firebase/firestore';
+import Validations from '../../helper/Validations';
 import * as userActions from '../../redux/actions/user';
 import Loader from '../../component/Loader';
 
@@ -17,16 +18,25 @@ class BirthDate extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date:new Date(),
+      date: new Date(),
       showDate: false,
       age: 20,
     };
   }
 
-  onChange = (event, selectedDate) => {
+  onChange = selectedDate => {
     const currentDate = selectedDate || this.state.date;
+    const current_date = new Date();
+    const difference_date =
+      current_date.getTime() - new Date(currentDate).getTime();
+    const difference_in_days = difference_date / (1000 * 3600 * 24);
+    const age_in_year = difference_in_days / 365;
     this.setState({date: currentDate});
-    if(Validations.checkAge(currentDate)) this.setState({ageCheck: true});
+    if (age_in_year > 16) {
+      this.setState({ageCheck: true});
+    } else {
+      this.setState({ageCheck: false});
+    }
   };
 
   showDatepicker = () => {
@@ -87,17 +97,18 @@ class BirthDate extends Component {
           <DateAndTimePicker
             testID="dateTimePicker"
             value={this.state.date}
-            mode={'date'}
+            format="MMM DD, YYYY "
+            mode="date"
             is24Hour={true}
             display="default"
-            setDateAndTime={date => this.setState({date})}
+            setDateAndTime={date => this.onChange(date)}
             onChange={this.onChange}
           />
           <ButtonResetPassaword
             btnLabel={'Continue'}
             data={this.handleSubmit}
             validate={this.state.ageCheck}
-          />       
+          />
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
@@ -127,7 +138,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     borderRadius: 12,
     borderColor: 'lightgrey',
-    
   },
   logoAddCalender: {
     position: 'absolute',

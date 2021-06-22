@@ -1,6 +1,9 @@
-/* eslint-disable react/self-closing-comp */
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {TextInput, View, StyleSheet} from 'react-native';
+import {TextInput, View, StyleSheet, TouchableOpacity} from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
+import {BLACK} from '../../helper/Color';
+
 import {SCREEN} from '../../helper/Constant';
 
 const TextField = props => {
@@ -19,13 +22,44 @@ const TextField = props => {
             ? {width: (SCREEN.width - 40) / 2.1}
             : {width: SCREEN.width - 40},
         ]}>
-        <TextInput
-          style={styles.input}
-          placeholder={props.placeholder}
-          placeholderTextColor={'#B2ABB1'}
-          onChangeText={handleText}
-          autoCapitalize='none'
-          autoCorrect={false}></TextInput>
+        {props.type === 'password' ? (
+          <TextInput
+            style={styles.input}
+            placeholder={props.placeholder}
+            placeholderTextColor={'#B2ABB1'}
+            secureTextEntry={showPassword}
+            onChangeText={handleText}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        ) : (
+          <TextInput
+            style={styles.input}
+            placeholder={props.placeholder}
+            placeholderTextColor={'#B2ABB1'}
+            onChangeText={handleText}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+        )}
+        {props.type === 'password' && (
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showPassword)}
+            style={{
+              position: 'absolute',
+              right: 10,
+              height: 40,
+              width: 40,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Entypo
+              name={showPassword ? 'eye' : 'eye-with-line'}
+              color={BLACK.dark}
+              size={30}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -37,6 +71,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: 53,
     marginTop: 20,
+    justifyContent: 'center',
   },
   inputPasssword: {
     // width: wp('80%'),
