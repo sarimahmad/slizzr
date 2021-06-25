@@ -10,7 +10,6 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
-import Validations from '../../helper/Validations';
 import * as userActions from '../../redux/actions/user';
 import Loader from '../../component/Loader';
 
@@ -74,8 +73,11 @@ class BirthDate extends Component {
               firestoreDocument.data(),
               JSON.parse(userDetail).user.id,
             );
-            if (this.props.route.params === 'signUp') {
-              this.props.navigation.navigate('ConfirmEmail');
+            if (this.props.route.params.from === 'signUp') {
+              this.props.navigation.navigate('ConfirmEmail', {
+                from: 'birth',
+                user: firestoreDocument.data(),
+              });
             } else {
               this.props.navigation.navigate('HomeStack');
             }

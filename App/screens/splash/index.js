@@ -1,19 +1,24 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable radix */
 /* eslint-disable react-hooks/rules-of-hooks */
 
 import React, {useEffect} from 'react';
 import {View, Image, StyleSheet, Alert} from 'react-native';
-
-import {connect} from 'react-redux';
-import * as userActions from '../../redux/actions/user';
-
-import {WHITE} from '../../helper/Color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {connect} from 'react-redux';
+
+import * as userActions from '../../redux/actions/user';
+import {WHITE} from '../../helper/Color';
 
 const splash = props => {
   useEffect(() => {
-    checkUSer();
-  });
+    const unsubscribe = props.navigation.addListener('focus', () => {
+      // do something
+      checkUSer();
+    });
+
+    return unsubscribe;
+  }, [checkUSer, props.navigation]);
 
   const checkUSer = async () => {
     // AsyncStorage.clear();

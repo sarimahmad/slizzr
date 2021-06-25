@@ -1,40 +1,40 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { Image, Text, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { FONT, SCREEN } from '../../helper/Constant';
 import { BLACK } from '../../helper/Color';
 
 
-function ErrorPopup({ cancelButtonPress,doneButtonPress, errorTitle,errorText,  }) {
+function ErrorPopup({ cancelButtonPress,doneButtonPress, errorTitle,errorText, btnOneText, btnTwoText  }) {
   return (
-    <View style={{ 
-    flex: 1, 
+    <View style={{
+    flex: 1,
     justifyContent: 'flex-end',
     alignItems:'center',
     backgroundColor: 'rgba(0, 0, 0, 0.4)'}}>
       <View style={{backgroundColor:'white',width:SCREEN.width,alignItems:'center',paddingVertical:20}}>
-        {errorTitle && 
+        {errorTitle && errorTitle !== '' &&
         <View>
             <Text style={styles.titleText}>{errorTitle}</Text>
         </View>
         }
-        {errorText && 
+        {errorText && errorText !== '' &&
         <View>
             <Text style={styles.errorText}>{errorText}</Text>
         </View>
         }
-              <TouchableOpacity
+              {btnOneText && btnOneText !== '' && <TouchableOpacity
               style={styles.btnDone}
               onPress={cancelButtonPress}>
-              <Text style={styles.btnDoneText}>Yes, Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+              <Text style={styles.btnDoneText}>{btnOneText}</Text>
+            </TouchableOpacity>}
+            {btnTwoText && btnTwoText !== '' && <TouchableOpacity
             style={styles.btnCancel}
             onPress={doneButtonPress}>
-            <Text style={styles.btnCancelText}>Go Back</Text>
-          </TouchableOpacity>
-        
+            <Text style={styles.btnCancelText}>{btnTwoText}</Text>
+          </TouchableOpacity>}
+
           </View>
     </View>
   );
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         backgroundColor: '#F818D9',
         justifyContent: 'center',
-      },  
+      },
       btnDoneText: {
         fontSize: 17,
         textAlign: 'center',
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         color: 'black',
         fontFamily: FONT.Nunito.bold,
       },
-      
+
       btnCancel: {
         width: SCREEN.width - 40,
         borderRadius: 25,
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'black',
         justifyContent: 'center',
       },
-     
+
 });
-   
+
 export default ErrorPopup;

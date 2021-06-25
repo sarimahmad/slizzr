@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
@@ -9,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   Linking,
+  Modal,
   Image,
   Alert,
 } from 'react-native';
@@ -20,6 +20,7 @@ import {connect} from 'react-redux';
 
 import TextField from '../../component/TextField/index';
 import {BLACK, WHITE} from '../../helper/Color';
+import ErrorPopup from '../../component/ErrorPopup';
 import {FONT, SCREEN} from '../../helper/Constant';
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import * as userActions from '../../redux/actions/user';
@@ -36,6 +37,10 @@ class SignUp extends Component {
       password: '',
       confirmPassword: '',
       loading: false,
+      popUpError: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
     };
   }
   componentDidMount() {
@@ -79,20 +84,60 @@ class SignUp extends Component {
 
   isFormFilled() {
     let checkPassword = Validations.checkPassword(this.state.password);
+    let confirmPass = Validations.checkPassword(this.state.confirmPassword);
     let checkEmail = Validations.checkEmail(this.state.email);
     let checkfirstName = Validations.checkUsername(this.state.firstName);
     let checklastName = Validations.checkUsername(this.state.lastName);
-    if (checkEmail && checkPassword && checkfirstName && checklastName) {
+    if (
+      checkEmail &&
+      checkPassword &&
+      checkfirstName &&
+      checklastName &&
+      confirmPass === checkPassword
+    ) {
       return true;
     }
     if (!checkfirstName) {
-      alert('firstName required');
+      this.setState({
+        loading: false,
+        btnOneText: 'Ok',
+        errorTitle: 'FIRST NAME INVALID',
+        errorText: 'Please input the valid data in First name',
+        popUpError: true,
+      });
     } else if (!checkEmail) {
-      alert('invalid email');
+      this.setState({
+        loading: false,
+        btnOneText: 'Ok',
+        errorTitle: 'EMAIL INVALID',
+        errorText: 'Please input the valid data in Email',
+        popUpError: true,
+      });
     } else if (!checklastName) {
-      alert('lastname required');
+      this.setState({
+        loading: false,
+        btnOneText: 'Ok',
+        errorTitle: 'LAST NAME INVALID',
+        errorText: 'Please input the valid data in Last name',
+        popUpError: true,
+      });
     } else if (!checkPassword) {
-      alert('invalid password');
+      this.setState({
+        loading: false,
+        btnOneText: 'Ok',
+        errorTitle: 'PASSWORD INVALID',
+        errorText: 'Please input the valid data in Password',
+        popUpError: true,
+      });
+    } else if (checkEmail !== confirmPass) {
+      this.setState({
+        loading: false,
+        errorTitle: 'PASSWORD IS NOT MATCHING',
+        errorText: 'Please check your password text you typed',
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
+      return false;
     }
     return false;
   }
@@ -116,7 +161,18 @@ class SignUp extends Component {
             displayName: this.state.firstName + ' ' + this.state.lastName,
             email_verified: false,
             socialLogin: false,
-            age: '14',
+            STRIPE_CUST_ID: '',
+            STRIPE_HOST_ID: '',
+            age: '13',
+            AttendedEvents: [],
+            Address: '',
+            HostedEvents: [],
+            BlockedUser: [],
+            BirthDate: new Date(),
+            Gender: '',
+            Visibility: true,
+            Radius: 50,
+            bio: '',
           };
           const usersRef = firestore().collection('users');
           usersRef
@@ -130,29 +186,45 @@ class SignUp extends Component {
               });
             })
             .catch(error => {
-              this.setState({loading: false});
-              Alert.alert('User error', error);
+              this.setState({
+                loading: false,
+                errorTitle: 'USER ERROR',
+                errorText: JSON.stringify(error),
+                btnOneText: 'Ok',
+                popUpError: true,
+              });
             });
         })
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
-            Alert.alert(
-              'Already have user',
-              'There is already a user register with this email',
-            );
+            this.setState({
+              loading: false,
+              errorTitle: 'EMAIL DUBLICATE',
+              errorText: 'There is already a user register with this email',
+              btnOneText: 'Ok',
+              popUpError: true,
+            });
+          } else {
+            this.setState({
+              loading: false,
+              errorTitle: 'USER ERROR',
+              errorText: JSON.stringify(error),
+              btnOneText: 'Ok',
+              popUpError: true,
+            });
           }
-          this.setState({loading: false});
-          Alert.alert('Internet Issue', 'Please Check your Internet');
         });
     } else {
-      this.setState({loading: false});
+      this.setState({
+        loading: false,
+      });
     }
   };
 
   googleSignInBtn = async () => {
-    this.setState({loading: true});
     const {idToken} = await GoogleSignin.signIn();
     const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
+    this.setState({loading: true});
     const usersRef = firestore().collection('users');
     auth()
       .signInWithCredential(googleCredential)
@@ -169,6 +241,15 @@ class SignUp extends Component {
           email_verified: true,
           socialLogin: true,
           age: '13',
+          AttendedEvents: [],
+          Address: '',
+          HostedEvents: [],
+          BlockedUser: [],
+          BirthDate: new Date(),
+          Gender: '',
+          Visibility: true,
+          Radius: 50,
+          bio: '',
         };
 
         usersRef
@@ -185,8 +266,13 @@ class SignUp extends Component {
                   this.props.navigation.navigate('BirthDate', {from: 'signUp'});
                 })
                 .catch(error => {
-                  this.setState({loading: false});
-                  alert(error);
+                  this.setState({
+                    loading: false,
+                    errorTitle: 'ERROR',
+                    errorText: JSON.stringify(error),
+                    btnOneText: 'Ok',
+                    popUpError: true,
+                  });
                 });
               return;
             } else {
@@ -196,13 +282,23 @@ class SignUp extends Component {
             }
           })
           .catch(error => {
-            this.setState({loading: false});
-            Alert.alert('User error', error);
+            this.setState({
+              loading: false,
+              errorTitle: 'ERROR',
+              errorText: JSON.stringify(error),
+              btnOneText: 'Ok',
+              popUpError: true,
+            });
           });
       })
       .catch(error => {
-        this.setState({loading: false});
-        Alert.alert('User error', error);
+        this.setState({
+          loading: false,
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
       });
   };
 
@@ -242,6 +338,8 @@ class SignUp extends Component {
         Alert.alert('Facebook Error', error);
       });
   };
+
+  doneClick() {}
 
   render() {
     return (
@@ -292,17 +390,13 @@ class SignUp extends Component {
               />
               <TextField
                 placeholder="Confirm Password"
-                type={'confirmPassword'}
+                type={'password'}
                 parentCallBack={this.storeInputData}
               />
               <ButtonResetPassaword
                 validate={this.isFormFilledCheck()}
                 btnLabel={'SIGN UP'}
-                data={
-                  this.isFormFilledCheck()
-                    ? this.handleSubmit
-                    : console.log('ok')
-                }
+                data={this.handleSubmit}
               />
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('Signin')}
@@ -385,6 +479,29 @@ class SignUp extends Component {
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
+        {this.state.popUpError && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() =>
+                this.setState({
+                  popUpError: false,
+                  btnOneText: '',
+                  errorTitle: '',
+                  errorText: '',
+                })
+              }
+              doneButtonPress={() => this.doneClick()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+              btnTwoText={this.state.btnTwoText}
+            />
+          </Modal>
+        )}
       </View>
     );
   }

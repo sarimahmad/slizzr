@@ -9,19 +9,27 @@ import {
   SafeAreaView,
   TextInput,
   FlatList,
+  PermissionsAndroid,
+  ToastAndroid,
   Image,
   Alert,
+  Platform,
+  Modal,
 } from 'react-native';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
+import Geolocation from 'react-native-geolocation-service';
+import {openSettings} from 'react-native-permissions';
+
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import WaitingFor from '../../component/WaitingFor';
 import moment from 'moment';
+import ErrorPopup from '../../component/ErrorPopup';
 
 let allEvents = [];
 let prepaidEvents = [];
@@ -37,24 +45,127 @@ export default class home extends Component {
       enableLocation: false,
       date: new Date(),
       index: 0,
-      markers: [
-        {lat: 31.52037, lng: 74.358749},
-        {lat: 31.64037, lng: 74.358749},
-        {lat: 31.7037, lng: 74.358749},
-      ],
       allEvents: [],
       prepaidEvents: [],
       scanEvents: [],
       freeEvents: [],
       allLocations: [],
       currentData: [],
+      popUpError: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
     };
   }
   componentDidMount() {
-    this.getEvents();
+    this.getEvents('start');
+    this.getLocation();
   }
+  hasPermissionIOS = async () => {
+    const openSetting = () => {
+      openSettings().catch(() => console.warn('cannot open settings'));
+    };
+    const status = await Geolocation.requestAuthorization('whenInUse');
 
-  async getEvents() {
+    if (status === 'granted') {
+      return true;
+    }
+
+    if (status === 'denied') {
+    }
+
+    if (status === 'disabled') {
+      Alert.alert(
+        'Turn on Location Services to allow Slizzr to determine your location.',
+        '',
+        [
+          {text: 'Go to Settings', onPress: openSetting},
+          {text: "Don't Use Location", onPress: () => {}},
+        ],
+      );
+    }
+
+    return false;
+  };
+
+  hasLocationPermission = async () => {
+    if (Platform.OS === 'ios') {
+      const hasPermission = await this.hasPermissionIOS();
+      return hasPermission;
+    }
+
+    if (Platform.OS === 'android' && Platform.Version < 23) {
+      return true;
+    }
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show(
+        'Location permission denied by user.',
+        ToastAndroid.LONG,
+      );
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show(
+        'Location permission revoked by user.',
+        ToastAndroid.LONG,
+      );
+    }
+
+    return false;
+  };
+
+  getLocation = async () => {
+    const hasPermission = await this.hasLocationPermission();
+
+    if (!hasPermission) {
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      position => {
+        this.setState({enableLocation: true});
+        console.log(position);
+      },
+      error => {
+        this.setState({
+          loading: false,
+          errorTitle: 'USER ERROR',
+          errorText: JSON.stringify(error),
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
+      },
+      {
+        accuracy: {
+          android: 'high',
+          ios: 'best',
+        },
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+        distanceFilter: 0,
+        forceRequestLocation: true,
+        showLocationDialog: true,
+      },
+    );
+  };
+
+  async getEvents(type) {
     allEvents = [];
     prepaidEvents = [];
     scanEvents = [];
@@ -93,7 +204,17 @@ export default class home extends Component {
               freeEvents.push(event);
             }
             if (allEvents.length === querySnapShot._docs.length) {
-              this.setState({currentData: allEvents});
+              if (type === 'update') {
+                this.state.index === 0
+                  ? this.setState({currentData: allEvents})
+                  : this.state.index === 1
+                  ? this.setState({currentData: prepaidEvents})
+                  : this.state.index === 2
+                  ? this.setState({currentData: scanEvents})
+                  : this.setState({currentData: freeEvents});
+              } else {
+                this.setState({currentData: allEvents});
+              }
               this.setState({allEvents: allEvents});
               this.setState({prepaidEvents: prepaidEvents});
               this.setState({scanEvents: scanEvents});
@@ -108,7 +229,13 @@ export default class home extends Component {
       })
 
       .catch(error => {
-        Alert.alert('Intrnet Issue', JSON.stringify(error));
+        this.setState({
+          loading: false,
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
       });
   }
   onChange = (event, selectedDate) => {
@@ -123,12 +250,19 @@ export default class home extends Component {
   };
   getImageUrl = async imageName => {
     let imageRef = storage().ref('/' + imageName);
-    return imageRef
-      .getDownloadURL()
-      .catch(e => console.log('getting downloadURL of image error => ', e));
+    return imageRef.getDownloadURL().catch(e =>
+      this.setState({
+        loading: false,
+        errorTitle: 'ERROR',
+        errorText: JSON.stringify(e),
+        btnOneText: 'Ok',
+        popUpError: true,
+      }),
+    );
   };
 
   barTapped = indexTap => {
+    this.getEvents('update');
     if (indexTap === 0) {
       this.setState({index: 0});
       this.setState({currentData: this.state.allEvents});
@@ -209,7 +343,8 @@ export default class home extends Component {
                     <TouchableOpacity
                       onPress={() =>
                         this.props.navigation.navigate('eventDetail', {
-                          detailItem: item,
+                          detailItem: item.id,
+                          imageUri: item.imageUrl,
                         })
                       }
                       style={styles.shareView}>
@@ -244,7 +379,8 @@ export default class home extends Component {
                 }}
                 onPress={() =>
                   this.props.navigation.navigate('eventDetail', {
-                    detailItem: marker,
+                    detailItem: marker.id,
+                    imageUri: marker.imageUrl,
                   })
                 }
                 image={require('../../assets/marker.png')}
@@ -324,7 +460,9 @@ export default class home extends Component {
             You will need to enable location to see events near you
           </Text>
           <TouchableOpacity
-            onPress={() => this.setState({mapView: true, enableLocation: true})}
+            onPress={() =>
+              openSettings().catch(() => console.warn('cannot open settings'))
+            }
             style={styles.btnLocation}>
             <Text style={styles.btnTextLocation}>Allow Location</Text>
           </TouchableOpacity>
@@ -524,6 +662,7 @@ export default class home extends Component {
             style={{flexDirection: 'row'}}>
             <DateAndTimePicker
               testID="dateTimePicker"
+              format="MMM DD, YYYY "
               value={this.state.date}
               mode={'datetime'}
               is24Hour={true}
@@ -615,6 +754,29 @@ export default class home extends Component {
             </View>
           )}
         </SafeAreaView>
+        {this.state.popUpError && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() =>
+                this.setState({
+                  popUpError: false,
+                  btnOneText: '',
+                  errorTitle: '',
+                  errorText: '',
+                })
+              }
+              doneButtonPress={() => this.doneClick()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+              btnTwoText={this.state.btnTwoText}
+            />
+          </Modal>
+        )}
       </View>
     );
   }

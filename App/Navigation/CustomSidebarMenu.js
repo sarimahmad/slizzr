@@ -2,7 +2,7 @@
 // Custom Navigation Drawer / Sidebar with Image and Icon in Menu Options
 // https://aboutreact.com/custom-navigation-drawer-sidebar-with-image-and-icon-in-menu-options/
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   View,
@@ -11,16 +11,23 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-
 import {
   DrawerContentScrollView,
   DrawerItemList,
 } from '@react-navigation/drawer';
-import {FONT} from '../helper/Constant';
-// import colors from '../config/colors';
-// import Icon from "../components/Icon";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {FONT, SCREEN} from '../helper/Constant';
 
 const CustomSidebarMenu = props => {
+  const [userObject, setUserObject] = useState({});
+  useEffect(() => {
+    async function fetchData() {
+      const userDetail = await AsyncStorage.getItem('userdetail');
+      setUserObject(JSON.parse(userDetail));
+    }
+    fetchData();
+  });
   return (
     <View style={{flex: 1}}>
       <View
@@ -38,14 +45,24 @@ const CustomSidebarMenu = props => {
       <SafeAreaView style={{flex: 1}}>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => props.navigation.navigate('myProfile')}>
+          onPress={() =>
+            props.navigation.navigate('myProfile', {from: 'drawer'})
+          }>
           <View style={styles.NameDetailWrapper}>
-            <Image
-              source={require('../assets/profilePic.png')}
-              style={styles.logo}
-            />
+            {userObject && userObject.user ? (
+              <Image
+                source={{uri: userObject.user.Profile}}
+                style={styles.logo}
+              />
+            ) : (
+              <View style={styles.logo} />
+            )}
 
-            <Text style={styles.EmailText}>Zoya Rajput</Text>
+            <Text style={styles.EmailText}>
+              {userObject && userObject.user
+                ? userObject.user.FirstName
+                : 'User'}
+            </Text>
           </View>
         </TouchableOpacity>
 
@@ -69,6 +86,12 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 100 / 2,
     alignSelf: 'center',
+  },
+  logo: {
+    height: 60,
+    width: 60,
+    borderWidth: 2,
+    borderRadius: 30,
   },
   iconStyle: {
     width: 15,
@@ -104,10 +127,12 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   EmailText: {
-    fontSize: 16,
+    fontSize: 20,
     fontFamily: FONT.Nunito.bold,
     alignSelf: 'center',
-    color: 'rgba(120, 120, 120, 1)',
+    color: 'rgba(30, 30, 30, 1)',
+    marginLeft: 10,
+    width: SCREEN.width / 2.7,
   },
   AbsoluteRightIcon: {
     position: 'absolute',

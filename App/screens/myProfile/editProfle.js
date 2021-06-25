@@ -4,7 +4,6 @@ import {
   Text,
   View,
   StyleSheet,
-  Platform,
   Image,
   TouchableOpacity,
   ScrollView,
@@ -16,304 +15,350 @@ import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import RNPickerSelect from 'react-native-picker-select';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import Textarea from 'react-native-textarea'
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import GoogleSearchBar from '../../component/GoogleSearchBar';
+import firestore from '@react-native-firebase/firestore';
 import {connect} from 'react-redux';
+
+import GoogleSearchBar from '../../component/GoogleSearchBar';
 import * as userActions from '../../redux/actions/user';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
+import Loader from '../../component/Loader';
 
 class editProfle extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-          location:{},
-          Address:'',
-            enableMap: false,
-            DateTime: new Date(),
-            showDate: false,
-            selectLocationFlag:false,
-            events: false,
-            event: 'Female',
-        }
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      location: {},
+      Address: '',
+      enableMap: false,
+      DateTime: new Date(),
+      showDate: false,
+      selectLocationFlag: false,
+      events: false,
+      event: 'Female',
+      firstName: '',
+      lastName: '',
+      gender: 'Male',
+      bioText: '',
+      userName: '',
+      loading: false,
+    };
+  }
 
-    showDatepicker = () => {
-        this.setState({ showDate: true });
-    };
-    onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || this.state.date;
+  showDatepicker = () => {
+    this.setState({showDate: true});
+  };
+  onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || this.state.date;
 
-        this.setState({ date: currentDate });
-        this.setState({ showDate: false });
-    };
-    showDatepicker = () => {
-        this.setState({ showDate: true });
-    };
-    async componentDidMount(){
-        const userDetail = await AsyncStorage.getItem('userdetail');
-       this.setState({profileData:JSON.parse(userDetail.user)})
-      console.log(this.state.userDetail)
+    this.setState({date: currentDate});
+    this.setState({showDate: false});
+  };
+  showDatepicker = () => {
+    this.setState({showDate: true});
+  };
+
+  setAllOldstate() {
+    if (this.state.firstName !== this.props.userDetail.FirstName) {
+      this.setState({
+        firstName: this.props.userDetail.FirstName,
+        lastName: this.props.userDetail.LastName,
+        userName: this.props.userDetail.displayName,
+        bioText: this.props.userDetail.bio ? this.props.userDetail.bio : '',
+        Address: this.props.userDetail.Address,
+      });
     }
-    setLocation = (latitude, longitude) => {
-      console.log(latitude, longitude);
-      this.setState({
-        selectLocationFlag: false,
-        localErrorLocation: null,
-        location: {
-          latitude: latitude,
-          longitude: longitude,
-        },
+    if (this.props.userDetail.location) {
+      this.setState({Address: this.props.userDetail.location.address});
+    }
+  }
+
+  firestoreLinking = async () => {
+    const dataToSend ={
+      FirstName: this.state.firstName,
+      LastName: this.state.lastName,
+      displayName: this.state.userName,
+      Address: this.state.Address,
+      bio: this.state.bioText,
+      Gender: this.state.gender}
+    this.setState({loading: true});
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(this.props.userDetail.id)
+      .update(dataToSend)
+      .then(() => {
+        usersRef
+          .doc(this.props.userDetail.id)
+          .get()
+          .then(firestoreDocument => {
+            this.props.callApi(
+              firestoreDocument.data(),
+              this.props.userDetail.id,
+            );
+            this.setState({loading: false});
+            this.props.navigation.pop();
+          });
+      })
+      .catch(error => {
+        this.setState({loading: false});
+        alert(error);
       });
-    };
-    getAdress = address => {
-      // alert(address);
-      console.log(address);
-  
-      this.setState({
-        currentLocationPlace: address,
-        Address: address,
-      });
-    };
-   
-    render() {
-        return (
-            <View style={styles.wrapperView}>
-                <SafeAreaView style={styles.wrapperView}>
-                    <HeaderWithOptionBtn
-                       backColor={WHITE.dark}
-                        borderBottom={true}
-                        leftIcon={require('../../assets/back.png')}
-                        leftPress={() => this.props.navigation.navigate("myProfile")}
-                        headerTitle={"Edit Profile"}
-                    />
-                    <ScrollView style={styles.wrapperView} bounces={true}>
-                        <View style={styles.blockView}>
-                        <View style={{height:200,width:SCREEN.width}}>
-                                 <Image
-                            style={{position: 'absolute',left:0,height:140,width:140,borderRadius:50}}
-                            source={require('../../assets/profileImage1.png')}/>
-                            
-                          <Image
-                            style={{position: 'absolute',left:30,height:170,width:170,borderRadius:50}}
-                            source={require('../../assets/profileImage2.png')}/>
-                      
-                           <Image
-                            style={{position: 'absolute',right:0,height:140,width:140,borderRadius:50}}
-                            source={require('../../assets/profileImage1.png')}/>
-                            <Image
-                            style={{position: 'absolute',right:30,height:170,width:170,borderRadius:50}}
-                            source={require('../../assets/profileImage2.png')}/>
-                        
-                            
-                           <Image
-                            style={{position: 'absolute',alignSelf: 'center',height:200,width:200,borderRadius:50}}
-                            source={require('../../assets/profileImage3.png')}/>
-                            <Image
-                            style={{position: 'absolute',alignSelf: 'center',bottom:10,height:35,width:35,borderRadius:50}}
-                            source={require('../../assets/edit.png')}/>
-                           </View>
-                           
-                            <TextInput
-                                value={"Zoya"}
-                                style={styles.inputTextView}
-                            />
-                            <TextInput
-                                value={"Rajput"}
-                                style={styles.inputTextView}
-                            />
-                            <TextInput
-                                value={"Rajput"}
-                                style={styles.inputTextView}
-                            />
-                                                 <View style={styles.TextInputWrapper}>
+  };
+  componentDidMount() {
+    this.setAllOldstate();
+  }
+  setLocation = (latitude, longitude) => {
+    console.log(latitude, longitude);
+    this.setState({
+      selectLocationFlag: false,
+      localErrorLocation: null,
+      location: {
+        latitude: latitude,
+        longitude: longitude,
+      },
+    });
+  };
+  getAdress = address => {
+    // alert(address);
+    console.log(address);
+
+    this.setState({
+      currentLocationPlace: address,
+      Address: address,
+    });
+  };
+
+  render() {
+    return (
+      <View style={styles.wrapperView}>
+        <SafeAreaView style={styles.wrapperView}>
+          <HeaderWithOptionBtn
+            backColor={WHITE.dark}
+            borderBottom={true}
+            leftIcon={require('../../assets/back.png')}
+            leftPress={() => this.props.navigation.navigate('myProfile')}
+            headerTitle={'Edit Profile'}
+          />
+          <ScrollView style={styles.wrapperView} bounces={true}>
+            <View style={styles.blockView}>
+              <View style={{height: 200, width: SCREEN.width}}>
+                <Image
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    height: 140,
+                    width: 140,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/profileImage1.png')}
+                />
+
+                <Image
+                  style={{
+                    position: 'absolute',
+                    left: 30,
+                    height: 170,
+                    width: 170,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/profileImage2.png')}
+                />
+
+                <Image
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    height: 140,
+                    width: 140,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/profileImage1.png')}
+                />
+                <Image
+                  style={{
+                    position: 'absolute',
+                    right: 30,
+                    height: 170,
+                    width: 170,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/profileImage2.png')}
+                />
+
+                <Image
+                  style={{
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    height: 200,
+                    width: 200,
+                    borderRadius: 100,
+                  }}
+                  source={
+                    this.props.userDetail && this.props.userDetail.Profile
+                      ? {uri: this.props.userDetail.Profile}
+                      : require('../../assets/profileImage2.png')
+                  }
+                />
+                <Image
+                  style={{
+                    position: 'absolute',
+                    alignSelf: 'center',
+                    bottom: 10,
+                    height: 35,
+                    width: 35,
+                    borderRadius: 50,
+                  }}
+                  source={require('../../assets/edit.png')}
+                />
+              </View>
+
+              <TextInput
+                value={this.state.firstName}
+                onChange={firstName => this.setState({firstName})}
+                style={styles.inputTextView}
+              />
+              <TextInput
+                value={this.state.lastName}
+                onChange={lastName => this.setState({lastName})}
+                style={styles.inputTextView}
+              />
+              <TextInput
+                value={this.state.userName}
+                onChange={userName => this.setState({userName})}
+                style={styles.inputTextView}
+              />
+              <View style={styles.TextInputWrapper}>
                 <DateAndTimePicker
-                  format="MMM DD, YYYY - ddd "
+                  format="MMM DD, YYYY"
                   mode="date"
                   value={this.state.date}
                   setDateAndTime={value => this.setState({DateTime: value})}
-                  showPlaceholder="+ Add"
+                  showPlaceholder={new Date().toDateString()}
                   datebutton={styles.datebutton}
                 />
               </View>
-             
-                            {/* {Platform.OS === 'android' ? (
-                                <TouchableOpacity
-                                    onPress={this.showDatepicker}
-                                    style={styles.DataTimeWrapper}>
-                                    <View style={styles.input}>
-                                        <Text style={{ paddingTop: 15, paddingLeft: 20 }}>
-                                            {this.state.date.toDateString()}
-                                        </Text>
-                                    </View>
-
-                                    <View style={styles.logoAddCalenderView}>
-                                        <Image
-                                            source={require('../../assets/calendar-range.png')}/>
-                                    </View>
-               
-                                    {this.state.showDate && (
-                                        <DateTimePicker
-                                            testID="dateTimePicker"
-                                            value={this.state.date}
-                                            mode={'date'}
-                                            is24Hour={true}
-                                            display="default"
-                                            onChange={this.onChange}
-                                        />
-                                    )}
-
-                                    <View />
-                                </TouchableOpacity>
-                            ) : (
-                                <View style={styles.DataTimeWrapper}>
-                                    <DateTimePicker
-                                        style={styles.DateTimeInnerIOS}
-                                        testID="dateTimePicker"
-                                        value={this.state.date}
-                                        mode={'date'}
-                                        is24Hour={true}
-                                        display="default"
-                                        textColor="black"
-                                        themeVariant="light"
-                                        onChange={this.onChange}
-                                    />
-                                    <View style={styles.logoAddCalenderView}>
-                                        <Image
-                                            source={require('../../assets/calendar-range.png')}
-                                        />
-                                    </View>
-                                </View>
-                            )} */}
-                            <View style={{  width: '90%',
-                                        height: 53,
-                                        borderWidth: 1,
-                                        borderColor: 'lightgrey',
-                                        borderRadius: 8,
-                                        alignSelf:'center',
-                                        marginVertical:20
-                                      }}>
-                            <RNPickerSelect
-                                style={{
-                                    inputIOS: {
-                                        paddingLeft: 20,
-                                    },
-                                    inputAndroid: {
-                                        paddingLeft: 20,
-                                    },
-                                }}
-                                selectedValue={this.state.event}  
-                                onValueChange={(itemValue, itemIndex) =>
-                                    this.setState({ event: itemValue })
-                                }
-                                items={[
-                                    { label: 'Female', value: 'Female' },
-                                    { label: 'Male', value: 'Male' },
-                                ]}
-                            />
-                            </View>
-                                       <TouchableOpacity
-                    style={[
-                      styles.TextInputWrapper2,
-                      {width: SCREEN.width-40},
-                    ]}
-                    onPress={() => this.setState({selectLocationFlag: true})}>
-                    {this.state.Address === '' ? (
-                      <Text
-                        style={[
-                          styles.thirdinput,
-                          {paddingTop: 15, color: 'grey'},
-                        ]}>
-                        Add Location
-                      </Text>
-                    ) : (
-                      <Text
-                        style={[
-                          styles.thirdinput,
-                          {paddingTop: 10, color: 'grey'},
-                        ]}>
-                        {this.state.Address}
-                      </Text>
-                    )}
-                  </TouchableOpacity>
-       
-                            {/* <TextInput
-                                value={"Niagara Falls, ON"}
-                                style={styles.inputTextView}
-                            /> */}
-                        <Textarea
-                        style={[styles.inputTextView,{height: 159}]}
-                        placeholder="Message"
-                        />
-                         <TouchableOpacity style={styles.btn}>
-                                <Text style={styles.btntext}>SAVE</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <Modal
-                visible={this.state.selectLocationFlag}
-                onRequestClose={() =>
-                  this.setState({selectLocationFlag: false})
-                }
-                animationType={'slide'}>
-                <View
+              <View
+                style={{
+                  width: '90%',
+                  height: 53,
+                  borderWidth: 1,
+                  borderColor: 'lightgrey',
+                  borderRadius: 8,
+                  alignSelf: 'center',
+                  marginVertical: 20,
+                  justifyContent: 'center',
+                }}>
+                <RNPickerSelect
                   style={{
-                    marginTop: '10%',
-                    flex: 1,
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                  }}>
-                  <GoogleSearchBar
-                    closeLocationModal={() => {
-                      this.setState({selectLocationFlag: false});
-                    }}
-                    getAddress={this.getAdress}
-                    setLocation={this.setLocation}
-                    clearGoogleSearch={this.state.clearGoogleSearch}
-                    inputValue={'Address'}
-                  />
-                </View>
-              </Modal>
-    
-                    </ScrollView>
-                </SafeAreaView>
-           
-         
-     
+                    inputIOS: {
+                      paddingLeft: 20,
+                    },
+                    inputAndroid: {
+                      paddingLeft: 20,
+                    },
+                  }}
+                  selectedValue={this.state.gender}
+                  value={this.state.gender}
+                  onValueChange={(itemValue, itemIndex) =>
+                    this.setState({gender: itemValue})
+                  }
+                  items={[
+                    {label: 'Female', value: 'Female'},
+                    {label: 'Male', value: 'Male'},
+                  ]}
+                />
+              </View>
+              <TouchableOpacity
+                style={[
+                  styles.TextInputWrapper2,
+                  {width: SCREEN.width - 40, justifyContent: 'center'},
+                ]}
+                onPress={() => this.setState({selectLocationFlag: true})}>
+                {this.state.Address === '' ? (
+                  <Text
+                    style={[
+                      styles.thirdinput,
+                      {paddingTop: 15, color: 'grey'},
+                    ]}>
+                    Add Location
+                  </Text>
+                ) : (
+                  <Text
+                    style={[
+                      styles.thirdinput,
+                      {paddingTop: 10, color: 'grey'},
+                    ]}>
+                    {this.state.Address}
+                  </Text>
+                )}
+              </TouchableOpacity>
+
+              <TextInput
+                value={this.state.bioText}
+                onChange={bioText => this.setState({bioText})}
+                placeholder={'Bio'}
+                multiline={true}
+                style={styles.messageText}
+              />
+              <TouchableOpacity style={styles.btn} onPress={() => this.firestoreLinking()}>
+                <Text style={styles.btntext}>SAVE</Text>
+              </TouchableOpacity>
+            </View>
+            <Modal
+              visible={this.state.selectLocationFlag}
+              onRequestClose={() => this.setState({selectLocationFlag: false})}
+              animationType={'slide'}>
+              <View
+                style={{
+                  marginTop: '10%',
+                  flex: 1,
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}>
+                <GoogleSearchBar
+                  closeLocationModal={() => {
+                    this.setState({selectLocationFlag: false});
+                  }}
+                  getAddress={this.getAdress}
+                  setLocation={this.setLocation}
+                  clearGoogleSearch={this.state.clearGoogleSearch}
+                  inputValue={'Address'}
+                />
+              </View>
+            </Modal>
+          </ScrollView>
+        </SafeAreaView>
+        {this.state.loading && <Loader loading={'Updating'} />}
       </View>
     );
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
- 
-    return {  
-    };
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
   };
-  
-  const mapDispatchToProps = (dispatch) => {
-    return {
-     
-   
-      callApi: (user,uid) => dispatch(userActions.alterUser({user,uid})),
-     
-    };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.alterUser({user, uid})),
   };
-  export default connect(mapStateToProps, mapDispatchToProps)(editProfle);
-  
+};
+export default connect(mapStateToProps, mapDispatchToProps)(editProfle);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
     backgroundColor: WHITE.dark,
   },
   TextInputWrapper: {
-    marginTop:20,
+    marginTop: 20,
     justifyContent: 'center',
     width: SCREEN.width - 40,
     alignSelf: 'center',
   },
-  
+
   thirdinput: {
     borderWidth: 1,
     borderColor: 'lightgrey',
@@ -330,7 +375,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
   },
- 
+  messageText: {
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    shadowOffset: {width: 1, height: 1},
+    width: SCREEN.width - 40,
+    height: 123,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingLeft: 20,
+    borderColor: 'lightgrey',
+    fontSize: 16,
+    fontFamily: FONT.Nunito.regular,
+    marginTop: 20,
+    alignSelf: 'center',
+  },
   form: {
     marginVertical: 5,
     borderWidth: 1,
@@ -415,6 +474,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 40,
+    marginBottom: 20,
   },
   btntext: {
     color: '#FFFFFF',

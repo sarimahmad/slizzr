@@ -7,7 +7,7 @@ import {
   SafeAreaView,
   Text,
   TouchableOpacity,
-  Platform
+  Platform,
 } from 'react-native';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -30,7 +30,7 @@ class introduction extends Component {
           />
 
           <Text style={styles.detailText}>
-          Revolutionize the way you host and attend events!
+            Revolutionize the way you host and attend events!
           </Text>
 
           <Swiper
@@ -171,26 +171,26 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     ...Platform.select({
       ios: {
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
           width: 0,
           height: 12,
         },
         shadowOpacity: 0.58,
-        shadowRadius: 16.00,
+        shadowRadius: 16,
         elevation: 24,
       },
       android: {
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
           width: 0,
           height: 120,
         },
         shadowOpacity: 0.58,
-        shadowRadius: 16.00,
+        shadowRadius: 16,
         elevation: 24,
         backgroundColor: 'white',
-        height: SCREEN.height+20,
+        height: SCREEN.height + 20,
       },
     }),
   },
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.bold,
     alignSelf: 'center',
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
   getStartedText: {
     fontSize: 14,

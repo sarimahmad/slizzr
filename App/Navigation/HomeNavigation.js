@@ -5,8 +5,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {Image} from 'react-native';
-import home from '../screens/home';
 
+import home from '../screens/home';
 import splash from '../screens/splash';
 import introduction from '../screens/introduction';
 import signIn from '../screens/signIn';
