@@ -8,9 +8,12 @@ import {
   FlatList,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
-import { BLACK, BLUE, WHITE } from '../../helper/Color';
+import { BLACK, WHITE } from '../../helper/Color';
 import { FONT, SCREEN } from '../../helper/Constant';
-import { width, height } from '../../helper/Constant';
+import { width } from '../../helper/Constant';
+import {connect} from 'react-redux';
+import * as userActions from '../../redux/actions/user';
+import firestore from '@react-native-firebase/firestore';
 
 import {
   widthPercentageToDP as wp,
@@ -20,7 +23,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import FlipImage from '../../component/FlipImage';
 import moment from 'moment';
-export default class eventDetail extends Component {
+ class eventDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,15 +33,32 @@ export default class eventDetail extends Component {
       { id: 4, image: require('../../assets/Slizzer-icon/testImage.webp') },
       { id: 5, image: require('../../assets/Slizzer-icon/testImage.webp') },],
       detailItem: {},
-      date: ''
+      date: '',
+      imageUri: '',
     }
 
   }
   componentDidMount() {
 
-    let detailItem = this.props.route.params.detailItem;
-    this.setState({ detailItem: detailItem })
-    this.setState({ date: detailItem.DateTime.toDate().toLocaleTimeString() })
+    let id = this.props.route.params.detailItem;
+    let imageUri = this.props.route.params.imageUri;
+    this.setState({imageUri: imageUri })
+    this.getEventDetail(id);
+  }
+  getEventDetail(id) {
+    const eventRef = firestore().collection('events');
+    eventRef
+    .doc(id)
+    .get()
+    .then(firestoreDocument => {
+      if(!firestoreDocument.exists){
+      } else {
+        this.setState({myEvent: firestoreDocument.data().Host.id === this.props.userDetail.id})
+        this.setState({detailItem: firestoreDocument.data()});
+        this.setState({ date: firestoreDocument.data().DateTime.toDate().toLocaleTimeString() })
+      }
+
+    })
   }
 
   render() {
@@ -60,7 +80,7 @@ export default class eventDetail extends Component {
           <ScrollView bounces={false}>
             <View style={{ marginTop: 20, alignSelf: 'center', alignItems: 'center', width: SCREEN.width }}>
               <FlipImage
-                imageUrl={this.state.detailItem.imageUrl}
+                imageUrl={this.state.imageUri}
                 Name={this.state.detailItem.Name}
                 Description={this.state.detailItem.Description}
                 Address={this.state.detailItem.Address}
@@ -106,15 +126,29 @@ export default class eventDetail extends Component {
               <Text style={[styles.purpleText, { marginTop: 9, textDecorationLine: 'underline', }]}>See more</Text>
             </View>
 
-            <TouchableOpacity onPress={() => this.props.navigation.navigate("prepay")} style={styles.btnMap}>
+            {!this.state.myEvent &&  <TouchableOpacity onPress={() => this.props.navigation.navigate("prepay")} style={styles.btnMap}>
               <Text style={styles.btnText}>ATTEND</Text>
-            </TouchableOpacity>
+            </TouchableOpacity>}
           </ScrollView>
         </SafeAreaView>
       </View>
     );
   }
 }
+
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.alterUser({user, uid})),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(eventDetail);
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,

@@ -109,9 +109,11 @@ class Profile extends Component {
                       alignSelf: 'center',
                       height: 200,
                       width: 200,
-                      borderRadius: 50,
+                      borderRadius: 100,
                     }}
-                    source={require('../../assets/profileImage3.png')}
+                    source={this.props.userDetail && this.props.userDetail.Profile
+                      ? {uri: this.props.userDetail.Profile}
+                      : require('../../assets/profileImage2.png')}
                   />
                 </View>
               </View>

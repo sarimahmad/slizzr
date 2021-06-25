@@ -15,11 +15,13 @@ import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import RNPickerSelect from 'react-native-picker-select';
+import firestore from '@react-native-firebase/firestore';
+import {connect} from 'react-redux';
 
 import GoogleSearchBar from '../../component/GoogleSearchBar';
-import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
+import Loader from '../../component/Loader';
 
 class editProfle extends Component {
   constructor(props) {
@@ -37,6 +39,8 @@ class editProfle extends Component {
       lastName: '',
       gender: 'Male',
       bioText: '',
+      userName: '',
+      loading: false,
     };
   }
 
@@ -60,12 +64,45 @@ class editProfle extends Component {
         lastName: this.props.userDetail.LastName,
         userName: this.props.userDetail.displayName,
         bioText: this.props.userDetail.bio ? this.props.userDetail.bio : '',
+        Address: this.props.userDetail.Address,
       });
     }
     if (this.props.userDetail.location) {
       this.setState({Address: this.props.userDetail.location.address});
     }
   }
+
+  firestoreLinking = async () => {
+    const dataToSend ={
+      FirstName: this.state.firstName,
+      LastName: this.state.lastName,
+      displayName: this.state.userName,
+      Address: this.state.Address,
+      bio: this.state.bioText,
+      Gender: this.state.gender}
+    this.setState({loading: true});
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(this.props.userDetail.id)
+      .update(dataToSend)
+      .then(() => {
+        usersRef
+          .doc(this.props.userDetail.id)
+          .get()
+          .then(firestoreDocument => {
+            this.props.callApi(
+              firestoreDocument.data(),
+              this.props.userDetail.id,
+            );
+            this.setState({loading: false});
+            this.props.navigation.pop();
+          });
+      })
+      .catch(error => {
+        this.setState({loading: false});
+        alert(error);
+      });
+  };
   componentDidMount() {
     this.setAllOldstate();
   }
@@ -262,7 +299,7 @@ class editProfle extends Component {
                 multiline={true}
                 style={styles.messageText}
               />
-              <TouchableOpacity style={styles.btn}>
+              <TouchableOpacity style={styles.btn} onPress={() => this.firestoreLinking()}>
                 <Text style={styles.btntext}>SAVE</Text>
               </TouchableOpacity>
             </View>
@@ -290,6 +327,7 @@ class editProfle extends Component {
             </Modal>
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={'Updating'} />}
       </View>
     );
   }
@@ -436,6 +474,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 40,
+    marginBottom: 20,
   },
   btntext: {
     color: '#FFFFFF',

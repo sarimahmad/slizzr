@@ -343,7 +343,8 @@ export default class home extends Component {
                     <TouchableOpacity
                       onPress={() =>
                         this.props.navigation.navigate('eventDetail', {
-                          detailItem: item,
+                          detailItem: item.id,
+                          imageUri: item.imageUrl,
                         })
                       }
                       style={styles.shareView}>
@@ -378,7 +379,8 @@ export default class home extends Component {
                 }}
                 onPress={() =>
                   this.props.navigation.navigate('eventDetail', {
-                    detailItem: marker,
+                    detailItem: marker.id,
+                    imageUri: marker.imageUrl,
                   })
                 }
                 image={require('../../assets/marker.png')}
