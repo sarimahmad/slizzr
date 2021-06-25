@@ -9,14 +9,16 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
+import {connect} from 'react-redux';
+import * as userActions from '../../redux/actions/user';
+
 import {FONT, SCREEN} from '../../helper/Constant';
-import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default class Profile extends Component {
+class Profile extends Component {
   constructor() {
     super();
     this.state = {
@@ -37,9 +39,7 @@ export default class Profile extends Component {
     );
   };
   async componentDidMount() {
-    const userDetail = await AsyncStorage.getItem('userdetail');
-    this.setState({userDetail: JSON.parse(userDetail)});
-    console.log(this.state.userDetail.user);
+    this.setState({userDetail: this.props.userDetail});
   }
   render() {
     return (
@@ -50,7 +50,11 @@ export default class Profile extends Component {
             leftPress={() => this.props.navigation.navigate('HomeStack')}
             rightPress={() => this.props.navigation.navigate('editProfle')}
             borderBottom={true}
-            rightIcon={require('../../assets/Slizzer-icon/group.png')}
+            rightIcon={
+              !this.props.route.params
+                ? require('../../assets/edit.png')
+                : require('../../assets/Slizzer-icon/group.png')
+            }
           />
           <ScrollView style={styles.wrapperView} bounces={true}>
             <View style={styles.wrapperView2}>
@@ -111,24 +115,28 @@ export default class Profile extends Component {
                   />
                 </View>
               </View>
-              <View style={styles.messageIcon}>
-                <Image
-                  style={{width: 51, resizeMode: 'contain'}}
-                  source={require('../../assets/Slizzer-icon/message.png')}
-                />
-                <View
-                  style={{
-                    height: 20,
-                    width: 20,
-                    position: 'absolute',
-                  }}>
-                  <Image
-                    source={require('../../assets/Slizzer-icon/insideMessage.png')}
-                  />
-                </View>
-              </View>
+              {this.props.userDetail &&
+                this.state.userDetail &&
+                this.props.userDetail.id !== this.state.userDetail.id && (
+                  <View style={styles.messageIcon}>
+                    <Image
+                      style={{width: 51, resizeMode: 'contain'}}
+                      source={require('../../assets/Slizzer-icon/message.png')}
+                    />
+                    <View
+                      style={{
+                        height: 20,
+                        width: 20,
+                        position: 'absolute',
+                      }}>
+                      <Image
+                        source={require('../../assets/Slizzer-icon/insideMessage.png')}
+                      />
+                    </View>
+                  </View>
+                )}
               <Text style={styles.text1}>
-                {this.state.userDetail && this.state.userDetail.user.email}
+                {this.state.userDetail && this.state.userDetail.FirstName}
               </Text>
               <Text style={styles.text2}>28 years,Male</Text>
               <View
@@ -141,17 +149,9 @@ export default class Profile extends Component {
               </View>
               <Text style={styles.text3}>BIO:</Text>
               <Text style={styles.bio}>
-                Tousled food truck polaroid, salvia bespoke small batch
-                Pinterest Marfa. Fingerstache authentic craft beer, food truck
-                Banksy Carles kale chips hoodie. Trust fund artisan master
-                cleanse fingerstache post-ironic, fashion axe art party Etsy
-                direct trade retro organic. Cliche Shoreditch Odd Future
-                Pinterest, pug disrupt photo booth VHS literally occupy
-                gluten-free polaroid Intelligentsia PBR mustache. Locavore
-                fashion axe chia, iPhone cardigan disrupt Etsy dreamcatcher.
-                Craft beer selvage fanny pack, 8-bit post-ironic keffiyeh iPhone
-                mlkshk pop-up. Pug blog asymmetrical ethnic, stumptown shabby
-                chic chillwave ugh before they sold out.
+                {this.state.userDetail && this.state.userDetail.bio
+                  ? this.state.userDetail.bio
+                  : 'Empty Bio'}
               </Text>
               <View style={{alignSelf: 'flex-start', marginLeft: 40}}>
                 <Text style={[styles.titleText, {marginTop: 10}]}>
@@ -183,6 +183,21 @@ export default class Profile extends Component {
     );
   }
 }
+
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.alterUser({user, uid})),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
@@ -206,7 +221,7 @@ const styles = StyleSheet.create({
   text1: {
     fontFamily: FONT.Nunito.bold,
     fontSize: 17,
-    color: BLACK.textColor,
+    color: BLACK.grey,
     marginTop: 10,
   },
   text2: {

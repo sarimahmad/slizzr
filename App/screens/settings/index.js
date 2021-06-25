@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {CommonActions} from '@react-navigation/native';
+import {StackActions} from '@react-navigation/native';
 
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {BLACK, WHITE} from '../../helper/Color';
@@ -135,13 +135,8 @@ export default class settings extends Component {
               <TouchableOpacity
                 onPress={() => {
                   AsyncStorage.clear();
-                  this.props.navigation.dispatch(
-                    CommonActions.reset({
-                      index: 1,
-                      routes: [{name: 'Splash'}],
-                    }),
-                  );
-                  this.props.navigation.push('Splash');
+                  this.props.navigation.dispatch(StackActions.popToTop());
+                  // this.props.navigation.push('Splash');
                 }}
                 style={[styles.rowView, {borderBottomWidth: 0}]}>
                 <Text

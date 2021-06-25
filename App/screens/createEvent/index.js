@@ -13,7 +13,6 @@ import {
   TextInput,
   StyleSheet,
   Platform,
-  Alert,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -23,6 +22,7 @@ import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import moment from 'moment';
+import {openSettings} from 'react-native-permissions';
 
 import Header from '../../component/Header';
 import GoogleSearchBar from '../../component/GoogleSearchBar';
@@ -31,6 +31,7 @@ import {BLACK, WHITE} from '../../helper/Color';
 import Validations from '../../helper/Validations';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import Loader from '../../component/Loader';
+import {Alert} from 'react-native';
 
 export default class CreateEvent extends Component {
   constructor() {
@@ -70,12 +71,26 @@ export default class CreateEvent extends Component {
   }
   selectImage = async () => {
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
+      width: 250,
+      height: 300,
       cropping: true,
-    }).then(image => {
-      this.setState({imageUri: image.path});
-    });
+    })
+      .then(image => {
+        this.setState({imageUri: image.path});
+      })
+      .catch(error => {
+        if (error.code === 'E_NO_LIBRARY_PERMISSION') {
+          this.setState({
+            errorPopUp: true,
+            leftBtnText: 'Go To Setting',
+            rightBtnText: 'ok',
+            errorMsg: 'Please go to setting allow the album permission for app',
+            errorTitle: 'Permission error',
+          });
+        } else {
+          openSettings().catch(() => console.warn('cannot open settings'));
+        }
+      });
   };
   uploadImage = async () => {
     const uri = this.state.imageUri;
@@ -150,62 +165,62 @@ export default class CreateEvent extends Component {
     console.log(this.state.userName, this.state.userId);
   }
   handleSubmit = async () => {
-    await this.uploadImage();
+    this.setState({loading: true});
+    this.uploadImage()
+      .then(async () => {
+        // Get Host Object From User's
+        await firestore()
+          .collection('users')
+          .doc(this.state.userId)
+          .get()
+          .then(docRef => {
+            this.setState({Host: docRef.data()});
+          })
+          .catch(error => alert(error));
 
-    if (this.state.imageUploaded === true) {
-      // Get Host Object From User's
-      await firestore()
-        .collection('users')
-        .doc(this.state.userId)
-        .get()
-        .then(docRef => {
-          this.setState({Host: docRef.data()});
-          console.warn(docRef.data());
-        })
-        .catch(error => alert(error));
+        const uniqueId = uuid.v4();
+        const data = {
+          Address: this.state.Address,
+          AttendeeLimit: this.state.AttendeeLimit,
+          DateTime: this.state.DateTime,
+          Description: this.state.Description,
+          EventType: this.state.EventType,
+          Fee: this.state.Fee,
+          Host: this.state.Host,
+          location: this.state.location,
+          Name: this.state.Name,
+          PublicPrivate: this.state.PublicPrivate,
+          disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
+          duration: this.state.duration,
+          userId: this.state.userId,
+          userName: this.state.Host.displayName,
+          image: this.state.imageUri,
+          id: uniqueId,
+          Attendees: [],
+          job: 'scheduled',
+          Start_date: this.state.DateTime,
+          End_date: moment(this.state.DateTime)
+            .add(this.state.duration, 'hours')
+            .format('X'), // TimeStamp
+        };
+        const usersRef = firestore().collection('events');
+        usersRef
+          .doc(uniqueId)
+          .set(data)
+          .then(async firestoreDocument => {
+            this.setState({loading: false});
+            this.RBSheet.open();
+          })
 
-      const uniqueId = uuid.v4();
-      const data = {
-        Address: this.state.Address,
-        AttendeeLimit: this.state.AttendeeLimit,
-        DateTime: this.state.DateTime,
-        Description: this.state.Description,
-        EventType: this.state.EventType,
-        Fee: this.state.Fee,
-        Host: this.state.Host,
-        location: this.state.location,
-        Name: this.state.Name,
-        PublicPrivate: this.state.PublicPrivate,
-        disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
-        duration: this.state.duration,
-        userId: this.state.userId,
-        userName: this.state.Host.displayName,
-        image: this.state.imageUri,
-        id: uniqueId,
-        Attendees: [],
-        job: 'scheduled',
-        Start_date: this.state.DateTime,
-        End_date: moment(this.state.DateTime)
-          .add(this.state.duration, 'hours')
-          .format('X'), // TimeStamp
-      };
-      console.warn(data);
-      const usersRef = firestore().collection('events');
-      usersRef
-        .doc(uniqueId)
-        .set(data)
-        .then(async firestoreDocument => {
-          this.RBSheet.open();
-        })
-
-        .catch(error => {
-          this.setState({loading: false});
-          alert(error);
-        });
-    } else {
-      this.setState({loading: false});
-      Alert.alert('Plaese Fill all data');
-    }
+          .catch(error => {
+            this.setState({loading: false});
+            alert(error);
+          });
+      })
+      .catch(error => {
+        this.setState({loading: false});
+        Alert.alert('Error', JSON.stringify(error));
+      });
   };
   setLocation = (latitude, longitude) => {
     this.setState({
@@ -508,7 +523,11 @@ export default class CreateEvent extends Component {
                   }}>
                   <SafeAreaView>
                     <View style={[styles.flex, {padding: 10}]}>
-                      <TouchableOpacity onPress={() => this.RBSheet.close()}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.RBSheet.close();
+                          this.props.navigation.pop();
+                        }}>
                         <Image
                           source={require('../../assets/back.png')}
                           style={styles.logo}

@@ -11,10 +11,9 @@ function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor,
       style={{
         flexDirection: 'row',
         height: 80,
-        alignItems: 'flex-end',
-        paddingBottom: 21,
+        alignItems: 'center',
         width: SCREEN.width,
-        paddingHorizontal: 30,
+        paddingHorizontal: 20,
         alignSelf: 'center',
         backgroundColor: backColor,
         borderBottomColor: BLACK.border,
@@ -24,7 +23,7 @@ function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor,
         <TouchableOpacity
           onPress={leftPress}
           activeOpacity={0.85} style={{justifyContent: 'center', alignItems: 'center', height: 20, width: 20}}>
-          <Image source={leftIcon} style={{ height: 40, width: 40, justifyContent: 'center' }} />
+          <Image source={leftIcon} style={{ height: 40, width: 40, borderRadius: 20 }} />
         </TouchableOpacity>}
       <View
         style={{
@@ -44,7 +43,7 @@ function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor,
         style={{
           width: 35,
           height: 35,
-          borderRadius:22,
+          borderRadius:18,
           backgroundColor:'white',
           elevation:3,
           justifyContent: 'center',
@@ -52,7 +51,7 @@ function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor,
         }}>
         <Image
           source={rightIcon}
-          style={{ height: 28, width: 40, resizeMode: 'contain' }}
+          style={{ height: 40, width: 40, borderRadius: 20 }}
         />
       </TouchableOpacity>}
     </View>

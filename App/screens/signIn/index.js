@@ -217,9 +217,9 @@ class SignIn extends Component {
   }
 
   googleSignInBtn = async () => {
-    this.setState({loading: true});
     const {idToken} = await GoogleSignin.signIn();
     const googleCredential = await auth.GoogleAuthProvider.credential(idToken);
+    this.setState({loading: true});
     auth()
       .signInWithCredential(googleCredential)
       .then(response => {
@@ -247,7 +247,6 @@ class SignIn extends Component {
   };
 
   facebookSignIn = async () => {
-    this.setState({loading: true});
     const result = await LoginManager.logInWithPermissions([
       'public_profile',
       'email',
@@ -267,10 +266,12 @@ class SignIn extends Component {
     const facebookCredential = auth.FacebookAuthProvider.credential(
       data.accessToken,
     );
+    this.setState({loading: true});
     auth()
       .signInWithCredential(facebookCredential)
       .then(response => {
         console.log('responseFb', JSON.stringify(response));
+        this.setState({loading: false});
       })
       .catch(error => {
         this.setState({loading: false});

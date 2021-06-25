@@ -73,6 +73,14 @@ class SignUp extends Component {
       this.state.password === this.state.confirmPassword
     ) {
       return true;
+    } else if (this.state.password !== this.state.confirmPassword) {
+      this.setState({
+        popUp: true,
+        titlePopUp: 'Password is not matching',
+        detailPop: 'Please check ypur password value',
+        btnText: 'Ok',
+      });
+      return false;
     }
     return false;
   }
@@ -292,7 +300,7 @@ class SignUp extends Component {
               />
               <TextField
                 placeholder="Confirm Password"
-                type={'confirmPassword'}
+                type={'password'}
                 parentCallBack={this.storeInputData}
               />
               <ButtonResetPassaword
