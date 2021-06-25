@@ -13,14 +13,15 @@ import {
   ToastAndroid,
   Image,
   Alert,
-  Linking,
   Platform,
+  Modal,
 } from 'react-native';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
+import {openSettings} from 'react-native-permissions';
 
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
@@ -28,6 +29,7 @@ import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import WaitingFor from '../../component/WaitingFor';
 import moment from 'moment';
+import ErrorPopup from '../../component/ErrorPopup';
 
 let allEvents = [];
 let prepaidEvents = [];
@@ -43,28 +45,25 @@ export default class home extends Component {
       enableLocation: false,
       date: new Date(),
       index: 0,
-      markers: [
-        {lat: 31.52037, lng: 74.358749},
-        {lat: 31.64037, lng: 74.358749},
-        {lat: 31.7037, lng: 74.358749},
-      ],
       allEvents: [],
       prepaidEvents: [],
       scanEvents: [],
       freeEvents: [],
       allLocations: [],
       currentData: [],
+      popUpError: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
     };
   }
   componentDidMount() {
-    this.getEvents();
+    this.getEvents('start');
     this.getLocation();
   }
   hasPermissionIOS = async () => {
     const openSetting = () => {
-      Linking.openSettings().catch(() => {
-        Alert.alert('Unable to open settings');
-      });
+      openSettings().catch(() => console.warn('cannot open settings'));
     };
     const status = await Geolocation.requestAuthorization('whenInUse');
 
@@ -73,7 +72,6 @@ export default class home extends Component {
     }
 
     if (status === 'denied') {
-      Alert.alert('Location permission denied');
     }
 
     if (status === 'disabled') {
@@ -135,17 +133,22 @@ export default class home extends Component {
     const hasPermission = await this.hasLocationPermission();
 
     if (!hasPermission) {
-      this.setState({enableLocation: true});
       return;
     }
 
     Geolocation.getCurrentPosition(
       position => {
+        this.setState({enableLocation: true});
         console.log(position);
       },
       error => {
-        Alert.alert(`Code ${error.code}`, error.message);
-        console.log(error);
+        this.setState({
+          loading: false,
+          errorTitle: 'USER ERROR',
+          errorText: JSON.stringify(error),
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
       },
       {
         accuracy: {
@@ -162,7 +165,7 @@ export default class home extends Component {
     );
   };
 
-  async getEvents() {
+  async getEvents(type) {
     allEvents = [];
     prepaidEvents = [];
     scanEvents = [];
@@ -201,7 +204,17 @@ export default class home extends Component {
               freeEvents.push(event);
             }
             if (allEvents.length === querySnapShot._docs.length) {
-              this.setState({currentData: allEvents});
+              if (type === 'update') {
+                this.state.index === 0
+                  ? this.setState({currentData: allEvents})
+                  : this.state.index === 1
+                  ? this.setState({currentData: prepaidEvents})
+                  : this.state.index === 2
+                  ? this.setState({currentData: scanEvents})
+                  : this.setState({currentData: freeEvents});
+              } else {
+                this.setState({currentData: allEvents});
+              }
               this.setState({allEvents: allEvents});
               this.setState({prepaidEvents: prepaidEvents});
               this.setState({scanEvents: scanEvents});
@@ -216,7 +229,13 @@ export default class home extends Component {
       })
 
       .catch(error => {
-        Alert.alert('Intrnet Issue', JSON.stringify(error));
+        this.setState({
+          loading: false,
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
       });
   }
   onChange = (event, selectedDate) => {
@@ -231,12 +250,19 @@ export default class home extends Component {
   };
   getImageUrl = async imageName => {
     let imageRef = storage().ref('/' + imageName);
-    return imageRef
-      .getDownloadURL()
-      .catch(e => console.log('getting downloadURL of image error => ', e));
+    return imageRef.getDownloadURL().catch(e =>
+      this.setState({
+        loading: false,
+        errorTitle: 'ERROR',
+        errorText: JSON.stringify(e),
+        btnOneText: 'Ok',
+        popUpError: true,
+      }),
+    );
   };
 
   barTapped = indexTap => {
+    this.getEvents('update');
     if (indexTap === 0) {
       this.setState({index: 0});
       this.setState({currentData: this.state.allEvents});
@@ -432,7 +458,9 @@ export default class home extends Component {
             You will need to enable location to see events near you
           </Text>
           <TouchableOpacity
-            onPress={() => this.setState({mapView: true, enableLocation: true})}
+            onPress={() =>
+              openSettings().catch(() => console.warn('cannot open settings'))
+            }
             style={styles.btnLocation}>
             <Text style={styles.btnTextLocation}>Allow Location</Text>
           </TouchableOpacity>
@@ -724,6 +752,29 @@ export default class home extends Component {
             </View>
           )}
         </SafeAreaView>
+        {this.state.popUpError && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() =>
+                this.setState({
+                  popUpError: false,
+                  btnOneText: '',
+                  errorTitle: '',
+                  errorText: '',
+                })
+              }
+              doneButtonPress={() => this.doneClick()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+              btnTwoText={this.state.btnTwoText}
+            />
+          </Modal>
+        )}
       </View>
     );
   }

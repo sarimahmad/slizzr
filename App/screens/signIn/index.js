@@ -11,6 +11,7 @@ import {
   ScrollView,
   Image,
   Alert,
+  Modal,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
@@ -26,6 +27,7 @@ import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import Validations from '../../helper/Validations';
 import * as userActions from '../../redux/actions/user';
 import Loader from '../../component/Loader';
+import ErrorPopup from '../../component/ErrorPopup';
 
 class SignIn extends Component {
   constructor(props) {
@@ -37,6 +39,10 @@ class SignIn extends Component {
       password: '',
       confirmPassword: '',
       loading: false,
+      popUpError: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
     };
   }
 
@@ -71,9 +77,21 @@ class SignIn extends Component {
       return true;
     }
     if (!checkEmail) {
-      alert('invalid email');
+      this.setState({
+        loading: false,
+        btnOneText: 'Ok',
+        errorTitle: 'EMAIL INVALID',
+        errorText: 'Please input the valid data in Email',
+        popUpError: true,
+      });
     } else if (!checkPassword) {
-      alert('invalid password');
+      this.setState({
+        loading: false,
+        btnOneText: 'Ok',
+        errorTitle: 'PASSWORD INVALID',
+        errorText: 'Please input the valid data in Password',
+        popUpError: true,
+      });
     }
     return false;
   }
@@ -111,16 +129,32 @@ class SignIn extends Component {
               );
             })
             .catch(error => {
-              this.setState({loading: false});
-              Alert.alert('Internet Issue', 'Please check your internet');
+              this.setState({
+                loading: false,
+                btnOneText: 'Ok',
+                errorTitle: 'ERROR',
+                errorText: JSON.stringify(error),
+                popUpError: true,
+              });
             });
         })
         .catch(error => {
-          this.setState({loading: false});
           if (error.code === 'auth/wrong-password') {
-            Alert.alert('Password wrong', 'Please check your password');
+            this.setState({
+              loading: false,
+              btnOneText: 'Ok',
+              errorTitle: 'WRONG PASSWORD',
+              errorText: 'Please check your password again.',
+              popUpError: true,
+            });
           } else {
-            Alert.alert('User Not Exist');
+            this.setState({
+              loading: false,
+              btnOneText: 'Ok',
+              errorTitle: 'NOT FOUND',
+              errorText: 'User not found Please sign Up first',
+              popUpError: true,
+            });
           }
         });
     }
@@ -144,8 +178,13 @@ class SignIn extends Component {
               this.checkTheUserCheck(firestoreDocuments.data());
             })
             .catch(error => {
-              this.setState({loading: false});
-              alert(error);
+              this.setState({
+                loading: false,
+                btnOneText: 'Ok',
+                errorTitle: 'ERROR',
+                errorText: JSON.stringify(error),
+                popUpError: true,
+              });
             });
           return;
         } else {
@@ -163,7 +202,13 @@ class SignIn extends Component {
         }
       })
       .catch(error => {
-        alert(error);
+        this.setState({
+          loading: false,
+          btnOneText: 'Ok',
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
+          popUpError: true,
+        });
       });
   };
 
@@ -237,12 +282,26 @@ class SignIn extends Component {
           age: 14,
           STRIPE_CUST_ID: '',
           STRIPE_HOST_ID: '',
+          AttendedEvents: [],
+          Address: '',
+          HostedEvents: [],
+          BlockedUser: [],
+          BirthDate: new Date(),
+          Gender: '',
+          Visibility: true,
+          Radius: 50,
+          bio: '',
         };
         this.firestoreLinking(data);
       })
       .catch(error => {
-        this.setState({loading: false});
-        alert(error);
+        this.setState({
+          loading: false,
+          btnOneText: 'Ok',
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
+          popUpError: true,
+        });
       });
   };
 
@@ -278,6 +337,8 @@ class SignIn extends Component {
         alert(error);
       });
   };
+
+  doneClick() {}
 
   render() {
     return (
@@ -376,6 +437,29 @@ class SignIn extends Component {
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
+        {this.state.popUpError && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() =>
+                this.setState({
+                  popUpError: false,
+                  btnOneText: '',
+                  errorTitle: '',
+                  errorText: '',
+                })
+              }
+              doneButtonPress={() => this.doneClick()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+              btnTwoText={this.state.btnTwoText}
+            />
+          </Modal>
+        )}
       </View>
     );
   }
