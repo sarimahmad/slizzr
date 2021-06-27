@@ -295,6 +295,7 @@ export default class home extends Component {
           }}>
           {this.state.currentData.length !== 0 && (
             <FlatList
+              keyExtractor={(item, index) => index.toString()}
               data={this.state.currentData}
               renderItem={({item}) => (
                 <View

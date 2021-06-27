@@ -1,7 +1,7 @@
 /* eslint-disable react/no-did-mount-set-state */
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -15,23 +15,24 @@ import {
   Platform,
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
-import { FONT, SCREEN } from '../../helper/Constant';
+import {FONT, SCREEN} from '../../helper/Constant';
 import RNPickerSelect from 'react-native-picker-select';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import moment from 'moment';
-import { openSettings } from 'react-native-permissions';
+import {openSettings} from 'react-native-permissions';
 
 import Header from '../../component/Header';
 import GoogleSearchBar from '../../component/GoogleSearchBar';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { BLACK, WHITE } from '../../helper/Color';
+import {BLACK, WHITE} from '../../helper/Color';
 import Validations from '../../helper/Validations';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
+import {Alert} from 'react-native';
 
 export default class CreateEvent extends Component {
   constructor() {
@@ -82,7 +83,7 @@ export default class CreateEvent extends Component {
       cropping: true,
     })
       .then(image => {
-        this.setState({ imageUri: image.path });
+        this.setState({imageUri: image.path});
       })
       .catch(error => {
         if (error.code === 'E_NO_LIBRARY_PERMISSION') {
@@ -108,12 +109,12 @@ export default class CreateEvent extends Component {
     const uri = this.state.imageUri;
 
     const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    this.setState({ imageUri: filename });
+    this.setState({imageUri: filename});
     const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
 
     const task = storage().ref(filename).putFile(uploadUri);
     task.on('state_changed', snapshot => {
-      this.setState({ imageUploaded: true });
+      this.setState({imageUploaded: true});
     });
   };
 
@@ -130,7 +131,10 @@ export default class CreateEvent extends Component {
     let checkDateTime = Validations.checkUsername(this.state.DateTime);
     let checkDescription = Validations.checkUsername(this.state.Description);
     let checkEventType = Validations.checkUsername(this.state.EventType);
-    let checkFee = Validations.checkUsername(this.state.Fee);
+    let checkFee =
+      this.state.EventType === 'FREE'
+        ? true
+        : Validations.checkUsername(this.state.Fee);
     let checkPublicPrivate = Validations.checkUsername(
       this.state.PublicPrivate,
     );
@@ -142,11 +146,14 @@ export default class CreateEvent extends Component {
       checkDateTime &&
       checkDescription &&
       checkduration &&
+      checkFee &&
       checkPublicPrivate &&
       checkEventType
     ) {
       return true;
-    } else { return false }
+    } else {
+      return false;
+    }
   }
   isFormFilled() {
     let checkAddress = Validations.checkUsername(this.state.Address);
@@ -156,7 +163,10 @@ export default class CreateEvent extends Component {
     let checkDateTime = Validations.checkUsername(this.state.DateTime);
     let checkDescription = Validations.checkUsername(this.state.Description);
     let checkEventType = Validations.checkUsername(this.state.EventType);
-    let checkFee = Validations.checkUsername(this.state.Fee);
+    let checkFee =
+      this.state.EventType === 'FREE'
+        ? true
+        : Validations.checkUsername(this.state.Fee);
     let checkPublicPrivate = Validations.checkUsername(
       this.state.PublicPrivate,
     );
@@ -177,115 +187,136 @@ export default class CreateEvent extends Component {
     if (!checkAddress) {
       this.setState({
         errorTitle: 'Invalid Form',
-        btnOneText: 'Ok', popUpError: true, errorText: 'Add Title in form'
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add Title in form',
       });
     } else if (!checkAttendeeLimit) {
       this.setState({
         errorTitle: 'Invalid Form',
-        btnOneText: 'Ok', popUpError: true, errorText: 'Add AttendeeLimit in form'
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add AttendeeLimit in form',
       });
     } else if (!checkDateTime) {
       this.setState({
         errorTitle: 'Invalid Form',
-        btnOneText: 'Ok', popUpError: true, errorText: 'Add Date Time in form'
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add Date Time in form',
       });
     } else if (!checkDescription) {
       this.setState({
         errorTitle: 'Invalid Form',
-        btnOneText: 'Ok', popUpError: true, errorText: 'Add Description in form'
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add Description in form',
       });
     } else if (!checkEventType) {
       this.setState({
         errorTitle: 'Invalid Form',
-        btnOneText: 'Ok', popUpError: true, errorText: 'Add EventType in form'
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add EventType in form',
       });
     } else if (!checkPublicPrivate) {
       this.setState({
         errorTitle: 'Invalid Form',
-        btnOneText: 'Ok', popUpError: true, errorText: 'Add Public Private in form'
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add Public Private in form',
       });
     } else if (!checkFee && this.state.PublicPrivate !== 'Public') {
       this.setState({
         errorTitle: 'Invalid Form',
-        btnOneText: 'Ok', popUpError: true, errorText: 'Add Fee in form'
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add Fee in form',
       });
     } else if (!checkduration) {
       this.setState({
         errorTitle: 'Invalid Form',
-        btnOneText: 'Ok', popUpError: true, errorText: 'Add Duration in form'
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add Duration in form',
       });
     }
     return false;
   }
   async componentDidMount() {
+    const isParamsExist =
+      this.props.route.params && this.props.route.params.from === 'edit';
+    if (isParamsExist) {
+      this.setState({screenTypeEdit: true});
+    }
     const TOKEN = await AsyncStorage.getItem('token');
     const userDetail = await AsyncStorage.getItem('userdetail');
     console.log(JSON.parse(userDetail).user.firstName);
-    this.setState({ userName: JSON.parse(userDetail).user.firstName });
-    this.setState({ userId: JSON.parse(TOKEN) });
+    this.setState({userName: JSON.parse(userDetail).user.firstName});
+    this.setState({userId: JSON.parse(TOKEN)});
     console.log(this.state.userName, this.state.userId);
   }
   handleSubmit = async () => {
     if (this.isFormFilled()) {
-      this.setState({ loading: true })
-      this.uploadImage().then(async () => {
-        // Get Host Object From User's
-        await firestore()
-          .collection('users')
-          .doc(this.state.userId)
-          .get()
-          .then(docRef => {
-            this.setState({ Host: docRef.data() });
-            console.warn(docRef.data());
-          })
-          .catch(error => alert(error));
+      this.setState({loading: true});
+      this.uploadImage()
+        .then(async () => {
+          // Get Host Object From User's
+          await firestore()
+            .collection('users')
+            .doc(this.state.userId)
+            .get()
+            .then(docRef => {
+              this.setState({Host: docRef.data()});
+              console.warn(docRef.data());
+            })
+            .catch(error => alert(error));
 
-        const uniqueId = uuid.v4();
-        const data = {
-          Address: this.state.Address,
-          AttendeeLimit: this.state.AttendeeLimit,
-          DateTime: this.state.DateTime,
-          Description: this.state.Description,
-          EventType: this.state.EventType,
-          Fee: this.state.Fee,
-          Host: this.state.Host,
-          location: this.state.location,
-          Name: this.state.Name,
-          PublicPrivate: this.state.PublicPrivate,
-          disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
-          duration: this.state.duration,
-          userId: this.state.userId,
-          userName: this.state.Host.displayName,
-          image: this.state.imageUri,
-          id: uniqueId,
-          Attendees: [],
-          job: 'scheduled',
-          Start_date: this.state.DateTime,
-          End_date: moment(this.state.DateTime)
-            .add(this.state.duration, 'hours')
-            .format('X'), // TimeStamp
-        };
-        console.warn(data);
-        const usersRef = firestore().collection('events');
-        usersRef
-          .doc(uniqueId)
-          .set(data)
-          .then(async firestoreDocument => {
-            this.setState({ loading: false })
-            this.RBSheet.open();
-          })
+          const uniqueId = uuid.v4();
+          const data = {
+            Address: this.state.Address,
+            AttendeeLimit: this.state.AttendeeLimit,
+            DateTime: this.state.DateTime,
+            Description: this.state.Description,
+            EventType: this.state.EventType,
+            Fee: this.state.Fee,
+            Host: this.state.Host,
+            location: this.state.location,
+            Name: this.state.Name,
+            PublicPrivate: this.state.PublicPrivate,
+            disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
+            duration: this.state.duration,
+            userId: this.state.userId,
+            userName: this.state.Host.displayName,
+            image: this.state.imageUri,
+            id: uniqueId,
+            Attendees: [],
+            job: 'scheduled',
+            Start_date: this.state.DateTime,
+            End_date: moment(this.state.DateTime)
+              .add(this.state.duration, 'hours')
+              .format('X'), // TimeStamp
+          };
+          console.warn(data);
+          const usersRef = firestore().collection('events');
+          usersRef
+            .doc(uniqueId)
+            .set(data)
+            .then(async firestoreDocument => {
+              this.setState({loading: false});
+              this.RBSheet.open();
+            })
 
-          .catch(error => {
-            this.setState({
-              loading: false,
-              errorTitle: 'ERROR',
-              errorText: JSON.stringify(error),
-              btnOneText: 'Ok',
-              popUpError: true,
+            .catch(error => {
+              this.setState({
+                loading: false,
+                errorTitle: 'ERROR',
+                errorText: JSON.stringify(error),
+                btnOneText: 'Ok',
+                popUpError: true,
+              });
             });
-          });
-
-      })
+        })
         .catch(error => {
           this.setState({
             loading: false,
@@ -326,8 +357,8 @@ export default class CreateEvent extends Component {
             transparent={true}
             presentationStyle={'overFullScreen'}>
             <ErrorPopup
-              cancelButtonPress={() => this.setState({ isModalVisible: false })}
-              doneButtonPress={() => this.setState({ isModalVisible: false })}
+              cancelButtonPress={() => this.setState({isModalVisible: false})}
+              doneButtonPress={() => this.setState({isModalVisible: false})}
               errorTitle={this.state.errorTitle}
               errorText={this.state.errorText}
               btnOneText={this.state.btnOneText}
@@ -344,7 +375,7 @@ export default class CreateEvent extends Component {
           />
 
           <ScrollView style={[styles.container]} bounces={false}>
-            <View style={{ flex: 1, marginTop: 20 }}>
+            <View style={{flex: 1, marginTop: 20}}>
               <TouchableOpacity
                 style={styles.add}
                 onPress={() => this.selectImage()}>
@@ -357,7 +388,7 @@ export default class CreateEvent extends Component {
                     ]}
                     source={
                       this.state.imageUri !== ''
-                        ? { uri: this.state.imageUri }
+                        ? {uri: this.state.imageUri}
                         : require('../../assets/Slizzer-icon/plus.png')
                     }
                   />
@@ -377,30 +408,34 @@ export default class CreateEvent extends Component {
                   <TextInput
                     style={styles.firstInput}
                     value={this.state.Name}
-                    onChangeText={value => this.setState({ Name: value })}
+                    onChangeText={value => this.setState({Name: value})}
                     placeholder="Enter a name for you Event"
                     placeholderTextColor={'#B2ABB1'}
                   />
-                  <View style={styles.AbsoluteRightIcon}>
-                    <Image
-                      source={require('../../assets/Slizzer-icon/lock-outline.png')}
-                    />
-                  </View>
+                  {this.state.screenTypeEdit && (
+                    <View style={styles.AbsoluteRightIcon}>
+                      <Image
+                        source={require('../../assets/Slizzer-icon/lock-outline.png')}
+                      />
+                    </View>
+                  )}
                 </View>
                 <Text style={styles.TextInputTitle}>Description:</Text>
                 <View style={styles.TextInputWrapper}>
                   <TextInput
                     style={styles.firstInput}
-                    onChangeText={value => this.setState({ Description: value })}
+                    onChangeText={value => this.setState({Description: value})}
                     value={this.state.Description}
                     placeholder="Breif Description of your Event"
                     placeholderTextColor={'#B2ABB1'}
                   />
-                  <View style={styles.AbsoluteRightIcon}>
-                    <Image
-                      source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
-                    />
-                  </View>
+                  {this.state.screenTypeEdit && (
+                    <View style={styles.AbsoluteRightIcon}>
+                      <Image
+                        source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
+                      />
+                    </View>
+                  )}
                 </View>
 
                 <Text style={styles.TextInputTitle}>Date and Time:</Text>
@@ -409,14 +444,14 @@ export default class CreateEvent extends Component {
                     format="MMM DD, YYYY - ddd "
                     mode="date"
                     value={this.state.date}
-                    setDateAndTime={value => this.setState({ DateTime: value })}
+                    setDateAndTime={value => this.setState({DateTime: value})}
                     showPlaceholder="+ Add"
                     datebutton={styles.datebutton}
                   />
                 </View>
                 <View style={styles.RowView}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[styles.TextInputTitle, { marginLeft: 0 }]}>
+                  <View style={{flex: 1}}>
+                    <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
                       Event Types:
                     </Text>
                     <View
@@ -443,54 +478,72 @@ export default class CreateEvent extends Component {
                         }}
                         selectedValue={this.state.EventType}
                         onValueChange={(itemValue, itemIndex) =>
-                          this.setState({ EventType: itemValue })
+                          this.setState({EventType: itemValue})
                         }
                         items={[
                           // {label: 'ALL', value: 'ALL'},
-                          { label: 'PREPAID', value: 'PREPAID' },
-                          { label: 'SCAN-&-PAY AT DOOR', value: 'SCAN' },
-                          { label: 'FREE', value: 'FREE' },
+                          {label: 'PREPAID', value: 'PREPAID'},
+                          {label: 'SCAN-&-PAY AT DOOR', value: 'SCAN'},
+                          {label: 'FREE', value: 'FREE'},
                         ]}
                       />
                     </View>
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <View style={{ flexDirection: 'row', marginVertical: 11 }}>
-                      <Text style={[{ marginLeft: 0, marginTop: -2 }]}>Fee</Text>
-                      <Image
-                        source={require('../../assets/Slizzer-icon/Shape.png')}
-                        style={styles.feeicon}
-                      />
+                  <View style={{flex: 1}}>
+                    <View style={{flexDirection: 'row', marginVertical: 11}}>
+                      <Text style={[{marginLeft: 0, marginTop: -2}]}>Fee</Text>
+                      <TouchableOpacity
+                        onPress={() =>
+                          Alert.alert(
+                            'Fee',
+                            'A non-refundable service and payment processing fee of 5.9% + $0.30 will be deducted from each paid Zicket sold (e.g., on every $10 Zicket sold, $0.89 will be deducted, so you will be making $9.11 per Zicket sold). Free Events will always be free to host.',
+                          )
+                        }>
+                        <Image
+                          source={require('../../assets/Slizzer-icon/Shape.png')}
+                          style={styles.feeicon}
+                        />
+                      </TouchableOpacity>
                     </View>
-                    <TextInput
-                      style={[styles.secondinput]}
-                      placeholder="$"
-                      onChangeText={value =>
-                        this.setState({ Fee: value.slice(2) })
-                      }
-                      value={`$ ${this.state.Fee}`}
-                      placeholderTextColor={'#B2ABB1'}
-                      keyboardType={'numeric'}
-                    />
+                    <View>
+                      <TextInput
+                        style={[styles.secondinput]}
+                        placeholder="$"
+                        editable={this.state.EventType !== 'FREE'}
+                        onChangeText={value =>
+                          this.setState({Fee: value.slice(2)})
+                        }
+                        value={`$ ${this.state.Fee}`}
+                        placeholderTextColor={'#B2ABB1'}
+                        keyboardType={'numeric'}
+                      />
+                      {this.state.screenTypeEdit && (
+                        <View style={styles.AbsoluteRightIcon}>
+                          <Image
+                            source={require('../../assets/Slizzer-icon/lock-outline.png')}
+                          />
+                        </View>
+                      )}
+                    </View>
                   </View>
                 </View>
 
                 <View style={styles.RowView}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={[styles.TextInputTitle, { marginLeft: 0 }]}>
+                  <View style={{flex: 1}}>
+                    <Text style={[styles.TextInputTitle, {marginLeft: 0}]}>
                       Location
                     </Text>
                     <TouchableOpacity
                       style={[
                         styles.TextInputWrapper2,
-                        { width: SCREEN.width * 0.3 },
+                        {width: SCREEN.width * 0.3},
                       ]}
-                      onPress={() => this.setState({ selectLocationFlag: true })}>
+                      onPress={() => this.setState({selectLocationFlag: true})}>
                       {this.state.Address === '' ? (
                         <Text
                           style={[
                             styles.thirdinput,
-                            { paddingTop: 15, color: 'grey' },
+                            {paddingTop: 15, color: 'grey'},
                           ]}>
                           + Add
                         </Text>
@@ -498,7 +551,7 @@ export default class CreateEvent extends Component {
                         <Text
                           style={[
                             styles.thirdinput,
-                            { paddingTop: 10, color: 'grey' },
+                            {paddingTop: 10, color: 'grey'},
                           ]}>
                           {this.state.Address}
                         </Text>
@@ -506,55 +559,59 @@ export default class CreateEvent extends Component {
                     </TouchableOpacity>
                   </View>
 
-                  <View style={{ flex: 1 }}>
-                    <Text style={[styles.TextInputTitle, { marginLeft: 13 }]}>
+                  <View style={{flex: 1}}>
+                    <Text style={[styles.TextInputTitle, {marginLeft: 13}]}>
                       {' '}
                       Attendee Limit
                     </Text>
                     <View
                       style={[
                         styles.TextInputWrapper2,
-                        { width: SCREEN.width * 0.25 },
+                        {width: SCREEN.width * 0.25},
                       ]}>
                       <TextInput
                         placeholder="50"
                         style={[styles.thirdinput]}
                         onChangeText={value =>
-                          this.setState({ AttendeeLimit: value })
+                          this.setState({AttendeeLimit: value})
                         }
                         value={this.state.AttendeeLimit}
                         placeholderTextColor={'#B2ABB1'}
                         keyboardType={'numeric'}
                       />
-                      <View style={styles.AbsoluteRightIcon}>
-                        <Image
-                          source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
-                        />
-                      </View>
+                      {this.state.screenTypeEdit && (
+                        <View style={styles.AbsoluteRightIcon}>
+                          <Image
+                            source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
+                          />
+                        </View>
+                      )}
                     </View>
                   </View>
-                  <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                    <Text style={[styles.TextInputTitle, { marginRight: 11 }]}>
+                  <View style={{flex: 1, alignItems: 'flex-end'}}>
+                    <Text style={[styles.TextInputTitle, {marginRight: 11}]}>
                       Duration (HRS)
                     </Text>
                     <View
                       style={[
                         styles.TextInputWrapper2,
-                        { width: SCREEN.width * 0.25 },
+                        {width: SCREEN.width * 0.25},
                       ]}>
                       <TextInput
                         placeholder="50"
                         style={styles.thirdinput}
-                        onChangeText={value => this.setState({ duration: value })}
+                        onChangeText={value => this.setState({duration: value})}
                         value={this.state.duration}
                         placeholderTextColor={'#B2ABB1'}
                         keyboardType={'numeric'}
                       />
-                      <View style={styles.AbsoluteRightIcon}>
-                        <Image
-                          source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
-                        />
-                      </View>
+                      {this.state.screenTypeEdit && (
+                        <View style={styles.AbsoluteRightIcon}>
+                          <Image
+                            source={require('../../assets/Slizzer-icon/circle-edit-outline.png')}
+                          />
+                        </View>
+                      )}
                     </View>
                   </View>
                 </View>
@@ -589,19 +646,26 @@ export default class CreateEvent extends Component {
                     }}
                     selectedValue={this.state.PublicPrivate}
                     onValueChange={itemValue =>
-                      this.setState({ PublicPrivate: itemValue })
+                      this.setState({PublicPrivate: itemValue})
                     }
                     items={[
-                      { label: 'Private', value: 'Private' },
-                      { label: 'Public', value: 'Public' },
+                      {label: 'Private', value: 'Private'},
+                      {label: 'Public', value: 'Public'},
                     ]}
                   />
                 </View>
 
-                <View style={{ marginBottom: 20 }}>
+                <View style={{marginBottom: 20}}>
                   <TouchableOpacity
                     onPress={() => this.handleSubmit()}
-                    style={[styles.button, { backgroundColor: this.isAllDataFilled() ? BLACK.btn :  'grey' }]}>
+                    style={[
+                      styles.button,
+                      {
+                        backgroundColor: this.isAllDataFilled()
+                          ? BLACK.btn
+                          : 'grey',
+                      },
+                    ]}>
                     <Text style={styles.text}> CREATE EVENT</Text>
                   </TouchableOpacity>
                 </View>
@@ -615,7 +679,7 @@ export default class CreateEvent extends Component {
                     container: {},
                   }}>
                   <SafeAreaView>
-                    <View style={[styles.flex, { padding: 10 }]}>
+                    <View style={[styles.flex, {padding: 10}]}>
                       <TouchableOpacity
                         onPress={() => {
                           this.RBSheet.close();
@@ -636,12 +700,12 @@ export default class CreateEvent extends Component {
                         style={styles.logo}
                       />
                     </View>
-                    <View style={{ marginTop: 100 }}>
+                    <View style={{marginTop: 100}}>
                       <Image
-                        style={{ alignSelf: 'center' }}
+                        style={{alignSelf: 'center'}}
                         source={require('../../assets/Oval.png')}
                       />
-                      <Text style={[styles.titleText, { marginTop: 100 }]}>
+                      <Text style={[styles.titleText, {marginTop: 100}]}>
                         {' '}
                         Event Created!
                       </Text>
@@ -658,7 +722,7 @@ export default class CreateEvent extends Component {
                         </TouchableOpacity>
                       )}
                       <TouchableOpacity
-                        onPress={() => this.setState({ skip: true })}>
+                        onPress={() => this.setState({skip: true})}>
                         <Text
                           style={{
                             marginVertical: 20,
@@ -675,7 +739,7 @@ export default class CreateEvent extends Component {
                 <Modal
                   visible={this.state.selectLocationFlag}
                   onRequestClose={() =>
-                    this.setState({ selectLocationFlag: false })
+                    this.setState({selectLocationFlag: false})
                   }
                   animationType={'slide'}>
                   <View
@@ -687,7 +751,7 @@ export default class CreateEvent extends Component {
                     }}>
                     <GoogleSearchBar
                       closeLocationModal={() => {
-                        this.setState({ selectLocationFlag: false });
+                        this.setState({selectLocationFlag: false});
                       }}
                       getAddress={this.getAdress}
                       setLocation={this.setLocation}
