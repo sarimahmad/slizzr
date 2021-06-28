@@ -23,9 +23,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import moment from 'moment';
 import {openSettings} from 'react-native-permissions';
+import {connect} from 'react-redux';
 
 import Header from '../../component/Header';
 import GoogleSearchBar from '../../component/GoogleSearchBar';
+import * as userActions from '../../redux/actions/user';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {BLACK, WHITE} from '../../helper/Color';
 import Validations from '../../helper/Validations';
@@ -34,7 +36,7 @@ import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
 import {Alert} from 'react-native';
 
-export default class CreateEvent extends Component {
+class CreateEvent extends Component {
   constructor() {
     super();
     this.state = {
@@ -249,73 +251,86 @@ export default class CreateEvent extends Component {
     if (isParamsExist) {
       this.setState({screenTypeEdit: true});
     }
-    const TOKEN = await AsyncStorage.getItem('token');
-    const userDetail = await AsyncStorage.getItem('userdetail');
-    console.log(JSON.parse(userDetail).user.firstName);
-    this.setState({userName: JSON.parse(userDetail).user.firstName});
-    this.setState({userId: JSON.parse(TOKEN)});
-    console.log(this.state.userName, this.state.userId);
   }
   handleSubmit = async () => {
     if (this.isFormFilled()) {
       this.setState({loading: true});
-      this.uploadImage()
-        .then(async () => {
+      const uri = this.state.imageUri;
+      const uniqueId = uuid.v4();
+
+      const filename = uri.substring(uri.lastIndexOf('/') + 1);
+      const uploadUri =
+        Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+      var formdata = new FormData();
+      formdata.append('file', {
+        name: filename,
+        type: 'jpg/png',
+        uri: uploadUri,
+      });
+
+      var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow',
+      };
+
+      fetch('https://slizzr-6a887.appspot.com/upload', requestOptions)
+        .then(response => response.json())
+        .then(async responseImage => {
           // Get Host Object From User's
-          await firestore()
-            .collection('users')
-            .doc(this.state.userId)
-            .get()
-            .then(docRef => {
-              this.setState({Host: docRef.data()});
-              console.warn(docRef.data());
-            })
-            .catch(error => alert(error));
+          if (responseImage.messgae === 'Success') {
 
-          const uniqueId = uuid.v4();
-          const data = {
-            Address: this.state.Address,
-            AttendeeLimit: this.state.AttendeeLimit,
-            DateTime: this.state.DateTime,
-            Description: this.state.Description,
-            EventType: this.state.EventType,
-            Fee: this.state.Fee,
-            Host: this.state.Host,
-            location: this.state.location,
-            Name: this.state.Name,
-            PublicPrivate: this.state.PublicPrivate,
-            disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
-            duration: this.state.duration,
-            userId: this.state.userId,
-            userName: this.state.Host.displayName,
-            image: this.state.imageUri,
-            id: uniqueId,
-            Attendees: [],
-            job: 'scheduled',
-            Start_date: this.state.DateTime,
-            End_date: moment(this.state.DateTime)
-              .add(this.state.duration, 'hours')
-              .format('X'), // TimeStamp
-          };
-          console.warn(data);
-          const usersRef = firestore().collection('events');
-          usersRef
-            .doc(uniqueId)
-            .set(data)
-            .then(async firestoreDocument => {
-              this.setState({loading: false});
-              this.RBSheet.open();
-            })
+            const data = {
+              Address: this.state.Address,
+              AttendeeLimit: this.state.AttendeeLimit,
+              DateTime: this.state.DateTime,
+              Description: this.state.Description,
+              EventType: this.state.EventType,
+              Fee: this.state.Fee,
+              Host: this.props.userDetail,
+              location: this.state.location,
+              Name: this.state.Name,
+              PublicPrivate: this.state.PublicPrivate,
+              disbaleDateTimeFormate: this.state.disbaleDateTimeFormate,
+              duration: this.state.duration,
+              userId: this.props.userDetail.id,
+              userName: this.props.userDetail.displayName,
+              image: responseImage.url,
+              id: uniqueId,
+              Attendees: [],
+              job: 'scheduled',
+              Start_date: this.state.DateTime,
+              End_date: moment(this.state.DateTime)
+                .add(this.state.duration, 'hours')
+                .format('X'), // TimeStamp
+            };
+            const usersRef = firestore().collection('events');
+            usersRef
+              .doc(uniqueId)
+              .set(data)
+              .then(async firestoreDocument => {
+                this.setState({loading: false});
+                this.RBSheet.open();
+              })
 
-            .catch(error => {
-              this.setState({
-                loading: false,
-                errorTitle: 'ERROR',
-                errorText: JSON.stringify(error),
-                btnOneText: 'Ok',
-                popUpError: true,
+              .catch(error => {
+                this.setState({
+                  loading: false,
+                  errorTitle: 'ERROR',
+                  errorText: JSON.stringify(error),
+                  btnOneText: 'Ok',
+                  popUpError: true,
+                });
               });
+          } else {
+            this.setState({
+              loading: false,
+              errorTitle: 'ERROR',
+              errorText: 'Image size is too big. Please choose different pic',
+              btnOneText: 'Ok',
+              popUpError: true,
             });
+          }
         })
         .catch(error => {
           this.setState({
@@ -350,19 +365,18 @@ export default class CreateEvent extends Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.state.isModalVisible === true && (
+        {this.state.popUpError === true && (
           <Modal
             statusBarTranslucent={true}
             isVisible={this.state.popUpError}
             transparent={true}
             presentationStyle={'overFullScreen'}>
             <ErrorPopup
-              cancelButtonPress={() => this.setState({isModalVisible: false})}
-              doneButtonPress={() => this.setState({isModalVisible: false})}
+              cancelButtonPress={() => this.setState({popUpError: false})}
+              doneButtonPress={() => this.setState({popUpError: false})}
               errorTitle={this.state.errorTitle}
               errorText={this.state.errorText}
               btnOneText={this.state.btnOneText}
-              btnTwoText={this.state.btnTwoText}
             />
           </Modal>
         )}
@@ -441,8 +455,8 @@ export default class CreateEvent extends Component {
                 <Text style={styles.TextInputTitle}>Date and Time:</Text>
                 <View style={styles.TextInputWrapper}>
                   <DateAndTimePicker
-                    format="MMM DD, YYYY - ddd "
-                    mode="date"
+                    format="MMM DD, YYYY - hh:mm "
+                    mode="datetime"
                     value={this.state.date}
                     setDateAndTime={value => this.setState({DateTime: value})}
                     showPlaceholder="+ Add"
@@ -770,6 +784,20 @@ export default class CreateEvent extends Component {
     );
   }
 }
+
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.setUser({user, uid})),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CreateEvent);
 const styles = StyleSheet.create({
   container: {
     flex: 1,

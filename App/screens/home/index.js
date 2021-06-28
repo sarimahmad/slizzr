@@ -22,10 +22,11 @@ import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import MapView from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import {openSettings} from 'react-native-permissions';
+import {connect} from 'react-redux';
+import * as userActions from '../../redux/actions/user';
 
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
 import WaitingFor from '../../component/WaitingFor';
 import moment from 'moment';
@@ -35,7 +36,8 @@ let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
 let freeEvents = [];
-export default class home extends Component {
+
+class home extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -170,29 +172,33 @@ export default class home extends Component {
     prepaidEvents = [];
     scanEvents = [];
     freeEvents = [];
-    const usersRef = firestore().collection('events');
-    usersRef
-      .where('PublicPrivate', '==', 'Public')
-      // .orderBy("createdAt", "desc")
+    var requestOptions = {
+      method: 'GET',
+      redirect: 'follow',
+    };
 
-      .get()
+    fetch(
+      'https://slizzr-6a887.appspot.com/event?recent=TRUE&radius=50&lat=31.5203696&long=74.35874729999999&page=1&limit=2',
+      requestOptions,
+    )
+      .then(response => response.json())
       .then(async querySnapShot => {
-        await querySnapShot._docs.forEach(async doc => {
-          await this.getImageUrl(doc.data().image).then(async res => {
+        await querySnapShot.Events.forEach(async doc => {
+          await this.getImageUrl(doc.image).then(async res => {
             let event = {
-              Description: doc.data().Description,
+              Description: doc.Description,
               id: doc.id,
-              Name: doc.data().Name,
-              EventType: doc.data().EventType,
+              Name: doc.Name,
+              EventType: doc.EventType,
               imageUrl: res,
               coordinate: {
-                latitude: doc.data().Latitude,
-                longitude: doc.data().Longitude,
+                latitude: doc.Latitude,
+                longitude: doc.Longitude,
               },
-              Address: doc.data().Address,
-              DateTime: doc.data().DateTime,
-              userName: doc.data().userName,
-              ...doc.data(),
+              Address: doc.Address,
+              DateTime: doc.DateTime,
+              userName: doc.userName,
+              ...doc,
             };
 
             allEvents.push(event);
@@ -203,13 +209,13 @@ export default class home extends Component {
             } else if (event.EventType === 'FREE') {
               freeEvents.push(event);
             }
-            if (allEvents.length === querySnapShot._docs.length) {
+            if (allEvents.length === querySnapShot.Events.length) {
               if (type === 'update') {
                 this.state.index === 0
                   ? this.setState({currentData: allEvents})
-                  : this.state.index === 1
-                  ? this.setState({currentData: prepaidEvents})
                   : this.state.index === 2
+                  ? this.setState({currentData: prepaidEvents})
+                  : this.state.index === 3
                   ? this.setState({currentData: scanEvents})
                   : this.setState({currentData: freeEvents});
               } else {
@@ -262,24 +268,20 @@ export default class home extends Component {
   };
 
   barTapped = indexTap => {
-    this.getEvents('update');
     if (indexTap === 0) {
-      this.setState({index: 0});
-      this.setState({currentData: this.state.allEvents});
+      this.setState({index: 0, currentData: this.state.allEvents});
     } else if (indexTap === 1) {
       this.setState({index: 1});
     } else if (indexTap === 2) {
-      this.setState({index: 2});
-      this.setState({currentData: this.state.prepaidEvents});
+      this.setState({index: 2, currentData: this.state.prepaidEvents});
     }
     if (indexTap === 3) {
-      this.setState({index: 3});
-      this.setState({currentData: this.state.scanEvents});
+      this.setState({index: 3, currentData: this.state.scanEvents});
     }
     if (indexTap === 4) {
-      this.setState({index: 4});
-      this.setState({currentData: this.state.freeEvents});
+      this.setState({index: 4, currentData: this.state.freeEvents});
     }
+    this.getEvents('update');
   };
 
   listView = () => {
@@ -296,7 +298,9 @@ export default class home extends Component {
           {this.state.currentData.length !== 0 && (
             <FlatList
               keyExtractor={(item, index) => index.toString()}
+              onEndReached={() => console.log('Reach end')}
               data={this.state.currentData}
+              refreshing={true}
               renderItem={({item}) => (
                 <View
                   style={{
@@ -374,6 +378,7 @@ export default class home extends Component {
           (marker, index) =>
             marker.location && (
               <MapView.Marker
+                key={index.toString()}
                 coordinate={{
                   latitude: marker.location.latitude,
                   longitude: marker.location.longitude,
@@ -384,9 +389,18 @@ export default class home extends Component {
                     imageUri: marker.imageUrl,
                   })
                 }
-                image={require('../../assets/marker.png')}
-                // description={'Description'}
-              />
+                image={require('../../assets/marker.png')}>
+                <Text
+                  style={{
+                    position: 'absolute',
+                    top: 30,
+                    fontSize: 25,
+                    left: -10,
+                    fontFamily: FONT.Nunito.bold,
+                  }}>
+                  {marker.Name}
+                </Text>
+              </MapView.Marker>
             ),
         )}
       </MapView>
@@ -665,7 +679,7 @@ export default class home extends Component {
               testID="dateTimePicker"
               format="MMM DD, YYYY "
               value={this.state.date}
-              mode={'datetime'}
+              mode={'date'}
               is24Hour={true}
               display="default"
               setDateAndTime={date => this.setState({date})}
@@ -782,6 +796,20 @@ export default class home extends Component {
     );
   }
 }
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.alterUser({user, uid})),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(home);
+
 const styles = StyleSheet.create({
   topView: {
     // height: hp('35%'),
