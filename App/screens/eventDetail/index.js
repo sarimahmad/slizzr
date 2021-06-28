@@ -10,23 +10,24 @@ import {
   FlatList,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
-import {BLACK, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
-import {width} from '../../helper/Constant';
 import {connect} from 'react-redux';
-import * as userActions from '../../redux/actions/user';
 import firestore from '@react-native-firebase/firestore';
-
+import moment from 'moment';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
+
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import FlipImage from '../../component/FlipImage';
-import moment from 'moment';
-import Server from '../../helper/Server';
-import { CheckEventStatus } from '../../helper/Api';
+import * as userActions from '../../redux/actions/user';
+import {BLACK, WHITE} from '../../helper/Color';
+import {FONT, SCREEN} from '../../helper/Constant';
+import {width} from '../../helper/Constant';
+import {CheckEventStatus, AtendPublicEvent} from '../../helper/Api';
+import Loader from '../../component/Loader';
+
 class eventDetail extends Component {
   constructor(props) {
     super(props);
@@ -44,20 +45,21 @@ class eventDetail extends Component {
       Check_Status: '',
       Ticket_Left: '',
       User_Attending_Event: '',
+      loading: false,
     };
   }
-  componentDidMount() {    
+  componentDidMount() {
     let id = this.props.route.params.detailItem;
-    let imageUri = this.props.route.params.imageUri;
-    this.setState({imageUri: imageUri});
     this.setState({user_id: this.props.userDetail.id});
-    this.getEventDetail(id);
-    this.getEventStatus({
-      user_id: this.props.userDetail.id, 
-      event_id: this.props.route.params.detailItem});
+    this.props.userDetail && this.getEventDetail(id, this.props.userDetail.id);
+    this.props.userDetail &&
+      this.getEventStatus({
+        user_id: this.props.userDetail.id,
+        event_id: this.props.route.params.detailItem,
+      });
   }
 
-  getEventDetail(id) {
+  getEventDetail(id, userId) {
     const eventRef = firestore().collection('events');
     eventRef
       .doc(id)
@@ -66,8 +68,7 @@ class eventDetail extends Component {
         if (!firestoreDocument.exists) {
         } else {
           this.setState({
-            myEvent:
-              firestoreDocument.data().Host.id === this.props.userDetail.id,
+            myEvent: firestoreDocument.data().Host.id === userId,
           });
           this.setState({detailItem: firestoreDocument.data()});
           this.setState({
@@ -80,15 +81,24 @@ class eventDetail extends Component {
       });
   }
 
-  async getEventStatus({ user_id, event_id }) {
-    const response = await CheckEventStatus({ user_id, event_id })
-    const { Check_Status, Ticket_Left, User_Attending_Event } = response
-    this.setState({ Check_Status: Check_Status });
-    this.setState({ Ticket_Left: Ticket_Left });
-    this.setState({ User_Attending_Event: User_Attending_Event });
+  async getEventStatus({user_id, event_id}) {
+    const response = await CheckEventStatus({user_id, event_id});
+    const {Check_Status, Ticket_Left, User_Attending_Event} = response;
+    this.setState({
+      Check_Status: Check_Status,
+      Ticket_Left: Ticket_Left,
+      User_Attending_Event: User_Attending_Event,
+    });
   }
 
-  
+  async attendEvent({user_id, event_id}) {
+    this.setState({loading: true});
+    const response = await AtendPublicEvent({user_id, event_id});
+    const {zicketObject} = response;
+    alert(JSON.stringify(zicketObject));
+    this.setState({loading: false});
+  }
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -110,12 +120,14 @@ class eventDetail extends Component {
                 alignItems: 'center',
                 width: SCREEN.width,
               }}>
-              <FlipImage
-                imageUrl={this.state.imageUri}
-                Name={this.state.detailItem.Name}
-                Description={this.state.detailItem.Description}
-                Address={this.state.detailItem.Address}
-              />
+              {this.state.detailItem && this.state.detailItem !== '' && (
+                <FlipImage
+                  imageUrl={this.state.detailItem.image}
+                  Name={this.state.detailItem.Name}
+                  Description={this.state.detailItem.Description}
+                  Address={this.state.detailItem.Address}
+                />
+              )}
             </View>
             <View style={{width: SCREEN.width - 40, alignSelf: 'center'}}>
               <View style={styles.flex}>
@@ -160,7 +172,7 @@ class eventDetail extends Component {
                   marginTop: 3,
                   fontWeight: 'bold',
                 }}>
-                {moment(this.state.detailItem.datetime).format(
+                {moment(this.state.detailItem.Start_date).format(
                   'hh:mm A | MMM DD, YYYY - ddd',
                 )}{' '}
                 | {this.state.detailItem.duration} HRS
@@ -216,15 +228,25 @@ class eventDetail extends Component {
 
             {!this.state.myEvent && (
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('prepay')}
+                onPress={() =>
+                  this.attendEvent({
+                    user_id: this.props.userDetail.id,
+                    event_id: this.props.route.params.detailItem,
+                  })
+                }
                 style={styles.btnMap}>
-                <Text style={styles.btnText}>{
-                  this.state.Check_Status === 'Active' ? (this.state.User_Attending_Event === false ? 'ATTEND' : 'ATTENDING') : 'Booked'
-                }</Text>
+                <Text style={styles.btnText}>
+                  {this.state.Check_Status === 'Active'
+                    ? this.state.User_Attending_Event === false
+                      ? 'ATTEND'
+                      : 'ATTENDING'
+                    : 'Booked'}
+                </Text>
               </TouchableOpacity>
             )}
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
