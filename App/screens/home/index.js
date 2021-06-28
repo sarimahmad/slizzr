@@ -27,7 +27,6 @@ import * as userActions from '../../redux/actions/user';
 
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import storage from '@react-native-firebase/storage';
 import WaitingFor from '../../component/WaitingFor';
 import moment from 'moment';
 import ErrorPopup from '../../component/ErrorPopup';
@@ -184,50 +183,48 @@ class home extends Component {
       .then(response => response.json())
       .then(async querySnapShot => {
         await querySnapShot.Events.forEach(async doc => {
-          await this.getImageUrl(doc.image).then(async res => {
-            let event = {
-              Description: doc.Description,
-              id: doc.id,
-              Name: doc.Name,
-              EventType: doc.EventType,
-              imageUrl: res,
-              coordinate: {
-                latitude: doc.Latitude,
-                longitude: doc.Longitude,
-              },
-              Address: doc.Address,
-              DateTime: doc.DateTime,
-              userName: doc.userName,
-              ...doc,
-            };
+          let event = {
+            Description: doc.Description,
+            id: doc.id,
+            Name: doc.Name,
+            EventType: doc.EventType,
+            imageUrl: doc.image,
+            coordinate: {
+              latitude: doc.Latitude,
+              longitude: doc.Longitude,
+            },
+            Address: doc.Address,
+            DateTime: doc.DateTime,
+            userName: doc.userName,
+            ...doc,
+          };
 
-            allEvents.push(event);
-            if (event.EventType === 'PREPAID') {
-              prepaidEvents.push(event);
-            } else if (event.EventType === 'SCAN') {
-              scanEvents.push(event);
-            } else if (event.EventType === 'FREE') {
-              freeEvents.push(event);
+          allEvents.push(event);
+          if (event.EventType === 'PREPAID') {
+            prepaidEvents.push(event);
+          } else if (event.EventType === 'SCAN') {
+            scanEvents.push(event);
+          } else if (event.EventType === 'FREE') {
+            freeEvents.push(event);
+          }
+          if (allEvents.length === querySnapShot.Events.length) {
+            if (type === 'update') {
+              this.state.index === 0
+                ? this.setState({currentData: allEvents})
+                : this.state.index === 2
+                ? this.setState({currentData: prepaidEvents})
+                : this.state.index === 3
+                ? this.setState({currentData: scanEvents})
+                : this.setState({currentData: freeEvents});
+            } else {
+              this.setState({currentData: allEvents});
             }
-            if (allEvents.length === querySnapShot.Events.length) {
-              if (type === 'update') {
-                this.state.index === 0
-                  ? this.setState({currentData: allEvents})
-                  : this.state.index === 2
-                  ? this.setState({currentData: prepaidEvents})
-                  : this.state.index === 3
-                  ? this.setState({currentData: scanEvents})
-                  : this.setState({currentData: freeEvents});
-              } else {
-                this.setState({currentData: allEvents});
-              }
-              this.setState({allEvents: allEvents});
-              this.setState({prepaidEvents: prepaidEvents});
-              this.setState({scanEvents: scanEvents});
-              this.setState({freeEvents: freeEvents});
-              this.setState({loading: false});
-            }
-          });
+            this.setState({allEvents: allEvents});
+            this.setState({prepaidEvents: prepaidEvents});
+            this.setState({scanEvents: scanEvents});
+            this.setState({freeEvents: freeEvents});
+            this.setState({loading: false});
+          }
         });
       })
       .then(() => {
@@ -253,18 +250,6 @@ class home extends Component {
 
   showDatepicker = () => {
     this.setState({showDate: true});
-  };
-  getImageUrl = async imageName => {
-    let imageRef = storage().ref('/' + imageName);
-    return imageRef.getDownloadURL().catch(e =>
-      this.setState({
-        loading: false,
-        errorTitle: 'ERROR',
-        errorText: JSON.stringify(e),
-        btnOneText: 'Ok',
-        popUpError: true,
-      }),
-    );
   };
 
   barTapped = indexTap => {
@@ -293,7 +278,6 @@ class home extends Component {
             justifyContent: 'center',
             alignItems: 'center',
             flex: 1,
-            // marginBottom: SCREEN.height*0.15,
           }}>
           {this.state.currentData.length !== 0 && (
             <FlatList

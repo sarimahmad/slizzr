@@ -1,13 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 
 import FlipCard from 'react-native-flip-card';
 // import { colors, fonts, images } from "../Theme";
@@ -26,9 +19,8 @@ export default class FlipImage extends Component {
 
   render() {
     const {flip} = this.state;
-    const {imageUrl, Name, isPrivate, Description, Address} = this.props;
+    const {imageUrl, Name, Description, Address} = this.props;
     const image = {uri: imageUrl};
-    console.log('image', isPrivate);
     return (
       <FlipCard
         style={styles.cardMain}

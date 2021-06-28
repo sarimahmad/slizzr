@@ -1,5 +1,4 @@
 /* eslint-disable react/no-did-mount-set-state */
-/* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
@@ -19,7 +18,6 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import RNPickerSelect from 'react-native-picker-select';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
 import moment from 'moment';
 import {openSettings} from 'react-native-permissions';
@@ -279,7 +277,6 @@ class CreateEvent extends Component {
         .then(async responseImage => {
           // Get Host Object From User's
           if (responseImage.messgae === 'Success') {
-
             const data = {
               Address: this.state.Address,
               AttendeeLimit: this.state.AttendeeLimit,
