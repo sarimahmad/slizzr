@@ -25,6 +25,8 @@ import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import FlipImage from '../../component/FlipImage';
 import moment from 'moment';
+import Server from '../../helper/Server';
+import { CheckEventStatus } from '../../helper/Api';
 class eventDetail extends Component {
   constructor(props) {
     super(props);
@@ -39,14 +41,22 @@ class eventDetail extends Component {
       detailItem: {},
       date: '',
       imageUri: '',
+      Check_Status: '',
+      Ticket_Left: '',
+      User_Attending_Event: '',
     };
   }
-  componentDidMount() {
+  componentDidMount() {    
     let id = this.props.route.params.detailItem;
     let imageUri = this.props.route.params.imageUri;
     this.setState({imageUri: imageUri});
+    this.setState({user_id: this.props.userDetail.id});
     this.getEventDetail(id);
+    this.getEventStatus({
+      user_id: this.props.userDetail.id, 
+      event_id: this.props.route.params.detailItem});
   }
+
   getEventDetail(id) {
     const eventRef = firestore().collection('events');
     eventRef
@@ -70,6 +80,15 @@ class eventDetail extends Component {
       });
   }
 
+  async getEventStatus({ user_id, event_id }) {
+    const response = await CheckEventStatus({ user_id, event_id })
+    const { Check_Status, Ticket_Left, User_Attending_Event } = response
+    this.setState({ Check_Status: Check_Status });
+    this.setState({ Ticket_Left: Ticket_Left });
+    this.setState({ User_Attending_Event: User_Attending_Event });
+  }
+
+  
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -199,7 +218,9 @@ class eventDetail extends Component {
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('prepay')}
                 style={styles.btnMap}>
-                <Text style={styles.btnText}>ATTEND</Text>
+                <Text style={styles.btnText}>{
+                  this.state.Check_Status === 'Active' ? (this.state.User_Attending_Event === false ? 'ATTEND' : 'ATTENDING') : 'Booked'
+                }</Text>
               </TouchableOpacity>
             )}
           </ScrollView>

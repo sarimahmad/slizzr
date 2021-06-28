@@ -124,7 +124,10 @@ export default class settings extends Component {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('Intro')}
+                onPress={() => {
+                  this.props.navigation.navigate('Intro')
+                  AsyncStorage.removeItem('token');
+                }}
                 style={styles.rowView}>
                 <Text style={styles.textView}>Logout</Text>
                 <Image

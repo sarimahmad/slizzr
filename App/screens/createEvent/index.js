@@ -383,7 +383,7 @@ class CreateEvent extends Component {
 
         <SafeAreaView style={styles.container}>
           <Header
-            headerTitle={'Create Events'}
+            headerTitle={'Create Event'}
             navigation={this.props.navigation}
             route={'Home'}
           />
