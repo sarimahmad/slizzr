@@ -18,7 +18,6 @@ export async function CheckEventStatus({user_id, event_id}) {
 }
 
 export async function AtendPublicEvent({user_id, event_id}) {
-
   const reqOptions = {
     method: 'POST',
     headers: {

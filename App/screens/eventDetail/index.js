@@ -1,6 +1,6 @@
 /* eslint-disable react/no-did-mount-set-state */
 /* eslint-disable react-native/no-inline-styles */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -9,23 +9,23 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation';
-import {connect} from 'react-redux';
+import { SafeAreaView } from 'react-navigation';
+import { connect } from 'react-redux';
 import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import FlipImage from '../../component/FlipImage';
 import * as userActions from '../../redux/actions/user';
-import {BLACK, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
-import {width} from '../../helper/Constant';
-import {CheckEventStatus, AtendPublicEvent} from '../../helper/Api';
+import { BLACK, RED, WHITE } from '../../helper/Color';
+import { FONT, SCREEN } from '../../helper/Constant';
+import { width } from '../../helper/Constant';
+import { CheckEventStatus, AtendPublicEvent } from '../../helper/Api';
 import Loader from '../../component/Loader';
 
 class eventDetail extends Component {
@@ -33,11 +33,11 @@ class eventDetail extends Component {
     super(props);
     this.state = {
       image: [
-        {id: 1, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 2, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 3, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 4, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 5, image: require('../../assets/Slizzer-icon/testImage.webp')},
+        { id: 1, image: require('../../assets/Slizzer-icon/testImage.webp') },
+        { id: 2, image: require('../../assets/Slizzer-icon/testImage.webp') },
+        { id: 3, image: require('../../assets/Slizzer-icon/testImage.webp') },
+        { id: 4, image: require('../../assets/Slizzer-icon/testImage.webp') },
+        { id: 5, image: require('../../assets/Slizzer-icon/testImage.webp') },
       ],
       detailItem: {},
       date: '',
@@ -50,7 +50,7 @@ class eventDetail extends Component {
   }
   componentDidMount() {
     let id = this.props.route.params.detailItem;
-    this.setState({user_id: this.props.userDetail.id});
+    this.setState({ user_id: this.props.userDetail.id });
     this.props.userDetail && this.getEventDetail(id, this.props.userDetail.id);
     this.props.userDetail &&
       this.getEventStatus({
@@ -60,6 +60,7 @@ class eventDetail extends Component {
   }
 
   getEventDetail(id, userId) {
+    this.setState({ loading: true });
     const eventRef = firestore().collection('events');
     eventRef
       .doc(id)
@@ -70,7 +71,7 @@ class eventDetail extends Component {
           this.setState({
             myEvent: firestoreDocument.data().Host.id === userId,
           });
-          this.setState({detailItem: firestoreDocument.data()});
+          this.setState({ detailItem: firestoreDocument.data() });
           this.setState({
             date: firestoreDocument
               .data()
@@ -79,11 +80,12 @@ class eventDetail extends Component {
           });
         }
       });
+    this.setState({ loading: false });
   }
 
-  async getEventStatus({user_id, event_id}) {
-    const response = await CheckEventStatus({user_id, event_id});
-    const {Check_Status, Ticket_Left, User_Attending_Event} = response;
+  async getEventStatus({ user_id, event_id }) {
+    const response = await CheckEventStatus({ user_id, event_id });
+    const { Check_Status, Ticket_Left, User_Attending_Event } = response;
     this.setState({
       Check_Status: Check_Status,
       Ticket_Left: Ticket_Left,
@@ -91,12 +93,15 @@ class eventDetail extends Component {
     });
   }
 
-  async attendEvent({user_id, event_id}) {
-    this.setState({loading: true});
-    const response = await AtendPublicEvent({user_id, event_id});
-    const {zicketObject} = response;
-    alert(JSON.stringify(zicketObject));
-    this.setState({loading: false});
+  async attendEvent({ user_id, event_id }) {
+    this.setState({ loading: true });
+    AtendPublicEvent({ user_id, event_id }).then(response => {
+      this.getEventDetail(
+        this.props.route.params.detailItem,
+        this.props.userDetail.id,
+      );
+    });
+    this.setState({ loading: false });
   }
 
   render() {
@@ -129,7 +134,7 @@ class eventDetail extends Component {
                 />
               )}
             </View>
-            <View style={{width: SCREEN.width - 40, alignSelf: 'center'}}>
+            <View style={{ width: SCREEN.width - 40, alignSelf: 'center' }}>
               <View style={styles.flex}>
                 <Text style={[styles.titleText]}>
                   {this.state.detailItem.Name}
@@ -143,11 +148,11 @@ class eventDetail extends Component {
                   <Text style={[styles.purpleText]}> SCAN-&-PAY AT DOOR</Text>
                 )}
               </View>
-              <View style={[styles.flexRow, {paddingTop: 8}]}>
+              <View style={[styles.flexRow, { paddingTop: 8 }]}>
                 <Text
                   style={[
                     styles.titleText,
-                    {fontSize: 12, fontFamily: FONT.Nunito.regular},
+                    { fontSize: 12, fontFamily: FONT.Nunito.regular },
                   ]}>
                   Host:{' '}
                 </Text>
@@ -177,10 +182,10 @@ class eventDetail extends Component {
                 )}{' '}
                 | {this.state.detailItem.duration} HRS
               </Text>
-              <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>
-                <View style={[styles.flexRow, {paddingTop: 5}]}>
+              <View style={[styles.flexRow, { justifyContent: 'space-between' }]}>
+                <View style={[styles.flexRow, { paddingTop: 5 }]}>
                   <Image
-                    style={{width: 12, height: 16, marginRight: 5}}
+                    style={{ width: 12, height: 16, marginRight: 5 }}
                     source={require('../../assets/location.png')}
                   />
                   <Text
@@ -202,15 +207,15 @@ class eventDetail extends Component {
                     `$${this.state.detailItem.Fee}`}
                 </Text>
               </View>
-              <Text style={[styles.titleText, {marginTop: 9}]}>
+              <Text style={[styles.titleText, { marginTop: 9 }]}>
                 Mutual Attendees
               </Text>
-              <View style={{height: 50, width: SCREEN.width, marginTop: 11}}>
+              <View style={{ height: 50, width: SCREEN.width, marginTop: 11 }}>
                 <FlatList
                   data={this.state.image}
                   horizontal
                   keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => (
+                  renderItem={({ item }) => (
                     <View style={styles.listView}>
                       <Image style={styles.ImageView} source={item.image} />
                     </View>
@@ -220,7 +225,7 @@ class eventDetail extends Component {
               <Text
                 style={[
                   styles.purpleText,
-                  {marginTop: 9, textDecorationLine: 'underline'},
+                  { marginTop: 9, textDecorationLine: 'underline' },
                 ]}>
                 See more
               </Text>
@@ -228,14 +233,35 @@ class eventDetail extends Component {
 
             {!this.state.myEvent && (
               <TouchableOpacity
-                onPress={() =>
-                  this.attendEvent({
-                    user_id: this.props.userDetail.id,
-                    event_id: this.props.route.params.detailItem,
-                  })
+                activeOpacity={0.8}
+                onPress={() => {
+                  if (this.state.Check_Status === 'Active' && this.state.User_Attending_Event === false) {
+                    this.attendEvent({
+                      user_id: this.props.userDetail.id,
+                      event_id: this.props.route.params.detailItem,
+                    })
+                  }
                 }
-                style={styles.btnMap}>
-                <Text style={styles.btnText}>
+                }
+                style={
+                  this.state.Check_Status === 'Active'
+                    ? this.state.User_Attending_Event === false
+                      ? styles.btnText
+                      : styles.btnMapAttend
+                    : styles.btnMapBooked
+                }>
+                <Text
+                  style={[
+                    styles.btnText,
+                    {
+                      color:
+                        this.state.Check_Status === 'Active'
+                          ? this.state.User_Attending_Event === false
+                            ? WHITE.dark
+                            : BLACK.app
+                          : WHITE.dark,
+                    },
+                  ]}>
                   {this.state.Check_Status === 'Active'
                     ? this.state.User_Attending_Event === false
                       ? 'ATTEND'
@@ -261,7 +287,7 @@ function mapStateToProps(state, props) {
 
 const mapDispatchToProps = dispatch => {
   return {
-    callApi: (user, uid) => dispatch(userActions.alterUser({user, uid})),
+    callApi: (user, uid) => dispatch(userActions.alterUser({ user, uid })),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(eventDetail);
@@ -318,6 +344,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  btnMapAttend: {
+    width: wp('90%'),
+    marginHorizontal: '5%',
+    borderRadius: 25,
+    height: 50,
+    borderWidth: 1,
+    marginVertical: 30,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+  },
+  btnMapBooked: {
+    width: wp('90%'),
+    marginHorizontal: '5%',
+    borderRadius: 25,
+    height: 50,
+    marginVertical: 30,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+  },
   btnLocation: {
     width: wp('80%'),
     marginHorizontal: '10%',
