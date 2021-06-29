@@ -158,7 +158,7 @@ class SignIn extends Component {
           }
         });
     }
-    this.setState({loading: true});
+    this.setState({loading: false});
   };
 
   firestoreLinking = data => {
@@ -374,9 +374,7 @@ class SignIn extends Component {
                 validate={this.isFormFilledCheck()}
                 btnLabel={'LOG IN'}
                 data={
-                  this.isFormFilledCheck()
-                    ? this.handleSubmit
-                    : console.log('ok')
+                     this.handleSubmit
                 }
               />
               <Text style={styles.subtitleTextBold}>
@@ -447,9 +445,9 @@ class SignIn extends Component {
               cancelButtonPress={() =>
                 this.setState({
                   popUpError: false,
-                  btnOneText: '',
-                  errorTitle: '',
-                  errorText: '',
+                  btnOneText: this.state.btnOneText,
+                  errorTitle: this.state.titleText,
+                  errorText: this.state.errorText,
                 })
               }
               doneButtonPress={() => this.doneClick()}

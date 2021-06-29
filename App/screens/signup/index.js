@@ -129,7 +129,7 @@ class SignUp extends Component {
         errorText: 'Please input the valid data in Password',
         popUpError: true,
       });
-    } else if (checkEmail !== confirmPass) {
+    } else if (this.state.password !== this.state.confirmPassword) {
       this.setState({
         loading: false,
         errorTitle: 'PASSWORD IS NOT MATCHING',
@@ -390,7 +390,7 @@ class SignUp extends Component {
               />
               <TextField
                 placeholder="Confirm Password"
-                type={'password'}
+                type={'confirmPassword'}
                 parentCallBack={this.storeInputData}
               />
               <ButtonResetPassaword

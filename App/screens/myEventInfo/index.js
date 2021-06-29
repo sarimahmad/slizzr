@@ -18,13 +18,52 @@ import {
   } from 'react-native-responsive-screen';
 import { ScrollView } from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import { getEventDetail } from '../../helper/Api';
+import moment from 'moment';
+import firestore from '@react-native-firebase/firestore';
 export default class myEventInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      detailItem:{}
     };
   }
-
+componentDidMount(){
+  let id = this.props.route.params.id;
+  if(id){
+    this.getEventDetail(id)
+  }
+ 
+}
+async getEventDetail(id) {
+ 
+  await getEventDetail(id).then((response) => {
+    this.setState({ detailItem: response.Event }) 
+  });
+  // const eventRef = firestore().collection('events');
+  // eventRef
+  //   .doc(id)
+  //   .get()
+  //   .then(firestoreDocument => {
+  //     if (!firestoreDocument.exists) {
+  //     } else {
+  //       // this.setState({
+  //       //   myEvent:
+  //       //     firestoreDocument.data().Host.id === this.props.userDetail.id,
+  //       // });
+  //       this.setState({detailItem: firestoreDocument.data()});
+        
+        // this.setState({
+        //   date: firestoreDocument
+        //     .data()
+        //     .DateTime.toDate()
+        //     .toLocaleTimeString(),
+        // });
+//       }
+//     });
+// console.log(this.state.detailItem)
+}
+  
   render() {
     return (
         <View style={styles.wrapperView}>
@@ -45,13 +84,13 @@ export default class myEventInfo extends Component {
               />
           
           <View style={{alignSelf: 'center',}}>
-          <Text style={[styles.titleText,{textAlign:'center'}]}>Uroojs Banger</Text>
-          <Text style={[styles.text,{textAlign:'center'}]}>PREPAID | $5</Text>
-          <Text style={[styles.purpleText,{textAlign:'center'}]}>11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
+          <Text style={[styles.titleText,{textAlign:'center'}]}>{this.state.detailItem.Name}</Text>
+          <Text style={[styles.text,{textAlign:'center'}]}>{this.state.detailItem.EventType} | $5</Text>
+          <Text style={[styles.purpleText,{textAlign:'center'}]}>{moment(this.state.detailItem.DateTime).format('hh:mm A | MMM DD, YYYY - ddd')}11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
          
           <Text style={{textAlign:'center',marginVertical:5}}>
               <Text style={[styles.titleText,{fontSize:12}]}>Host:</Text>
-              <Text style={styles.purpleText}>Holly Smith</Text>
+              <Text style={styles.purpleText}>{this.state.detailItem.Host && this.state.detailItem.Host.displayName}  </Text>
           </Text>
           </View>
          <View style={{flexDirection:'row',backgroundColor:'rgba(178, 171, 177, 0.246039)',padding:20,margin:20,borderRadius:10}}>
@@ -60,17 +99,17 @@ export default class myEventInfo extends Component {
                 style={styles.logoEvent}
               />
         
-         <Text>1817 18 St. SW Calgary AB T2T 4T2 (Calgary, Alberta)</Text>
+         <Text>{this.state.detailItem.Address}</Text>
             </View>
             <Text style={[styles.titleText,{textAlign:'center'}]}>Description:</Text>
-            <Text style={[styles.text,{textAlign:'center',marginHorizontal:36,marginVertical:10}]}>Tousled food truck polaroid, salvia bespoke small batch Pinterest Marfa. Fingerstache authentic craft beer, food  </Text>
+            <Text style={[styles.text,{textAlign:'center',marginHorizontal:36,marginVertical:10}]}>{this.state.detailItem.Description}</Text>
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("FindPeople")} style={styles.btnMap}>
               <Text style={styles.btnText}>Find PEOPLE</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("Scan")} style={styles.btnMap}>
               <Text style={styles.btnText}>ZICKET SCANNER</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("attendeesList")}>
+            <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("attendeesList",{id:this.state.detailItem.id})}>
               <Text style={styles.btnText}>ATTENDEES</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHosts")} style={styles.btnMap}>
