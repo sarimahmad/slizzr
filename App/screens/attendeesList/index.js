@@ -18,44 +18,60 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import { getAttendeesList } from '../../helper/Api';
+
 export default class attendeesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       attendingEvents: true,
       myevents: false,
+      attendeesList:[]
+      // attendeesLIst: [
+      //   {
+      //     imgProfile: '',
+      //     attendee: 'Ava Gregoraci',
+      //     count: 3,
+      //   },
+      //   {
+      //     imgProfile: '',
+      //     attendee: 'Ava Gregoraci',
+      //     count: 3,
+      //   },
 
-      attendeesLIst: [
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
+      //   {
+      //     imgProfile: '',
+      //     attendee: 'Ava Gregoraci',
+      //     count: 3,
+      //   },
 
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-      ],
+      //   {
+      //     imgProfile: '',
+      //     attendee: 'Ava Gregoraci',
+      //     count: 3,
+      //   },
+      //   {
+      //     imgProfile: '',
+      //     attendee: 'Ava Gregoraci',
+      //     count: 3,
+      //   },
+      // ],
     };
   }
+  
+componentDidMount(){
+  let eventId = this.props.route.params.id;
+  if(eventId){
+    this.getAttendeesList(eventId)
+  }
+ 
+}
+async getAttendeesList(eventId) {
+ 
+  await getAttendeesList(eventId).then((response) => {
+    this.setState({ attendeesLIst: response.Attendees }) 
+  });
+}
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -91,7 +107,7 @@ export default class attendeesList extends Component {
                   borderBottomColor: 'lightgrey',
                 }}>
                 <View style={[styles.flexRow, {height: 70}]}>
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{flexDirection: 'row',width:SCREEN.width*0.6,}}>
                     <View style={styles.imgView}>
                       <Image
                         style={{height: 50, width: 50}}
@@ -108,7 +124,7 @@ export default class attendeesList extends Component {
                           styles.titleText,
                           {fontFamily: FONT.Nunito.semiBold, marginRight: 7},
                         ]}>
-                        {item.attendee}
+                        {item.User && item.User.displayName}
                       </Text>
                       <Image
                         style={{height: 26, width: 28, resizeMode: 'contain'}}

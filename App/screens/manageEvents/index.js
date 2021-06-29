@@ -18,8 +18,9 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
-
-export default class manageEvents extends Component {
+import {getUserAttendedEvents,getUserEvents} from '../../helper/Api'
+import {connect} from 'react-redux';
+ class manageEvents extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -82,19 +83,18 @@ export default class manageEvents extends Component {
   }
 
   async getUserEvents() {
-    const TOKEN = await AsyncStorage.getItem('token');
-    await firestore().collection('events').where('userId','==',`${JSON.parse(TOKEN)}`)
-    .onSnapshot(async (querySnapshot) => {
-      const userEvents = []
-      await querySnapshot.forEach((doc) => {
-        userEvents.push(doc.data())
-      })
-      this.setState({ userEvents: userEvents })
-    })
+    await getUserEvents(this.props.userToken).then((response) => {
+      this.setState({ userEvents: response.UserHostedEvent }) 
+    });
   }
 
   async getUserAttendedEvents(){
-    // Code for Attending events
+   
+      
+      await getUserAttendedEvents(this.props.userToken).then((response) => {
+        this.setState({ userAttendedEvents: response.UserAttendedEvents }) 
+      });
+    
   }
 
   barTapped = (indexTap) => {
@@ -226,7 +226,7 @@ export default class manageEvents extends Component {
               keyExtractor={item => item.id}
               ListEmptyComponent={this.emptyListComponent}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => this.props.navigation.navigate("myEventInfo")}
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("myEventInfo",{id:item.id})}
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
@@ -245,7 +245,7 @@ export default class manageEvents extends Component {
                     <View style={styles.detail}>
                       <Text style={styles.titleText}>{item.Name}</Text>
                       <Text style={styles.subtitleText}>{item.EventType === 'SCAN' ? 'SCAN-&-PAY AT DOOR' : item.EventType}</Text>
-                      <Text style={[styles.purpleText, { marginTop: 5 }]}>{moment(item.datetime).format('hh:mm A | MMM DD, YYYY - ddd')}</Text>
+                      <Text style={[styles.purpleText, { marginTop: 5 }]}>{moment(item.DateTime).format('hh:mm A | MMM DD, YYYY - ddd')}</Text>
                     </View>
                     <TouchableOpacity
                       //  onPress={()=>this.props.navigation.navigate("directInvites")} 
@@ -262,7 +262,7 @@ export default class manageEvents extends Component {
             <FlatList
               data={this.state.userAttendedEvents}
               keyExtractor={item => item.id}
-              ListEmptyComponent={this.emptyListComponent}
+              // ListEmptyComponent={this.emptyListComponent}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => this.props.navigation.navigate("attendingEventInfo")}
                   style={{
@@ -281,9 +281,9 @@ export default class manageEvents extends Component {
                     </View>
 
                     <View style={styles.detail}>
-                    <Text style={styles.titleText}>{item.Name}</Text>
-                      <Text style={styles.subtitleText}>Host: {item.Host.displayName}</Text>
-                      <Text style={[styles.purpleText, { marginTop: 5 }]}>{moment(item.datetime).format('hh:mm A | MMM DD, YYYY - ddd')}</Text>
+                    <Text style={styles.titleText}>{item.Event.Name}</Text>
+                      <Text style={styles.subtitleText}>Host: {item.Event.Host.displayName}</Text>
+                      <Text style={[styles.purpleText, { marginTop: 5 }]}>{moment(item.Event.datetime).format('hh:mm A | MMM DD, YYYY - ddd')}</Text>
                     </View>
                     <TouchableOpacity
                       // onPress={()=>this.props.navigation.navigate("directInvites")} 
@@ -302,6 +302,19 @@ export default class manageEvents extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(manageEvents);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
