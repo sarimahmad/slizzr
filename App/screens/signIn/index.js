@@ -373,9 +373,7 @@ class SignIn extends Component {
               <ButtonResetPassaword
                 validate={this.isFormFilledCheck()}
                 btnLabel={'LOG IN'}
-                data={
-                     this.handleSubmit
-                }
+                data={this.handleSubmit}
               />
               <Text style={styles.subtitleTextBold}>
                 Other login up options

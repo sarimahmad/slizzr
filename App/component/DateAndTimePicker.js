@@ -22,7 +22,7 @@ export default class DateAndTimePicker extends React.Component {
     clearGoogleSearch: true,
     show: false,
     platform: true,
-    dateTime: new Date(),
+    dateTime: this.props.value,
   };
   // platform true === android
   // platform false === ios
@@ -30,8 +30,14 @@ export default class DateAndTimePicker extends React.Component {
     if (Platform.OS === 'ios') {
       this.setState({platform: false});
     }
-    // this.setState({ dateTime: this.props.value });
+    this.setState({dateTime: this.props.value});
   };
+
+  componentDidUpdate() {
+    if (this.state.dateTime !== this.props.value) {
+      this.setState({dateTime: this.props.value});
+    }
+  }
   show = () => this.setState({show: true});
   OnChange = (event, selectedValue) => {
     console.log('event', event);

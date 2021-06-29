@@ -17,7 +17,6 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {FONT, SCREEN} from '../../helper/Constant';
 import RNPickerSelect from 'react-native-picker-select';
 import firestore from '@react-native-firebase/firestore';
-import storage from '@react-native-firebase/storage';
 import uuid from 'react-native-uuid';
 import moment from 'moment';
 import {openSettings} from 'react-native-permissions';
@@ -98,24 +97,6 @@ class CreateEvent extends Component {
           openSettings().catch(() => console.warn('cannot open settings'));
         }
       });
-  };
-  showModal = id => {
-    this.setState({
-      selectedEventId: id,
-      isModalVisible: true,
-    });
-  };
-  uploadImage = async () => {
-    const uri = this.state.imageUri;
-
-    const filename = uri.substring(uri.lastIndexOf('/') + 1);
-    this.setState({imageUri: filename});
-    const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
-
-    const task = storage().ref(filename).putFile(uploadUri);
-    task.on('state_changed', snapshot => {
-      this.setState({imageUploaded: true});
-    });
   };
 
   directInvites = () => {
@@ -454,7 +435,7 @@ class CreateEvent extends Component {
                   <DateAndTimePicker
                     format="MMM DD, YYYY - hh:mm "
                     mode="datetime"
-                    value={this.state.date}
+                    value={this.state.DateTime}
                     setDateAndTime={value => this.setState({DateTime: value})}
                     showPlaceholder="+ Add"
                     datebutton={styles.datebutton}
