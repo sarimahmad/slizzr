@@ -183,7 +183,7 @@ import Loader from '../../component/Loader';
       }}>
         {this.state.index === 1 && (
           <View >
-            <Text style={{textAlign:'center'}}>
+            <Text style={{textAlign:'center',marginBottom:20}}>
             You are not hosting any events at the moment.
             </Text>
             <TouchableOpacity style={styles.btnMap}>
@@ -356,6 +356,7 @@ const styles = StyleSheet.create({
   },
   emptyFont:{
     fontSize: 20,
+    
     color: '#494949',
     textAlign: 'center',
     color: '#494949',

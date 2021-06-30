@@ -266,7 +266,7 @@ export const MainNavigation = () => {
         <Stack.Screen name="paymentsandPayouts3"component={paymentsandPayouts3}></Stack.Screen>
         <Stack.Screen name="Notifications" component={notification}></Stack.Screen>
         <Stack.Screen name="SettingsNavigation" component={SettingsNavigation}></Stack.Screen>
-        <Stack.Screen name="myProfile" component={ProfileNavigation}></Stack.Screen>
+        <Stack.Screen name="myProfile" component={Profile}></Stack.Screen>
 
         <Stack.Screen name="HomeStack" component={DrawerContent}></Stack.Screen>
         

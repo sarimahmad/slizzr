@@ -77,7 +77,7 @@ async getAttendeesList(eventId) {
             data={this.state.attendeesLIst}
             keyExtractor={item => item.id}
             renderItem={({item}) => (
-              <View
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate("myProfile",{id:item.User.id})}
                 style={{
                   width:SCREEN.width,
                   borderBottomWidth: 1,
@@ -122,7 +122,7 @@ async getAttendeesList(eventId) {
                     <Text style={{color: 'white'}}>DISINVITE</Text>
                   </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             )}
           />
           <TouchableOpacity
