@@ -1,5 +1,5 @@
+/* eslint-disable radix */
 /* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react/no-did-mount-set-state */
 import React, {Component} from 'react';
 import {
   Text,
@@ -17,18 +17,13 @@ import * as userActions from '../../redux/actions/user';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
+import {getUserImages} from '../../helper/Api';
 
 class Profile extends Component {
   constructor() {
     super();
     this.state = {
-      image: [
-        {id: 1, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 2, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 3, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 4, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 5, image: require('../../assets/Slizzer-icon/testImage.webp')},
-      ],
+      imageOfuser: [],
     };
   }
   footer = () => {
@@ -38,9 +33,24 @@ class Profile extends Component {
       </TouchableOpacity>
     );
   };
-  async componentDidMount() {
-    this.setState({userDetail: this.props.userDetail});
+
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.setState({userDetail: this.props.userDetail});
+      this.getUserImages();
+    });
   }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  async getUserImages() {
+    await getUserImages(this.props.userToken).then(response => {
+      this.setState({imageOfuser: response.Pictures});
+    });
+  }
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -48,7 +58,11 @@ class Profile extends Component {
           <HeaderWithOptionBtn
             leftIcon={require('../../assets/back.png')}
             leftPress={() => this.props.navigation.navigate('HomeStack')}
-            rightPress={() => this.props.navigation.navigate('editProfle')}
+            rightPress={() =>
+              this.props.navigation.navigate('editProfle', {
+                imageOfuser: this.state.imageOfuser,
+              })
+            }
             borderBottom={true}
             rightIcon={
               !this.props.route.params
@@ -66,9 +80,13 @@ class Profile extends Component {
                       left: 0,
                       height: 140,
                       width: 140,
-                      borderRadius: 50,
+                      borderRadius: 70,
                     }}
-                    source={require('../../assets/profileImage1.png')}
+                    source={
+                      this.state.imageOfuser.length > 3
+                        ? {uri: this.state.imageOfuser[3].Profile_Url}
+                        : require('../../assets/plus.png')
+                    }
                   />
 
                   <Image
@@ -77,9 +95,13 @@ class Profile extends Component {
                       left: 30,
                       height: 170,
                       width: 170,
-                      borderRadius: 50,
+                      borderRadius: 70,
                     }}
-                    source={require('../../assets/profileImage2.png')}
+                    source={
+                      this.state.imageOfuser.length > 4
+                        ? {uri: this.state.imageOfuser[4].Profile_Url}
+                        : require('../../assets/plus.png')
+                    }
                   />
 
                   <Image
@@ -88,9 +110,13 @@ class Profile extends Component {
                       right: 0,
                       height: 140,
                       width: 140,
-                      borderRadius: 50,
+                      borderRadius: 70,
                     }}
-                    source={require('../../assets/profileImage1.png')}
+                    source={
+                      this.state.imageOfuser.length > 2
+                        ? {uri: this.state.imageOfuser[2].Profile_Url}
+                        : require('../../assets/plus.png')
+                    }
                   />
                   <Image
                     style={{
@@ -98,9 +124,13 @@ class Profile extends Component {
                       right: 30,
                       height: 170,
                       width: 170,
-                      borderRadius: 50,
+                      borderRadius: 70,
                     }}
-                    source={require('../../assets/profileImage2.png')}
+                    source={
+                      this.state.imageOfuser.length > 1
+                        ? {uri: this.state.imageOfuser[1].Profile_Url}
+                        : require('../../assets/plus.png')
+                    }
                   />
 
                   <Image
@@ -111,9 +141,11 @@ class Profile extends Component {
                       width: 200,
                       borderRadius: 100,
                     }}
-                    source={this.props.userDetail && this.props.userDetail.Profile
-                      ? {uri: this.props.userDetail.Profile}
-                      : require('../../assets/profileImage2.png')}
+                    source={
+                      this.state.imageOfuser.length > 0
+                        ? {uri: this.state.imageOfuser[0].Profile_Url}
+                        : require('../../assets/plus.png')
+                    }
                   />
                 </View>
               </View>
@@ -140,14 +172,24 @@ class Profile extends Component {
               <Text style={styles.text1}>
                 {this.state.userDetail && this.state.userDetail.FirstName}
               </Text>
-              <Text style={styles.text2}>28 years,Male</Text>
+              <Text style={styles.text2}>
+                {this.props.userDetail && this.props.userDetail.age
+                  ? parseInt(this.props.userDetail.age)
+                  : '28'}{' '}
+                years,{this.props.userDetail && this.props.userDetail.Gender}
+              </Text>
               <View
                 style={{flexDirection: 'row', marginBottom: 30, marginTop: 5}}>
                 <Image
                   style={{marginRight: 5}}
                   source={require('../../assets/Slizzer-icon/location.png')}
                 />
-                <Text style={styles.textView1}>Toronto, ON</Text>
+                <Text style={styles.textView1}>
+                  {this.props.userDetail && this.props.userDetail.Address
+                    ? this.props.userDetail.Address.city
+                    : 'Toronto'}
+                  ,ON
+                </Text>
               </View>
               <Text style={styles.text3}>BIO:</Text>
               <Text style={styles.bio}>
@@ -155,29 +197,41 @@ class Profile extends Component {
                   ? this.state.userDetail.bio
                   : 'Empty Bio'}
               </Text>
-              <View style={{alignSelf: 'flex-start', marginLeft: 40}}>
-                <Text style={[styles.titleText, {marginTop: 10}]}>
-                  Mututal Connections
-                </Text>
-                <View style={{height: 50, width: SCREEN.width, marginTop: 11}}>
-                  <FlatList
-                    data={this.state.image}
-                    horizontal
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({item}) => (
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.props.navigation.navigate('mutualConnections')
-                        }
-                        style={styles.listView}>
-                        <Image style={styles.ImageView} source={item.image} />
-                      </TouchableOpacity>
-                    )}
-                  />
-                </View>
-                {this.footer()}
-              </View>
-              <Text style={styles.blockUser}>BLOCK USER</Text>
+              {this.props.userDetail &&
+                this.state.userDetail &&
+                this.props.userDetail.id !== this.state.userDetail.id && (
+                  <View style={{alignSelf: 'flex-start', marginLeft: 40}}>
+                    <Text style={[styles.titleText, {marginTop: 10}]}>
+                      Mututal Connections
+                    </Text>
+                    <View
+                      style={{height: 50, width: SCREEN.width, marginTop: 11}}>
+                      <FlatList
+                        data={this.state.image}
+                        horizontal
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({item}) => (
+                          <TouchableOpacity
+                            onPress={() =>
+                              this.props.navigation.navigate(
+                                'mutualConnections',
+                              )
+                            }
+                            style={styles.listView}>
+                            <Image
+                              style={styles.ImageView}
+                              source={item.image}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      />
+                    </View>
+                    {this.footer()}
+                  </View>
+                )}
+              {this.props.route.params && (
+                <Text style={styles.blockUser}>BLOCK USER</Text>
+              )}
             </View>
           </ScrollView>
         </SafeAreaView>

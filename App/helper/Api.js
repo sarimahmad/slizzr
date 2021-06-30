@@ -18,7 +18,6 @@ export async function CheckEventStatus({user_id, event_id}) {
 }
 
 export async function AtendPublicEvent({user_id, event_id}) {
-
   const reqOptions = {
     method: 'POST',
     headers: {
@@ -37,44 +36,84 @@ export async function AtendPublicEvent({user_id, event_id}) {
 }
 
 export async function getUserAttendedEvents(user_id) {
-
-  return fetch(`${Server}/event/user-attended/`+user_id)
-    .then(async (response) => {
-     return await response.json()
+  return fetch(`${Server}/event/user-attended/` + user_id)
+    .then(async response => {
+      return await response.json();
     })
-    .catch((error) => {
+    .catch(error => {
       console.error(error);
     });
-  }
-  
+}
+
 export async function getUserEvents(user_id) {
-
-  return fetch(`${Server}/event/user-hosted/`+user_id)
-    .then(async (response) => {
-     return await response.json()
+  return fetch(`${Server}/event/user-hosted/` + user_id)
+    .then(async response => {
+      return await response.json();
     })
-    .catch((error) => {
+    .catch(error => {
       console.error(error);
     });
-  }
-  export async function getEventDetail(event_id) {
+}
+export async function getUserImages(user_id) {
+  return fetch(`${Server}/user/pictures/` + user_id)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
 
-    return fetch(`${Server}/event/`+event_id)
-      .then(async (response) => {
-       return await response.json()
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    }
-    export async function getAttendeesList(event_id) {
+export async function getEventDetail(event_id) {
+  return fetch(`${Server}/event/` + event_id)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+export async function getAttendeesList(event_id) {
+  return fetch(`${Server}/event/get-attendees/` + event_id)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
 
-      return fetch(`${Server}/event/get-attendees/`+event_id)
-        .then(async (response) => {
-         return await response.json()
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      }
-       
+export async function updateProfile(user_id, dataToUpdate) {
+  var myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+  var requestOptions = {
+    method: 'PUT',
+    headers: myHeaders,
+    body: dataToUpdate,
+    redirect: 'follow',
+  };
+  return fetch(
+    `https://slizzr-6a887.appspot.com/user/${user_id}`,
+    requestOptions,
+  )
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => console.log('error', error));
+}
+
+export async function uploadImage(formdata) {
+  var requestOptions = {
+    method: 'POST',
+    body: formdata,
+    redirect: 'follow',
+  };
+
+  return fetch('https://slizzr-6a887.appspot.com/upload', requestOptions)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}

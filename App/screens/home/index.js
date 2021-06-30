@@ -50,12 +50,21 @@ class home extends Component {
       prepaidEvents: [],
       scanEvents: [],
       freeEvents: [],
-      allLocations: [],
+      allLocations: {
+        accuracy: 5,
+        altitude: 0,
+        altitudeAccuracy: -1,
+        heading: -1,
+        latitude: 31.52037,
+        longitude: 74.358749,
+        speed: -1,
+      },
       currentData: [],
       popUpError: false,
       btnOneText: '',
       errorTitle: '',
       errorText: '',
+      pageNumber: 1,
     };
   }
   componentDidMount() {
@@ -139,7 +148,7 @@ class home extends Component {
 
     Geolocation.getCurrentPosition(
       position => {
-        this.setState({enableLocation: true});
+        this.setState({enableLocation: true, allLocations: position.coords});
         console.log(position);
       },
       error => {
@@ -177,7 +186,13 @@ class home extends Component {
     };
 
     fetch(
-      'https://slizzr-6a887.appspot.com/event?recent=TRUE&radius=50&lat=31.5203696&long=74.35874729999999&page=1&limit=2',
+      `https://slizzr-6a887.appspot.com/event?recent=TRUE&radius=${
+        this.props.userDetail && this.props.userDetail.Radius
+          ? this.props.userDetail.Radius
+          : '50'
+      }&lat=${this.state.allLocations.latitude}&long=${
+        this.state.allLocations.longitude
+      }&page=${this.state.pageNumber}&limit=30`,
       requestOptions,
     )
       .then(response => response.json())
@@ -353,8 +368,8 @@ class home extends Component {
       <MapView
         style={{flex: 1}}
         initialRegion={{
-          latitude: 31.52037,
-          longitude: 74.358749,
+          latitude: this.state.allLocations.latitude,
+          longitude: this.state.allLocations.longitude,
           latitudeDelta: 1,
           longitudeDelta: 1,
         }}>
