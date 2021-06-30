@@ -19,6 +19,7 @@ import {
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { getAttendeesList } from '../../helper/Api';
+import Loader from '../../component/Loader';
 
 export default class attendeesList extends Component {
   constructor(props) {
@@ -26,36 +27,8 @@ export default class attendeesList extends Component {
     this.state = {
       attendingEvents: true,
       myevents: false,
-      attendeesList:[]
-      // attendeesLIst: [
-      //   {
-      //     imgProfile: '',
-      //     attendee: 'Ava Gregoraci',
-      //     count: 3,
-      //   },
-      //   {
-      //     imgProfile: '',
-      //     attendee: 'Ava Gregoraci',
-      //     count: 3,
-      //   },
-
-      //   {
-      //     imgProfile: '',
-      //     attendee: 'Ava Gregoraci',
-      //     count: 3,
-      //   },
-
-      //   {
-      //     imgProfile: '',
-      //     attendee: 'Ava Gregoraci',
-      //     count: 3,
-      //   },
-      //   {
-      //     imgProfile: '',
-      //     attendee: 'Ava Gregoraci',
-      //     count: 3,
-      //   },
-      // ],
+      attendeesList:[],
+      attendeesCount:0
     };
   }
   
@@ -67,10 +40,13 @@ componentDidMount(){
  
 }
 async getAttendeesList(eventId) {
- 
+ this.setState({loading:true})
   await getAttendeesList(eventId).then((response) => {
     this.setState({ attendeesLIst: response.Attendees }) 
+    this.setState({attendeesCount:response.Attendees.length})
+    this.setState({loading:false})
   });
+
 }
   render() {
     return (
@@ -103,6 +79,7 @@ async getAttendeesList(eventId) {
             renderItem={({item}) => (
               <View
                 style={{
+                  width:SCREEN.width,
                   borderBottomWidth: 1,
                   borderBottomColor: 'lightgrey',
                 }}>
@@ -151,9 +128,11 @@ async getAttendeesList(eventId) {
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('chat')}
             style={styles.btnMap}>
-            <Text style={styles.btnText}>Message all 100 attendees</Text>
+            <Text style={styles.btnText}>Message all {this.state.attendeesCount} attendees</Text>
           </TouchableOpacity>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+    
       </View>
     );
   }

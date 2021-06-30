@@ -33,6 +33,7 @@ import DateAndTimePicker from '../../component/DateAndTimePicker';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
 import {Alert} from 'react-native';
+import {getEventDetail} from '../../helper/Api';
 
 class CreateEvent extends Component {
   constructor() {
@@ -74,8 +75,12 @@ class CreateEvent extends Component {
       errorTitle: '',
       errorText: '',
       btnTwoText: '',
+      detailItem: {},
+      loading: false,
     };
   }
+  
+
   selectImage = async () => {
     ImagePicker.openPicker({
       width: 250,
@@ -131,13 +136,8 @@ class CreateEvent extends Component {
     let checkDateTime = Validations.checkUsername(this.state.DateTime);
     let checkDescription = Validations.checkUsername(this.state.Description);
     let checkEventType = Validations.checkUsername(this.state.EventType);
-    let checkFee =
-      this.state.EventType === 'FREE'
-        ? true
-        : Validations.checkUsername(this.state.Fee);
-    let checkPublicPrivate = Validations.checkUsername(
-      this.state.PublicPrivate,
-    );
+    let checkFee = this.state.EventType === 'FREE'? true: Validations.checkUsername(this.state.Fee);
+    let checkPublicPrivate = Validations.checkUsername(this.state.PublicPrivate);
     let checkduration = Validations.checkUsername(this.state.duration);
 
     if (
@@ -244,11 +244,31 @@ class CreateEvent extends Component {
     return false;
   }
   async componentDidMount() {
-    const isParamsExist =
-      this.props.route.params && this.props.route.params.from === 'edit';
-    if (isParamsExist) {
+    const isParamsExist = this.props.route.params && this.props.route.params.from === 'edit';
+    if (isParamsExist) {   
       this.setState({screenTypeEdit: true});
+
+      this.getEventDetail(this.props.route.params.id);
+   
     }
+  }
+  async getEventDetail(id) {
+    this.setState({loading: true});
+    await getEventDetail(id).then(response => {
+      this.setState({detailItem: response.Event});
+   
+      this.setState({Name: response.Event.Name});  
+      this.setState({DateTime: response.Event.DateTime});
+      this.setState({Description: response.Event.Description});
+      this.setState({EventType: response.Event.EventType});
+      this.setState({Fee: response.Event.Fee}); 
+      this.setState({PublicPrivate: response.Event.PublicPrivate});  
+      this.setState({duration: response.Event.duration});
+      this.setState({AttendeeLimit: response.Event.AttendeeLimit});
+      this.setState({Address: response.Event.Address});
+  
+      this.setState({loading: false});
+    });
   }
   handleSubmit = async () => {
     if (this.isFormFilled()) {

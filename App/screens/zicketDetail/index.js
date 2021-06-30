@@ -5,6 +5,7 @@ import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {width} from '../../helper/Constant';
+import { getEventDetail } from '../../helper/Api';
 
 import {
   widthPercentageToDP as wp,
@@ -12,10 +13,30 @@ import {
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class zicketDetail extends Component {
+import moment from 'moment';
+import Loader from '../../component/Loader';
+import {connect} from 'react-redux';
+
+ class zicketDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      detailItem: {},
+      loading: false,
+    };
+  }
+  componentDidMount() {
+    let id = this.props.route.params.id;
+    if (id) {
+      this.getEventDetail(id);
+    }
+  }
+  async getEventDetail(id) {
+    this.setState({loading: true});
+    await getEventDetail(id).then(response => {
+      this.setState({detailItem: response.Event});
+      this.setState({loading: false});
+    });
   }
 
   render() {
@@ -32,63 +53,29 @@ export default class zicketDetail extends Component {
 
           <ScrollView>
             <Image
-              source={require('../../assets/eventInfo.png')}
-              style={styles.logoEvent}
+              source={{uri:this.state.detailItem.image}}
+              style={styles.detailImage}
             />
 
-            <View style={{alignSelf: 'center'}}>
-              <Text
-                style={[
-                  styles.titleText,
-                  {textAlign: 'center', marginTop: 20},
-                ]}>
-                Uroojs Banger
-              </Text>
-              <Text style={[styles.text, {textAlign: 'center', marginTop: 5}]}>
-                PREPAID | $5
-              </Text>
-              <Text
-                style={[
-                  styles.purpleText,
-                  {textAlign: 'center', marginTop: 4},
-                ]}>
-                11:30 PM | Feb 25, 2020 - WED | 2 HRS
-              </Text>
-
-              <Text style={{textAlign: 'center', marginVertical: 4}}>
-                <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
-                <Text
-                  style={[
-                    styles.purpleText,
-                    {textDecorationLine: 'underline'},
-                  ]}>
-                  Holly Smith
-                </Text>
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                backgroundColor: 'rgba(178, 171, 177, 0.246039)',
-                padding: 20,
-                margin: 20,
-                borderRadius: 10,
-              }}>
-              <Image
+<View style={{alignSelf: 'center',}}>
+          <Text style={[styles.titleText,{textAlign:'center'}]}>{this.state.detailItem.Name}</Text>
+          <Text style={[styles.text,{textAlign:'center'}]}>{this.state.detailItem.EventType} | $5</Text>
+          <Text style={[styles.purpleText,{textAlign:'center'}]}>{moment(this.state.detailItem.DateTime).format('hh:mm A | MMM DD, YYYY - ddd')}11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
+         
+          <Text style={{textAlign:'center',marginVertical:5}}>
+              <Text style={[styles.titleText,{fontSize:12}]}>Host:</Text>
+              <Text style={styles.purpleText}>{this.state.detailItem.Host && this.state.detailItem.Host.displayName}  </Text>
+          </Text>
+          </View>
+          <View style={{flexDirection:'row',backgroundColor:'rgba(178, 171, 177, 0.246039)',padding:20,margin:20,borderRadius:10}}>
+         <Image
                 source={require('../../assets/location.png')}
-                style={{height: 16, width: 12, marginRight: 5}}
+                style={{height:16,width:12,marginRight:5}}
               />
-
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontFamily: FONT.Nunito.regular,
-                  color: '#494949',
-                }}>
-                1817 18 St. SW Calgary AB T2T 4T2 (Calgary, Alberta)
-              </Text>
+        
+         <Text style={{fontSize:12,fontFamily:FONT.Nunito.regular,color:'#494949'}}>1817 18 St. SW Calgary AB T2T 4T2 (Calgary, Alberta)</Text>
             </View>
-            <View
+        <View
               style={{
                 borderWidth: 2,
                 alignSelf: 'center',
@@ -109,12 +96,12 @@ export default class zicketDetail extends Component {
               }}>
               <Text style={styles.titleText}>Host: </Text>
               <Text style={{fontFamily: FONT.Nunito.regular}}>
-                Nitish Shrma
+                {this.state.detailItem.Host && this.state.detailItem.Host.displayName}
               </Text>
             </View>
             <View style={{flexDirection: 'row', alignSelf: 'center'}}>
               <Text style={styles.titleText}>Attendee: </Text>
-              <Text style={{fontFamily: FONT.Nunito.regular}}>Zoya Rajput</Text>
+              <Text style={{fontFamily: FONT.Nunito.regular}}>{this.props.userDetail && this.props.userDetail.displayName}</Text>
             </View>
             <View style={{alignSelf: 'center', marginTop: 20}}>
               <Image
@@ -127,8 +114,10 @@ export default class zicketDetail extends Component {
                 flexDirection: 'row',
                 alignSelf: 'center',
                 marginTop: 26,
+                
+                
                 marginBottom: 10,
-                marginHorizontal: 5,
+              
               }}>
               <Image
                 source={require('../../assets/invalid.png')}
@@ -139,6 +128,7 @@ export default class zicketDetail extends Component {
                   fontFamily: FONT.Nunito.semiBold,
                   fontSize: 12,
                   color: '#F818D9',
+                  textAlign:'left'
                 }}>
                 {' '}
                 #Valid payment method must be set up to ensure entry at door
@@ -146,15 +136,34 @@ export default class zicketDetail extends Component {
             </View>
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+    
       </View>
     );
   }
 }
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+export default connect(mapStateToProps)(zicketDetail);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
     backgroundColor: WHITE.dark,
   },
+  detailImage:{
+    width:SCREEN.width-40,
+                    alignSelf:'center',
+                    marginVertical:20,
+                    borderRadius:20,
+                    height:110
+  },
+  
   contentView: {
     flex: 1,
     width: SCREEN.width - 20,

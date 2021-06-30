@@ -20,6 +20,7 @@ import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
 import {getUserAttendedEvents,getUserEvents} from '../../helper/Api'
 import {connect} from 'react-redux';
+import Loader from '../../component/Loader';
  class manageEvents extends Component {
   constructor(props) {
     super(props);
@@ -29,6 +30,7 @@ import {connect} from 'react-redux';
       myevents: false,
       index: 1,
       userEvents: [],
+      loading:false,
       userAttendedEvents: [],
       messages: [
         {
@@ -83,16 +85,22 @@ import {connect} from 'react-redux';
   }
 
   async getUserEvents() {
+    this.setState({loading:true})
+   
     await getUserEvents(this.props.userToken).then((response) => {
       this.setState({ userEvents: response.UserHostedEvent }) 
+      this.setState({loading:false})
+   
     });
   }
 
   async getUserAttendedEvents(){
-   
+   this.setState({loading:true})
       
       await getUserAttendedEvents(this.props.userToken).then((response) => {
         this.setState({ userAttendedEvents: response.UserAttendedEvents }) 
+        this.setState({loading:false})
+   
       });
     
   }
@@ -174,8 +182,8 @@ import {connect} from 'react-redux';
         marginTop: SCREEN.height / 4
       }}>
         {this.state.index === 1 && (
-          <View>
-            <Text>
+          <View >
+            <Text style={{textAlign:'center'}}>
             You are not hosting any events at the moment.
             </Text>
             <TouchableOpacity style={styles.btnMap}>
@@ -234,7 +242,7 @@ import {connect} from 'react-redux';
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
 
-                      <Image source={require('../../assets/image2.jpg')} style={{ borderRadius: 44, height: 60, width: 60 }} />
+                      <Image source={{uri:item.image}} style={{ borderRadius: 44, height: 60, width: 60 }} />
 
                       <Image
                         style={{ position: 'absolute', right: -10 }}
@@ -264,7 +272,7 @@ import {connect} from 'react-redux';
               keyExtractor={item => item.id}
               // ListEmptyComponent={this.emptyListComponent}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => this.props.navigation.navigate("attendingEventInfo")}
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("attendingEventInfo",{id:item.Event.id})}
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
@@ -272,7 +280,7 @@ import {connect} from 'react-redux';
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
 
-                      <Image source={require('../../assets/image2.jpg')} style={{ borderRadius: 44, height: 60, width: 60 }} />
+                    <Image source={{uri:item.Event.image}} style={{ borderRadius: 44, height: 60, width: 60 }} />
 
                       <Image
                         style={{ position: 'absolute', right: -10 }}
@@ -298,6 +306,8 @@ import {connect} from 'react-redux';
 
           )}
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+    
       </View>
     );
   }

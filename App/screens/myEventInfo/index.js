@@ -20,12 +20,13 @@ import { ScrollView } from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { getEventDetail } from '../../helper/Api';
 import moment from 'moment';
-import firestore from '@react-native-firebase/firestore';
+import Loader from '../../component/Loader';
 export default class myEventInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      detailItem:{}
+      detailItem:{},
+      loading:false
     };
   }
 componentDidMount(){
@@ -36,32 +37,11 @@ componentDidMount(){
  
 }
 async getEventDetail(id) {
- 
+ this.setState({loading:true})
   await getEventDetail(id).then((response) => {
     this.setState({ detailItem: response.Event }) 
+    this.setState({loading:false})
   });
-  // const eventRef = firestore().collection('events');
-  // eventRef
-  //   .doc(id)
-  //   .get()
-  //   .then(firestoreDocument => {
-  //     if (!firestoreDocument.exists) {
-  //     } else {
-  //       // this.setState({
-  //       //   myEvent:
-  //       //     firestoreDocument.data().Host.id === this.props.userDetail.id,
-  //       // });
-  //       this.setState({detailItem: firestoreDocument.data()});
-        
-        // this.setState({
-        //   date: firestoreDocument
-        //     .data()
-        //     .DateTime.toDate()
-        //     .toLocaleTimeString(),
-        // });
-//       }
-//     });
-// console.log(this.state.detailItem)
 }
   
   render() {
@@ -79,19 +59,15 @@ async getEventDetail(id) {
         <SafeAreaView style={styles.contentView}>
           <ScrollView>
           <Image
-                source={require('../../assets/eventInfo.png')}
-                style={styles.logoEvent}
+                  source={{uri:this.state.detailItem.image}}
+                  style={styles.detailImage}
               />
           
           <View style={{alignSelf: 'center',}}>
-          <Text style={[styles.titleText,{textAlign:'center'}]}>{this.state.detailItem.Name}</Text>
-          <Text style={[styles.text,{textAlign:'center'}]}>{this.state.detailItem.EventType} | $5</Text>
-          <Text style={[styles.purpleText,{textAlign:'center'}]}>{moment(this.state.detailItem.DateTime).format('hh:mm A | MMM DD, YYYY - ddd')}11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
+          <Text style={[styles.titleText,{textAlign:'center'}]}>{this.state.detailItem && this.state.detailItem.Name}</Text>
+          <Text style={[styles.text,{textAlign:'center'}]}>{this.state.detailItem && this.state.detailItem.EventType} | $5</Text>
+          <Text style={[styles.purpleText,{textAlign:'center'}]}>{this.state.detailItem && moment(this.state.detailItem.DateTime).format('hh:mm A | MMM DD, YYYY - ddd')}11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
          
-          <Text style={{textAlign:'center',marginVertical:5}}>
-              <Text style={[styles.titleText,{fontSize:12}]}>Host:</Text>
-              <Text style={styles.purpleText}>{this.state.detailItem.Host && this.state.detailItem.Host.displayName}  </Text>
-          </Text>
           </View>
          <View style={{flexDirection:'row',backgroundColor:'rgba(178, 171, 177, 0.246039)',padding:20,margin:20,borderRadius:10}}>
          <Image
@@ -99,14 +75,14 @@ async getEventDetail(id) {
                 style={styles.logoEvent}
               />
         
-         <Text>{this.state.detailItem.Address}</Text>
+         <Text>{this.state.detailItem &&this.state.detailItem.Address}</Text>
             </View>
             <Text style={[styles.titleText,{textAlign:'center'}]}>Description:</Text>
-            <Text style={[styles.text,{textAlign:'center',marginHorizontal:36,marginVertical:10}]}>{this.state.detailItem.Description}</Text>
+            <Text style={[styles.text,{textAlign:'center',marginHorizontal:36,marginVertical:10}]}>{this.state.detailItem && this.state.detailItem.Description}</Text>
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("FindPeople")} style={styles.btnMap}>
               <Text style={styles.btnText}>Find PEOPLE</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>this.props.navigation.navigate("Scan")} style={styles.btnMap}>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("Scan",{id:this.state.detailItem.id})} style={styles.btnMap}>
               <Text style={styles.btnText}>ZICKET SCANNER</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("attendeesList",{id:this.state.detailItem.id})}>
@@ -115,7 +91,7 @@ async getEventDetail(id) {
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("sharedHosts")} style={styles.btnMap}>
               <Text style={styles.btnText}>SHARED HOSTS</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>this.props.navigation.navigate("createEvent")} style={styles.btnMap}>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("createEvent",{id:this.state.detailItem.id,from:'edit'})} style={styles.btnMap}>
               <Text style={styles.btnText}>EDIT</Text>
             </TouchableOpacity>
           
@@ -126,6 +102,8 @@ async getEventDetail(id) {
           
             </ScrollView>
           </SafeAreaView>
+          {this.state.loading && <Loader loading={this.state.loading} />}
+    
    </View>
    );
   }
@@ -135,6 +113,13 @@ const styles = StyleSheet.create({
     flex: 1,
 
     backgroundColor: WHITE.dark,
+  },
+  detailImage:{
+    width:SCREEN.width-40,
+                    alignSelf:'center',
+                    marginVertical:20,
+                    borderRadius:20,
+                    height:110
   },
   contentView: {
     flex: 1,
@@ -241,7 +226,8 @@ const styles = StyleSheet.create({
         },
     
     logoEvent: {
-        width:width
+        width:width,
+        height:110
     },
     titleText: {
       color: BLACK.textInputTitle,

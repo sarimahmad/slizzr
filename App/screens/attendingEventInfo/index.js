@@ -17,15 +17,34 @@ import {
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
 import { ScrollView } from 'react-native-gesture-handler';
-import { fonts } from 'react-native-elements/dist/config';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import moment from 'moment';
+import { getEventDetail } from '../../helper/Api';
+import Loader from '../../component/Loader';
+
 export default class attendingEventInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      detailItem:{},
+      loading:false
     };
   }
-
+  componentDidMount(){
+    let id = this.props.route.params.id;
+    if(id){
+      this.getEventDetail(id)
+    }
+   
+  }
+  async getEventDetail(id) {
+    this.setState({loading:true})
+     await getEventDetail(id).then((response) => {
+       this.setState({ detailItem: response.Event }) 
+       this.setState({loading:false})
+     });
+   }
+     
   render() {
     return (
         <View style={styles.wrapperView}>
@@ -42,18 +61,18 @@ export default class attendingEventInfo extends Component {
        
           <ScrollView>
           <Image
-                source={require('../../assets/eventInfo.png')}
-                style={styles.logoEvent}
+            source={{uri:this.state.detailItem.image}}
+            style={styles.detailImage}
               />
           
           <View style={{alignSelf: 'center',}}>
-          <Text style={[styles.titleText,{textAlign:'center',marginTop:20}]}>Uroojs Banger</Text>
-          <Text style={[styles.text,{textAlign:'center',marginTop:5}]}>PREPAID | $5</Text>
-          <Text style={[styles.purpleText,{textAlign:'center',marginTop:4}]}>11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
+          <Text style={[styles.titleText,{textAlign:'center'}]}>{this.state.detailItem.Name}</Text>
+          <Text style={[styles.text,{textAlign:'center'}]}>{this.state.detailItem.EventType} | $5</Text>
+          <Text style={[styles.purpleText,{textAlign:'center'}]}>{moment(this.state.detailItem.DateTime).format('hh:mm A | MMM DD, YYYY - ddd')}11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
          
-          <Text style={{textAlign:'center',marginVertical:4}}>
-              <Text style={[styles.titleText,{fontSize:12}]}>Host: </Text>
-              <Text style={[styles.purpleText,{textDecorationLine:'underline'}]}>Holly Smith</Text>
+          <Text style={{textAlign:'center',marginVertical:5}}>
+              <Text style={[styles.titleText,{fontSize:12}]}>Host:</Text>
+              <Text style={styles.purpleText}>{this.state.detailItem.Host && this.state.detailItem.Host.displayName}  </Text>
           </Text>
           </View>
          <View style={{flexDirection:'row',backgroundColor:'rgba(178, 171, 177, 0.246039)',padding:20,margin:20,borderRadius:10}}>
@@ -66,10 +85,10 @@ export default class attendingEventInfo extends Component {
             </View>
             <Text style={[styles.titleText,{textAlign:'center'}]}>Description:</Text>
             <Text style={[styles.text,{textAlign:'center',marginHorizontal:36,marginTop:10,marginBottom:20}]}>Tousled food truck polaroid, salvia bespoke small batch Pinterest Marfa. Fingerstache authentic craft beer, food truck Banksy Carles kale chips hoodie. Trust fund artisan master cleanse fingerstache post-ironic, fashion axe art party Etsy direct trade retro organic. Cliche Shoreditch Odd Future Pinterest, pug disrupt photo booth VHS literally occupy gluten-free polaroid Intelligentsia PBR mustache. Locavore fashion axe chia, iPhone cardigan disrupt Etsy dreamcatcher. Craft beer selvage fanny pack, 8-bit post-ironic keffiyeh </Text>
-            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("attendeesList")} style={styles.btnMap}>
+            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("attendeesList",{id:this.state.detailItem.id})} style={styles.btnMap}>
               <Text style={styles.btnText}>ATTENDEES</Text>
             </TouchableOpacity>
-            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("zicketDetail")} style={styles.btnMap}>
+            <TouchableOpacity  onPress={()=>this.props.navigation.navigate("zicketDetail",{id:this.state.detailItem.id})} style={styles.btnMap}>
               <Text style={styles.btnText}>VIEW ZICKET</Text>
             </TouchableOpacity>
             <TouchableOpacity  onPress={()=>this.props.navigation.navigate("chat")} style={styles.btnMap}>
@@ -82,6 +101,8 @@ export default class attendingEventInfo extends Component {
           
             </ScrollView>
           </SafeAreaView>
+          {this.state.loading && <Loader loading={this.state.loading} />}
+    
    </View>
    );
   }
@@ -188,8 +209,16 @@ const styles = StyleSheet.create({
         },
     
     logoEvent: {
-        width:width
+        width:width,
     },
+    detailImage:{
+      width:SCREEN.width-40,
+                      alignSelf:'center',
+                      marginVertical:20,
+                      borderRadius:20,
+                      height:110
+    },
+    
     titleText: {
       color: BLACK.textInputTitle,
       fontFamily: FONT.Nunito.bold,
