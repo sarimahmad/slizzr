@@ -30,6 +30,7 @@ class Zickets extends Component {
       index: 1,
       userEvents: [],
       userAttendedEvents: [],
+      userID:0,
       messages: [
         {
           imgProfile: '',
@@ -78,6 +79,7 @@ class Zickets extends Component {
   componentDidMount() {
     this.getUserEvents();
     this.getUserAttendedEvents();
+    this.setState({userID: this.props.userDetail.Id})
   }
 
   async getUserEvents() {
@@ -244,7 +246,7 @@ class Zickets extends Component {
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>
-                    this.props.navigation.navigate('myEventInfo', {id: item.id})
+                    this.props.navigation.navigate('Scan')
                   }
                   style={{
                     borderBottomWidth: 1,
@@ -295,11 +297,12 @@ class Zickets extends Component {
               // ListEmptyComponent={this.emptyListComponent}
               renderItem={({item}) => (
                 <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate('attendingEventInfo', {
-                      id: item.id,
-                    })
-                  }
+                onPress={() =>
+                  this.props.navigation.navigate('zicketDetail',{
+                    EventID: item.id,
+                    UserID: this.state.userID
+                  })
+                }
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
@@ -330,7 +333,10 @@ class Zickets extends Component {
                     </View>
                     <TouchableOpacity
                       onPress={() =>
-                        this.props.navigation.navigate('zicketDetail')
+                        this.props.navigation.navigate('zicketDetail',{
+                          EventID: item.Event.id,
+                          UserID: this.state.userID
+                        })
                       }
                       style={styles.shareView}>
                       <Image source={require('../../assets/Right.png')} />

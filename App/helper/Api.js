@@ -117,3 +117,13 @@ export async function uploadImage(formdata) {
       console.error(error);
     });
 }
+
+export async function getZicketDetails({event_id,user_id }) {
+  return fetch(`${Server}/zicket?user_id=${user_id}&event_id=${event_id}`)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
