@@ -30,6 +30,7 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import WaitingFor from '../../component/WaitingFor';
 import moment from 'moment';
 import ErrorPopup from '../../component/ErrorPopup';
+import Server from '../../helper/Server';
 
 let allEvents = [];
 let prepaidEvents = [];
@@ -186,7 +187,7 @@ class home extends Component {
     };
 
     fetch(
-      `https://slizzr-6a887.appspot.com/event?recent=TRUE&radius=${
+      `${Server}/event?recent=TRUE&radius=${
         this.props.userDetail && this.props.userDetail.Radius
           ? this.props.userDetail.Radius
           : '50'
@@ -243,7 +244,7 @@ class home extends Component {
         });
       })
       .then(() => {
-        console.log(this.state.allEvents);
+        console.warn(this.state.allEvents);
       })
 
       .catch(error => {
@@ -341,7 +342,7 @@ class home extends Component {
                           source={require('../../assets/location.png')}
                         />
 
-                        <Text>15 KM away</Text>
+                        <Text>{item.Distance} KM</Text>
                       </View>
                     </View>
                     <TouchableOpacity
