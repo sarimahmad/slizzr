@@ -31,6 +31,7 @@ export default class DateAndTimePicker extends React.Component {
       this.setState({platform: false});
     }
     this.setState({dateTime: this.props.value});
+  
   };
 
   componentDidUpdate() {
@@ -65,7 +66,7 @@ export default class DateAndTimePicker extends React.Component {
 
   datePicker = () => {
     if (this.state.platform) {
-      if (this.state.show) {
+      if (this.state.show ) {
         return (
           <DateTimePicker
             testID="dateTimePicker"
@@ -86,7 +87,7 @@ export default class DateAndTimePicker extends React.Component {
         <Modal
           animationType="slide"
           transparent={false}
-          visible={this.state.show}>
+          visible={this.state.show }>
           <View>
             <View style={{height: SCREEN.height / 2, marginTop: 200}}>
               <DateTimePicker
@@ -94,6 +95,7 @@ export default class DateAndTimePicker extends React.Component {
                 value={this.state.dateTime}
                 mode={this.props.mode}
                 is24Hour={false}
+                
                 display="spinner"
                 onChange={this.OnChangeIos}
               />
@@ -108,7 +110,11 @@ export default class DateAndTimePicker extends React.Component {
       );
     }
   };
-
+openModel=()=>{
+  if(this.props.editable===false){
+  this.setState({show: true});
+  }
+}
   render() {
     return (
       <View style={styles.content}>
@@ -116,11 +122,11 @@ export default class DateAndTimePicker extends React.Component {
           <TouchableOpacity
             style={styles.inputRight}
             onPress={() => {
-              this.setState({show: true});
+              this.openModel()
             }}>
             {this.state.dateTime != null ? (
               <Moment
-                style={this.props.datebutton}
+                style={this.props.datebutton}  
                 element={Text}
                 format={this.props.format}>
                 {this.state.dateTime}
