@@ -35,10 +35,12 @@ export default class zicketDetail extends Component {
     });
   }
   render() {
-    if(this.state.detailItem === undefined){
-      return(
+    if (this.state.detailItem === undefined) {
+      return (
         <View style={styles.wrapperView}>
-          <Text>No Zicket found</Text>
+          <SafeAreaView style={styles.contentView}>
+            <Text>No Zicket found</Text>
+          </SafeAreaView>
         </View>
       )
     }
@@ -48,14 +50,14 @@ export default class zicketDetail extends Component {
           <HeaderWithOptionBtn
             borderBottom={true}
             backColor={WHITE.dark}
-            headerTitle={'zickets'}
+            headerTitle={'Zickets'}
             leftPress={() => this.props.navigation.goBack()}
             leftIcon={require('../../assets/back.png')}
           />
 
           <ScrollView>
             <Image
-              source={require('../../assets/eventInfo.png')}
+              source={{uri: this.state.detailItem.Event.image}}
               style={styles.logoEvent}
             />
 
@@ -268,7 +270,14 @@ const styles = StyleSheet.create({
   logo: {},
 
   logoEvent: {
-    width: width,
+    marginTop:10,
+    width: 335,
+    height: 110,
+    borderRadius: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignSelf:'center',
+    resizeMode: 'center'
   },
   titleText: {
     color: BLACK.textInputTitle,

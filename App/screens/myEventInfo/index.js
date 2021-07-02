@@ -36,6 +36,7 @@ export default class myEventInfo extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
+        <SafeAreaView style={styles.contentView}>
         <HeaderWithOptionBtn
           borderBottom={true}
           backColor={WHITE.dark}
@@ -44,7 +45,6 @@ export default class myEventInfo extends Component {
           leftIcon={require('../../assets/back.png')}
         />
 
-        <SafeAreaView style={styles.contentView}>
           <ScrollView>
             <Image
               source={require('../../assets/eventInfo.png')}
@@ -62,11 +62,10 @@ export default class myEventInfo extends Component {
                 {moment(this.state.detailItem.DateTime).format(
                   'hh:mm A | MMM DD, YYYY - ddd',
                 )}
-                11:30 PM | Feb 25, 2020 - WED | 2 HRS
               </Text>
 
               <Text style={{textAlign: 'center', marginVertical: 5}}>
-                <Text style={[styles.titleText, {fontSize: 12}]}>Host:</Text>
+                <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
                 <Text style={styles.purpleText}>
                   {this.state.detailItem.Host &&
                     this.state.detailItem.Host.displayName}{' '}
