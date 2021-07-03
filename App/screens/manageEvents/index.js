@@ -297,7 +297,7 @@ class manageEvents extends Component {
                 <TouchableOpacity
                   onPress={() =>
                     this.props.navigation.navigate('attendingEventInfo', {
-                      id: item.id,
+                      id: item.Event.id,
                     })
                   }
                   style={{

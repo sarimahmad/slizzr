@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import { SafeAreaView } from 'react-navigation';
-import { BLACK, BLUE, WHITE } from '../../helper/Color';
+import { BLACK, BLUE, WHITE, APPCOLOR } from '../../helper/Color';
 import { FONT, isIphoneXorAbove, SCREEN } from '../../helper/Constant';
 import { width, height } from '../../helper/Constant';
 import {
@@ -17,129 +17,205 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class chat extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { getUserImages, getUserProfile } from '../../helper/Api';
+import { GiftedChat,Bubble,InputToolbar} from 'react-native-gifted-chat'
+import firestore from '@react-native-firebase/firestore'
+
+const chat = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const [CurrentUser, setCurrentUser] = useState({})
+  const [HostProfile, setHostProfile] = useState({})
+  const [CurrentUserProfilePicture, setCurrentUserProfilePicture] = useState("")
+  const [HostUserProfilePicture, setHostUserProfilePicture] = useState("")
+  const [isLoading, setLoading] = useState(true)
+  const [messages, setMessages] = useState([]);
+
+  const { CurrentUserUID, HostUID } = route.params;
+
+  useEffect(() => {
+    getUserDetails().then(() =>  {
+      setLoading(false)
+    }).catch(() => {
+      setLoading(false)
+    })
+  }, [])
+
+  useEffect(() => {
+    // getAllMessages()
+
+    const docid  = HostUID > CurrentUserUID ? CurrentUserUID+ "-" + HostUID : HostUID+"-"+CurrentUserUID 
+      const messageRef = firestore().collection('chatrooms')
+      .doc(docid)
+      .collection('messages')
+      .orderBy('createdAt',"desc")
+
+    const unSubscribe =  messageRef.onSnapshot((querySnap)=>{
+          const allmsg =   querySnap.docs.map(docSanp=>{
+           const data = docSanp.data()
+           if(data.createdAt){
+               return {
+                  ...docSanp.data(),
+                  createdAt:docSanp.data().createdAt.toDate()
+              }
+           }else {
+              return {
+                  ...docSanp.data(),
+                  createdAt:new Date()
+              }
+           }
+              
+          })
+          setMessages(allmsg)
+      })
+
+
+      return ()=>{
+        unSubscribe()
+      }
+
+      
+    }, [])
+
+  async function getUserDetails() {
+    await getUserProfile(CurrentUserUID.slice(1, -1)).then(response => {
+      setCurrentUser(response)
+    })
+
+    await getUserProfile(HostUID).then(response => {
+      setHostProfile(response)
+    })
+
+    await getUserImages(CurrentUserUID.slice(1, -1)).then(response => {
+      if (response.Pictures.length === 0) {
+        setCurrentUserProfilePicture('https://storage.googleapis.com/slizzr-6a887.appspot.com/DefaultProfile.png')
+      } else {
+        setCurrentUserProfilePicture(response.Pictures[0].Profile_Url)
+      }
+    })
+
+    await getUserImages(HostUID).then(response => {
+      if (response.Pictures.length === 0) {
+        setHostUserProfilePicture('https://storage.googleapis.com/slizzr-6a887.appspot.com/DefaultProfile.png')
+      } else {
+        setHostUserProfilePicture(response.Pictures[0].Profile_Url)
+      }
+    })
   }
-  render() {
+
+  const getAllMessages = async ()=>{
+    const docid  = HostUID > CurrentUserUID ? CurrentUserUID+ "-" + HostUID : HostUID+"-"+CurrentUserUID 
+    const querySanp = await firestore().collection('chatrooms')
+    .doc(docid)
+    .collection('messages')
+    .orderBy('createdAt',"desc")
+    .get()
+   const allmsg =   querySanp.docs.map(docSanp=>{
+        return {
+            ...docSanp.data(),
+            createdAt:docSanp.data().createdAt.toDate()
+        }
+    })
+    setMessages(allmsg)
+
+
+ }
+
+ const onSend =(messageArray) => {
+  const msg = messageArray[0]
+  const mymsg = {
+      ...msg,
+      sentBy:CurrentUserUID,
+      sentTo:HostUID,
+      createdAt:new Date()
+  }
+ setMessages(previousMessages => GiftedChat.append(previousMessages,mymsg))
+ const docid  = HostUID > CurrentUserUID ? CurrentUserUID+ "-" + HostUID : HostUID+"-"+CurrentUserUID 
+
+ firestore().collection('chatrooms')
+ .doc(docid)
+ .collection('messages')
+ .add({...mymsg,createdAt:firestore.FieldValue.serverTimestamp()})
+
+
+}
+
+  if (isLoading) {
     return (
       <View style={styles.wrapperView}>
-
         <SafeAreaView style={styles.contentView}>
-          <HeaderWithOptionBtn
-
-            borderBottom={true}
-            backColor={WHITE.dark}
-            headerTitle={'Cindy Ray'}
-            leftPress={() => this.props.navigation.goBack()}
-            leftIcon={require('../../assets/back.png')}
-            profileIcon={require('../../assets/profile1.png')}
-          />
-          <KeyboardAvoidingView
-            style={styles.wrapperView}
-            enabled
-            keyboardVerticalOffset={isIphoneXorAbove ? 120 : 80}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}>
-            <View style={{ width: SCREEN.width - 40, alignSelf: 'center', flex: 1 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Image
-                  style={{ height: 50, width: 50 }}
-                  source={require('../../assets/profile1.png')}
-                />
-                <View>
-                  <View style={styles.myMessages}>
-                    <Text style={{ color: 'white' }}>
-                      Hey! Anything you want, might be chilly so maybe a jacket.
-                  </Text>
-                  </View>
-                  <Text
-                    style={{ textAlign: 'left', color: '#B2ABB1', fontSize: 12 }}>
-                    02/17/2020 - 08:02 PM
-                </Text>
-                </View>
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <View>
-                  <View style={styles.otherMessages}>
-                    <Text>What do you reccomend I bring to this event?</Text>
-                  </View>
-                  <Text
-                    style={{ textAlign: 'right', color: '#B2ABB1', fontSize: 12 }}>
-                    02/17/2020 - 08:02 PM
-                </Text>
-                </View>
-                <Image
-                  style={{ height: 50, width: 50 }}
-                  source={require('../../assets/profile1.png')}
-                />
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                bottom: 0,
-                height: isIphoneXorAbove ? 100 : 63,
-                backgroundColor: '#EBE5F1',
-                width: SCREEN.width,
-                paddingHorizontal: 20,
-                alignItems: 'center'
-              }}>
-              <View
-                style={{
-                  backgroundColor: WHITE.dark,
-                  height: 43,
-                  width: SCREEN.width * 0.6,
-                  borderRadius: 12,
-                }}>
-                <TextInput
-                  style={[styles.titleText, { fontFamily: FONT.Nunito.semiBold }]}
-                  placeholder={'Type something to send…'}
-                  placeholderTextColor={'#8e8e93'}
-                />
-              </View>
-              <View
-                style={[
-                  {
-
-                    marginRight: 5,
-                    padding: 10,
-                    height: 43,
-                    width: 43,
-                    alignSelf: 'center',
-                    backgroundColor: 'white',
-                    borderRadius: 12,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  },
-                ]}>
-                <Image source={require('../../assets/addChat.png')} />
-              </View>
-              <View
-                style={[
-                  {
-
-                    marginRight: 5,
-                    padding: 10,
-                    height: 43,
-                    width: 43,
-                    alignSelf: 'center',
-                    backgroundColor: 'white',
-                    borderRadius: 12,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  },
-                ]}>
-                <Image source={require('../../assets/sendChat.png')} />
-              </View>
-            </View>
-          </KeyboardAvoidingView>
+          <Text>
+            Loading...
+          </Text>
         </SafeAreaView>
       </View>
-    );
+    )
   }
+  return (
+    <View style={styles.wrapperView}>
+
+      <SafeAreaView style={styles.contentView}>
+        <HeaderWithOptionBtn
+
+          borderBottom={true}
+          backColor={WHITE.dark}
+          headerTitle={HostProfile.User.displayName}
+          leftPress={() => navigation.goBack()}
+          leftIcon={require('../../assets/back.png')}
+          profileIcon={isLoading ? 'https://storage.googleapis.com/slizzr-6a887.appspot.com/DefaultProfile.png' : (HostUserProfilePicture)}
+        />
+          <View style={{flex: 1 }}>
+          <GiftedChat
+                messages={messages}
+                onSend={text => onSend(text)}
+                user={{
+                    _id: CurrentUserUID,
+                }}
+                renderBubble={(props)=>{
+                    return <Bubble
+                    {...props}
+                    timeTextStyle={{
+                      left: {
+                        color: 'black',
+                      },
+                      right: {
+                        color: 'black',
+                      },
+                    }}
+                    textStyle={{
+                      left: {
+                        color: 'black',
+                      },
+                      right: {
+                        color: 'black',
+                      },
+                    }}
+                    wrapperStyle={{
+                      right: {
+                        backgroundColor:"#EBE5F1",
+                      },
+                      left:{
+                        backgroundColor:"#F818D9",
+                      },
+                    }}
+                  />
+                }}
+
+                renderInputToolbar={(props)=>{
+                    return <InputToolbar {...props}
+                     containerStyle={{borderTopWidth: 1.5, borderTopColor: '#EBE5F1'}} 
+                     textInputStyle={{ color: "black" }}
+                     />
+                }}
+                
+                />
+          </View>
+      </SafeAreaView>
+    </View>
+  );
 }
+export default chat
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,

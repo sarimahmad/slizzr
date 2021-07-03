@@ -47,8 +47,8 @@ export default class myEventInfo extends Component {
 
           <ScrollView>
             <Image
-              source={require('../../assets/eventInfo.png')}
-              style={styles.logoEvent}
+              source={{uri: this.state.detailItem.image}}
+              style={styles.logoEvent1}
             />
 
             <View style={{alignSelf: 'center'}}>
@@ -56,12 +56,11 @@ export default class myEventInfo extends Component {
                 {this.state.detailItem.Name}
               </Text>
               <Text style={[styles.text, {textAlign: 'center'}]}>
-                {this.state.detailItem.EventType} | $5
+              {this.state.detailItem.EventType} {this.state.detailItem.EventType !== 'FREE' && `| $${this.state.detailItem.Fee}`}
               </Text>
               <Text style={[styles.purpleText, {textAlign: 'center'}]}>
-                {moment(this.state.detailItem.DateTime).format(
-                  'hh:mm A | MMM DD, YYYY - ddd',
-                )}
+              {moment(this.state.detailItem.Start_date).format('hh:mm A | MMM DD, YYYY - ddd')} | {this.state.detailItem.duration} HRS
+
               </Text>
 
               <Text style={{textAlign: 'center', marginVertical: 5}}>
@@ -228,9 +227,18 @@ const styles = StyleSheet.create({
     color: '#494949',
   },
   logo: {},
-
+  logoEvent1:{
+    marginTop:10,
+    width: '100%',
+    height: 110,
+    borderRadius: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignSelf:'center',
+    resizeMode: 'center'
+  },
   logoEvent: {
-    width: width,
+
   },
   titleText: {
     color: BLACK.textInputTitle,

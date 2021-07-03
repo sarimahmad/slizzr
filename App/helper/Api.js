@@ -55,6 +55,7 @@ export async function getUserEvents(user_id) {
     });
 }
 export async function getUserImages(user_id) {
+
   return fetch(`${Server}/user/pictures/` + user_id)
     .then(async response => {
       return await response.json();
@@ -120,6 +121,16 @@ export async function uploadImage(formdata) {
 
 export async function getZicketDetails({event_id,user_id }) {
   return fetch(`${Server}/zicket?user_id=${user_id}&event_id=${event_id}`)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+
+export async function getUserProfile(user_id) {
+  return fetch(`${Server}/user/${user_id}`)
     .then(async response => {
       return await response.json();
     })

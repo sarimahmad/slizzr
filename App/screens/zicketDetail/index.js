@@ -70,7 +70,7 @@ export default class zicketDetail extends Component {
                 {this.state.detailItem.Event.Name}
               </Text>
               <Text style={[styles.text, {textAlign: 'center', marginTop: 5}]}>
-              {this.state.detailItem.Event.EventType} {this.state.detailItem.Event.EventType !== 'FREE' && `| ${this.state.detailItem.Event.Fee}`}
+              {this.state.detailItem.Event.EventType} {this.state.detailItem.Event.EventType !== 'FREE' && `| $${this.state.detailItem.Event.Fee}`}
               </Text>
               <Text
                 style={[
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
 
   logoEvent: {
     marginTop:10,
-    width: 335,
+    width: '100%',
     height: 110,
     borderRadius: 10,
     display: 'flex',
