@@ -138,8 +138,9 @@ export default class attendingEventInfo extends Component {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('chat',{
-                CurrentUserUID: this.state.currentUserUID,
-                HostUID: this.state.detailItem.Host.Id
+                CurrentUserUID: (this.state.currentUserUID).slice(1, -1),
+                HostUID: this.state.detailItem.Host.Id,
+                EventID: this.props.route.params.id
               })}
               style={styles.btnMap}>
               <Text style={styles.btnText}>MESSAGE HOST</Text>

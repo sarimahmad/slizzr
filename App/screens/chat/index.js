@@ -32,7 +32,7 @@ const chat = () => {
   const [isLoading, setLoading] = useState(true)
   const [messages, setMessages] = useState([]);
 
-  const { CurrentUserUID, HostUID } = route.params;
+  const { CurrentUserUID, HostUID, EventID } = route.params;
 
   useEffect(() => {
     getUserDetails().then(() =>  {
@@ -79,7 +79,7 @@ const chat = () => {
     }, [])
 
   async function getUserDetails() {
-    await getUserProfile(CurrentUserUID.slice(1, -1)).then(response => {
+    await getUserProfile(CurrentUserUID).then(response => {
       setCurrentUser(response)
     })
 
@@ -87,7 +87,7 @@ const chat = () => {
       setHostProfile(response)
     })
 
-    await getUserImages(CurrentUserUID.slice(1, -1)).then(response => {
+    await getUserImages(CurrentUserUID).then(response => {
       if (response.Pictures.length === 0) {
         setCurrentUserProfilePicture('https://storage.googleapis.com/slizzr-6a887.appspot.com/DefaultProfile.png')
       } else {
@@ -128,7 +128,8 @@ const chat = () => {
       ...msg,
       sentBy:CurrentUserUID,
       sentTo:HostUID,
-      createdAt:new Date()
+      createdAt:new Date(),
+      eventId: EventID
   }
  setMessages(previousMessages => GiftedChat.append(previousMessages,mymsg))
  const docid  = HostUID > CurrentUserUID ? CurrentUserUID+ "-" + HostUID : HostUID+"-"+CurrentUserUID 

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import Server from './Server';
 
 export async function CheckEventStatus({user_id, event_id}) {
@@ -137,4 +138,26 @@ export async function getUserProfile(user_id) {
     .catch(error => {
       console.error(error);
     });
+}
+
+export async function getAllMessages({event_id,user_id }) {
+  var data = JSON.stringify({event_id,user_id });
+  console.log(data)
+  var config = {
+    method: 'post',
+    url: `${Server}/chatroom/get-all-message`,
+    headers: { 
+      'Content-Type': 'application/json'
+    },
+    data : data
+  };
+  
+  const GetResponse = await axios(config)
+  .then(function (response) {
+    return response.data
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+  return GetResponse
 }
