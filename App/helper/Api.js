@@ -86,6 +86,7 @@ export async function getAttendeesList(event_id) {
 export async function updateProfile(user_id, dataToUpdate) {
   var myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
+  myHeaders.append('Accept', 'application/json');
   var requestOptions = {
     method: 'PUT',
     headers: myHeaders,
@@ -100,6 +101,7 @@ export async function updateProfile(user_id, dataToUpdate) {
       return await response.json();
     })
     .catch(error => console.log('error', error));
+ 
 }
 
 export async function uploadImage(formdata) {

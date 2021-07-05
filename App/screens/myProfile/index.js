@@ -105,7 +105,7 @@ class Profile extends Component {
             }
             borderBottom={true}
             rightIcon={
-              !this.props.route.params
+              this.props.route.params.id
                 ? require('../../assets/edit.png')
                 : require('../../assets/Slizzer-icon/group.png')
             }
@@ -269,7 +269,7 @@ class Profile extends Component {
                     {this.footer()}
                   </View>
                 )}
-              {this.props.route.params && (
+              {!this.props.route.params.id && (
                 <Text style={styles.blockUser}>BLOCK USER</Text>
               )}
             </View>

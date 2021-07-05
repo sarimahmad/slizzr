@@ -53,6 +53,7 @@ class CreateEvent extends Component {
       skip: false,
       Address: '',
       AttendeeLimit: '',
+      datetimeSelected:'',
       date: new Date(),
       DateTime: new Date(),
       Description: '',
@@ -260,6 +261,7 @@ class CreateEvent extends Component {
     });
   }
   handleSubmit = async () => {
+    console.log(this.state)
     if (this.isFormFilled()) {
       this.setState({loading: true});
       const uri = this.state.imageUri;
@@ -289,7 +291,7 @@ class CreateEvent extends Component {
             const data = {
               Address: this.state.Address,
               AttendeeLimit: this.state.AttendeeLimit,
-              DateTime: this.state.DateTime,
+              DateTime: this.state.datetimeSelected,
               Description: this.state.Description,
               EventType: this.state.EventType,
               Fee: this.state.Fee,
@@ -535,7 +537,7 @@ class CreateEvent extends Component {
                     mode="datetime"
                     editable={this.state.screenTypeEdit}
                     value={this.state.DateTime}
-                    setDateAndTime={value => this.setState({DateTime: value})}
+                    setDateAndTime={value => this.setState({datetimeSelected: value})}
                     showPlaceholder="+ Add"
                     datebutton={styles.datebutton}
                   />
@@ -567,7 +569,7 @@ class CreateEvent extends Component {
                             textAlignVertical: 'center',
                           },
                         }}
-                        disabled={this.state.editable!=="edit"}
+                        disabled={this.state.screenTypeEdit==="edit"}
                         selectedValue={this.state.EventType}
                         onValueChange={(itemValue, itemIndex) =>
                           this.setState({EventType: itemValue})
