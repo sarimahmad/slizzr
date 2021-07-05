@@ -2,10 +2,11 @@
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
+import {connect} from 'react-redux';
+
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
-import {width} from '../../helper/Constant';
-import { getEventDetail } from '../../helper/Api';
+import moment from 'moment';
 
 import {
   widthPercentageToDP as wp,
@@ -13,69 +14,117 @@ import {
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import moment from 'moment';
+import {getZicketDetails} from '../../helper/Api';
 import Loader from '../../component/Loader';
-import {connect} from 'react-redux';
 
- class zicketDetail extends Component {
+class zicketDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      detailItem: {},
-      loading: false,
+      detailItem: undefined,
     };
   }
+
   componentDidMount() {
-    let id = this.props.route.params.id;
-    if (id) {
-      this.getEventDetail(id);
+    let event_id = this.props.route.params.EventID;
+    let user_id = this.props.route.params.UserID;
+    if (event_id) {
+      this.getZicketDetail({event_id, user_id});
     }
   }
-  async getEventDetail(id) {
-    this.setState({loading: true});
-    await getEventDetail(id).then(response => {
-      this.setState({detailItem: response.Event});
-      this.setState({loading: false});
-    });
+  async getZicketDetail({event_id, user_id}) {
+    await getZicketDetails({event_id: event_id, user_id: user_id}).then(
+      response => {
+        this.setState({detailItem: response.User_Zicket[0]});
+      },
+    );
   }
-
   render() {
+    if (this.state.detailItem === undefined) {
+      return (
+        <View style={styles.wrapperView}>
+          <SafeAreaView style={styles.contentView}>
+            <Text>No Zicket found</Text>
+          </SafeAreaView>
+        </View>
+      );
+    }
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
           <HeaderWithOptionBtn
             borderBottom={true}
             backColor={WHITE.dark}
-            headerTitle={'zickets'}
+            headerTitle={'Zickets'}
             leftPress={() => this.props.navigation.goBack()}
             leftIcon={require('../../assets/back.png')}
           />
 
           <ScrollView>
             <Image
-              source={{uri:this.state.detailItem.image}}
-              style={styles.detailImage}
+              source={{uri: this.state.detailItem.Event.image}}
+              style={styles.logoEvent}
             />
 
-<View style={{alignSelf: 'center',}}>
-          <Text style={[styles.titleText,{textAlign:'center'}]}>{this.state.detailItem.Name}</Text>
-          <Text style={[styles.text,{textAlign:'center'}]}>{this.state.detailItem.EventType} | $5</Text>
-          <Text style={[styles.purpleText,{textAlign:'center'}]}>{moment(this.state.detailItem.DateTime).format('hh:mm A | MMM DD, YYYY - ddd')}11:30 PM | Feb 25, 2020 - WED | 2 HRS</Text>
-         
-          <Text style={{textAlign:'center',marginVertical:5}}>
-              <Text style={[styles.titleText,{fontSize:12}]}>Host:</Text>
-              <Text style={styles.purpleText}>{this.state.detailItem.Host && this.state.detailItem.Host.displayName}  </Text>
-          </Text>
-          </View>
-          <View style={{flexDirection:'row',backgroundColor:'rgba(178, 171, 177, 0.246039)',padding:20,margin:20,borderRadius:10}}>
-         <Image
-                source={require('../../assets/location.png')}
-                style={{height:16,width:12,marginRight:5}}
-              />
-        
-         <Text style={{fontSize:12,fontFamily:FONT.Nunito.regular,color:'#494949'}}>1817 18 St. SW Calgary AB T2T 4T2 (Calgary, Alberta)</Text>
+            <View style={{alignSelf: 'center'}}>
+              <Text
+                style={[
+                  styles.titleText,
+                  {textAlign: 'center', marginTop: 20},
+                ]}>
+                {this.state.detailItem.Event.Name}
+              </Text>
+              <Text style={[styles.text, {textAlign: 'center', marginTop: 5}]}>
+                {this.state.detailItem.Event.EventType}{' '}
+                {this.state.detailItem.Event.EventType !== 'FREE' &&
+                  `| $${this.state.detailItem.Event.Fee}`}
+              </Text>
+              <Text
+                style={[
+                  styles.purpleText,
+                  {textAlign: 'center', marginTop: 4},
+                ]}>
+                {moment(this.state.detailItem.Event.Start_date).format(
+                  'hh:mm A | MMM DD, YYYY - ddd',
+                )}{' '}
+                | {this.state.detailItem.Event.duration} HRS
+                {/* 11:30 PM | Feb 25, 2020 - WED | 2 HRS */}
+              </Text>
+
+              <Text style={{textAlign: 'center', marginVertical: 4}}>
+                <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
+                <Text
+                  style={[
+                    styles.purpleText,
+                    {textDecorationLine: 'underline'},
+                  ]}>
+                  {this.state.detailItem.Event.Host.displayName}
+                </Text>
+              </Text>
             </View>
-        <View
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: 'rgba(178, 171, 177, 0.246039)',
+                padding: 20,
+                margin: 20,
+                borderRadius: 10,
+              }}>
+              <Image
+                source={require('../../assets/location.png')}
+                style={{height: 16, width: 12, marginRight: 5}}
+              />
+
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: FONT.Nunito.regular,
+                  color: '#494949',
+                }}>
+                {this.state.detailItem.Event.Address}
+              </Text>
+            </View>
+            <View
               style={{
                 borderWidth: 2,
                 alignSelf: 'center',
@@ -84,7 +133,7 @@ import {connect} from 'react-redux';
                 width: 242,
               }}>
               <Image
-                source={require('../../assets/barCode.png')}
+                source={{uri: this.state.detailItem.QRImage}}
                 style={{height: 239, width: 239}}
               />
             </View>
@@ -95,13 +144,21 @@ import {connect} from 'react-redux';
                 marginTop: 20,
               }}>
               <Text style={styles.titleText}>Host: </Text>
-              <Text style={{fontFamily: FONT.Nunito.regular}}>
-                {this.state.detailItem.Host && this.state.detailItem.Host.displayName}
+              <Text style={{fontFamily: FONT.Nunito.regular, fontSize: 17}}>
+                {this.state.detailItem.Event.Host.displayName}
               </Text>
             </View>
-            <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+              }}>
               <Text style={styles.titleText}>Attendee: </Text>
-              <Text style={{fontFamily: FONT.Nunito.regular}}>{this.props.userDetail && this.props.userDetail.displayName}</Text>
+              <Text style={{fontFamily: FONT.Nunito.regular, fontSize: 17}}>
+                {this.state.detailItem.User.displayName}
+              </Text>
             </View>
             <View style={{alignSelf: 'center', marginTop: 20}}>
               <Image
@@ -114,10 +171,8 @@ import {connect} from 'react-redux';
                 flexDirection: 'row',
                 alignSelf: 'center',
                 marginTop: 26,
-                
-                
+
                 marginBottom: 10,
-              
               }}>
               <Image
                 source={require('../../assets/invalid.png')}
@@ -128,7 +183,7 @@ import {connect} from 'react-redux';
                   fontFamily: FONT.Nunito.semiBold,
                   fontSize: 12,
                   color: '#F818D9',
-                  textAlign:'left'
+                  textAlign: 'left',
                 }}>
                 {' '}
                 #Valid payment method must be set up to ensure entry at door
@@ -137,7 +192,6 @@ import {connect} from 'react-redux';
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-    
       </View>
     );
   }
@@ -156,14 +210,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: WHITE.dark,
   },
-  detailImage:{
-    width:SCREEN.width-40,
-                    alignSelf:'center',
-                    marginVertical:20,
-                    borderRadius:20,
-                    height:110
+  detailImage: {
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
+    marginVertical: 20,
+    borderRadius: 20,
+    height: 110,
   },
-  
+
   contentView: {
     flex: 1,
     width: SCREEN.width - 20,
@@ -251,7 +305,14 @@ const styles = StyleSheet.create({
   logo: {},
 
   logoEvent: {
-    width: width,
+    marginTop: 10,
+    width: '100%',
+    height: 110,
+    borderRadius: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    resizeMode: 'center',
   },
   titleText: {
     color: BLACK.textInputTitle,

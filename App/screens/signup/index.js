@@ -164,15 +164,27 @@ class SignUp extends Component {
             STRIPE_CUST_ID: '',
             STRIPE_HOST_ID: '',
             age: '13',
-            AttendedEvents: [],
-            Address: '',
-            HostedEvents: [],
-            BlockedUser: [],
-            BirthDate: new Date(),
+            Address: {
+              city: '',
+              line1: '',
+              postal_code: '',
+              state: '',
+              country: '',
+          }, 
+            BirthDate: {
+              day: 0,
+              month: 0,
+              year: 0
+            },
             Gender: '',
             Visibility: true,
+            PushNotification: true,
             Radius: 50,
             bio: '',
+            Location: {
+              latitude: 0,
+              longitude: 0
+          },
           };
           const usersRef = firestore().collection('users');
           usersRef
@@ -241,15 +253,31 @@ class SignUp extends Component {
           email_verified: true,
           socialLogin: true,
           age: '13',
-          AttendedEvents: [],
-          Address: '',
-          HostedEvents: [],
-          BlockedUser: [],
-          BirthDate: new Date(),
+          Address: {
+            city: '',
+            line1: '',
+            postal_code: '',
+            state: '',
+            country: '',
+        }, 
+          BirthDate: {
+            day: 0,
+            month: 0,
+            year: 0
+          },
           Gender: '',
           Visibility: true,
           Radius: 50,
           bio: '',
+          Gender: '',
+          Visibility: true,
+          PushNotification: true,
+          Radius: 50,
+          bio: '',
+          Location: {
+            latitude: 0,
+            longitude: 0
+          },
         };
 
         usersRef

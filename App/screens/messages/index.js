@@ -17,13 +17,21 @@ import {
 } from 'react-native-responsive-screen';
 
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class messages extends Component {
+import moment from 'moment';
+import {getUserAttendedEvents, getUserEvents} from '../../helper/Api';
+import Loader from '../../component/Loader';
+import {connect} from 'react-redux';
+
+ class messages extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      index: 0,
       attendingEvents: true,
       myevents: false,
+      loading: true,
+      index: 1,
+      userEvents: [],
+      userAttendedEvents: [],
       messages: [
         {
           imgProfile: '',
@@ -68,6 +76,38 @@ export default class messages extends Component {
       ],
     };
   }
+
+  componentDidMount() {
+    this.getUserEvents();
+    this.getUserAttendedEvents();
+  }
+
+  async getUserEvents() {
+    await getUserEvents(this.props.userToken).then(response => {
+      this.setState({userEvents: response.UserHostedEvent, loading: false});
+    });
+  }
+
+  async getUserAttendedEvents() {
+    await getUserAttendedEvents(this.props.userToken).then(response => {
+      this.setState({userAttendedEvents: response.UserAttendedEvents});
+    });
+  }
+
+  barTapped = indexTap => {
+    if (indexTap === 1) {
+      this.setState({index: 1});
+    } else if (indexTap === 2) {
+      this.setState({index: 2});
+    }
+    if (indexTap === 3) {
+      this.setState({index: 3});
+    }
+    if (indexTap === 4) {
+      this.setState({index: 4});
+    }
+  };
+
   myevents = () => {
     this.setState({myevents: true});
     this.setState({attendingEvents: false});
@@ -76,49 +116,18 @@ export default class messages extends Component {
     this.setState({myevents: false});
     this.setState({attendingEvents: true});
   };
-  barTapped = indexTap => {
-    if (indexTap === 0) {
-      this.setState({index: 0});
-    } else if (indexTap === 1) {
-      this.setState({index: 1});
-    }
-  };
   topBar = () => {
     return (
-      <View style={styles.flex}>
-        <TouchableOpacity
-          style={
-            this.state.index === 0
-              ? {
-                  borderBottomColor: '#F818D9',
-                  borderBottomWidth: 3,
-                  justifyContent: 'center',
-                  width: SCREEN.width * 0.5,
-                  height: 39,
-                }
-              : {
-                  color: 'black',
-                  width: SCREEN.width * 0.5,
-                  height: 39,
-                  justifyContent: 'center',
-                }
-          }
-          onPress={() => this.barTapped(0)}>
-          <Text
-            style={[
-              styles.barChild,
-              this.state.index === 0 ? {color: '#F818D9'} : {color: 'black'},
-            ]}>
-            MY EVENTS
-          </Text>
-        </TouchableOpacity>
+      <View style={styles.flexRow}>
         <TouchableOpacity
           style={
             this.state.index === 1
               ? {
                   borderBottomColor: '#F818D9',
                   borderBottomWidth: 3,
+                  borderColor: 'lightgrey',
                   justifyContent: 'center',
+                  borderWidth: 1,
                   width: SCREEN.width * 0.5,
                   height: 39,
                 }
@@ -126,14 +135,47 @@ export default class messages extends Component {
                   color: 'black',
                   width: SCREEN.width * 0.5,
                   height: 39,
+                  borderColor: 'lightgrey',
+                  borderWidth: 1,
                   justifyContent: 'center',
                 }
           }
           onPress={() => this.barTapped(1)}>
           <Text
             style={[
-              styles.barChild,
+              styles.barText,
               this.state.index === 1 ? {color: '#F818D9'} : {color: 'black'},
+            ]}>
+            MY EVENTS
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={
+            this.state.index === 2
+              ? {
+                  borderBottomColor: '#F818D9',
+                  borderBottomWidth: 3,
+                  borderColor: 'grey',
+                  justifyContent: 'center',
+                  borderWidth: 1,
+                  width: SCREEN.width * 0.5,
+                  height: 39,
+                }
+              : {
+                  color: 'black',
+                  width: SCREEN.width * 0.5,
+                  height: 39,
+                  borderColor: 'grey',
+                  justifyContent: 'center',
+                  borderWidth: 1,
+                }
+          }
+          onPress={() => this.barTapped(2)}>
+          <Text
+            style={[
+              styles.barText,
+              this.state.index === 2 ? {color: '#F818D9'} : {color: 'black'},
             ]}>
             ATTENDING EVENTS
           </Text>
@@ -141,26 +183,38 @@ export default class messages extends Component {
       </View>
     );
   };
-  noEvent = () => {
+
+  // Empty Component
+  emptyListComponent = () => {
     return (
-      <View style={{width: SCREEN.width- 40,  alignSelf:'center', alignItems: 'center', marginTop: SCREEN.height * 0.277}}>
-        <Text
-          style={{
-
-            fontSize: 20,
-            fontFamily: FONT.Nunito.regular,
-            textAlign: 'center',
-            color: BLACK.grey, 
-            
-
-          }}>
-          You are not hosting any events at the moment.
-        </Text>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("createEvent")}
-          style={styles.btnLocation}>
-          <Text style={[styles.btnTextLocation]}>HOST?</Text>
-        </TouchableOpacity>
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+        {this.state.index === 1 && (
+          <View>
+            <Text>You are not hosting any events at the moment.</Text>
+            <TouchableOpacity style={styles.btnMap}>
+              <Text style={styles.btnText}>HOST?</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {this.state.index === 2 && (
+          <View>
+            <Text style={styles.emptyFont}>
+              You are not attending any events at the moment.
+            </Text>
+            <TouchableOpacity style={styles.btnMap}>
+              <Text style={styles.btnText}>LOOK FOR EVENTS</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     );
   };
@@ -171,21 +225,35 @@ export default class messages extends Component {
           <HeaderWithOptionBtn
             borderBottom={true}
             backColor={WHITE.dark}
-            headerTitle={'Messages'}
             leftPress={() => this.props.navigation.openDrawer()}
             leftIcon={require('../../assets/drawer.png')}
+            headerTitle={'Messages'}
           />
+
           {this.topBar()}
 
-          {this.state.index === 0 && (
+          {/* Shared Host */}
+          {/* <TouchableOpacity onPress={() => this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
+            <Text style={{ color: 'white', paddingLeft: 20 }}>SHARED HOST REQUESTS</Text>
+            <Text style={{ color: 'white', paddingRight: 20 }}>+2</Text>
+          </TouchableOpacity> */}
+
+          {this.state.index === 1 && (
             <FlatList
-              data={this.state.findpeople}
+              data={this.state.userEvents}
               keyExtractor={item => item.id}
+              ListEmptyComponent={this.emptyListComponent}
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>
-                    this.props.navigation.navigate('messagesEvent')
-                  }>
+                    this.props.navigation.navigate('messagesEvent',{
+                      EventID: item.id
+                    })
+                  }
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'lightgrey',
+                  }}>
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image
@@ -198,83 +266,187 @@ export default class messages extends Component {
                         source={require('../../assets/private.png')}
                       />
                     </View>
+
                     <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.profileName}</Text>
-                      <Text style={styles.greyText}>{item.adress}</Text>
-                      <Text style={styles.purpleText}>{item.date}</Text>
+                      <Text style={styles.titleText}>{item.Name}</Text>
+                      <Text style={styles.subtitleText}>
+                        {item.EventType === 'SCAN'
+                          ? 'SCAN-&-PAY AT DOOR'
+                          : item.EventType}
+                      </Text>
+                      <Text style={[styles.purpleText, {marginTop: 5}]}>
+                        {moment(item.DateTime).format(
+                          'hh:mm A | MMM DD, YYYY - ddd',
+                        )}
+                      </Text>
                     </View>
+                    {/* <TouchableOpacity
+                      //  onPress={()=>this.props.navigation.navigate("directInvites")}
+                      style={styles.shareView}>
+                      <Image source={require('../../assets/share.png')} />
+                    </TouchableOpacity> */}
                   </View>
-                  <View
-                    style={{
-                      hiehgt: 1,
-                      borderBottomWidth: 1,
-                      borderBottomColor: 'lightgrey',
-                      width: SCREEN.width,
-                    }}
-                  />
                 </TouchableOpacity>
               )}
             />
           )}
-          {this.state.index === 1 && this.noEvent()}
+          {this.state.index === 2 && (
+            <FlatList
+              data={this.state.userAttendedEvents}
+              keyExtractor={item => item.id}
+              // ListEmptyComponent={this.emptyListComponent}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate('messagesEvent',{
+                      EventID: item.Event.id
+                    })
+                  }
+                  style={{
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'lightgrey',
+                  }}>
+                  <View style={styles.flexRow}>
+                    <View style={styles.imgView}>
+                      <Image
+                        source={require('../../assets/image2.jpg')}
+                        style={{borderRadius: 44, height: 60, width: 60}}
+                      />
+
+                      <Image
+                        style={{position: 'absolute', right: -10}}
+                        source={require('../../assets/private.png')}
+                      />
+                    </View>
+
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>{item.Event.Name}</Text>
+                      <Text style={styles.subtitleText}>
+                        Host: {item.Event.Host.displayName}
+                      </Text>
+                      <Text style={[styles.purpleText, {marginTop: 5}]}>
+                        {moment(item.Event.datetime).format(
+                          'hh:mm A | MMM DD, YYYY - ddd',
+                        )}
+                      </Text>
+                    </View>
+                    {/* <TouchableOpacity
+                      // onPress={()=>this.props.navigation.navigate("directInvites")}
+                      style={styles.shareView}>
+                      <Image source={require('../../assets/messageIcon.png')} />
+                    </TouchableOpacity> */}
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(messages);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
 
     backgroundColor: WHITE.dark,
   },
+  sharedView: {
+    width: SCREEN.width,
+    height: 40,
+    alignItems: 'center',
+    backgroundColor: '#FF9500',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   contentView: {
     flex: 1,
-    alignSelf: 'center',
+
+    // width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
   },
   btnTextLocation: {
-    fontSize: 14,
+    fontSize: 16,
     color: 'white',
-    flex: 1,
     textAlign: 'center',
-    fontFamily: FONT.Nunito.bold,
-    paddingTop: 15,
-  },
-  greyText: {
-    fontSize: 12,
-    color: BLACK.grey,
     fontFamily: FONT.Nunito.regular,
   },
-  btnLocation: {
-    width: SCREEN.width - 40,
-    alignContent: 'center',
+  btnText: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: 'white',
+    fontFamily: FONT.Nunito.regular,
+  },
+  emptyFont: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    marginBottom: 20,
+  },
+  btnMap: {
+    borderRadius: 25,
     height: 50,
-    marginTop: 20,
+    alignSelf: 'center',
+    marginBottom: 20,
+    width: SCREEN.width - 40,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+  },
+  btnLocation: {
+    width: wp('80%'),
+    marginHorizontal: '10%',
+    marginTop: hp('5%'),
+    height: 50,
     elevation: 1,
+    justifyContent: 'center',
     backgroundColor: 'black',
     borderWidth: 1,
     borderRadius: 24,
     borderColor: BLACK.light,
+    bottom: 10,
   },
   flexRow: {
     flexDirection: 'row',
-    paddingVertical: 10,
 
-    paddingHorizontal: 10,
     alignItems: 'center',
   },
+  subtitleText: {
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    fontSize: 12,
+  },
+
   next: {
     paddingTop: 15,
   },
   detail: {
-    width: SCREEN.width * 0.55,
+    width: wp('55%'),
+    height: 80,
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   imgView: {
     marginHorizontal: 20,
     alignItems: 'center',
-
     alignSelf: 'center',
+  },
+  shareView: {
+    width: wp('20%'),
+    justifyContent: 'center',
   },
   flex: {
     flexDirection: 'row',
@@ -289,7 +461,7 @@ const styles = StyleSheet.create({
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-    marginTop: 5,
+
     fontFamily: FONT.Nunito.bold,
   },
   barChild: {
@@ -299,6 +471,14 @@ const styles = StyleSheet.create({
     borderColor: 'lightgrey',
     paddingTop: 12,
     fontFamily: FONT.Nunito.regular,
+    textAlign: 'center',
+    alignItems: 'center',
+  },
+  barText: {
+    borderColor: 'lightgrey',
+    fontSize: 11,
+    fontFamily: FONT.Nunito.semiBold,
+    color: BLACK.grey,
     textAlign: 'center',
     alignItems: 'center',
   },
