@@ -173,9 +173,7 @@ class SignIn extends Component {
             .doc(data.id)
             .set(data)
             .then(firestoreDocuments => {
-              this.props.callApi(firestoreDocuments.data(), data.id);
-              this.setState({loading: false});
-              this.checkTheUserCheck(firestoreDocuments.data());
+              this.getUserFromFirestore(data.id);
             })
             .catch(error => {
               this.setState({
@@ -193,12 +191,48 @@ class SignIn extends Component {
             parseInt(firestoreDocument.data().age) > 16
           ) {
             this.props.callApi(firestoreDocument.data(), data.id);
+            this.setState({loading: false});
             this.props.navigation.push('HomeStack');
           } else {
             this.props.callApi(firestoreDocument.data(), data.id);
+            this.setState({loading: false});
             this.props.navigation.push('BirthDateSplash', {from: 'splash'});
           }
-          this.setState({loading: false});
+        }
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          btnOneText: 'Ok',
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
+          popUpError: true,
+        });
+      });
+  };
+
+  getUserFromFirestore = id => {
+    this.setState({loading: true});
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(id)
+      .get()
+      .then(firestoreDocument => {
+        if (!firestoreDocument.exists) {
+          return;
+        } else {
+          if (
+            firestoreDocument.data().age &&
+            parseInt(firestoreDocument.data().age) > 16
+          ) {
+            this.props.callApi(firestoreDocument.data(), id);
+            this.setState({loading: false});
+            this.props.navigation.push('HomeStack');
+          } else {
+            this.props.callApi(firestoreDocument.data(), id);
+            this.setState({loading: false});
+            this.props.navigation.push('BirthDateSplash', {from: 'splash'});
+          }
         }
       })
       .catch(error => {

@@ -1,4 +1,5 @@
 import Server from './Server';
+const axios = require('axios');
 
 export async function CheckEventStatus({user_id, event_id}) {
   const reqOptions = {
@@ -84,22 +85,21 @@ export async function getAttendeesList(event_id) {
 }
 
 export async function updateProfile(user_id, dataToUpdate) {
-  var myHeaders = new Headers();
-  myHeaders.append('Content-Type', 'application/json');
-  var requestOptions = {
-    method: 'PUT',
-    headers: myHeaders,
-    body: dataToUpdate,
-    redirect: 'follow',
+  var config = {
+    method: 'put',
+    url: `https://slizzr-6a887.appspot.com/user/${user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: dataToUpdate,
   };
-  return fetch(
-    `https://slizzr-6a887.appspot.com/user/${user_id}`,
-    requestOptions,
-  )
-    .then(async response => {
-      return await response.json();
+  return axios(config)
+    .then(function (response) {
+      return response;
     })
-    .catch(error => console.log('error', error));
+    .catch(function (error) {
+      return error;
+    });
 }
 
 export async function uploadImage(formdata) {
@@ -116,4 +116,36 @@ export async function uploadImage(formdata) {
     .catch(error => {
       console.error(error);
     });
+}
+
+export async function createCustomerStripe(dataToUpdate) {
+  var myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: dataToUpdate,
+    redirect: 'follow',
+  };
+  return fetch(`${Server}/stripe/customer/create-customer`, requestOptions)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => console.log('error', error));
+}
+
+export async function createHostStripe(dataToUpdate) {
+  var myHeaders = new Headers();
+  myHeaders.append('Content-Type', 'application/json');
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: dataToUpdate,
+    redirect: 'follow',
+  };
+  return fetch(`${Server}/stripe/host/create-host`, requestOptions)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => console.log('error', error));
 }

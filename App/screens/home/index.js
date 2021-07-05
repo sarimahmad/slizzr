@@ -24,12 +24,14 @@ import Geolocation from 'react-native-geolocation-service';
 import {openSettings} from 'react-native-permissions';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
+import firestore from '@react-native-firebase/firestore';
 
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import WaitingFor from '../../component/WaitingFor';
 import moment from 'moment';
 import ErrorPopup from '../../component/ErrorPopup';
+import {createCustomerStripe} from '../../helper/Api';
 
 let allEvents = [];
 let prepaidEvents = [];
@@ -96,6 +98,34 @@ class home extends Component {
     }
 
     return false;
+  };
+
+  checkStripeClientId = async () => {
+    if (
+      this.props.userDetail &&
+      this.props.userDetail.STRIPE_CUST_ID &&
+      this.props.userDetail.STRIPE_CUST_ID === ''
+    ) {
+      await createCustomerStripe(
+        this.props.userToken,
+        JSON.stringify({user_id: this.state.userDetail.id}),
+      ).then(_response => {
+        this.firestoreLinking(this.props.userToken);
+        this.setState({loading: false});
+      });
+    }
+  };
+
+  firestoreLinking = async id => {
+    this.setState({loading: true});
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(id)
+      .get()
+      .then(firestoreDocument => {
+        this.props.callApi(firestoreDocument.data(), id);
+        this.setState({loading: false});
+      });
   };
 
   hasLocationPermission = async () => {

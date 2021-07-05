@@ -621,7 +621,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   messageText: {
-    shadowOpacity: 0.6,
+    shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: {width: 1, height: 1},
     width: SCREEN.width - 40,
@@ -634,6 +634,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
     marginTop: 20,
     alignSelf: 'center',
+    backgroundColor: WHITE.app,
   },
   form: {
     marginVertical: 5,
@@ -650,7 +651,7 @@ const styles = StyleSheet.create({
     width: 50,
   },
   inputTextView: {
-    shadowOpacity: 0.6,
+    shadowOpacity: 0.1,
     shadowRadius: 10,
     shadowOffset: {width: 1, height: 1},
     width: SCREEN.width - 40,
@@ -663,6 +664,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
     marginTop: 20,
     alignSelf: 'center',
+    backgroundColor: WHITE.dark,
   },
   DataTimeWrapper: {
     backgroundColor: WHITE.dark,

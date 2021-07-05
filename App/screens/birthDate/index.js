@@ -1,8 +1,6 @@
-/* eslint-disable no-alert */
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {connect} from 'react-redux';
 import firestore from '@react-native-firebase/firestore';
 
@@ -12,6 +10,7 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import * as userActions from '../../redux/actions/user';
 import Loader from '../../component/Loader';
+import {updateProfile} from '../../helper/Api';
 
 class BirthDate extends Component {
   constructor(props) {
@@ -24,18 +23,47 @@ class BirthDate extends Component {
   }
 
   onChange = selectedDate => {
-    const currentDate = selectedDate || this.state.date;
+    const currentDate = selectedDate || this.state.DateTime;
     const current_date = new Date();
     const difference_date =
       current_date.getTime() - new Date(currentDate).getTime();
     const difference_in_days = difference_date / (1000 * 3600 * 24);
     const age_in_year = difference_in_days / 365;
+    if (age_in_year > 16) {
+      this.setState({
+        DateTime: currentDate,
+        day: currentDate.getUTCDate(),
+        month: currentDate.getUTCMonth(),
+        year: currentDate.getUTCFullYear(),
+        age: age_in_year,
+      });
+    }
     this.setState({date: currentDate});
     if (age_in_year > 16) {
       this.setState({ageCheck: true});
     } else {
       this.setState({ageCheck: false});
     }
+  };
+
+  updateProfileApi = async () => {
+    if (this.state.ageCheck > 0) {
+      const dataToSend = {
+        day: this.state.day,
+        month: this.state.month,
+        year: this.state.year,
+        age: this.state.age,
+      };
+      await updateProfile(
+        this.props.userToken,
+        JSON.stringify(dataToSend),
+      ).then(_response => {
+        this.firestoreLinking(this.props.userToken);
+        this.setState({loading: false});
+      });
+    }
+
+    this.setState({loading: false});
   };
 
   showDatepicker = () => {
@@ -48,7 +76,7 @@ class BirthDate extends Component {
     const difference_in_days = difference_date / (1000 * 3600 * 24);
     const age_in_year = difference_in_days / 365;
     if (age_in_year > 16) {
-      this.firestoreLinking(age_in_year);
+      this.updateProfileApi();
     } else {
       Alert.alert(
         'Age not Valid',
@@ -57,36 +85,23 @@ class BirthDate extends Component {
     }
   };
 
-  firestoreLinking = async data => {
+  firestoreLinking = async id => {
     this.setState({loading: true});
-    const userDetail = await AsyncStorage.getItem('userdetail');
     const usersRef = firestore().collection('users');
     usersRef
-      .doc(JSON.parse(userDetail).user.id)
-      .update({age: data})
-      .then(() => {
-        usersRef
-          .doc(JSON.parse(userDetail).user.id)
-          .get()
-          .then(firestoreDocument => {
-            this.props.callApi(
-              firestoreDocument.data(),
-              JSON.parse(userDetail).user.id,
-            );
-            if (this.props.route.params.from === 'signUp') {
-              this.props.navigation.navigate('ConfirmEmail', {
-                from: 'birth',
-                user: firestoreDocument.data(),
-              });
-            } else {
-              this.props.navigation.navigate('HomeStack');
-            }
-            this.setState({loading: false});
+      .doc(id)
+      .get()
+      .then(firestoreDocument => {
+        this.props.callApi(firestoreDocument.data(), id);
+        if (this.props.route.params.from === 'signUp') {
+          this.props.navigation.navigate('ConfirmEmail', {
+            from: 'birth',
+            user: firestoreDocument.data(),
           });
-      })
-      .catch(error => {
+        } else {
+          this.props.navigation.navigate('HomeStack');
+        }
         this.setState({loading: false});
-        alert(error);
       });
   };
 
@@ -118,9 +133,12 @@ class BirthDate extends Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => {
-  return {};
-};
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
 
 const mapDispatchToProps = dispatch => {
   return {
