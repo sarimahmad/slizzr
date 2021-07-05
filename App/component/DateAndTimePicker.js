@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-did-mount-set-state */
 console.disableYellowBox = true;
@@ -34,29 +35,29 @@ export default class DateAndTimePicker extends React.Component {
     if (Platform.OS === 'ios') {
       this.setState({platform: false});
     }
-    this.setState({dateTime: this.props.value});
+    this.setState({dateTime: new Date(this.props.value)});
   
   };
 
   componentDidUpdate() {
-    if (this.state.dateTime !== this.props.value) {
-      this.setState({dateTime: this.props.value});
+    if (this.state.dateTime !== new Date(this.props.value)) {
+      // this.setState({dateTime: new Date(this.props.value)});
     }
   }
   show = () => this.setState({show: true});
  
   OnChange = (event) => {
-     if(this.state.dateSelect===true){
+     if(this.state.dateSelect === true){
        this.setState({time: moment(event.nativeEvent.timestamp).format('hh:mm a'),})
-     }else if(this.state.dateSelect===false){
+     }else if(this.state.dateSelect === false){
       this.setState({date: moment(event.nativeEvent.timestamp).format('DD MMM YYYY')})
       this.setState({dateSelect:true})
       this.setState({show:false})
      
      }   
      console.log(this.state.date,this.state.time)
-    if (this.state.date!=='' && this.state.time!=='') {
-      let selectedValue= this.state.date.concat('  '+this.state.time)
+    if (this.state.date !== '' && this.state.time !== '') {
+      let selectedValue = this.state.date.concat('  ' + this.state.time)
       
       this.props.setDateAndTime(selectedValue);
     } else {
@@ -68,7 +69,11 @@ export default class DateAndTimePicker extends React.Component {
     console.log('event', event);
     if (event.type !== 'dismissed') {
       this.setState({dateTime: selectedValue});
-      this.props.setDateAndTime(selectedValue);
+      console.log(moment(selectedValue).format('hh:mm a'))
+      console.log(moment(selectedValue).format('DD MMM YYYY'))
+      let newselectedValue = moment(selectedValue).format('D MMM YYYY').concat('  ' + moment(selectedValue).format('hh:mm a'))
+      console.log(newselectedValue)
+      this.props.setDateAndTime(newselectedValue);
     } else {
       this.setState({show: false});
     }
