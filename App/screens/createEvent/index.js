@@ -616,12 +616,12 @@ class CreateEvent extends Component {
                     alignSelf: 'center',
                     borderWidth: 2,
                     borderColor: 'lightgrey',
-                  }}>
+                  }}>               
                   <RNPickerSelect
-                    placeholder={{
-                      label: 'Public',
-                      value: this.state.PublicPrivate,
-                    }}
+                    // placeholder={{
+                    //   label: 'Public',
+                    //   value: this.state.PublicPrivate,
+                    // }}
                     style={{
                       inputIOS: {
                         paddingLeft: 7,

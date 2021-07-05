@@ -56,7 +56,7 @@ class BirthDate extends Component {
       };
       await updateProfile(
         this.props.userToken,
-        JSON.stringify(dataToSend),
+        dataToSend,
       ).then(_response => {
         this.firestoreLinking(this.props.userToken);
         this.setState({loading: false});

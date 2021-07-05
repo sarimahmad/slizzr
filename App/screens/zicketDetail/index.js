@@ -12,27 +12,52 @@ import {
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import { getZicketDetails } from '../../helper/Api';
+import moment from 'moment';
 export default class zicketDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      detailItem: undefined,
+    };
   }
 
+  componentDidMount() {
+    let event_id = this.props.route.params.EventID;
+    let user_id = this.props.route.params.UserID;
+    if (event_id) {
+      this.getZicketDetail({event_id,user_id});
+    }
+  }
+  async getZicketDetail({event_id,user_id }) {
+    await getZicketDetails({event_id:event_id ,user_id: user_id }).then(response => {
+      this.setState({detailItem: response.User_Zicket[0]});
+    });
+  }
   render() {
+    if (this.state.detailItem === undefined) {
+      return (
+        <View style={styles.wrapperView}>
+          <SafeAreaView style={styles.contentView}>
+            <Text>No Zicket found</Text>
+          </SafeAreaView>
+        </View>
+      )
+    }
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
           <HeaderWithOptionBtn
             borderBottom={true}
             backColor={WHITE.dark}
-            headerTitle={'zickets'}
+            headerTitle={'Zickets'}
             leftPress={() => this.props.navigation.goBack()}
             leftIcon={require('../../assets/back.png')}
           />
 
           <ScrollView>
             <Image
-              source={require('../../assets/eventInfo.png')}
+              source={{uri: this.state.detailItem.Event.image}}
               style={styles.logoEvent}
             />
 
@@ -42,17 +67,18 @@ export default class zicketDetail extends Component {
                   styles.titleText,
                   {textAlign: 'center', marginTop: 20},
                 ]}>
-                Uroojs Banger
+                {this.state.detailItem.Event.Name}
               </Text>
               <Text style={[styles.text, {textAlign: 'center', marginTop: 5}]}>
-                PREPAID | $5
+              {this.state.detailItem.Event.EventType} {this.state.detailItem.Event.EventType !== 'FREE' && `| $${this.state.detailItem.Event.Fee}`}
               </Text>
               <Text
                 style={[
                   styles.purpleText,
                   {textAlign: 'center', marginTop: 4},
                 ]}>
-                11:30 PM | Feb 25, 2020 - WED | 2 HRS
+                {moment(this.state.detailItem.Event.Start_date).format('hh:mm A | MMM DD, YYYY - ddd')} | {this.state.detailItem.Event.duration} HRS
+                {/* 11:30 PM | Feb 25, 2020 - WED | 2 HRS */}
               </Text>
 
               <Text style={{textAlign: 'center', marginVertical: 4}}>
@@ -62,7 +88,7 @@ export default class zicketDetail extends Component {
                     styles.purpleText,
                     {textDecorationLine: 'underline'},
                   ]}>
-                  Holly Smith
+                  {this.state.detailItem.Event.Host.displayName}
                 </Text>
               </Text>
             </View>
@@ -85,7 +111,7 @@ export default class zicketDetail extends Component {
                   fontFamily: FONT.Nunito.regular,
                   color: '#494949',
                 }}>
-                1817 18 St. SW Calgary AB T2T 4T2 (Calgary, Alberta)
+                  {this.state.detailItem.Event.Address}
               </Text>
             </View>
             <View
@@ -97,7 +123,7 @@ export default class zicketDetail extends Component {
                 width: 242,
               }}>
               <Image
-                source={require('../../assets/barCode.png')}
+                source={{uri: this.state.detailItem.QRImage}}
                 style={{height: 239, width: 239}}
               />
             </View>
@@ -108,13 +134,15 @@ export default class zicketDetail extends Component {
                 marginTop: 20,
               }}>
               <Text style={styles.titleText}>Host: </Text>
-              <Text style={{fontFamily: FONT.Nunito.regular}}>
-                Nitish Shrma
+              <Text style={{fontFamily: FONT.Nunito.regular, fontSize: 17}}>
+              {this.state.detailItem.Event.Host.displayName}
               </Text>
             </View>
-            <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+            <View style={{flexDirection: 'row', alignSelf: 'center', display:'flex', justifyContent: 'center'}}>
               <Text style={styles.titleText}>Attendee: </Text>
-              <Text style={{fontFamily: FONT.Nunito.regular}}>Zoya Rajput</Text>
+              <Text style={{fontFamily: FONT.Nunito.regular, fontSize: 17}}>
+              {this.state.detailItem.User.displayName}
+              </Text>
             </View>
             <View style={{alignSelf: 'center', marginTop: 20}}>
               <Image
@@ -242,7 +270,14 @@ const styles = StyleSheet.create({
   logo: {},
 
   logoEvent: {
-    width: width,
+    marginTop:10,
+    width: '100%',
+    height: 110,
+    borderRadius: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignSelf:'center',
+    resizeMode: 'center'
   },
   titleText: {
     color: BLACK.textInputTitle,

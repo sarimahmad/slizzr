@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,112 +7,130 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import {SafeAreaView} from 'react-navigation';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
-import {FONT, SCREEN} from '../../helper/Constant';
+import { SafeAreaView } from 'react-navigation';
+import { BLACK, BLUE, WHITE } from '../../helper/Color';
+import { FONT, SCREEN } from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class messagesEvent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { getAllMessages, getEventDetail } from '../../helper/Api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-        attendingEvents:true,
-        myevents:false,
-        
+const messagesEvent = (props) => {
+  const [messages, SetMessages] = useState([])
+  const [currentUID, SetCurrentUID] = useState("")
+  const [event, SetEvent] = useState({})
+  const navigation = useNavigation()
+  const route = useRoute();
+
+  const { EventID } = route.params;
+
+  useEffect(() => {
+    getMessage()
     
-        messages: [
-            {
-                imgProfile: '',
-                message: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                count:3
-              },
-              {
-                imgProfile: '',
-                message: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                count:3
-              },  
-      
-              {
-                imgProfile: '',
-                message: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                count:3
-              },  
-      
-              {
-                imgProfile: '',
-                message: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                count:3
-              },  
-              {
-                imgProfile: '',
-                message: 'Marriage Anniversary',
-                adress: 'Host: Tallah Cotton',
-                count:3
-              },  
-      
-        ]
-      
-    };
+  }, [])
 
-  }
-  render() {
-    return (
-      <View style={styles.wrapperView}>
+  async function getMessage(){
+    const TOKEN = await AsyncStorage.getItem('token');
+    if(TOKEN){
+      SetCurrentUID(TOKEN)
+      await getAllMessages({
+        "event_id": EventID,
+        "user_id": TOKEN.slice(1, -1),
+      }).then((response) => {
+        SetMessages(response.messages)
+      }).catch((error) => {
+        console.log(error)
+      })
+  
+    }
+    if(EventID){
+    await getEventDetail(EventID).then((response) => {
+      SetEvent(response.Event)
+    }).catch((error) => console.log(error))
+
+    }
       
-        <SafeAreaView style={styles.contentView}>
-        <HeaderWithOptionBtn
-                    
-                    borderBottom={true}
-                    backColor={WHITE.dark}
-                    leftPress={() => this.props.navigation.goBack()}
-                    leftIcon={require('../../assets/back.png')}
-                    rightPress={() =>this.props.navigation.navigate("newMessage")}
-                    rightIcon={require('../../assets/newMesssage.png')}
-                    headerTitle={'Messages'}
-                   
-                />   
-        
-            <FlatList
-              data={this.state.messages}
-              keyExtractor={item => item.id}
-              renderItem={({item}) => (
-                <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('chat')}>
-             
-               <View style={styles.flexRow}>
-                 <View style={{flexDirection:"row", alignItems:"center"}}>
-                    <View style={styles.imgView}>
-                      <Image style={{height:50,width:50}} source={require('../../assets/profile1.png')} />
-                    </View>
-                    <View style={styles.detail}>
-                      <Text style={[styles.titleText,{fontFamily:FONT.Nunito.semiBold}]}>{item.message}</Text>
-                      <Text style={{color:'#B2ABB1',fontSize:12}}>{item.adress}</Text>
-                    </View>
-                    </View>
-                    <View style={{height:23,width:23,borderRadius:24,justifyContent: 'center',alignItems: 'center',backgroundColor:'#F818D9',marginRight:9}}>
-                       <Text style={[styles.titleText,{color:'white'}]}>{item.count}</Text>
-                  </View>
-                  </View>
-                  <View style={{hiehgt:1,borderBottomWidth:1,borderBottomColor:'lightgrey',width:SCREEN.width}}></View>
-          
-                </TouchableOpacity> 
-              )}
-            />
-       
-        </SafeAreaView>
+  }
+  // Empty Component
+  const emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+        <View>
+          <Text>No messages to show for this event.</Text>
+        </View>
       </View>
     );
-  }
+  };
+
+  return (
+    <View style={styles.wrapperView}>
+
+      <SafeAreaView style={styles.contentView}>
+        <HeaderWithOptionBtn
+
+          borderBottom={true}
+          backColor={WHITE.dark}
+          leftPress={() => navigation.goBack()}
+          leftIcon={require('../../assets/back.png')}
+          rightPress={() => navigation.navigate("newMessage")}
+          rightIcon={require('../../assets/newMesssage.png')}
+          headerTitle={'Messages'}
+
+        />
+
+        <FlatList
+          data={messages}
+          keyExtractor={item => item.id}
+          ListEmptyComponent={emptyListComponent}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('chat', {
+                CurrentUserUID: currentUID.slice(1, -1), 
+                HostUID : event.Host.Id, 
+                EventID : event.id
+              })}>
+              <View style={styles.flexRow}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <View style={styles.imgView}>
+                    <Image style={{ height: 50, width: 50 }} source={{uri : item.Messages[0].ProfilePicture[0].Profile_Url}} />
+                  </View>
+                  <View style={styles.detail}>
+                    <Text style={[styles.titleText, { fontFamily: FONT.Nunito.semiBold }]}>{item.Messages[0].profile.displayName}</Text>
+                    <Text style={{ color: '#B2ABB1', fontSize: 12 }}>{item.Messages[0].text}</Text>
+                  </View>
+                </View>
+                <View style={{ height: 23, width: 23, borderRadius: 24, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F818D9', marginRight: 9 }}>
+                  <Text style={[styles.titleText, { color: 'white' }]}>{item.Messages.length}</Text>
+                </View>
+              </View>
+              <View style={{ height: 1, borderBottomWidth: 1, borderBottomColor: 'lightgrey', width: SCREEN.width }}></View>
+
+            </TouchableOpacity>
+          )}
+        />
+
+      </SafeAreaView>
+    </View>
+  );
+
 }
+
+export default messagesEvent
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
@@ -126,7 +144,7 @@ const styles = StyleSheet.create({
     // width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
   },
- btnTextLocation: {
+  btnTextLocation: {
     fontSize: 16,
     color: 'white',
     textAlign: 'center',
@@ -135,14 +153,14 @@ const styles = StyleSheet.create({
   },
 
   flexRow: {
-    width:SCREEN.width - 40,
+    width: SCREEN.width - 40,
 
     flexDirection: 'row',
     paddingVertical: 20,
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'space-between',
-    
+
   },
 
   next: {
@@ -154,8 +172,8 @@ const styles = StyleSheet.create({
   imgView: {
 
     width: 50,
-    height:50, 
-    borderRadius:25,
+    height: 50,
+    borderRadius: 25,
     marginRight: 20
   },
   flex: {
@@ -179,7 +197,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: wp('50%'),
     height: 36,
-    height:40,
+    height: 40,
     borderColor: 'lightgrey',
     paddingTop: 12,
     fontFamily: FONT.Nunito.regular,

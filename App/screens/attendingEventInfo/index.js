@@ -5,6 +5,7 @@ import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {width} from '../../helper/Constant';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   widthPercentageToDP as wp,
@@ -13,11 +14,14 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {getEventDetail} from '../../helper/Api';
+import moment from 'moment';
+
 export default class attendingEventInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
       detailItem: {},
+      currentUserUID: ""
     };
   }
   componentDidMount() {
@@ -25,11 +29,14 @@ export default class attendingEventInfo extends Component {
     if (id) {
       this.getEventDetail(id);
     }
+    
   }
   async getEventDetail(id) {
     await getEventDetail(id).then(response => {
       this.setState({detailItem: response.Event});
     });
+    const TOKEN = await AsyncStorage.getItem('token');
+    this.setState({currentUserUID: TOKEN })
   }
   render() {
     return (
@@ -45,7 +52,7 @@ export default class attendingEventInfo extends Component {
 
           <ScrollView>
             <Image
-              source={require('../../assets/eventInfo.png')}
+              source={{uri: this.state.detailItem.image}}
               style={styles.logoEvent}
             />
 
@@ -55,17 +62,17 @@ export default class attendingEventInfo extends Component {
                   styles.titleText,
                   {textAlign: 'center', marginTop: 20},
                 ]}>
-                Uroojs Banger
+                {this.state.detailItem.Name}
               </Text>
               <Text style={[styles.text, {textAlign: 'center', marginTop: 5}]}>
-                PREPAID | $5
+              {this.state.detailItem.EventType} {this.state.detailItem.EventType !== 'FREE' && `| $${this.state.detailItem.Fee}`}
               </Text>
               <Text
                 style={[
                   styles.purpleText,
                   {textAlign: 'center', marginTop: 4},
                 ]}>
-                11:30 PM | Feb 25, 2020 - WED | 2 HRS
+                 {moment(this.state.detailItem.Start_date).format('hh:mm A | MMM DD, YYYY - ddd')} | {this.state.detailItem.duration} HRS
               </Text>
 
               <Text style={{textAlign: 'center', marginVertical: 4}}>
@@ -75,7 +82,8 @@ export default class attendingEventInfo extends Component {
                     styles.purpleText,
                     {textDecorationLine: 'underline'},
                   ]}>
-                  Holly Smith
+                  {this.state.detailItem.Host &&
+                    this.state.detailItem.Host.displayName}{' '}
                 </Text>
               </Text>
             </View>
@@ -98,7 +106,7 @@ export default class attendingEventInfo extends Component {
                   fontFamily: FONT.Nunito.regular,
                   color: '#494949',
                 }}>
-                1817 18 St. SW Calgary AB T2T 4T2 (Calgary, Alberta)
+                {this.state.detailItem.Address}
               </Text>
             </View>
             <Text style={[styles.titleText, {textAlign: 'center'}]}>
@@ -114,18 +122,12 @@ export default class attendingEventInfo extends Component {
                   marginBottom: 20,
                 },
               ]}>
-              Tousled food truck polaroid, salvia bespoke small batch Pinterest
-              Marfa. Fingerstache authentic craft beer, food truck Banksy Carles
-              kale chips hoodie. Trust fund artisan master cleanse fingerstache
-              post-ironic, fashion axe art party Etsy direct trade retro
-              organic. Cliche Shoreditch Odd Future Pinterest, pug disrupt photo
-              booth VHS literally occupy gluten-free polaroid Intelligentsia PBR
-              mustache. Locavore fashion axe chia, iPhone cardigan disrupt Etsy
-              dreamcatcher. Craft beer selvage fanny pack, 8-bit post-ironic
-              keffiyeh{' '}
+              {this.state.detailItem.Description}
             </Text>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('attendeesList')}
+              onPress={() => this.props.navigation.navigate('attendeesList', {
+                id: this.props.route.params.id
+              })}
               style={styles.btnMap}>
               <Text style={styles.btnText}>ATTENDEES</Text>
             </TouchableOpacity>
@@ -135,7 +137,11 @@ export default class attendingEventInfo extends Component {
               <Text style={styles.btnText}>VIEW ZICKET</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('chat')}
+              onPress={() => this.props.navigation.navigate('chat',{
+                CurrentUserUID: (this.state.currentUserUID).slice(1, -1),
+                HostUID: this.state.detailItem.Host.Id,
+                EventID: this.props.route.params.id
+              })}
               style={styles.btnMap}>
               <Text style={styles.btnText}>MESSAGE HOST</Text>
             </TouchableOpacity>
@@ -240,7 +246,14 @@ const styles = StyleSheet.create({
   logo: {},
 
   logoEvent: {
-    width: width,
+    marginTop:10,
+    width: '100%',
+    height: 110,
+    borderRadius: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignSelf:'center',
+    resizeMode: 'center'
   },
   titleText: {
     color: BLACK.textInputTitle,

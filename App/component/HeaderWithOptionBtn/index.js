@@ -30,7 +30,7 @@ function HeaderWithOptionBtn({ leftPress, headerTitle,rightIconText, leftIcon,pr
 
       <Image
       style={{position: 'absolute',left: 60, justifyContent: 'center', alignItems: 'center', height: 40, width: 40}}
-      source={require('../../assets/profile1.png')}
+      source={{uri: profileIcon}}
     />}
 
         {centerIcon &&

@@ -253,17 +253,19 @@ class eventDetail extends Component {
                     : styles.btnMapBooked
                 }>
                 <Text
-                  style={[
-                    styles.btnText,
-                    {
-                      color:
-                        this.state.Check_Status === 'Active'
-                          ? this.state.User_Attending_Event === false
-                            ? WHITE.dark
-                            : BLACK.app
-                          : WHITE.dark,
-                    },
-                  ]}>
+                  style={styles.btnText
+                  //   [
+                  //   styles.btnText,
+                  //   {
+                  //     color:
+                  //       this.state.Check_Status === 'Active'
+                  //         ? this.state.User_Attending_Event === false
+                  //           ? WHITE.dark
+                  //           : BLACK.app
+                  //         : WHITE.dark,
+                  //   },
+                  // ]
+                  }>
                   {this.state.Check_Status === 'Active'
                     ? this.state.User_Attending_Event === false
                       ? 'ATTEND'
@@ -319,6 +321,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontFamily: FONT.Nunito.regular,
+    backgroundColor:'black'
   },
   btnTextCancel: {
     fontSize: 16,
