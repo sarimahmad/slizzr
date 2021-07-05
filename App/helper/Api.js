@@ -56,7 +56,6 @@ export async function getUserEvents(user_id) {
     });
 }
 export async function getUserImages(user_id) {
-
   return fetch(`${Server}/user/pictures/` + user_id)
     .then(async response => {
       return await response.json();
@@ -120,7 +119,7 @@ export async function uploadImage(formdata) {
     });
 }
 
-export async function getZicketDetails({event_id,user_id }) {
+export async function getZicketDetails({event_id, user_id}) {
   return fetch(`${Server}/zicket?user_id=${user_id}&event_id=${event_id}`)
     .then(async response => {
       return await response.json();
@@ -140,24 +139,51 @@ export async function getUserProfile(user_id) {
     });
 }
 
-export async function getAllMessages({event_id,user_id }) {
-  var data = JSON.stringify({event_id,user_id });
-  console.log(data)
+export async function getAllMessages({event_id, user_id}) {
+  var data = JSON.stringify({event_id, user_id});
+  console.log(data);
   var config = {
     method: 'post',
     url: `${Server}/chatroom/get-all-message`,
-    headers: { 
-      'Content-Type': 'application/json'
+    headers: {
+      'Content-Type': 'application/json',
     },
-    data : data
+    data: data,
   };
-  
+
   const GetResponse = await axios(config)
-  .then(function (response) {
-    return response.data
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-  return GetResponse
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+export async function CustomerCharge(data) {
+  // DATA = {
+  //   number: '4242 4242 4242 4242',
+  //   exp_month: 2,
+  //   exp_year: 2024,
+  //   cvc: '212',
+  //   user_id: '3wDLplGq1oYQMO3xRnS4ZtpdK0M2',
+  //   event_id: '074d6e00-6fbf-4eed-9884-984fd56e84e4',
+  // };
+  var config = {
+    method: 'post',
+    url: `${Server}/stripe/customer/charge-without-saving-card`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: JSON.stringify(data),
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
 }

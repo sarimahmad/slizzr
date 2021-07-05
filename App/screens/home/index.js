@@ -717,8 +717,8 @@ class home extends Component {
             rightIcon={require('../../assets/bell.png')}
             centerIcon={require('../../assets/homeLogo.png')}
           />
-          {this.state.loading === true && <WaitingFor type="Events" />}
-          {this.state.loading === false && (
+          {/* {this.state.loading === true && <WaitingFor type="Events" />}
+          {this.state.loading === false && ( */}
             <View style={styles.wrapperView}>
               {this.tapBar()}
 
@@ -767,7 +767,7 @@ class home extends Component {
                   </View>
                 )}
             </View>
-          )}
+          {/* )} */}
         </SafeAreaView>
         {this.state.popUpError && (
           <Modal
