@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {connect} from 'react-redux';
-import firestore from '@react-native-firebase/firestore';
 
 import ButtonResetPassaword from '../../component/ButtonResetPassword';
 import {BLACK, WHITE} from '../../helper/Color';
@@ -54,11 +53,16 @@ class BirthDate extends Component {
         year: this.state.year,
         age: this.state.age,
       };
-      await updateProfile(
-        this.props.userToken,
-        dataToSend,
-      ).then(_response => {
-        this.firestoreLinking(this.props.userToken);
+      await updateProfile(this.props.userToken, dataToSend).then(_response => {
+        this.props.callApi(_response.data.user, this.props.userToken);
+        if (this.props.route.params.from === 'signUp') {
+          this.props.navigation.navigate('ConfirmEmail', {
+            from: 'birth',
+            user: _response.data.user,
+          });
+        } else {
+          this.props.navigation.navigate('HomeStack');
+        }
         this.setState({loading: false});
       });
     }
@@ -83,26 +87,6 @@ class BirthDate extends Component {
         'you need to be more than 16 year old to use this app',
       );
     }
-  };
-
-  firestoreLinking = async id => {
-    this.setState({loading: true});
-    const usersRef = firestore().collection('users');
-    usersRef
-      .doc(id)
-      .get()
-      .then(firestoreDocument => {
-        this.props.callApi(firestoreDocument.data(), id);
-        if (this.props.route.params.from === 'signUp') {
-          this.props.navigation.navigate('ConfirmEmail', {
-            from: 'birth',
-            user: firestoreDocument.data(),
-          });
-        } else {
-          this.props.navigation.navigate('HomeStack');
-        }
-        this.setState({loading: false});
-      });
   };
 
   render() {

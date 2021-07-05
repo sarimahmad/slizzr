@@ -1,3 +1,4 @@
+/* eslint-disable radix */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
@@ -170,11 +171,11 @@ class SignUp extends Component {
               postal_code: '',
               state: '',
               country: '',
-          }, 
+            },
             BirthDate: {
               day: 0,
               month: 0,
-              year: 0
+              year: 0,
             },
             Gender: '',
             Visibility: true,
@@ -183,8 +184,8 @@ class SignUp extends Component {
             bio: '',
             Location: {
               latitude: 0,
-              longitude: 0
-          },
+              longitude: 0,
+            },
           };
           const usersRef = firestore().collection('users');
           usersRef
@@ -259,24 +260,20 @@ class SignUp extends Component {
             postal_code: '',
             state: '',
             country: '',
-        }, 
+          },
           BirthDate: {
             day: 0,
             month: 0,
-            year: 0
+            year: 0,
           },
-          Gender: '',
           Visibility: true,
           Radius: 50,
-          bio: '',
           Gender: '',
-          Visibility: true,
           PushNotification: true,
-          Radius: 50,
           bio: '',
           Location: {
             latitude: 0,
-            longitude: 0
+            longitude: 0,
           },
         };
 
@@ -289,9 +286,7 @@ class SignUp extends Component {
                 .doc(data.id)
                 .set(data)
                 .then(firestoreDocuments => {
-                  this.props.callApi(firestoreDocuments.data(), data.id);
-                  this.setState({loading: false});
-                  this.props.navigation.navigate('BirthDate', {from: 'signUp'});
+                  this.getUserFromFirestore(data.id);
                 })
                 .catch(error => {
                   this.setState({
@@ -305,8 +300,15 @@ class SignUp extends Component {
               return;
             } else {
               this.props.callApi(firestoreDocument.data(), data.id);
-              this.setState({loading: false});
-              this.props.navigation.navigate('HomeStack');
+              if (parseInt(firestoreDocument.data().age) > 16) {
+                this.setState({loading: false});
+                this.props.navigation.navigate('HomeStack');
+              } else {
+                this.setState({loading: false});
+                this.props.navigation.navigate('BirthDateSplash', {
+                  from: 'splash',
+                });
+              }
             }
           })
           .catch(error => {
@@ -325,6 +327,41 @@ class SignUp extends Component {
           errorTitle: 'ERROR',
           errorText: JSON.stringify(error),
           btnOneText: 'Ok',
+          popUpError: true,
+        });
+      });
+  };
+
+  getUserFromFirestore = id => {
+    this.setState({loading: true});
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(id)
+      .get()
+      .then(firestoreDocument => {
+        if (!firestoreDocument.exists) {
+          return;
+        } else {
+          if (
+            firestoreDocument.data().age &&
+            parseInt(firestoreDocument.data().age) > 16
+          ) {
+            this.props.callApi(firestoreDocument.data(), id);
+            this.setState({loading: false});
+            this.props.navigation.push('HomeStack');
+          } else {
+            this.props.callApi(firestoreDocument.data(), id);
+            this.setState({loading: false});
+            this.props.navigation.push('BirthDateSplash', {from: 'splash'});
+          }
+        }
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          btnOneText: 'Ok',
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
           popUpError: true,
         });
       });
