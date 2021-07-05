@@ -2,9 +2,11 @@
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
+import {connect} from 'react-redux';
+
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
-import {width} from '../../helper/Constant';
+import moment from 'moment';
 
 import {
   widthPercentageToDP as wp,
@@ -12,9 +14,10 @@ import {
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import { getZicketDetails } from '../../helper/Api';
-import moment from 'moment';
-export default class zicketDetail extends Component {
+import {getZicketDetails} from '../../helper/Api';
+import Loader from '../../component/Loader';
+
+class zicketDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,13 +29,15 @@ export default class zicketDetail extends Component {
     let event_id = this.props.route.params.EventID;
     let user_id = this.props.route.params.UserID;
     if (event_id) {
-      this.getZicketDetail({event_id,user_id});
+      this.getZicketDetail({event_id, user_id});
     }
   }
-  async getZicketDetail({event_id,user_id }) {
-    await getZicketDetails({event_id:event_id ,user_id: user_id }).then(response => {
-      this.setState({detailItem: response.User_Zicket[0]});
-    });
+  async getZicketDetail({event_id, user_id}) {
+    await getZicketDetails({event_id: event_id, user_id: user_id}).then(
+      response => {
+        this.setState({detailItem: response.User_Zicket[0]});
+      },
+    );
   }
   render() {
     if (this.state.detailItem === undefined) {
@@ -42,7 +47,7 @@ export default class zicketDetail extends Component {
             <Text>No Zicket found</Text>
           </SafeAreaView>
         </View>
-      )
+      );
     }
     return (
       <View style={styles.wrapperView}>
@@ -70,14 +75,19 @@ export default class zicketDetail extends Component {
                 {this.state.detailItem.Event.Name}
               </Text>
               <Text style={[styles.text, {textAlign: 'center', marginTop: 5}]}>
-              {this.state.detailItem.Event.EventType} {this.state.detailItem.Event.EventType !== 'FREE' && `| $${this.state.detailItem.Event.Fee}`}
+                {this.state.detailItem.Event.EventType}{' '}
+                {this.state.detailItem.Event.EventType !== 'FREE' &&
+                  `| $${this.state.detailItem.Event.Fee}`}
               </Text>
               <Text
                 style={[
                   styles.purpleText,
                   {textAlign: 'center', marginTop: 4},
                 ]}>
-                {moment(this.state.detailItem.Event.Start_date).format('hh:mm A | MMM DD, YYYY - ddd')} | {this.state.detailItem.Event.duration} HRS
+                {moment(this.state.detailItem.Event.Start_date).format(
+                  'hh:mm A | MMM DD, YYYY - ddd',
+                )}{' '}
+                | {this.state.detailItem.Event.duration} HRS
                 {/* 11:30 PM | Feb 25, 2020 - WED | 2 HRS */}
               </Text>
 
@@ -111,7 +121,7 @@ export default class zicketDetail extends Component {
                   fontFamily: FONT.Nunito.regular,
                   color: '#494949',
                 }}>
-                  {this.state.detailItem.Event.Address}
+                {this.state.detailItem.Event.Address}
               </Text>
             </View>
             <View
@@ -135,13 +145,19 @@ export default class zicketDetail extends Component {
               }}>
               <Text style={styles.titleText}>Host: </Text>
               <Text style={{fontFamily: FONT.Nunito.regular, fontSize: 17}}>
-              {this.state.detailItem.Event.Host.displayName}
+                {this.state.detailItem.Event.Host.displayName}
               </Text>
             </View>
-            <View style={{flexDirection: 'row', alignSelf: 'center', display:'flex', justifyContent: 'center'}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+              }}>
               <Text style={styles.titleText}>Attendee: </Text>
               <Text style={{fontFamily: FONT.Nunito.regular, fontSize: 17}}>
-              {this.state.detailItem.User.displayName}
+                {this.state.detailItem.User.displayName}
               </Text>
             </View>
             <View style={{alignSelf: 'center', marginTop: 20}}>
@@ -155,8 +171,8 @@ export default class zicketDetail extends Component {
                 flexDirection: 'row',
                 alignSelf: 'center',
                 marginTop: 26,
+
                 marginBottom: 10,
-                marginHorizontal: 5,
               }}>
               <Image
                 source={require('../../assets/invalid.png')}
@@ -167,6 +183,7 @@ export default class zicketDetail extends Component {
                   fontFamily: FONT.Nunito.semiBold,
                   fontSize: 12,
                   color: '#F818D9',
+                  textAlign: 'left',
                 }}>
                 {' '}
                 #Valid payment method must be set up to ensure entry at door
@@ -174,15 +191,33 @@ export default class zicketDetail extends Component {
             </View>
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
 }
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+export default connect(mapStateToProps)(zicketDetail);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
     backgroundColor: WHITE.dark,
   },
+  detailImage: {
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
+    marginVertical: 20,
+    borderRadius: 20,
+    height: 110,
+  },
+
   contentView: {
     flex: 1,
     width: SCREEN.width - 20,
@@ -270,14 +305,14 @@ const styles = StyleSheet.create({
   logo: {},
 
   logoEvent: {
-    marginTop:10,
+    marginTop: 10,
     width: '100%',
     height: 110,
     borderRadius: 10,
     display: 'flex',
     justifyContent: 'center',
-    alignSelf:'center',
-    resizeMode: 'center'
+    alignSelf: 'center',
+    resizeMode: 'center',
   },
   titleText: {
     color: BLACK.textInputTitle,

@@ -7,23 +7,97 @@ import {
   Text,
   SafeAreaView,
   Image,
+  Linking,
+  Switch,
+  Modal,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
 import {StackActions} from '@react-navigation/native';
-
+import {connect} from 'react-redux'
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
+import Loader from '../../component/Loader';
+import {updateProfile} from '../../helper/Api'
+import ErrorPopup from '../../component/ErrorPopup';
+import firestore from '@react-native-firebase/firestore';
+import Slider from '@react-native-community/slider';
+import * as userActions from '../../redux/actions/user';
 
-export default class settings extends Component {
+ class settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: 0,
+      loading:false,
+      pushNotifications:false,
+      profileVisibility:false,
+      isModalVisible: false,
+      popUpError: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
+      btnTwoText: '',
+      radius:0,
+     
     };
   }
-  render() {
+  componentDidMount(){
+    if(this.props.userDetail){
+    this.setState({profileVisibility:this.props.userDetail.Visibility})
+    this.setState({pushNotifications:this.props.userDetail.PushNotification})
+    }
+  }
+  updateProfile=async(value,type)=>{
+   
+    let updatedData={};
+    if(type==="profileVisibility"){
+   updatedData={Visibility :value}
+   this.setState({profileVisibility:value})
+    
+    }
+   else if(type==="pushNotifications"){
+    updatedData={PushNotification: value}
+    this.setState({pushNotifications:value})
+   
+  }else if(type==="radius"){
+    updatedData={"Radius":value}
+    this.setState({radius:value})
+   
+  }
+   this.setState({loading:true})
+   
+    await updateProfile(this.props.userToken,updatedData).then(
+      response => {
+    this.getUserFromFirestore(this.props.userToken);
+        
+  },);
+  }
+  
+  getUserFromFirestore = id => {
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(id)
+      .get()
+      .then(firestoreDocument => {
+        if (!firestoreDocument.exists) {
+          return;
+        } else {
+          this.props.callApi(firestoreDocument.data(), id);
+          console.log(firestoreDocument._data)
+          this.setState({
+            loading: false,
+           });
+        }
+      })
+      .catch(error => {
+        console.log(error)
+        this.setState({
+          loading: false,
+        });
+      });
+  };
+   render() {
     return (
       <View style={styles.wrapperview}>
         <SafeAreaView style={styles.contentView}>
@@ -47,6 +121,16 @@ export default class settings extends Component {
               Allow location to turn on and set the radius to find nearby events
               or people
             </Text>
+            <View style={styles.sliderBox}>
+            <Text> {this.state.radius} KM</Text>
+            </View>
+             <Slider 
+           value={this.state.radius}
+           maximumValue={100}
+           thumbTintColor={'#F818D9'}
+           thumbTouchSize={styles.thumbSize}
+           trackStyle={'lightgrey'}
+           onValueChange={(value) => this.updateProfile(value,"radius")} />
             <TouchableOpacity style={styles.btn1}>
               <Text> ALLOW LOCATION</Text>
             </TouchableOpacity>
@@ -77,28 +161,44 @@ export default class settings extends Component {
               </TouchableOpacity>
               <TouchableOpacity style={styles.rowView}>
                 <Text style={styles.textView}>Push Notifications</Text>
-                <Image
-                  style={[styles.icon, {width: 55, height: 37}]}
-                  source={require('../../assets/Slizzer-icon/RightCopy.png')}
-                />
+                <Switch
+                 style={[styles.icon, {width: 55, height: 37}]}
+            
+                 trackColor={{ false: "lightgrey", true: "lightgrey" }}
+                 thumbColor={this.state.pushNotifications ? "#F818D9" : "grey"}
+                  ios_backgroundColor="lightgrey"
+        onValueChange={(value)=>this.updateProfile(value,"pushNotifications")}
+        value={this.state.pushNotifications}
+      />
               </TouchableOpacity>
               <TouchableOpacity style={styles.rowView}>
                 <Text style={styles.textView}>
                   Profile Visibility in People Radar
                 </Text>
-                <Image
-                  style={[styles.icon, {width: 55, height: 37}]}
-                  source={require('../../assets/Slizzer-icon/off.png')}
-                />
+                <Switch
+                 style={[styles.icon, {width: 55, height: 37}]}
+            
+        trackColor={{ false: "lightgrey", true: "lightgrey" }}
+        thumbColor={this.state.profileVisibility ? "#F818D9" : "grey"}
+        ios_backgroundColor="lightgrey"
+        onValueChange={(value)=>this.updateProfile(value,"profileVisibility")}
+        value={this.state.profileVisibility}
+      />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.rowView}>
+              <TouchableOpacity  onPress={() =>
+                      Linking.openURL(
+                        'https://slizzrapp.com/#privacy-and-cookie-policy',
+                      )
+                    } style={styles.rowView}>
                 <Text style={styles.textView}>Privacy Policy</Text>
-                <Image
+                <Image  
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.rowView}>
+              <TouchableOpacity onPress={() =>
+                      Linking.openURL('https://slizzrapp.com/#terms-of-service')
+                    }  style={styles.rowView}>
                 <Text style={styles.textView}>Term of Service</Text>
                 <Image
                   style={styles.icon}
@@ -157,14 +257,38 @@ export default class settings extends Component {
             </View>
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+     
       </View>
     );
   }
 }
+
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.setUser({user, uid})),
+ 
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(settings);
+
 const styles = StyleSheet.create({
   wrapperview: {
     flex: 1,
     backgroundColor: WHITE.dark,
+  },
+  thumbSize:{
+  height:30
+  },
+  sliderBox:{
+    alignSelf:'center',marginVertical:10,height:53,width:91,borderRadius:10,backgroundColor:'white',elevation:6,alignItems:'center',justifyContent: 'center',
   },
   contentView: {
     flex: 1,

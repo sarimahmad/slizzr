@@ -1,3 +1,4 @@
+/* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-did-mount-set-state */
 console.disableYellowBox = true;
@@ -13,6 +14,7 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'react-moment';
+import moment from 'moment';
 
 import {SCREEN} from '../helper/Constant';
 import ButtonResetPassaword from './ButtonResetPassword';
@@ -21,8 +23,11 @@ export default class DateAndTimePicker extends React.Component {
   state = {
     clearGoogleSearch: true,
     show: false,
+    date:'',
+    time:'',
     platform: true,
     dateTime: this.props.value,
+    dateSelect:false,
   };
   // platform true === android
   // platform false === ios
@@ -30,22 +35,33 @@ export default class DateAndTimePicker extends React.Component {
     if (Platform.OS === 'ios') {
       this.setState({platform: false});
     }
-    this.setState({dateTime: this.props.value});
+    this.setState({dateTime: new Date(this.props.value)});
+  
   };
 
   componentDidUpdate() {
-    if (this.state.dateTime !== this.props.value) {
-      this.setState({dateTime: this.props.value});
+    if (this.state.dateTime !== new Date(this.props.value)) {
+      // this.setState({dateTime: new Date(this.props.value)});
     }
   }
   show = () => this.setState({show: true});
-  OnChange = (event, selectedValue) => {
-    console.log('event', event);
-    if (event.type !== 'dismissed') {
-      this.setState({dateTime: selectedValue, show: false});
+ 
+  OnChange = (event) => {
+     if(this.state.dateSelect === true){
+       this.setState({time: moment(event.nativeEvent.timestamp).format('hh:mm a'),})
+     }else if(this.state.dateSelect === false){
+      this.setState({date: moment(event.nativeEvent.timestamp).format('DD MMM YYYY')})
+      this.setState({dateSelect:true})
+      this.setState({show:false})
+     
+     }   
+     console.log(this.state.date,this.state.time)
+    if (this.state.date !== '' && this.state.time !== '') {
+      let selectedValue = this.state.date.concat('  ' + this.state.time)
+      
       this.props.setDateAndTime(selectedValue);
     } else {
-      this.setState({show: false});
+      // this.setState({show: false});
     }
   };
 
@@ -53,7 +69,11 @@ export default class DateAndTimePicker extends React.Component {
     console.log('event', event);
     if (event.type !== 'dismissed') {
       this.setState({dateTime: selectedValue});
-      this.props.setDateAndTime(selectedValue);
+      console.log(moment(selectedValue).format('hh:mm a'))
+      console.log(moment(selectedValue).format('DD MMM YYYY'))
+      let newselectedValue = moment(selectedValue).format('D MMM YYYY').concat('  ' + moment(selectedValue).format('hh:mm a'))
+      console.log(newselectedValue)
+      this.props.setDateAndTime(newselectedValue);
     } else {
       this.setState({show: false});
     }
@@ -65,28 +85,33 @@ export default class DateAndTimePicker extends React.Component {
 
   datePicker = () => {
     if (this.state.platform) {
-      if (this.state.show) {
+      if (this.state.show ) {
         return (
+          <View>
           <DateTimePicker
             testID="dateTimePicker"
             value={this.props.value}
-            mode={this.props.mode}
-            is24Hour={false}
-            display="spinner"
+            mode={"date"}
+            is24Hour={true}
+            display="default"
             onChange={this.OnChange}
             onTouchCancel={value => {
               console.log('touch cancel', value);
-              this.setState({show: false});
+              this.setState({show:false})
             }}
           />
+          
+        
+          </View>
         );
+        
       }
     } else {
       return (
         <Modal
           animationType="slide"
           transparent={false}
-          visible={this.state.show}>
+          visible={this.state.show }>
           <View>
             <View style={{height: SCREEN.height / 2, marginTop: 200}}>
               <DateTimePicker
@@ -94,6 +119,7 @@ export default class DateAndTimePicker extends React.Component {
                 value={this.state.dateTime}
                 mode={this.props.mode}
                 is24Hour={false}
+                
                 display="spinner"
                 onChange={this.OnChangeIos}
               />
@@ -108,7 +134,11 @@ export default class DateAndTimePicker extends React.Component {
       );
     }
   };
-
+openModel=()=>{
+  // if(this.props.editable===false){
+  this.setState({show: true});
+  // }
+}
   render() {
     return (
       <View style={styles.content}>
@@ -116,11 +146,11 @@ export default class DateAndTimePicker extends React.Component {
           <TouchableOpacity
             style={styles.inputRight}
             onPress={() => {
-              this.setState({show: true});
+              this.openModel()
             }}>
             {this.state.dateTime != null ? (
               <Moment
-                style={this.props.datebutton}
+                style={this.props.datebutton}  
                 element={Text}
                 format={this.props.format}>
                 {this.state.dateTime}
@@ -139,7 +169,20 @@ export default class DateAndTimePicker extends React.Component {
             />
           </TouchableOpacity>
         </View>
-
+        {this.state.dateSelect === true &&
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={this.props.value}
+            mode={"time"}
+            is24Hour={true}
+            display="default"
+            onChange={this.OnChange}
+            onTouchCancel={value => {
+              console.log('touch cancel', value);
+              this.setState({show: false});
+            }}
+          />
+      }
         {this.datePicker()}
       </View>
     );

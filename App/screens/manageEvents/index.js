@@ -197,7 +197,7 @@ class manageEvents extends Component {
         }}>
         {this.state.index === 1 && (
           <View>
-            <Text>You are not hosting any events at the moment.</Text>
+            <Text style={styles.emptyFont}>You are not hosting any events at the moment.</Text>
             <TouchableOpacity style={styles.btnMap}>
               <Text style={styles.btnText}>HOST?</Text>
             </TouchableOpacity>
@@ -273,9 +273,7 @@ class manageEvents extends Component {
                           : item.EventType}
                       </Text>
                       <Text style={[styles.purpleText, {marginTop: 5}]}>
-                        {moment(item.DateTime).format(
-                          'hh:mm A | MMM DD, YYYY - ddd',
-                        )}
+                        {item.DateTime}       
                       </Text>
                     </View>
                     <TouchableOpacity
@@ -292,7 +290,7 @@ class manageEvents extends Component {
             <FlatList
               data={this.state.userAttendedEvents}
               keyExtractor={item => item.id}
-              // ListEmptyComponent={this.emptyListComponent}
+              ListEmptyComponent={this.emptyListComponent}
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>
@@ -323,9 +321,8 @@ class manageEvents extends Component {
                         Host: {item.Event.Host.displayName}
                       </Text>
                       <Text style={[styles.purpleText, {marginTop: 5}]}>
-                        {moment(item.Event.datetime).format(
-                          'hh:mm A | MMM DD, YYYY - ddd',
-                        )}
+                        {item.DateTime
+                        }
                       </Text>
                     </View>
                     <TouchableOpacity

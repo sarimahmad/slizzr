@@ -189,8 +189,8 @@ class home extends Component {
     fetch(
       `${Server}/event?recent=TRUE&radius=${
         this.props.userDetail && this.props.userDetail.Radius
-          ? this.props.userDetail.Radius
-          : '50'
+          ? '5000'
+          : '5000'
       }&lat=${this.state.allLocations.latitude}&long=${
         this.state.allLocations.longitude
       }&page=${this.state.pageNumber}&limit=30`,
@@ -332,7 +332,7 @@ class home extends Component {
                         Host: {item.Host.displayName}
                       </Text>
                       <Text style={styles.purpleText}>
-                        {moment(item.datetime).format(
+                        {moment(item.DateTime).format(
                           'hh:mm A | MMM DD, YYYY - ddd',
                         )}
                       </Text>

@@ -3,8 +3,7 @@ import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
-import {FONT} from '../../helper/Constant';
-import {width} from '../../helper/Constant';
+import {FONT, SCREEN} from '../../helper/Constant';
 
 import {
   widthPercentageToDP as wp,
@@ -14,11 +13,13 @@ import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {getEventDetail} from '../../helper/Api';
 import moment from 'moment';
+import Loader from '../../component/Loader';
 export default class myEventInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
       detailItem: {},
+      loading: false,
     };
   }
   componentDidMount() {
@@ -28,8 +29,10 @@ export default class myEventInfo extends Component {
     }
   }
   async getEventDetail(id) {
+    this.setState({loading: true});
     await getEventDetail(id).then(response => {
       this.setState({detailItem: response.Event});
+      this.setState({loading: false});
     });
   }
 
@@ -37,13 +40,13 @@ export default class myEventInfo extends Component {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
-        <HeaderWithOptionBtn
-          borderBottom={true}
-          backColor={WHITE.dark}
-          headerTitle={'Event'}
-          leftPress={() => this.props.navigation.goBack()}
-          leftIcon={require('../../assets/back.png')}
-        />
+          <HeaderWithOptionBtn
+            borderBottom={true}
+            backColor={WHITE.dark}
+            headerTitle={'Event'}
+            leftPress={() => this.props.navigation.goBack()}
+            leftIcon={require('../../assets/back.png')}
+          />
 
           <ScrollView>
             <Image
@@ -56,11 +59,15 @@ export default class myEventInfo extends Component {
                 {this.state.detailItem.Name}
               </Text>
               <Text style={[styles.text, {textAlign: 'center'}]}>
-              {this.state.detailItem.EventType} {this.state.detailItem.EventType !== 'FREE' && `| $${this.state.detailItem.Fee}`}
+                {this.state.detailItem.EventType}{' '}
+                {this.state.detailItem.EventType !== 'FREE' &&
+                  `| $${this.state.detailItem.Fee}`}
               </Text>
               <Text style={[styles.purpleText, {textAlign: 'center'}]}>
-              {moment(this.state.detailItem.Start_date).format('hh:mm A | MMM DD, YYYY - ddd')} | {this.state.detailItem.duration} HRS
-
+                {moment(this.state.detailItem.Start_date).format(
+                  'hh:mm A | MMM DD, YYYY - ddd',
+                )}{' '}
+                | {this.state.detailItem.duration} HRS
               </Text>
 
               <Text style={{textAlign: 'center', marginVertical: 5}}>
@@ -84,7 +91,9 @@ export default class myEventInfo extends Component {
                 style={styles.logoEvent}
               />
 
-              <Text>{this.state.detailItem.Address}</Text>
+              <Text>
+                {this.state.detailItem && this.state.detailItem.Address}
+              </Text>
             </View>
             <Text style={[styles.titleText, {textAlign: 'center'}]}>
               Description:
@@ -94,7 +103,7 @@ export default class myEventInfo extends Component {
                 styles.text,
                 {textAlign: 'center', marginHorizontal: 36, marginVertical: 10},
               ]}>
-              {this.state.detailItem.Description}
+              {this.state.detailItem && this.state.detailItem.Description}
             </Text>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('FindPeople')}
@@ -102,7 +111,11 @@ export default class myEventInfo extends Component {
               <Text style={styles.btnText}>Find PEOPLE</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('Scan')}
+              onPress={() =>
+                this.props.navigation.navigate('Scan', {
+                  id: this.state.detailItem.id,
+                })
+              }
               style={styles.btnMap}>
               <Text style={styles.btnText}>ZICKET SCANNER</Text>
             </TouchableOpacity>
@@ -121,7 +134,12 @@ export default class myEventInfo extends Component {
               <Text style={styles.btnText}>SHARED HOSTS</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('createEvent')}
+              onPress={() =>
+                this.props.navigation.navigate('createEvent', {
+                  id: this.state.detailItem.id,
+                  from: 'edit',
+                })
+              }
               style={styles.btnMap}>
               <Text style={styles.btnText}>EDIT</Text>
             </TouchableOpacity>
@@ -131,6 +149,7 @@ export default class myEventInfo extends Component {
             </TouchableOpacity>
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
@@ -141,40 +160,19 @@ const styles = StyleSheet.create({
 
     backgroundColor: WHITE.dark,
   },
+  detailImage: {
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
+    marginVertical: 20,
+    borderRadius: 20,
+    height: 110,
+  },
   contentView: {
     flex: 1,
     alignSelf: 'center',
     alignItems: 'center',
     // width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
-  },
-  btnTextLocation: {
-    fontSize: 16,
-    color: 'white',
-    textAlign: 'center',
-    fontFamily: FONT.Nunito.regular,
-  },
-  btnText: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: 'white',
-    fontFamily: FONT.Nunito.regular,
-  },
-  btnTextCancel: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: 'red',
-    fontFamily: FONT.Nunito.regular,
-  },
-  cancelButton: {
-    width: wp('90%'),
-    marginHorizontal: '5%',
-    borderRadius: 25,
-    height: 50,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: 'black',
-    justifyContent: 'center',
   },
   btnMap: {
     width: wp('90%'),
@@ -227,19 +225,17 @@ const styles = StyleSheet.create({
     color: '#494949',
   },
   logo: {},
-  logoEvent1:{
-    marginTop:10,
+  logoEvent1: {
+    marginTop: 10,
     width: '100%',
     height: 110,
     borderRadius: 10,
     display: 'flex',
     justifyContent: 'center',
-    alignSelf:'center',
-    resizeMode: 'center'
+    alignSelf: 'center',
+    resizeMode: 'center',
   },
-  logoEvent: {
-
-  },
+  logoEvent: {},
   titleText: {
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,
@@ -259,7 +255,33 @@ const styles = StyleSheet.create({
     borderColor: 'lightgrey',
     paddingTop: 12,
     fontFamily: FONT.Nunito.regular,
+  },
+  btnTextLocation: {
+    fontSize: 16,
+    color: 'white',
     textAlign: 'center',
-    alignItems: 'center',
+    fontFamily: FONT.Nunito.regular,
+  },
+  btnText: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: 'white',
+    fontFamily: FONT.Nunito.regular,
+  },
+  btnTextCancel: {
+    fontSize: 16,
+    textAlign: 'center',
+    color: 'red',
+    fontFamily: FONT.Nunito.regular,
+  },
+  cancelButton: {
+    width: wp('90%'),
+    marginHorizontal: '5%',
+    borderRadius: 25,
+    height: 50,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'black',
+    justifyContent: 'center',
   },
 });

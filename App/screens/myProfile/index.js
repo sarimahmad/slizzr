@@ -6,6 +6,7 @@ import {
   View,
   StyleSheet,
   FlatList,
+  Modal,
   Image,
   TouchableOpacity,
   ScrollView,
@@ -18,6 +19,8 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
 import {getUserImages} from '../../helper/Api';
+import ErrorPopup from '../../component/ErrorPopup';
+import firestore from '@react-native-firebase/firestore';
 
 class Profile extends Component {
   constructor() {
@@ -35,16 +38,53 @@ class Profile extends Component {
   };
 
   componentDidMount() {
-    this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.setState({userDetail: this.props.userDetail});
-      this.getUserImages();
-    });
+    if (this.props.route.params.from == 'drawer') {
+      this._unsubscribe = this.props.navigation.addListener('focus', () => {
+        this.setState({userDetail: this.props.userDetail});
+        this.getUserImages();
+      });
+    } else if (this.props.route.params.id) {
+      this._unsubscribe = this.props.navigation.addListener('focus', () => {
+        this.getUserFromFirestore(this.props.route.params.id);
+        this.getOtherUserImages(this.props.route.params.id);
+      });
+    }
   }
 
   componentWillUnmount() {
     this._unsubscribe();
   }
-
+  getUserFromFirestore = id => {
+    this.setState({loading: true});
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(id)
+      .get()
+      .then(firestoreDocument => {
+        if (!firestoreDocument.exists) {
+          return;
+        } else {
+          this.setState({
+            loading: false,
+            userDetail: firestoreDocument.data(),
+          });
+        }
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          btnOneText: 'Ok',
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
+          popUpError: true,
+        });
+      });
+  };
+  async getOtherUserImages(id) {
+    await getUserImages(id).then(response => {
+      this.setState({imageOfuser: response.Pictures});
+    });
+  }
   async getUserImages() {
     await getUserImages(this.props.userToken).then(response => {
       this.setState({imageOfuser: response.Pictures});
@@ -65,7 +105,7 @@ class Profile extends Component {
             }
             borderBottom={true}
             rightIcon={
-              !this.props.route.params
+              this.props.route.params.id
                 ? require('../../assets/edit.png')
                 : require('../../assets/Slizzer-icon/group.png')
             }
@@ -229,12 +269,35 @@ class Profile extends Component {
                     {this.footer()}
                   </View>
                 )}
-              {this.props.route.params && (
+              {!this.props.route.params.id && (
                 <Text style={styles.blockUser}>BLOCK USER</Text>
               )}
             </View>
           </ScrollView>
         </SafeAreaView>
+        {this.state.popUpError && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() =>
+                this.setState({
+                  popUpError: false,
+                  btnOneText: this.state.btnOneText,
+                  errorTitle: this.state.titleText,
+                  errorText: this.state.errorText,
+                })
+              }
+              doneButtonPress={() => this.doneClick()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+              btnTwoText={this.state.btnTwoText}
+            />
+          </Modal>
+        )}
       </View>
     );
   }

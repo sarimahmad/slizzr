@@ -12,18 +12,36 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
-export default class payoutMethod extends Component {
+import { getAllPayoutMethods } from '../../helper/Api';
+import Loader from '../../component/Loader';
+import {connect} from 'react-redux';
+
+ class payoutMethod extends Component {
   constructor() {
     super();
     this.state = {
       payoutData: [
-        {id: 1, name: 'TD Bank', card_number: '#********101'},
-        {id: 2, name: 'Scotia Bank', card_number: '#********101'},
+      //   {id: 1, name: 'TD Bank', card_number: '#********101'},
+      //   {id: 2, name: 'Scotia Bank', card_number: '#********101'},
       ],
+     loading:false,
       editType: false,
       selectedMethod: 1,
     };
   }
+  componentDidMount(){
+   this.getPayoutMethods()
+  }
+  async getPayoutMethods() {
+    this.setState({loading:true})
+   
+    await getAllPayoutMethods(this.props.userToken).then((response) => {
+      this.setState({ payoutData: response.UserHostedEvent }) 
+      this.setState({loading:false})
+   
+    });
+  }
+
   footer = () => {
     return (
       <TouchableOpacity
@@ -105,10 +123,25 @@ export default class payoutMethod extends Component {
             ListFooterComponent={this.footer}
           />
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+    
       </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(payoutMethod);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
