@@ -165,7 +165,11 @@ class SignUp extends Component {
             STRIPE_HOST_ID: '',
             age: '13',
             Address: '',
-            BirthDate: new Date(),
+            BirthDate: {
+              day: 0,
+              month: 0,
+              year: 0
+            },
             Gender: '',
             Visibility: true,
             PushNotification: true,
@@ -244,12 +248,15 @@ class SignUp extends Component {
           socialLogin: true,
           age: '13',
           Address: '',
-          BirthDate: new Date(),
+          BirthDate: {
+            day: 0,
+            month: 0,
+            year: 0
+          },
           Gender: '',
           Visibility: true,
           Radius: 50,
           bio: '',
-          BirthDate: new Date(),
           Gender: '',
           Visibility: true,
           PushNotification: true,
