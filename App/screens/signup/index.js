@@ -164,7 +164,13 @@ class SignUp extends Component {
             STRIPE_CUST_ID: '',
             STRIPE_HOST_ID: '',
             age: '13',
-            Address: '',
+            Address: {
+              city: '',
+              line1: '',
+              postal_code: '',
+              state: '',
+              country: '',
+          }, 
             BirthDate: {
               day: 0,
               month: 0,
