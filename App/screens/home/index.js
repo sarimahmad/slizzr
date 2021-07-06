@@ -24,11 +24,11 @@ import Geolocation from 'react-native-geolocation-service';
 import {openSettings} from 'react-native-permissions';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
+import moment from 'moment';
 
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import WaitingFor from '../../component/WaitingFor';
-import moment from 'moment';
 import ErrorPopup from '../../component/ErrorPopup';
 import Server from '../../helper/Server';
 
@@ -188,9 +188,7 @@ class home extends Component {
 
     fetch(
       `${Server}/event?recent=TRUE&radius=${
-        this.props.userDetail && this.props.userDetail.Radius
-          ? '5000'
-          : '5000'
+        this.props.userDetail && this.props.userDetail.Radius ? '5000' : '5000'
       }&lat=${this.state.allLocations.latitude}&long=${
         this.state.allLocations.longitude
       }&page=${this.state.pageNumber}&limit=30`,
@@ -198,50 +196,53 @@ class home extends Component {
     )
       .then(response => response.json())
       .then(async querySnapShot => {
-        await querySnapShot.Events.forEach(async doc => {
-          let event = {
-            Description: doc.Description,
-            id: doc.id,
-            Name: doc.Name,
-            EventType: doc.EventType,
-            imageUrl: doc.image,
-            coordinate: {
-              latitude: doc.Latitude,
-              longitude: doc.Longitude,
-            },
-            Address: doc.Address,
-            DateTime: doc.DateTime,
-            userName: doc.userName,
-            ...doc,
-          };
+        if (querySnapShot.Events.length > 0) {
+          await querySnapShot.Events.forEach(async doc => {
+            let event = {
+              Description: doc.Description,
+              id: doc.id,
+              Name: doc.Name,
+              EventType: doc.EventType,
+              imageUrl: doc.image,
+              coordinate: {
+                latitude: doc.Latitude,
+                longitude: doc.Longitude,
+              },
+              Address: doc.Address,
+              DateTime: doc.DateTime,
+              userName: doc.userName,
+              ...doc,
+            };
 
-          allEvents.push(event);
-          if (event.EventType === 'PREPAID') {
-            prepaidEvents.push(event);
-          } else if (event.EventType === 'SCAN') {
-            scanEvents.push(event);
-          } else if (event.EventType === 'FREE') {
-            freeEvents.push(event);
-          }
-          if (allEvents.length === querySnapShot.Events.length) {
-            if (type === 'update') {
-              this.state.index === 0
-                ? this.setState({currentData: allEvents})
-                : this.state.index === 2
-                ? this.setState({currentData: prepaidEvents})
-                : this.state.index === 3
-                ? this.setState({currentData: scanEvents})
-                : this.setState({currentData: freeEvents});
-            } else {
-              this.setState({currentData: allEvents});
+            allEvents.push(event);
+            if (event.EventType === 'PREPAID') {
+              prepaidEvents.push(event);
+            } else if (event.EventType === 'SCAN') {
+              scanEvents.push(event);
+            } else if (event.EventType === 'FREE') {
+              freeEvents.push(event);
             }
-            this.setState({allEvents: allEvents});
-            this.setState({prepaidEvents: prepaidEvents});
-            this.setState({scanEvents: scanEvents});
-            this.setState({freeEvents: freeEvents});
-            this.setState({loading: false});
-          }
-        });
+            if (allEvents.length === querySnapShot.Events.length) {
+              if (type === 'update') {
+                this.state.index === 0
+                  ? this.setState({currentData: allEvents})
+                  : this.state.index === 2
+                  ? this.setState({currentData: prepaidEvents})
+                  : this.state.index === 3
+                  ? this.setState({currentData: scanEvents})
+                  : this.setState({currentData: freeEvents});
+              } else {
+                this.setState({currentData: allEvents});
+              }
+              this.setState({allEvents: allEvents});
+              this.setState({prepaidEvents: prepaidEvents});
+              this.setState({scanEvents: scanEvents});
+              this.setState({freeEvents: freeEvents});
+            }
+          });
+        } else {
+          this.setState({loading: false});
+        }
       })
       .then(() => {
         console.warn(this.state.allEvents);
@@ -717,8 +718,8 @@ class home extends Component {
             rightIcon={require('../../assets/bell.png')}
             centerIcon={require('../../assets/homeLogo.png')}
           />
-          {/* {this.state.loading === true && <WaitingFor type="Events" />}
-          {this.state.loading === false && ( */}
+          {this.state.loading === true && <WaitingFor type="Events" />}
+          {this.state.loading === false && (
             <View style={styles.wrapperView}>
               {this.tapBar()}
 
@@ -767,7 +768,7 @@ class home extends Component {
                   </View>
                 )}
             </View>
-          {/* )} */}
+          )}
         </SafeAreaView>
         {this.state.popUpError && (
           <Modal

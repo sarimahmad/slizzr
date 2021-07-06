@@ -102,7 +102,6 @@ export async function updateProfile(user_id, dataToUpdate) {
       return await response.json();
     })
     .catch(error => console.log('error', error));
- 
 }
 
 export async function uploadImage(formdata) {
@@ -121,7 +120,7 @@ export async function uploadImage(formdata) {
     });
 }
 export async function getAllPayoutMethods(user_id) {
-  return fetch(`${Server}/user/get-payout-cards/` + '3wDLplGq1oYQMO3xRnS4ZtpdK0M2')
+  return fetch(`${Server}/user/get-payout-cards/` + user_id)
     .then(async response => {
       return await response.json();
     })
@@ -146,7 +145,10 @@ export async function newPaymentMethod(formdata) {
     redirect: 'follow',
   };
 
-  return fetch('https://slizzr-6a887.appspot.com/stripe/host/add-payout', requestOptions)
+  return fetch(
+    'https://slizzr-6a887.appspot.com/stripe/host/add-payout',
+    requestOptions,
+  )
     .then(async response => {
       return await response.json();
     })
@@ -154,7 +156,6 @@ export async function newPaymentMethod(formdata) {
       console.error(error);
     });
 }
-
 
 export async function updateEvent(event_id, dataToUpdate) {
   var myHeaders = new Headers();
@@ -165,7 +166,8 @@ export async function updateEvent(event_id, dataToUpdate) {
     body: dataToUpdate,
     redirect: 'follow',
   };
-  return fetch(`https://slizzr-6a887.appspot.com/event/${event_id}`,
+  return fetch(
+    `https://slizzr-6a887.appspot.com/event/${event_id}`,
     requestOptions,
   )
     .then(async response => {
@@ -216,21 +218,13 @@ export async function getAllMessages({event_id, user_id}) {
   return GetResponse;
 }
 export async function CustomerCharge(data) {
-  // DATA = {
-  //   number: '4242 4242 4242 4242',
-  //   exp_month: 2,
-  //   exp_year: 2024,
-  //   cvc: '212',
-  //   user_id: '3wDLplGq1oYQMO3xRnS4ZtpdK0M2',
-  //   event_id: '074d6e00-6fbf-4eed-9884-984fd56e84e4',
-  // };
   var config = {
     method: 'post',
     url: `${Server}/stripe/customer/charge-without-saving-card`,
     headers: {
       'Content-Type': 'application/json',
     },
-    data: JSON.stringify(data),
+    data: data,
   };
 
   const GetResponse = await axios(config)

@@ -73,10 +73,9 @@ class eventDetail extends Component {
           });
           this.setState({detailItem: firestoreDocument.data()});
           this.setState({
-            date: firestoreDocument
-              .data()
-              // .DateTime.toDate()
-              // .toLocaleTimeString(),
+            date: firestoreDocument.data(),
+            // .DateTime.toDate()
+            // .toLocaleTimeString(),
           });
         }
       });
@@ -91,21 +90,25 @@ class eventDetail extends Component {
       Ticket_Left: Ticket_Left,
       User_Attending_Event: User_Attending_Event,
     });
-  this.setState({loading:false})
+    this.setState({loading: false});
   }
 
   async attendEvent({user_id, event_id}) {
     this.setState({loading: true});
-    if(this.state.detailItem.EventType!=="PREPAID"){
-    AtendPublicEvent({user_id, event_id}).then(response => {
-      this.getEventDetail(
-        this.props.route.params.detailItem,
-        this.props.userDetail.id,
-      );
-    });
-  }else{
-    this.props.navigation.navigate("prepay",{event_id:event_id,user_id:user_id})
-  }
+    if (this.state.detailItem.EventType !== 'PREPAID') {
+      AtendPublicEvent({user_id, event_id}).then(response => {
+        this.getEventDetail(
+          this.props.route.params.detailItem,
+          this.props.userDetail.id,
+        );
+      });
+    } else {
+      this.props.navigation.navigate('prepay', {
+        event_id: event_id,
+        user_id: user_id,
+        detailItem: this.state.detailItem,
+      });
+    }
     this.setState({loading: false});
   }
 
@@ -258,18 +261,19 @@ class eventDetail extends Component {
                     : styles.btnMapBooked
                 }>
                 <Text
-                  style={styles.btnText
-                  //   [
-                  //   styles.btnText,
-                  //   {
-                  //     color:
-                  //       this.state.Check_Status === 'Active'
-                  //         ? this.state.User_Attending_Event === false
-                  //           ? WHITE.dark
-                  //           : BLACK.app
-                  //         : WHITE.dark,
-                  //   },
-                  // ]
+                  style={
+                    styles.btnText
+                    //   [
+                    //   styles.btnText,
+                    //   {
+                    //     color:
+                    //       this.state.Check_Status === 'Active'
+                    //         ? this.state.User_Attending_Event === false
+                    //           ? WHITE.dark
+                    //           : BLACK.app
+                    //         : WHITE.dark,
+                    //   },
+                    // ]
                   }>
                   {this.state.Check_Status === 'Active'
                     ? this.state.User_Attending_Event === false
@@ -326,7 +330,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontFamily: FONT.Nunito.regular,
-    backgroundColor:'black'
+    backgroundColor: 'black',
   },
   btnTextCancel: {
     fontSize: 16,
@@ -367,12 +371,11 @@ const styles = StyleSheet.create({
   btnAttend: {
     width: wp('90%'),
     marginHorizontal: '5%',
-    backgroundColor:'black',
+    backgroundColor: 'black',
     borderRadius: 25,
     height: 50,
     borderWidth: 1,
     marginVertical: 30,
-    backgroundColor: 'white',
     justifyContent: 'center',
   },
   btnMapBooked: {
