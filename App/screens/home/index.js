@@ -24,12 +24,11 @@ import Geolocation from 'react-native-geolocation-service';
 import {openSettings} from 'react-native-permissions';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
-import firestore from '@react-native-firebase/firestore';
+import moment from 'moment';
 
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import WaitingFor from '../../component/WaitingFor';
-import moment from 'moment';
 import ErrorPopup from '../../component/ErrorPopup';
 import {createCustomerStripe} from '../../helper/Api';
 import Server from '../../helper/Server';
@@ -69,10 +68,12 @@ class home extends Component {
       errorText: '',
       pageNumber: 1,
     };
+    this.getLocation = this.getLocation.bind(this);
+    this.getEvents = this.getEvents.bind(this);
   }
   componentDidMount() {
-    this.getEvents('start');
     this.getLocation();
+    this.checkStripeClientId();
   }
   hasPermissionIOS = async () => {
     const openSetting = () => {
@@ -102,31 +103,16 @@ class home extends Component {
   };
 
   checkStripeClientId = async () => {
-    if (
-      this.props.userDetail &&
-      this.props.userDetail.STRIPE_CUST_ID &&
-      this.props.userDetail.STRIPE_CUST_ID === ''
-    ) {
-      await createCustomerStripe(
-        this.props.userToken,
-        JSON.stringify({user_id: this.state.userDetail.id}),
-      ).then(_response => {
-        this.firestoreLinking(this.props.userToken);
+    const userData = this.props.userDetail;
+    console.log(userData);
+    if (userData.STRIPE_CUST_ID === '') {
+      await createCustomerStripe({user_id: userData.id}).then(_response => {
+        console.log(_response);
         this.setState({loading: false});
       });
+    } else {
+      console.log(userData.STRIPE_CUST_ID === '');
     }
-  };
-
-  firestoreLinking = async id => {
-    this.setState({loading: true});
-    const usersRef = firestore().collection('users');
-    usersRef
-      .doc(id)
-      .get()
-      .then(firestoreDocument => {
-        this.props.callApi(firestoreDocument.data(), id);
-        this.setState({loading: false});
-      });
   };
 
   hasLocationPermission = async () => {
@@ -174,13 +160,22 @@ class home extends Component {
     const hasPermission = await this.hasLocationPermission();
 
     if (!hasPermission) {
+      this.setState({
+        loading: false,
+        errorTitle: 'PERMISSION ERROR',
+        errorText: 'You need to enable the location permission ',
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
       return;
     }
 
     Geolocation.getCurrentPosition(
       position => {
         this.setState({enableLocation: true, allLocations: position.coords});
-        console.log(position);
+        setTimeout(() => {
+          this.getEvents('start');
+        }, 2000);
       },
       error => {
         this.setState({
@@ -218,9 +213,7 @@ class home extends Component {
 
     fetch(
       `${Server}/event?recent=TRUE&radius=${
-        this.props.userDetail && this.props.userDetail.Radius
-          ? '5000'
-          : '5000'
+        this.props.userDetail && this.props.userDetail.Radius ? '5000' : '5000'
       }&lat=${this.state.allLocations.latitude}&long=${
         this.state.allLocations.longitude
       }&page=${this.state.pageNumber}&limit=30`,
@@ -228,50 +221,54 @@ class home extends Component {
     )
       .then(response => response.json())
       .then(async querySnapShot => {
-        await querySnapShot.Events.forEach(async doc => {
-          let event = {
-            Description: doc.Description,
-            id: doc.id,
-            Name: doc.Name,
-            EventType: doc.EventType,
-            imageUrl: doc.image,
-            coordinate: {
-              latitude: doc.Latitude,
-              longitude: doc.Longitude,
-            },
-            Address: doc.Address,
-            DateTime: doc.DateTime,
-            userName: doc.userName,
-            ...doc,
-          };
+        if (querySnapShot.Events.length > 0) {
+          await querySnapShot.Events.forEach(async doc => {
+            let event = {
+              Description: doc.Description,
+              id: doc.id,
+              Name: doc.Name,
+              EventType: doc.EventType,
+              imageUrl: doc.image,
+              coordinate: {
+                latitude: doc.Latitude,
+                longitude: doc.Longitude,
+              },
+              Address: doc.Address,
+              DateTime: doc.DateTime,
+              userName: doc.userName,
+              ...doc,
+            };
 
-          allEvents.push(event);
-          if (event.EventType === 'PREPAID') {
-            prepaidEvents.push(event);
-          } else if (event.EventType === 'SCAN') {
-            scanEvents.push(event);
-          } else if (event.EventType === 'FREE') {
-            freeEvents.push(event);
-          }
-          if (allEvents.length === querySnapShot.Events.length) {
-            if (type === 'update') {
-              this.state.index === 0
-                ? this.setState({currentData: allEvents})
-                : this.state.index === 2
-                ? this.setState({currentData: prepaidEvents})
-                : this.state.index === 3
-                ? this.setState({currentData: scanEvents})
-                : this.setState({currentData: freeEvents});
-            } else {
-              this.setState({currentData: allEvents});
+            allEvents.push(event);
+            if (event.EventType === 'PREPAID') {
+              prepaidEvents.push(event);
+            } else if (event.EventType === 'SCAN') {
+              scanEvents.push(event);
+            } else if (event.EventType === 'FREE') {
+              freeEvents.push(event);
             }
-            this.setState({allEvents: allEvents});
-            this.setState({prepaidEvents: prepaidEvents});
-            this.setState({scanEvents: scanEvents});
-            this.setState({freeEvents: freeEvents});
-            this.setState({loading: false});
-          }
-        });
+            if (allEvents.length === querySnapShot.Events.length) {
+              if (type === 'update') {
+                this.state.index === 0
+                  ? this.setState({currentData: allEvents})
+                  : this.state.index === 2
+                  ? this.setState({currentData: prepaidEvents})
+                  : this.state.index === 3
+                  ? this.setState({currentData: scanEvents})
+                  : this.setState({currentData: freeEvents});
+              } else {
+                this.setState({currentData: allEvents});
+              }
+              this.setState({allEvents: allEvents});
+              this.setState({prepaidEvents: prepaidEvents});
+              this.setState({scanEvents: scanEvents});
+              this.setState({freeEvents: freeEvents});
+              this.setState({loading: false});
+            }
+          });
+        } else {
+          this.setState({loading: false});
+        }
       })
       .then(() => {
         console.warn(this.state.allEvents);

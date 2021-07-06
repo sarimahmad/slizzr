@@ -62,14 +62,13 @@ const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 const HomeNavigation = () => {
   return (
-    <Stack.Navigator  
+    <Stack.Navigator
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
       }}>
       <Stack.Screen name="drawer" component={DrawerContent}></Stack.Screen>
       <Stack.Screen name="Home" component={home}></Stack.Screen>
-  
     </Stack.Navigator>
   );
 };
@@ -81,7 +80,7 @@ const SettingsNavigation = () => {
         headerShown: false,
       }}>
       <Stack.Screen name="Settings" component={settings}></Stack.Screen>
-     </Stack.Navigator>
+    </Stack.Navigator>
   );
 };
 const PaymentsNavigation = () => {
@@ -104,7 +103,7 @@ const ManageEventNavigation = () => {
       screenOptions={{
         headerShown: false,
       }}>
-       <Stack.Screen name="manageEvent" component={manageEvents}></Stack.Screen>
+      <Stack.Screen name="manageEvent" component={manageEvents}></Stack.Screen>
     </Stack.Navigator>
   );
 };
@@ -204,7 +203,7 @@ function messagesNavigation() {
         headerShown: false,
       }}>
       <Stack.Screen name="messages" component={messages}></Stack.Screen>
-     </Stack.Navigator>
+    </Stack.Navigator>
   );
 }
 function zicketsNavigation() {
@@ -215,7 +214,6 @@ function zicketsNavigation() {
         headerShown: false,
       }}>
       <Stack.Screen name="Zickets" component={zickets}></Stack.Screen>
-
     </Stack.Navigator>
   );
 }
@@ -239,17 +237,6 @@ function AccountNavigation() {
     </Stack.Navigator>
   );
 }
-function ProfileNavigation() {
-  return (
-    <Stack.Navigator
-      initialRouteName="myProfile"
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <Stack.Screen name="myProfile" component={Profile}></Stack.Screen>
-    </Stack.Navigator>
-  );
-}
 
 export const MainNavigation = () => {
   return (
@@ -263,59 +250,99 @@ export const MainNavigation = () => {
         <Stack.Screen name="index" component={index}></Stack.Screen>
         <Stack.Screen name="Scan" component={scan}></Stack.Screen>
         <Stack.Screen name="Intro" component={introduction}></Stack.Screen>
-        <Stack.Screen name="paymentsandPayouts3"component={paymentsandPayouts3}></Stack.Screen>
-        <Stack.Screen name="Notifications" component={notification}></Stack.Screen>
-        <Stack.Screen name="SettingsNavigation" component={SettingsNavigation}></Stack.Screen>
+        <Stack.Screen
+          name="paymentsandPayouts3"
+          component={paymentsandPayouts3}></Stack.Screen>
+        <Stack.Screen
+          name="Notifications"
+          component={notification}></Stack.Screen>
+        <Stack.Screen
+          name="SettingsNavigation"
+          component={SettingsNavigation}></Stack.Screen>
         <Stack.Screen name="myProfile" component={Profile}></Stack.Screen>
 
         <Stack.Screen name="HomeStack" component={DrawerContent}></Stack.Screen>
-        
-        <Stack.Screen name="directInvites" component={directInvites}></Stack.Screen>
-        
-        <Stack.Screen name="zicketDetail" component={zicketDetail}></Stack.Screen>
-        <Stack.Screen name="AccountStack" component={AccountNavigation}></Stack.Screen>
-        <Stack.Screen name="BirthDateSplash" component={birthDate}></Stack.Screen>
-       
-       {/*  */}
-       <Stack.Screen name="myEventInfo" component={myEventInfo}></Stack.Screen>
-       <Stack.Screen name="sharedHosts" component={sharedHosts}></Stack.Screen>
-      
-      <Stack.Screen name="attendingEventInfo" component={attendingEventInfo}></Stack.Screen>
-      <Stack.Screen name="attendeesList" component={attendeesList}></Stack.Screen>
-      <Stack.Screen name="sharedHostRequests" component={sharedHostRequests}></Stack.Screen>
+
+        <Stack.Screen
+          name="directInvites"
+          component={directInvites}></Stack.Screen>
+
+        <Stack.Screen
+          name="zicketDetail"
+          component={zicketDetail}></Stack.Screen>
+        <Stack.Screen
+          name="AccountStack"
+          component={AccountNavigation}></Stack.Screen>
+        <Stack.Screen
+          name="BirthDateSplash"
+          component={birthDate}></Stack.Screen>
 
         {/*  */}
-      <Stack.Screen name="createEvent" component={CreateEvent}></Stack.Screen>
-      <Stack.Screen name="peopleProfiles" component={PeopleProfiles}></Stack.Screen>
-      <Stack.Screen name="lookFriends" component={lookFriends}></Stack.Screen>
-      <Stack.Screen name="eventDetail" component={eventDetail}></Stack.Screen>
-      <Stack.Screen name="eventDetail2" component={eventDetail2}></Stack.Screen>
-      <Stack.Screen name="prepay" component={prepay}></Stack.Screen>
-    {/*  */}
-      <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>
-      <Stack.Screen name="mutualConnections" component={mutualConnections}></Stack.Screen>
-  
-      {/*  */}
-      <Stack.Screen name="messagesEvent" component={messagesEvent}></Stack.Screen>
-      <Stack.Screen name="newMessage" component={newMessage}></Stack.Screen>
-      <Stack.Screen name="chat" component={chat}></Stack.Screen>
-   {/*  */}
-      <Stack.Screen name="event" component={event}></Stack.Screen>
-     
-      <Stack.Screen name="newPaymentMethods"    component={newPaymentMethods}></Stack.Screen>
-      <Stack.Screen name="paymentMethod" component={paymentMethod}></Stack.Screen>
-      <Stack.Screen name="paymentsandPayouts2" component={paymentsandPayouts2}></Stack.Screen>
+        <Stack.Screen name="myEventInfo" component={myEventInfo}></Stack.Screen>
+        <Stack.Screen name="sharedHosts" component={sharedHosts}></Stack.Screen>
 
-      <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
-      <Stack.Screen name="payoutMethod" component={payoutMethod}></Stack.Screen>
-      <Stack.Screen name="NewpayoutMethod"  component={NewpayoutMethod}></Stack.Screen>
-   {/*  */}
-      <Stack.Screen name="paymentsandPayouts"component={PaymentsNavigation}></Stack.Screen>
-      <Stack.Screen name="BlockedUser" component={BlockedUser}></Stack.Screen>
-      <Stack.Screen name="aboutSlizzr" component={aboutSlizzr}></Stack.Screen>
-      <Stack.Screen name="contactUs" component={contactUs}></Stack.Screen>
-      <Stack.Screen name="help" component={help}></Stack.Screen>
-    {/*  */}
+        <Stack.Screen
+          name="attendingEventInfo"
+          component={attendingEventInfo}></Stack.Screen>
+        <Stack.Screen
+          name="attendeesList"
+          component={attendeesList}></Stack.Screen>
+        <Stack.Screen
+          name="sharedHostRequests"
+          component={sharedHostRequests}></Stack.Screen>
+
+        {/*  */}
+        <Stack.Screen name="createEvent" component={CreateEvent}></Stack.Screen>
+        <Stack.Screen
+          name="peopleProfiles"
+          component={PeopleProfiles}></Stack.Screen>
+        <Stack.Screen name="lookFriends" component={lookFriends}></Stack.Screen>
+        <Stack.Screen name="eventDetail" component={eventDetail}></Stack.Screen>
+        <Stack.Screen
+          name="eventDetail2"
+          component={eventDetail2}></Stack.Screen>
+        <Stack.Screen name="prepay" component={prepay}></Stack.Screen>
+        {/*  */}
+        <Stack.Screen name="editProfle" component={editProfle}></Stack.Screen>
+        <Stack.Screen
+          name="mutualConnections"
+          component={mutualConnections}></Stack.Screen>
+
+        {/*  */}
+        <Stack.Screen
+          name="messagesEvent"
+          component={messagesEvent}></Stack.Screen>
+        <Stack.Screen name="newMessage" component={newMessage}></Stack.Screen>
+        <Stack.Screen name="chat" component={chat}></Stack.Screen>
+        {/*  */}
+        <Stack.Screen name="event" component={event}></Stack.Screen>
+
+        <Stack.Screen
+          name="newPaymentMethods"
+          component={newPaymentMethods}></Stack.Screen>
+        <Stack.Screen
+          name="paymentMethod"
+          component={paymentMethod}></Stack.Screen>
+        <Stack.Screen
+          name="paymentsandPayouts2"
+          component={paymentsandPayouts2}></Stack.Screen>
+
+        <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
+        <Stack.Screen
+          name="payoutMethod"
+          component={payoutMethod}></Stack.Screen>
+        <Stack.Screen
+          name="NewpayoutMethod"
+          component={NewpayoutMethod}></Stack.Screen>
+        {/*  */}
+        <Stack.Screen
+          name="paymentsandPayouts"
+          component={PaymentsNavigation}></Stack.Screen>
+        <Stack.Screen name="BlockedUser" component={BlockedUser}></Stack.Screen>
+        <Stack.Screen name="aboutSlizzr" component={aboutSlizzr}></Stack.Screen>
+        <Stack.Screen name="contactUs" component={contactUs}></Stack.Screen>
+        <Stack.Screen name="help" component={help}></Stack.Screen>
+        {/*  */}
       </Stack.Navigator>
     </NavigationContainer>
   );

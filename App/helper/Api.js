@@ -56,7 +56,6 @@ export async function getUserEvents(user_id) {
     });
 }
 export async function getUserImages(user_id) {
-
   return fetch(`${Server}/user/pictures/` + user_id)
     .then(async response => {
       return await response.json();
@@ -126,7 +125,7 @@ export async function createCustomerStripe(dataToUpdate) {
   var requestOptions = {
     method: 'POST',
     headers: myHeaders,
-    body: dataToUpdate,
+    body: JSON.stringify(dataToUpdate),
     redirect: 'follow',
   };
   return fetch(`${Server}/stripe/customer/create-customer`, requestOptions)
@@ -134,7 +133,6 @@ export async function createCustomerStripe(dataToUpdate) {
       return await response.json();
     })
     .catch(error => console.log('error', error));
- 
 }
 
 export async function createHostStripe(dataToUpdate) {
@@ -152,8 +150,9 @@ export async function createHostStripe(dataToUpdate) {
     })
     .catch(error => console.log('error', error));
 }
+
 export async function getAllPayoutMethods(user_id) {
-  return fetch(`${Server}/user/get-payout-cards/` + '3wDLplGq1oYQMO3xRnS4ZtpdK0M2')
+  return fetch(`${Server}/user/get-payout-cards/` + user_id)
     .then(async response => {
       return await response.json();
     })
@@ -178,7 +177,10 @@ export async function newPaymentMethod(formdata) {
     redirect: 'follow',
   };
 
-  return fetch('https://slizzr-6a887.appspot.com/stripe/host/add-payout', requestOptions)
+  return fetch(
+    'https://slizzr-6a887.appspot.com/stripe/host/add-payout',
+    requestOptions,
+  )
     .then(async response => {
       return await response.json();
     })
@@ -186,7 +188,6 @@ export async function newPaymentMethod(formdata) {
       console.error(error);
     });
 }
-
 
 export async function updateEvent(event_id, dataToUpdate) {
   var myHeaders = new Headers();
@@ -197,7 +198,8 @@ export async function updateEvent(event_id, dataToUpdate) {
     body: dataToUpdate,
     redirect: 'follow',
   };
-  return fetch(`https://slizzr-6a887.appspot.com/event/${event_id}`,
+  return fetch(
+    `https://slizzr-6a887.appspot.com/event/${event_id}`,
     requestOptions,
   )
     .then(async response => {
@@ -206,7 +208,7 @@ export async function updateEvent(event_id, dataToUpdate) {
     .catch(error => console.log('error', error));
 }
 
-export async function getZicketDetails({event_id,user_id }) {
+export async function getZicketDetails({event_id, user_id}) {
   return fetch(`${Server}/zicket?user_id=${user_id}&event_id=${event_id}`)
     .then(async response => {
       return await response.json();
@@ -226,24 +228,43 @@ export async function getUserProfile(user_id) {
     });
 }
 
-export async function getAllMessages({event_id,user_id }) {
-  var data = JSON.stringify({event_id,user_id });
-  console.log(data)
+export async function getAllMessages({event_id, user_id}) {
+  var data = JSON.stringify({event_id, user_id});
+  console.log(data);
   var config = {
     method: 'post',
     url: `${Server}/chatroom/get-all-message`,
-    headers: { 
-      'Content-Type': 'application/json'
+    headers: {
+      'Content-Type': 'application/json',
     },
-    data : data
+    data: data,
   };
-  
+
   const GetResponse = await axios(config)
-  .then(function (response) {
-    return response.data
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-  return GetResponse
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+export async function CustomerCharge(data) {
+  var config = {
+    method: 'post',
+    url: `${Server}/stripe/customer/charge-without-saving-card`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
 }
