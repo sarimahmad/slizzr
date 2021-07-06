@@ -32,16 +32,18 @@ import DateAndTimePicker from '../../component/DateAndTimePicker';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
 import {Alert} from 'react-native';
+import {getEventDetail,updateEvent} from '../../helper/Api';
 
 class CreateEvent extends Component {
   constructor() {
     super();
     this.state = {
+      screenTypeEdit:false,
+      selectedImage:false,
       imageUploaded: false,
       selectLocationFlag: false,
       currentLocationPlace: '',
       localErrorLocation: null,
-      location: null,
       uploading: false,
       transfered: 0,
       pic: '',
@@ -51,11 +53,13 @@ class CreateEvent extends Component {
       skip: false,
       Address: '',
       AttendeeLimit: '',
+      datetimeSelected:'',
       date: new Date(),
       DateTime: new Date(),
       Description: '',
       EventType: '',
       Fee: '',
+      location:{},
       Host: '',
       Latitude: 0,
       Longitude: 0,
@@ -73,8 +77,12 @@ class CreateEvent extends Component {
       errorTitle: '',
       errorText: '',
       btnTwoText: '',
+      detailItem: {},
+      loading: false,
     };
   }
+  
+
   selectImage = async () => {
     ImagePicker.openPicker({
       width: 250,
@@ -83,6 +91,9 @@ class CreateEvent extends Component {
     })
       .then(image => {
         this.setState({imageUri: image.path});
+        this.setState({selectedImage: true});
+     
+        
       })
       .catch(error => {
         if (error.code === 'E_NO_LIBRARY_PERMISSION') {
@@ -112,13 +123,8 @@ class CreateEvent extends Component {
     let checkDateTime = Validations.checkUsername(this.state.DateTime);
     let checkDescription = Validations.checkUsername(this.state.Description);
     let checkEventType = Validations.checkUsername(this.state.EventType);
-    let checkFee =
-      this.state.EventType === 'FREE'
-        ? true
-        : Validations.checkUsername(this.state.Fee);
-    let checkPublicPrivate = Validations.checkUsername(
-      this.state.PublicPrivate,
-    );
+    let checkFee = this.state.EventType === 'FREE'? true: Validations.checkUsername(this.state.Fee);
+    let checkPublicPrivate = Validations.checkUsername(this.state.PublicPrivate);
     let checkduration = Validations.checkUsername(this.state.duration);
 
     if (
@@ -225,13 +231,37 @@ class CreateEvent extends Component {
     return false;
   }
   async componentDidMount() {
-    const isParamsExist =
-      this.props.route.params && this.props.route.params.from === 'edit';
-    if (isParamsExist) {
+    const isParamsExist = this.props.route.params && this.props.route.params.from === 'edit';
+   
+    if (isParamsExist) {   
       this.setState({screenTypeEdit: true});
+
+      this.getEventDetail(this.props.route.params.id);
+   
     }
   }
+  async getEventDetail(id) {
+    this.setState({loading: true});
+    await getEventDetail(id).then(response => {
+      this.setState({detailItem: response.Event});
+   
+      this.setState({Name: response.Event.Name});  
+      this.setState({DateTime: response.Event.DateTime});
+      this.setState({Description: response.Event.Description});
+      this.setState({EventType: response.Event.EventType});
+      this.setState({Fee: response.Event.Fee}); 
+      this.setState({PublicPrivate: response.Event.PublicPrivate});  
+      this.setState({duration: response.Event.duration});
+      this.setState({AttendeeLimit: response.Event.AttendeeLimit});
+      this.setState({Address: response.Event.Address});
+      this.setState({location: response.Event.location});
+      this.setState({imageUri: response.Event.image});
+      
+      this.setState({loading: false});
+    });
+  }
   handleSubmit = async () => {
+    console.log(this.state)
     if (this.isFormFilled()) {
       this.setState({loading: true});
       const uri = this.state.imageUri;
@@ -261,7 +291,7 @@ class CreateEvent extends Component {
             const data = {
               Address: this.state.Address,
               AttendeeLimit: this.state.AttendeeLimit,
-              DateTime: this.state.DateTime,
+              DateTime: this.state.datetimeSelected,
               Description: this.state.Description,
               EventType: this.state.EventType,
               Fee: this.state.Fee,
@@ -331,6 +361,74 @@ class CreateEvent extends Component {
       },
     });
   };
+ async editEvent(){
+   let datatoSend={}
+  if(this.state.selectedImage == true){ 
+    this.setState({loading:true})
+  const uri = this.state.imageUri;
+      const uniqueId = uuid.v4();
+
+      const filename = uri.substring(uri.lastIndexOf('/') + 1);
+      const uploadUri =
+        Platform.OS === 'ios' ? uri.replace('file://', '') : uri;
+      var formdata = new FormData();
+      formdata.append('file', {
+        name: filename,
+        type: 'jpg/png',
+        uri: uploadUri,
+      });
+
+      var requestOptions = {
+        method: 'POST',
+        body: formdata,
+        redirect: 'follow',
+      };
+
+      fetch('https://slizzr-6a887.appspot.com/upload', requestOptions)
+        .then(response => response.json())
+        .then(async responseImage => {
+          // Get Host Object From User's
+          if (responseImage.messgae === 'Success') {
+            datatoSend={
+              image: responseImage.url,
+              Description: this.state.Description,
+              Address: this.state.Address,
+              latitude: this.state.location.latitude, 
+              longitude:this.state.location.longitude, 
+              AttendeeLimit: this.state.AttendeeLimit,
+              PublicPrivate: this.state.PublicPrivate,
+            }
+            }
+          
+    await updateEvent(this.state.detailItem.id, JSON.stringify(datatoSend)).then(
+      response => {
+     alert("Event Updated")
+        this.setState({loading: false});
+      },
+    );
+          })
+        }else{
+          this.setState({loading:true})
+ 
+    datatoSend={
+      image: this.state.imageUri,
+      Description: this.state.Description,
+      Address: this.state.Address,
+      latitude: this.state.location.latitude, 
+      longitude:this.state.location.longitude, 
+      AttendeeLimit: this.state.AttendeeLimit,
+      PublicPrivate: this.state.PublicPrivate,
+    }
+ 
+    await updateEvent(this.state.detailItem.id, JSON.stringify(datatoSend)).then(
+      response => {
+     alert("Event Updated")
+        this.setState({loading: false});
+      },
+    );
+    this.setState({loading: false});
+    }
+  }
   getAdress = address => {
     // alert(address);
     console.log(address);
@@ -400,6 +498,8 @@ class CreateEvent extends Component {
                   <TextInput
                     style={styles.firstInput}
                     value={this.state.Name}
+                    editable={this.state.screenTypeEdit === false}
+                       
                     onChangeText={value => this.setState({Name: value})}
                     placeholder="Enter a name for you Event"
                     placeholderTextColor={'#B2ABB1'}
@@ -435,8 +535,9 @@ class CreateEvent extends Component {
                   <DateAndTimePicker
                     format="MMM DD, YYYY - hh:mm "
                     mode="datetime"
+                    editable={this.state.screenTypeEdit}
                     value={this.state.DateTime}
-                    setDateAndTime={value => this.setState({DateTime: value})}
+                    setDateAndTime={value => this.setState({datetimeSelected: value})}
                     showPlaceholder="+ Add"
                     datebutton={styles.datebutton}
                   />
@@ -468,6 +569,7 @@ class CreateEvent extends Component {
                             textAlignVertical: 'center',
                           },
                         }}
+                        disabled={this.state.screenTypeEdit==="edit"}
                         selectedValue={this.state.EventType}
                         onValueChange={(itemValue, itemIndex) =>
                           this.setState({EventType: itemValue})
@@ -501,7 +603,9 @@ class CreateEvent extends Component {
                       <TextInput
                         style={[styles.secondinput]}
                         placeholder="$"
-                        editable={this.state.EventType !== 'FREE'}
+
+                        editable={(this.state.EventType !== 'FREE' && this.state.screenTypeEdit === false)  || this.state.screenTypeEdit === false }
+                      
                         onChangeText={value =>
                           this.setState({Fee: value.slice(2)})
                         }
@@ -517,6 +621,7 @@ class CreateEvent extends Component {
                         </View>
                       )}
                     </View>
+                 
                   </View>
                 </View>
 
@@ -564,6 +669,7 @@ class CreateEvent extends Component {
                       <TextInput
                         placeholder="50"
                         style={[styles.thirdinput]}
+                        
                         onChangeText={value =>
                           this.setState({AttendeeLimit: value})
                         }
@@ -592,9 +698,11 @@ class CreateEvent extends Component {
                       <TextInput
                         placeholder="50"
                         style={styles.thirdinput}
-                        onChangeText={value => this.setState({duration: value})}
-                        value={this.state.duration}
-                        placeholderTextColor={'#B2ABB1'}
+                        editable={this.state.screenTypeEdit === false}
+                   
+                      onChangeText={value => this.setState({duration: value})}
+                      value={this.state.duration}
+                      placeholderTextColor={'#B2ABB1'}
                         keyboardType={'numeric'}
                       />
                       {this.state.screenTypeEdit && (
@@ -648,6 +756,7 @@ class CreateEvent extends Component {
                 </View>
 
                 <View style={{marginBottom: 20}}>
+                 {this.state.screenTypeEdit === false ? (
                   <TouchableOpacity
                     onPress={() => this.handleSubmit()}
                     style={[
@@ -660,6 +769,17 @@ class CreateEvent extends Component {
                     ]}>
                     <Text style={styles.text}> CREATE EVENT</Text>
                   </TouchableOpacity>
+                 ):(
+                  <TouchableOpacity
+                  onPress={() => this.editEvent()}
+                  style={[
+                    styles.button,{color:BLACK.btn},
+                  ]}>
+                  <Text style={styles.text}> EDIT EVENT</Text>
+                </TouchableOpacity>
+              
+                 )
+                }
                 </View>
                 <RBSheet
                   ref={ref => {

@@ -7,6 +7,7 @@ import {
   StyleSheet,
   FlatList,
   Image,
+  Modal,
   TextInput,
   TouchableOpacity,
 } from 'react-native';
@@ -15,21 +16,110 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
 import { ScrollView } from 'react-native';
+import {newPaymentMethod} from '../../helper/Api'
+import Loader from '../../component/Loader';
+import ErrorPopup from '../../component/ErrorPopup';
+import {connect} from 'react-redux';
 
-export default class NewpayoutMethod extends Component {
+import Validations from '../../helper/Validations';
+ class NewpayoutMethod extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputMethod: [
-        {id: 1, name: 'Address'},
-        {id: 1, name: 'Address'},
-        {id: 2, name: 'APT, Suite, ETC'},
-        {id: 3, name: 'City'},
-        {id: 4, name: 'State'},
-        {id: 5, name: 'Postal Code'},
-      ],
+      accountholderName:'',
+      accountholderType:'',
+      routing_Number:'',
+      state:'',
+      account_number:'',
       editType: true,
+      country:'',
+      isModalVisible: false,
+      popUpError: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
+      btnTwoText: '',
+     
     };
+  }
+  isFormFilled() {
+    let checkaccount_holder_name = Validations.checkUsername(this.state.accountholderName);
+    let checkaccount_holder_type = Validations.checkUsername(this.state.accountholderType,);
+    let checkrouting_number = Validations.checkUsername(this.state.routing_Number);
+    let checkaccount_number = Validations.checkUsername(this.state.account_number);
+  
+    if (
+      checkaccount_holder_name &&
+      checkaccount_holder_type &&
+      checkrouting_number &&
+      checkaccount_number 
+    ) {
+      return true;
+    }
+    if (!checkaccount_holder_name) {
+      this.setState({
+        errorTitle: 'Invalid Form',
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add accountholderName in form',
+      });
+    } else if (!checkaccount_holder_type) {
+      this.setState({
+        errorTitle: 'Invalid Form',
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add account_holder_type in form',
+      });
+    } else if (!checkrouting_number) {
+      this.setState({
+        errorTitle: 'Invalid Form',
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add routing_Number in form',
+      });
+    } else if (!checkaccount_number) {
+      this.setState({
+        errorTitle: 'Invalid Form',
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add account_number in form',
+      });
+    } 
+    return false;
+  }
+ 
+  newPayoutMethod = async()=>{
+   if(this.isFormFilled()){
+     let formData = new FormData();
+     formData.append('account_holder_name', 'Krutik Parikh')
+     formData.append('account_holder_type', 'individual')
+     formData.append('routing_number', '11000-000')
+     formData.append('account_number', '000123456789')
+     formData.append('user_id', 'm22czqOm5yOSzHu0WcwfTcDWTTb2')
+     formData.append('host_id', 'acct_1J76Rq4PqXr6wNe4')
+   
+  //    let data={
+  //   account_holder_name:'Krutik Parikh',
+  //   account_holder_type:'individual',
+  //   routing_number:'11000-000',
+  //   account_number:'000123456789',
+  //   user_id:'m22czqOm5yOSzHu0WcwfTcDWTTb2',
+  //   host_id:'acct_1J76Rq4PqXr6wNe4'
+  //  }
+    this.setState({loading:true})
+   
+    await newPaymentMethod(formData).then((response) => {
+      console.log(response)
+if(response.message=="Successfully Added Card"){
+      this.props.navigation.navigate("paymentsandPayouts2")
+      this.setState({loading:false})
+}else{
+  alert("Failed")
+  this.setState({loading:false})
+
+}
+    });
+  }
   }
   render() {
     return (
@@ -67,33 +157,80 @@ export default class NewpayoutMethod extends Component {
                 leftPress={() => alert()}
               />
               <View style={styles.blockView2}>
-                <FlatList
-                  data={this.state.inputMethod}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => (
-                    <View style={styles.TextInputWrapper}>
                       <TextInput
                         style={styles.firstInput}
-                        placeholder={item.name}
+                        placeholder={'Account Holder Name'}
+                        onChangeText={value => this.setState({accountholderName: value})}
+                        value={this.state.accountholderName}
+                        
                       />
-                    </View>
-                  )}
-                />
+                      <TextInput
+                        style={styles.firstInput}
+                        placeholder={'Account Holder Type'}
+                        onChangeText={value => this.setState({accountholderType: value})}
+                        value={this.state.accountholderType}
+                        
+                      />
+            
+                      <TextInput
+                        style={styles.firstInput}
+                        placeholder={'Routing No'}
+                        onChangeText={value => this.setState({routing_Number: value})}
+                        value={this.state.city}
+                        
+                      />
+             
+                      <TextInput
+                        style={styles.firstInput}
+                        placeholder={'Account No'}
+                        onChangeText={value => this.setState({account_number: value})}
+                        value={this.state.account_number}
+                        
+                      />
+             
               </View>
-              <View style={styles.TextInputWrapper}>
-                <TextInput style={styles.firstInput} placeholder="Canada" />
-              </View>
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("paymentsandPayouts2")} style={styles.btn}>
+              <TouchableOpacity onPress={()=>this.newPayoutMethod()} style={styles.btn}>
                 <Text style={styles.btntext}>SAVE</Text>
               </TouchableOpacity>
             </View>
           )}
           </ScrollView>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+        {this.state.popUpError === true && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() => this.setState({popUpError: false})}
+              doneButtonPress={() => this.setState({popUpError: false})}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+            />
+          </Modal>
+        )}
+
+        
       </View>
     );
   }
 }
+
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(NewpayoutMethod);
 
 const styles = StyleSheet.create({
   wrapperView: {
@@ -108,7 +245,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   blockView2: {
-    flexDirection: 'row',
     marginTop: 30,
     alignItems: 'center',
   },
@@ -131,6 +267,7 @@ const styles = StyleSheet.create({
   firstInput: {
     width: SCREEN.width - 40,
     height: 53,
+    marginTop:20,
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 20,
