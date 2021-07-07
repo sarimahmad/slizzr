@@ -105,7 +105,7 @@ class Profile extends Component {
             }
             borderBottom={true}
             rightIcon={
-              this.props.route.params.id
+            (   this.props.route.params.from == 'drawer' )
                 ? require('../../assets/edit.png')
                 : require('../../assets/Slizzer-icon/group.png')
             }

@@ -435,6 +435,7 @@ class editProfle extends Component {
                   <DateAndTimePicker
                     format="MMM DD, YYYY"
                     mode="date"
+                    type="onlyDate"
                     value={this.state.DateTime}
                     setDateAndTime={value => this.onChange(value)}
                     showPlaceholder={this.state.DateTime}

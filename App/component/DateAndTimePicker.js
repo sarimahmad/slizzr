@@ -47,6 +47,7 @@ export default class DateAndTimePicker extends React.Component {
   show = () => this.setState({show: true});
  
   OnChange = (event) => {
+    if(this.props.type!=="onlyDate"){
      if(this.state.dateSelect === true){
        this.setState({time: moment(event.nativeEvent.timestamp).format('hh:mm a'),})
      }else if(this.state.dateSelect === false){
@@ -56,12 +57,16 @@ export default class DateAndTimePicker extends React.Component {
      
      }   
      console.log(this.state.date,this.state.time)
-    if (this.state.date !== '' && this.state.time !== '') {
+    
+     if (this.state.date !== '' && this.state.time !== '') {
       let selectedValue = this.state.date.concat('  ' + this.state.time)
       
       this.props.setDateAndTime(selectedValue);
-    } else {
-      // this.setState({show: false});
+    }}
+     else {
+      this.setState({dateSelect:event.nativeEvent.timestamp})
+      this.setState({show:false})
+      this.props.setDateAndTime(this.state.dateSelect);
     }
   };
 
@@ -169,7 +174,7 @@ openModel=()=>{
             />
           </TouchableOpacity>
         </View>
-        {this.state.dateSelect === true &&
+        {(this.state.dateSelect === true && this.props.type!=="onlyDate") &&
           <DateTimePicker
             testID="dateTimePicker"
             value={this.props.value}

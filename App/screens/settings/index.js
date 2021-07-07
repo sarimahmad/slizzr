@@ -10,6 +10,8 @@ import {
   Linking,
   Switch,
   Modal,
+  Platform,
+  PermissionsAndroid,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
@@ -19,12 +21,13 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import Loader from '../../component/Loader';
-import {updateProfile} from '../../helper/Api'
+import {DeleteUser, updateProfile} from '../../helper/Api'
 import ErrorPopup from '../../component/ErrorPopup';
 import firestore from '@react-native-firebase/firestore';
 import Slider from '@react-native-community/slider';
 import * as userActions from '../../redux/actions/user';
-
+import Geolocation from 'react-native-geolocation-service';
+import ConfirmPopup from '../../component/ConfirmPopup';
  class settings extends Component {
   constructor(props) {
     super(props);
@@ -39,16 +42,124 @@ import * as userActions from '../../redux/actions/user';
       errorText: '',
       btnTwoText: '',
       radius:0,
+      enableLocation:false,
+      confirmPopup:false,
      
     };
   }
   componentDidMount(){
+   this.getLocation()
     if(this.props.userDetail){
     this.setState({profileVisibility:this.props.userDetail.Visibility})
     this.setState({pushNotifications:this.props.userDetail.PushNotification})
+    this.setState({radius:this.props.userDetail.Radius})
     }
   }
-  updateProfile=async(value,type)=>{
+  hasPermissionIOS = async () => {
+    const openSetting = () => {
+      openSettings().catch(() => console.warn('cannot open settings'));
+    };
+    const status = await Geolocation.requestAuthorization('whenInUse');
+
+    if (status === 'granted') {
+      return true;
+    }
+
+    if (status === 'denied') {
+    }
+
+    if (status === 'disabled') {
+      Alert.alert(
+        'Turn on Location Services to allow Slizzr to determine your location.',
+        '',
+        [
+          {text: 'Go to Settings', onPress: openSetting},
+          {text: "Don't Use Location", onPress: () => {}},
+        ],
+      );
+    }
+
+    return false;
+  };
+
+  
+  hasLocationPermission = async () => {
+    if (Platform.OS === 'ios') {
+      const hasPermission = await this.hasPermissionIOS();
+      return hasPermission;
+    }
+
+    if (Platform.OS === 'android' && Platform.Version < 23) {
+      return true;
+    }
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      ToastAndroid.show(
+        'Location permission denied by user.',
+        ToastAndroid.LONG,
+      );
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      ToastAndroid.show(
+        'Location permission revoked by user.',
+        ToastAndroid.LONG,
+      );
+    }
+
+    return false;
+  };
+
+  getLocation = async () => {
+    const hasPermission = await this.hasLocationPermission();
+
+    if (!hasPermission) {
+      this.setState({
+        loading: false,
+      });
+      return;
+    }
+
+    Geolocation.getCurrentPosition(
+      position => {
+        this.setState({enableLocation: true,});
+        console.log(this.state.enableLocation)
+      },
+      error => {
+        this.setState({
+          loading: false,
+       
+        });
+      },
+      {
+        accuracy: {
+          android: 'high',
+          ios: 'best',
+        },
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 10000,
+        distanceFilter: 0,
+        forceRequestLocation: true,
+        showLocationDialog: true,
+      },
+    );
+  };
+ updateProfile=async(value,type)=>{
    
     let updatedData={};
     if(type==="profileVisibility"){
@@ -97,6 +208,22 @@ import * as userActions from '../../redux/actions/user';
         });
       });
   };
+  removeAccount = async ()=>{
+    
+    await DeleteUser(this.props.userToken).then(
+      response => {
+        if(response.status===200){
+          this.setState({confirmPopup:false})
+        AsyncStorage.clear();
+        this.props.navigation.dispatch(StackActions.popToTop());
+        }else{
+          this.setState({confirmPopup:false})
+          alert("Failed Deleting Account")
+        }
+     }
+    )
+
+  }
    render() {
     return (
       <View style={styles.wrapperview}>
@@ -112,18 +239,40 @@ import * as userActions from '../../redux/actions/user';
           />
 
           <ScrollView styel={styles.contentView} bounces={false}>
+            {this.state.enableLocation === false &&
+            <View style={{width:SCREEN.width,height:SCREEN.height*0.5,alignItems:'center',justifyContent: 'center',}}>
+                <Image
+              source={require('../../assets/loader.png')}
+              style={{ opacity:0.5}}
+            />
+          <View style={{position: 'absolute',height:SCREEN.height*0.5,alignSelf:'center'}}>
             <Image
               source={require('../../assets/Slizzer-icon/locationIcon.png')}
               style={styles.locationIcon}
             />
             <Text style={styles.textStyle}>Enable Location</Text>
-            <Text style={styles.lowerText}>
+            <Text style={[styles.lowerText,{textAlign:'center'}]}>
               Allow location to turn on and set the radius to find nearby events
               or people
             </Text>
-            <View style={styles.sliderBox}>
+            <TouchableOpacity onPress={()=>this.getLocation()} style={styles.btn1}>
+              <Text> ALLOW LOCATION</Text>
+            </TouchableOpacity>
+
+            </View>
+            </View>
+   }
+           {this.state.enableLocation === true &&
+            <View style={{marginVertical:10}}>
+              <Text style={[styles.lowerText,{textAlign:'center',marginTop:10}]}>Set the radius to find nearby events or people</Text>
+            <Image
+              source={require('../../assets/loader.png')}
+              style={{ alignSelf: 'center',}}
+            />
+               <View style={styles.sliderBox}>
             <Text> {this.state.radius} KM</Text>
             </View>
+
              <Slider 
            value={this.state.radius}
            maximumValue={100}
@@ -131,10 +280,10 @@ import * as userActions from '../../redux/actions/user';
            thumbTouchSize={styles.thumbSize}
            trackStyle={'lightgrey'}
            onValueChange={(value) => this.updateProfile(value,"radius")} />
-            <TouchableOpacity style={styles.btn1}>
-              <Text> ALLOW LOCATION</Text>
-            </TouchableOpacity>
-
+          
+         
+            </View>
+   }
             <View style={styles.verticalView}>
               <TouchableOpacity
                 onPress={() =>
@@ -225,8 +374,8 @@ import * as userActions from '../../redux/actions/user';
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  this.props.navigation.navigate('Intro')
-                  AsyncStorage.removeItem('token');
+                  AsyncStorage.clear();
+                  this.props.navigation.dispatch(StackActions.popToTop());
                 }}
                 style={styles.rowView}>
                 <Text style={styles.textView}>Logout</Text>
@@ -236,11 +385,7 @@ import * as userActions from '../../redux/actions/user';
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => {
-                  AsyncStorage.clear();
-                  this.props.navigation.dispatch(StackActions.popToTop());
-                  // this.props.navigation.push('Splash');
-                }}
+                onPress={() =>       this.setState({confirmPopup:true})            }
                 style={[styles.rowView, {borderBottomWidth: 0}]}>
                 <Text
                   style={[
@@ -258,6 +403,10 @@ import * as userActions from '../../redux/actions/user';
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
+        {this.state.confirmPopup === true && <ConfirmPopup    
+                delete={()=>this.removeAccount()}
+                cancel={()=>this.setState({confirmPopup:false})}
+                />}
      
       </View>
     );
@@ -323,7 +472,7 @@ const styles = StyleSheet.create({
   btn1: {
     width: SCREEN.width / 1.5,
     height: 55,
-    marginTop: 59,
+    marginTop: 30,
     marginBottom: 20,
     alignSelf: 'center',
     marginHorizontal: 49,
