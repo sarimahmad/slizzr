@@ -12,35 +12,52 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
-import { getAllPayoutMethods } from '../../helper/Api';
+import {getAllPayoutMethods, makeDefaultPayout} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 
- class payoutMethod extends Component {
+class payoutMethod extends Component {
   constructor() {
     super();
     this.state = {
       payoutData: [
-      //   {id: 1, name: 'TD Bank', card_number: '#********101'},
-      //   {id: 2, name: 'Scotia Bank', card_number: '#********101'},
+        //   {id: 1, name: 'TD Bank', card_number: '#********101'},
+        //   {id: 2, name: 'Scotia Bank', card_number: '#********101'},
       ],
-     loading:false,
+      loading: false,
       editType: false,
       selectedMethod: 1,
     };
   }
-  componentDidMount(){
-   this.getPayoutMethods()
-  }
-  async getPayoutMethods() {
-    this.setState({loading:true})
-   
-    await getAllPayoutMethods(this.props.userToken).then((response) => {
-      this.setState({ payoutData: response.UserHostedEvent }) 
-      this.setState({loading:false})
-   
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getPayoutMethods();
     });
   }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  async getPayoutMethods() {
+    this.setState({loading: true});
+
+    await getAllPayoutMethods(this.props.userToken).then(response => {
+      this.setState({payoutData: response});
+      this.setState({loading: false});
+    });
+  }
+
+  makeDeafult = async id => {
+    this.setState({loading: true});
+
+    await makeDefaultPayout({
+      user_id: this.props.userDetail.id,
+      payout_card_id: id,
+    }).then(response => {
+      this.getPayoutMethods();
+    });
+  };
 
   footer = () => {
     return (
@@ -61,8 +78,7 @@ import {connect} from 'react-redux';
             borderBottom={true}
             leftIcon={require('../../assets/back.png')}
             leftPress={() => this.props.navigation.goBack()}
-            rightIconText={this.state.editType == false ? 'EDIT' : 'DONE'}
-            
+            rightIconText={this.state.editType === false ? 'EDIT' : 'DONE'}
             rightPress={() => this.setState({editType: !this.state.editType})}
           />
           <FlatList
@@ -82,19 +98,27 @@ import {connect} from 'react-redux';
                       <Text
                         style={[
                           styles.textView,
-                          {color: item.id !== 1 ? '#494949' : '#F818D9'},
+                          {
+                            color:
+                              item.Card.default_for_currency === false
+                                ? '#494949'
+                                : '#F818D9',
+                          },
                         ]}>
-                        {item.name}
+                        {item.Card.bank_name}
                       </Text>
                       <Text
                         style={[
                           styles.textView,
                           {
                             fontSize: 12,
-                            color: item.id !== 1 ? '#494949' : '#F818D9',
+                            color:
+                              item.Card.default_for_currency === false
+                                ? '#494949'
+                                : '#F818D9',
                           },
                         ]}>
-                        {item.card_number}
+                        #******{item.Card.last4}
                       </Text>
                     </View>
                     {item.id === this.state.selectedMethod && (
@@ -104,17 +128,20 @@ import {connect} from 'react-redux';
                       />
                     )}
                   </View>
-                  {item.id === this.state.selectedMethod ? (
+                  {item.Card.default_for_currency === true ? (
                     <Image
                       style={{marginRight: 5}}
                       source={require('../../assets/Slizzer-icon/default.png')}
                     />
                   ) : (
                     this.state.editType && (
-                      <Image
-                        style={{marginRight: 5, width: 60, height: 16}}
-                        source={require('../../assets/Slizzer-icon/makedefault.png')}
-                      />
+                      <TouchableOpacity
+                        onPress={() => this.makeDeafult(item.id)}>
+                        <Image
+                          style={{marginRight: 5, width: 60, height: 16}}
+                          source={require('../../assets/Slizzer-icon/makedefault.png')}
+                        />
+                      </TouchableOpacity>
                     )
                   )}
                 </View>
@@ -124,7 +151,6 @@ import {connect} from 'react-redux';
           />
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-    
       </View>
     );
   }
@@ -137,8 +163,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = dispatch => {
-  return {
-  };
+  return {};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(payoutMethod);
 
@@ -152,7 +177,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'lightgrey',
     height: 80,
-     paddingRight:10,
+    paddingRight: 10,
     alignItems: 'center',
     justifyContent: 'space-between',
   },

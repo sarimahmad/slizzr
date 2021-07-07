@@ -173,22 +173,43 @@ export async function getAllPaymentMethods(user_id) {
 }
 
 export async function newPaymentMethod(formdata) {
-  var requestOptions = {
-    method: 'POST',
-    body: JSON.stringify(formdata),
-    redirect: 'follow',
+  var config = {
+    method: 'post',
+    url: `${Server}/stripe/host/add-payout`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: formdata,
   };
 
-  return fetch(
-    'https://slizzr-6a887.appspot.com/stripe/host/add-payout',
-    requestOptions,
-  )
-    .then(async response => {
-      return await response.json();
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
     })
-    .catch(error => {
-      console.error(error);
+    .catch(function (error) {
+      console.log(error);
     });
+  return GetResponse;
+}
+
+export async function makeDefaultPayout(formdata) {
+  var config = {
+    method: 'put',
+    url: `${Server}/stripe/host/default-payout-method`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: formdata,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
 }
 
 export async function updateEvent(event_id, dataToUpdate) {
