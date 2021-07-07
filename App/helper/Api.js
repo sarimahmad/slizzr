@@ -138,10 +138,11 @@ export async function createCustomerStripe(dataToUpdate) {
 export async function createHostStripe(dataToUpdate) {
   var myHeaders = new Headers();
   myHeaders.append('Content-Type', 'application/json');
+  myHeaders.append('Accept', 'application/json');
   var requestOptions = {
     method: 'POST',
     headers: myHeaders,
-    body: dataToUpdate,
+    body: JSON.stringify(dataToUpdate),
     redirect: 'follow',
   };
   return fetch(`${Server}/stripe/host/create-host`, requestOptions)
@@ -160,6 +161,7 @@ export async function getAllPayoutMethods(user_id) {
       console.error(error);
     });
 }
+
 export async function getAllPaymentMethods(user_id) {
   return fetch(`${Server}user/get-payout-cards/` + user_id)
     .then(async response => {
@@ -249,6 +251,7 @@ export async function getAllMessages({event_id, user_id}) {
     });
   return GetResponse;
 }
+
 export async function CustomerCharge(data) {
   var config = {
     method: 'post',

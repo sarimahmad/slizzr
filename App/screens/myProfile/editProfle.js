@@ -55,6 +55,7 @@ class editProfle extends Component {
       age: '',
       imageOfuser: [],
       imageUpload: [],
+      currentLocationPlace: '',
     };
   }
 
@@ -103,9 +104,12 @@ class editProfle extends Component {
         userName: this.props.userDetail.displayName,
         bioText: this.props.userDetail.bio ? this.props.userDetail.bio : '',
         age: this.props.userDetail.age ? this.props.userDetail.age : 17,
-        Address: this.props.userDetail.Address.line1
-          ? this.props.userDetail.Address.line1
-          : '',
+        Address:
+          this.props.userDetail.Address.line1 +
+          this.props.userDetail.Address.city +
+          this.props.userDetail.Address.state
+            ? this.props.userDetail.Address.line1
+            : '',
         city: this.props.userDetail.Address.city
           ? this.props.userDetail.Address.city
           : '',
@@ -147,13 +151,10 @@ class editProfle extends Component {
                 FirstName: this.state.firstName,
                 LastName: this.state.lastName,
                 displayName: this.state.userName,
-                city: this.state.city,
-                state: this.state.state,
-                line1: this.state.Address,
+                address: this.state.Address,
                 day: this.state.day,
                 month: this.state.month,
                 year: this.state.year,
-                age: this.state.age,
                 bio: this.state.bioText,
                 Gender: this.state.gender,
                 profile_pic_url: pictureUploadUrl,
@@ -168,27 +169,23 @@ class editProfle extends Component {
         FirstName: this.state.firstName,
         LastName: this.state.lastName,
         displayName: this.state.userName,
-        city: this.state.city,
-        state: this.state.state,
-        line1: this.state.Address,
         day: this.state.day,
         month: this.state.month,
         year: this.state.year,
         age: this.state.age,
         bio: this.state.bioText,
         Gender: this.state.gender,
+        address: this.state.Address,
       };
       this.updateProfileApi(dataToSend);
     }
   };
 
   updateProfileApi = async dataToSend => {
-    await updateProfile(this.props.userToken, JSON.stringify(dataToSend)).then(
-      response => {
-        this.getUserFromFirestore(this.props.userToken);
-        this.setState({loading: false});
-      },
-    );
+    await updateProfile(this.props.userToken, dataToSend).then(response => {
+      this.getUserFromFirestore(this.props.userToken);
+      this.setState({loading: false});
+    });
     this.setState({loading: false});
   };
 

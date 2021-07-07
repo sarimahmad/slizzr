@@ -74,12 +74,10 @@ class eventDetail extends Component {
           this.setState({detailItem: firestoreDocument.data()});
           this.setState({
             date: firestoreDocument.data(),
-            // .DateTime.toDate()
-            // .toLocaleTimeString(),
           });
         }
       });
-    // this.setState({loading: false});
+    this.setState({loading: false});
   }
 
   async getEventStatus({user_id, event_id}) {
