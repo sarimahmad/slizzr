@@ -372,3 +372,22 @@ export async function deleteAttendEvent(dataToSend) {
     });
   return GetResponse;
 }
+
+export async function DeleteUser(user_id) {
+  var config = {
+    method: 'Delete',
+    url: `${Server}/user/${user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}

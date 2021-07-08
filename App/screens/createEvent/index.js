@@ -431,8 +431,13 @@ class CreateEvent extends Component {
             this.state.detailItem.id,
             JSON.stringify(datatoSend),
           ).then(response => {
-            alert('Event Updated');
-            this.setState({loading: false});
+            this.setState({
+              loading: false,
+              errorTitle: 'Event Updated',
+              btnOneText: 'Ok',
+              popUpError: true,
+            });
+          
           });
         });
     } else {
@@ -452,7 +457,15 @@ class CreateEvent extends Component {
         this.state.detailItem.id,
         JSON.stringify(datatoSend),
       ).then(response => {
-        alert('Event Updated');
+        this.setState({
+          loading: false,
+          errorTitle: 'Successful',
+          errorText: 'Event Updated',
+         
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
+      
         this.setState({loading: false});
       });
       this.setState({loading: false});
@@ -467,6 +480,10 @@ class CreateEvent extends Component {
       Address: address,
     });
   };
+  done=()=>{
+    this.setState({popUpError: false})
+    this.props.navigation.goBack()     
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -477,8 +494,8 @@ class CreateEvent extends Component {
             transparent={true}
             presentationStyle={'overFullScreen'}>
             <ErrorPopup
-              cancelButtonPress={() => this.setState({popUpError: false})}
-              doneButtonPress={() => this.setState({popUpError: false})}
+              cancelButtonPress={() => this.done()}
+              doneButtonPress={() => this.done()}
               errorTitle={this.state.errorTitle}
               errorText={this.state.errorText}
               btnOneText={this.state.btnOneText}

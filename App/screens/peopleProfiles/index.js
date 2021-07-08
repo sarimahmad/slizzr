@@ -71,8 +71,8 @@ export default class peopleProfiles extends Component {
           <HeaderWithOptionBtn
             borderBottom={true}
             backColor={WHITE.dark}
-            leftPress={() => this.props.navigation.openDrawer()}
-            leftIcon={require('../../assets/drawer.png')}
+            leftPress={() => this.props.navigation.pop()}
+            leftIcon={require('../../assets/back.png')}
             rightPress={() => this.props.navigation.navigate('lookFriends')}
             searchIcon={require('../../assets/searchGrey.png')}
             centerIcon={require('../../assets/homeLogo.png')}

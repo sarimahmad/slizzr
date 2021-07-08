@@ -54,11 +54,11 @@ class BirthDate extends Component {
         age: this.state.age,
       };
       await updateProfile(this.props.userToken, dataToSend).then(_response => {
-        this.props.callApi(_response.data.user, this.props.userToken);
+        this.props.callApi(_response.data.User, this.props.userToken);
         if (this.props.route.params.from === 'signUp') {
           this.props.navigation.navigate('ConfirmEmail', {
             from: 'birth',
-            user: _response.data.user,
+            user: _response.data.User,
           });
         } else {
           this.props.navigation.navigate('HomeStack');
@@ -100,6 +100,7 @@ class BirthDate extends Component {
             value={this.state.date}
             format="MMM DD, YYYY "
             mode="date"
+            type="onlyDate"
             is24Hour={true}
             display="default"
             setDateAndTime={date => this.onChange(date)}
