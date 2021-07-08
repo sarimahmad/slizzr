@@ -1,4 +1,3 @@
-/* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
@@ -102,12 +101,12 @@ class NewpayoutMethod extends Component {
   newPayoutMethod = async () => {
     const userData = this.props.userDetail;
     if (userData.STRIPE_HOST_ID !== '') {
-      if (!this.isFormFilled()) {
+      if (this.isFormFilled()) {
         let data = {
-          account_holder_name: 'Krutik Parikh',
-          account_holder_type: 'individual',
-          routing_number: '11000-000',
-          account_number: '000123456789',
+          account_holder_name: this.state.accountholderName,
+          account_holder_type: this.state.account_holder_type,
+          routing_number: this.state.routing_Number,
+          account_number: this.state.account_number,
           user_id: userData.id,
           host_id: userData.STRIPE_HOST_ID,
         };
@@ -133,14 +132,14 @@ class NewpayoutMethod extends Component {
         this.setState({loading: true});
         await getUserProfile(userData.id).then(userResponse => {
           this.props.callApi(userResponse.User, userData.id);
-          if (!this.isFormFilled()) {
+          if (this.isFormFilled()) {
             let data = {
-              account_holder_name: 'Krutik Parikh',
-              account_holder_type: 'individual',
-              routing_number: '11000-000',
-              account_number: '000123456789',
-              user_id: this.props.userDetail.id,
-              host_id: this.props.userDetail.STRIPE_HOST_ID,
+              account_holder_name: this.state.accountholderName,
+              account_holder_type: this.state.account_holder_type,
+              routing_number: this.state.routing_Number,
+              account_number: this.state.account_number,
+              user_id: userData.id,
+              host_id: userData.STRIPE_HOST_ID,
             };
             this.setState({loading: true});
             this.addPayment(data);
@@ -153,13 +152,21 @@ class NewpayoutMethod extends Component {
 
   addPayment = async data => {
     await newPaymentMethod(data).then(response => {
-      console.log(response);
-      if (response.message === 'Successfully Added Card') {
+      if (
+        response &&
+        response !== undefined &&
+        response.message === 'Successfully Added Card'
+      ) {
         this.setState({loading: false});
         this.props.navigation.navigate('paymentsandPayouts2');
       } else {
-        alert('Failed');
-        this.setState({loading: false});
+        this.setState({
+          loading: false,
+          errorTitle: 'ERROR',
+          errorText: 'Card is inavlid',
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
       }
     });
   };
@@ -167,6 +174,21 @@ class NewpayoutMethod extends Component {
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.wrapperView}>
+          {this.state.popUpError === true && (
+            <Modal
+              statusBarTranslucent={true}
+              isVisible={this.state.popUpError}
+              transparent={true}
+              presentationStyle={'overFullScreen'}>
+              <ErrorPopup
+                cancelButtonPress={() => this.setState({popUpError: false})}
+                doneButtonPress={() => this.setState({popUpError: false})}
+                errorTitle={this.state.errorTitle}
+                errorText={this.state.errorText}
+                btnOneText={this.state.btnOneText}
+              />
+            </Modal>
+          )}
           <ScrollView>
             {this.state.editType ? (
               <View>
@@ -196,7 +218,7 @@ class NewpayoutMethod extends Component {
                   backColor={WHITE.dark}
                   borderBottom={true}
                   leftIcon={require('../../assets/back.png')}
-                  leftPress={() => alert()}
+                  leftPress={() => this.setState({editType: true})}
                 />
                 <View style={styles.blockView2}>
                   <TextInput
@@ -222,7 +244,7 @@ class NewpayoutMethod extends Component {
                     onChangeText={value =>
                       this.setState({routing_Number: value})
                     }
-                    value={this.state.city}
+                    value={this.state.routing_Number}
                   />
 
                   <TextInput

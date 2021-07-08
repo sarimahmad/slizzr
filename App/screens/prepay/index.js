@@ -17,7 +17,8 @@ import {
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {CreditCardInput} from 'react-native-credit-card-input';
-import {CustomerCharge, AtendPublicEvent} from '../../helper/Api';
+import {CustomerCharge, AtendPublicEvent, payAndJoin} from '../../helper/Api';
+
 export default class prepay extends Component {
   constructor(props) {
     super(props);
@@ -63,6 +64,20 @@ export default class prepay extends Component {
     }
   }
 
+  async payFromDefault() {
+    this.setState({loading: true});
+    const data = {
+      user_id: this.state.user_id,
+      event_id: this.state.event_id,
+    };
+    await payAndJoin(data).then(response => {
+      this.attendEvent({
+        user_id: this.state.user_id,
+        event_id: this.state.event_id,
+      });
+    });
+  }
+
   async attendEvent({user_id, event_id}) {
     AtendPublicEvent({user_id, event_id}).then(response => {
       if (response && response.status === 200) {
@@ -91,6 +106,7 @@ export default class prepay extends Component {
       this.setState({formValid: true});
     }
   };
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -229,7 +245,7 @@ export default class prepay extends Component {
 
               <View style={{flex: 1}}>
                 <TouchableOpacity
-                  onPress={() => this.setState({prepayModal: true})}
+                  onPress={() => this.payFromDefault()}
                   style={[
                     styles.btnPay,
                     {alignSelf: 'center', marginBottom: 10},

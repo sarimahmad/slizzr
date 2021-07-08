@@ -163,7 +163,7 @@ export async function getAllPayoutMethods(user_id) {
 }
 
 export async function getAllPaymentMethods(user_id) {
-  return fetch(`${Server}user/get-payout-cards/` + user_id)
+  return fetch(`${Server}/user/get-payment-cards/` + user_id)
     .then(async response => {
       return await response.json();
     })
@@ -175,7 +175,7 @@ export async function getAllPaymentMethods(user_id) {
 export async function newPaymentMethod(formdata) {
   var config = {
     method: 'post',
-    url: `${Server}/stripe/host/add-payout`,
+    url: `${Server}/stripe/customer/add-payment`,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -196,6 +196,26 @@ export async function makeDefaultPayout(formdata) {
   var config = {
     method: 'put',
     url: `${Server}/stripe/host/default-payout-method`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: formdata,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+export async function makeDefaultPayment(formdata) {
+  var config = {
+    method: 'put',
+    url: `${Server}/stripe/customer/default-payment-method`,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -286,6 +306,66 @@ export async function CustomerCharge(data) {
   const GetResponse = await axios(config)
     .then(function (response) {
       return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+export async function payAndJoin(data) {
+  var config = {
+    method: 'post',
+    url: `${Server}/stripe/customer/charge`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+export async function deleteHostEvent(id, dataToSend) {
+  var config = {
+    method: 'delete',
+    url: `${Server}/event/${id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: dataToSend,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+export async function deleteAttendEvent(dataToSend) {
+  var config = {
+    method: 'delete',
+    url: `${Server}/zicket`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: dataToSend,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
     })
     .catch(function (error) {
       console.log(error);

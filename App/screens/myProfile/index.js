@@ -38,7 +38,7 @@ class Profile extends Component {
   };
 
   componentDidMount() {
-    if (this.props.route.params.from == 'drawer') {
+    if (this.props.route.params.from === 'drawer') {
       this._unsubscribe = this.props.navigation.addListener('focus', () => {
         this.setState({userDetail: this.props.userDetail});
         this.getUserImages();

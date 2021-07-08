@@ -1,10 +1,20 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Modal,
+} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as userActions from '../../redux/actions/user';
+import {connect} from 'react-redux';
+import ErrorPopup from '../../component/ErrorPopup';
 
 import {
   widthPercentageToDP as wp,
@@ -13,15 +23,19 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import moment from 'moment';
-import {getEventDetail} from '../../helper/Api';
+import {getEventDetail, deleteAttendEvent} from '../../helper/Api';
 import Loader from '../../component/Loader';
 
-export default class attendingEventInfo extends Component {
+class attendingEventInfo extends Component {
   constructor(props) {
     super(props);
     this.state = {
       detailItem: {},
       loading: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
+      popUpError: false,
     };
   }
   componentDidMount() {
@@ -39,6 +53,28 @@ export default class attendingEventInfo extends Component {
     const TOKEN = await AsyncStorage.getItem('token');
     this.setState({currentUserUID: TOKEN});
   }
+
+  cancelEvent = async () => {
+    let id = this.props.route.params.id;
+    this.setState({loading: true});
+    await deleteAttendEvent({
+      user_id: this.props.userDetail.id,
+      event_id: id,
+    }).then(response => {
+      if (response.status === 200) {
+        this.setState({loading: false});
+        this.props.navigation.pop();
+      } else {
+        this.setState({
+          loading: false,
+          btnOneText: 'Ok',
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(response),
+          popUpError: true,
+        });
+      }
+    });
+  };
 
   render() {
     return (
@@ -161,16 +197,65 @@ export default class attendingEventInfo extends Component {
               <Text style={styles.btnText}>MESSAGE HOST</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.cancelButton}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => this.cancelEvent()}>
               <Text style={styles.btnTextCancel}>CANCEL ATTANDANCE</Text>
             </TouchableOpacity>
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
+        {this.state.popUpError && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() => {
+                this.setState({
+                  loading: false,
+                  btnOneText: 'Ok',
+                  errorTitle: 'UPDATED',
+                  errorText: 'Your profile has been updated!',
+                  popUpError: true,
+                });
+                this.props.navigation.pop();
+              }}
+              doneButtonPress={() => {
+                this.setState({
+                  loading: false,
+                  btnOneText: 'Ok',
+                  errorTitle: 'UPDATED',
+                  errorText: 'Your profile has been updated!',
+                  popUpError: true,
+                });
+                this.props.navigation.pop();
+              }}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+              btnTwoText={this.state.btnTwoText}
+            />
+          </Modal>
+        )}
       </View>
     );
   }
 }
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.alterUser({user, uid})),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(attendingEventInfo);
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,

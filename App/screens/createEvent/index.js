@@ -391,10 +391,9 @@ class CreateEvent extends Component {
   };
   async editEvent() {
     let datatoSend = {};
-    if (this.state.selectedImage == true) {
+    if (this.state.selectedImage === true) {
       this.setState({loading: true});
       const uri = this.state.imageUri;
-      const uniqueId = uuid.v4();
 
       const filename = uri.substring(uri.lastIndexOf('/') + 1);
       const uploadUri =

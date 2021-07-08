@@ -8,25 +8,56 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+import {connect} from 'react-redux';
+
 import {FONT, SCREEN} from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import {getAllPaymentMethods, makeDefaultPayment} from '../../helper/Api';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
+import Loader from '../../component/Loader';
 
-export default class paymentMethod extends Component {
+class paymentMethod extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      paymentMethod: [
-        {id: 1, name: 'Visa Ending in 1881'},
-        {id: 2, name: 'MasterCard Ending in 1881'},
-        {id: 3, name: 'American Express Ending in 1881'},
-        {id: 4, name: 'Apple Pay'},
-      ],
+      paymentMethod: [],
       selectedMethod: 1,
       editType: true,
+      loading: false,
     };
   }
+
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getPaymentMethods();
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  async getPaymentMethods() {
+    this.setState({loading: true});
+
+    await getAllPaymentMethods(this.props.userToken).then(response => {
+      this.setState({paymentMethod: response});
+      this.setState({loading: false});
+    });
+  }
+
+  makeDeafult = async id => {
+    this.setState({loading: true});
+
+    await makeDefaultPayment({
+      user_id: this.props.userDetail.id,
+      payment_card_id: id,
+    }).then(response => {
+      this.getPaymentMethods();
+    });
+  };
+
   footer = () => {
     return (
       <TouchableOpacity
@@ -45,11 +76,10 @@ export default class paymentMethod extends Component {
             borderBottom={!this.state.paymentMethod.length > 0 ? true : false}
             leftIcon={require('../../assets/back.png')}
             backColor={WHITE.dark}
-            leftPress={
-              () => this.props.navigation.navigate('paymentsandPayouts')
-              // this.setState({ editType: !this.state.editType })
+            leftPress={() =>
+              this.props.navigation.navigate('paymentsandPayouts')
             }
-            rightIconText={this.state.editType == true ? 'EDIT' : 'DONE'}
+            rightIconText={this.state.editType === true ? 'EDIT' : 'DONE'}
             rightPress={() => this.setState({editType: !this.state.editType})}
           />
           {this.state.paymentMethod.length > 0 ? (
@@ -70,8 +100,14 @@ export default class paymentMethod extends Component {
                         style={[styles.imageView, {height: 25}]}
                       />
                     )}
-                    <Text style={styles.textView}>{item.name}</Text>
-                    {item.id === this.state.selectedMethod ? (
+                    <Text
+                      style={[
+                        styles.textView,
+                        {color: item.default === true ? '#F818D9' : '#000'},
+                      ]}>
+                      Ending in {item.Card && item.Card.last4}
+                    </Text>
+                    {item.default === true ? (
                       <View style={styles.imageView2}>
                         <Image
                           style={styles.sideImage}
@@ -80,12 +116,14 @@ export default class paymentMethod extends Component {
                       </View>
                     ) : (
                       !this.state.editType && (
-                        <View style={styles.imageView2}>
+                        <TouchableOpacity
+                          style={styles.imageView2}
+                          onPress={() => this.makeDeafult(item.id)}>
                           <Image
                             style={styles.sideImage}
                             source={require('../../assets/Slizzer-icon/makedefault.png')}
                           />
-                        </View>
+                        </TouchableOpacity>
                       )
                     )}
                   </View>
@@ -106,10 +144,22 @@ export default class paymentMethod extends Component {
             </View>
           )}
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(paymentMethod);
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,

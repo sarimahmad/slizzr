@@ -16,7 +16,6 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import moment from 'moment';
 import {getUserAttendedEvents, getUserEvents} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
@@ -30,54 +29,18 @@ class manageEvents extends Component {
       index: 1,
       userEvents: [],
       userAttendedEvents: [],
-      messages: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
-      findpeople: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
     };
   }
 
   componentDidMount() {
-    this.getUserEvents();
-    this.getUserAttendedEvents();
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getUserEvents();
+      this.getUserAttendedEvents();
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
   }
 
   async getUserEvents() {
@@ -197,7 +160,9 @@ class manageEvents extends Component {
         }}>
         {this.state.index === 1 && (
           <View>
-            <Text style={styles.emptyFont}>You are not hosting any events at the moment.</Text>
+            <Text style={styles.emptyFont}>
+              You are not hosting any events at the moment.
+            </Text>
             <TouchableOpacity style={styles.btnMap}>
               <Text style={styles.btnText}>HOST?</Text>
             </TouchableOpacity>
@@ -273,7 +238,7 @@ class manageEvents extends Component {
                           : item.EventType}
                       </Text>
                       <Text style={[styles.purpleText, {marginTop: 5}]}>
-                        {item.DateTime}       
+                        {item.DateTime}
                       </Text>
                     </View>
                     <TouchableOpacity
@@ -321,8 +286,7 @@ class manageEvents extends Component {
                         Host: {item.Event.Host.displayName}
                       </Text>
                       <Text style={[styles.purpleText, {marginTop: 5}]}>
-                        {item.DateTime
-                        }
+                        {item.DateTime}
                       </Text>
                     </View>
                     <TouchableOpacity
