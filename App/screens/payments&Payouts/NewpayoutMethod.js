@@ -104,7 +104,7 @@ class NewpayoutMethod extends Component {
       if (this.isFormFilled()) {
         let data = {
           account_holder_name: this.state.accountholderName,
-          account_holder_type: this.state.account_holder_type,
+          account_holder_type: 'individual',
           routing_number: this.state.routing_Number,
           account_number: this.state.account_number,
           user_id: userData.id,
@@ -135,7 +135,7 @@ class NewpayoutMethod extends Component {
           if (this.isFormFilled()) {
             let data = {
               account_holder_name: this.state.accountholderName,
-              account_holder_type: this.state.account_holder_type,
+              account_holder_type: 'individual',
               routing_number: this.state.routing_Number,
               account_number: this.state.account_number,
               user_id: userData.id,

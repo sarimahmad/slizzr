@@ -212,7 +212,7 @@ class home extends Component {
     };
 
     fetch(
-      `${Server}/event?recent=TRUE&radius=${
+      `${Server}/event?radius=${
         this.props.userDetail && this.props.userDetail.Radius ? '5000' : '5000'
       }&lat=${this.state.allLocations.latitude}&long=${
         this.state.allLocations.longitude
