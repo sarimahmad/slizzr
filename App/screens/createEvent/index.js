@@ -336,10 +336,10 @@ class CreateEvent extends Component {
               id: uniqueId,
               Attendees: [],
               job: 'scheduled',
-              Start_date: this.state.DateTime,
+              Start_date: moment(this.state.DateTime).format('llll'),
               End_date: moment(this.state.DateTime)
                 .add(this.state.duration, 'hours')
-                .format('X'), // TimeStamp
+                .format('llll'), // TimeStamp
             };
             const usersRef = firestore().collection('events');
             usersRef
@@ -438,7 +438,6 @@ class CreateEvent extends Component {
               btnOneText: 'Ok',
               popUpError: true,
             });
-          
           });
         });
     } else {
@@ -462,11 +461,11 @@ class CreateEvent extends Component {
           loading: false,
           errorTitle: 'Successful',
           errorText: 'Event Updated',
-         
+
           btnOneText: 'Ok',
           popUpError: true,
         });
-      
+
         this.setState({loading: false});
       });
       this.setState({loading: false});
@@ -481,10 +480,10 @@ class CreateEvent extends Component {
       Address: address,
     });
   };
-  done=()=>{
-    this.setState({popUpError: false})
-    this.props.navigation.goBack()     
-  }
+  done = () => {
+    this.setState({popUpError: false});
+    this.props.navigation.goBack();
+  };
   render() {
     return (
       <View style={styles.container}>
