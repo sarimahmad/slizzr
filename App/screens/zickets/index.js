@@ -255,7 +255,7 @@ class Zickets extends Component {
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image
-                        source={require('../../assets/image2.jpg')}
+                        source={{uri:item.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
 

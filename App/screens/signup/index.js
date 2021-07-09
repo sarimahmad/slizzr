@@ -151,10 +151,10 @@ class SignUp extends Component {
         .then(response => {
           response.user.sendEmailVerification();
           const uid = response.user.uid;
-
+         
           const data = {
             FirstName: this.state.firstName,
-            last_name: this.state.lastName,
+            LastName: this.state.lastName,
             id: uid,
             Id: uid,
             email: this.state.email,

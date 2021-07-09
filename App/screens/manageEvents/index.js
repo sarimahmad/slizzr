@@ -270,10 +270,10 @@ class manageEvents extends Component {
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                     <Image
-                        source={{uri:item.image}}
+                        source={{uri:item.Event.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-
+          
                       <Image
                         style={{position: 'absolute', right: -10}}
                         source={require('../../assets/private.png')}
@@ -285,9 +285,9 @@ class manageEvents extends Component {
                       <Text style={styles.subtitleText}>
                         Host: {item.Event.Host.displayName}
                       </Text>
-                      <Text style={[styles.purpleText, {marginTop: 5}]}>
-                        {item.DateTime}
-                      </Text>
+                      {/* <Text style={[styles.purpleText, {marginTop: 5}]}>
+                        {item.Event.DateTime}
+                      </Text> */}
                     </View>
                     <TouchableOpacity
                       // onPress={()=>this.props.navigation.navigate("directInvites")}

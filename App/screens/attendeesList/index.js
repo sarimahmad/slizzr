@@ -88,7 +88,7 @@ async getAttendeesList(eventId) {
                     <View style={styles.imgView}>
                       <Image
                         style={{height: 50, width: 50}}
-                        source={require('../../assets/profile1.png')}
+                        source={{uri:item.User.Profile}}
                       />
                     </View>
                     <View
@@ -101,7 +101,7 @@ async getAttendeesList(eventId) {
                           styles.titleText,
                           {fontFamily: FONT.Nunito.semiBold, marginRight: 7},
                         ]}>
-                        {item.User && item.User.displayName}
+                        {item.User && item.User.FirstName}
                       </Text>
                       <Image
                         style={{height: 26, width: 28, resizeMode: 'contain'}}

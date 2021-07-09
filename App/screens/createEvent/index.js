@@ -238,15 +238,16 @@ class CreateEvent extends Component {
     if (isParamsExist) {
       this.setState({screenTypeEdit: true});
 
-      this.getEventDetail(this.props.route.params.id);
+     await this.getEventDetail(this.props.route.params.id);
     }
-    this.checkStripeHostId();
+   await this.checkStripeHostId();
   }
 
   checkStripeHostId = async () => {
     const userData = this.props.userDetail;
-    this.setState({loading: true});
     if (userData.STRIPE_HOST_ID === '') {
+      this.setState({loading: true});
+  
       await createHostStripe({
         user_id: userData.id,
         email: userData.Email,

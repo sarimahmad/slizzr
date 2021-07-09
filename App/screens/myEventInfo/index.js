@@ -310,14 +310,13 @@ const styles = StyleSheet.create({
   },
   logo: {},
   logoEvent1: {
-    marginTop: 10,
-    width: '100%',
+    marginVertical: 10,
+    width: SCREEN.width-40,
     height: 110,
     borderRadius: 10,
     display: 'flex',
     justifyContent: 'center',
     alignSelf: 'center',
-    resizeMode: 'center',
   },
   logoEvent: {},
   titleText: {

@@ -311,7 +311,16 @@ class home extends Component {
     }
     this.getEvents('update');
   };
-
+ eventDetail=(event_id)=>{
+   if(event_id){
+  this.props.navigation.navigate('eventDetail', {
+    detailItem: event_id,
+    
+  })
+}else{
+  
+}
+ }
   listView = () => {
     return (
       <View style={{flex: 1}}>
@@ -359,9 +368,7 @@ class home extends Component {
                         Host: {item.Host.displayName}
                       </Text>
                       <Text style={styles.purpleText}>
-                        {moment(item.DateTime).format(
-                          'hh:mm A | MMM DD, YYYY - ddd',
-                        )}
+                        {item.DateTime}
                       </Text>
                       <View style={styles.flexRow}>
                         <Image
@@ -374,10 +381,7 @@ class home extends Component {
                     </View>
                     <TouchableOpacity
                       onPress={() =>
-                        this.props.navigation.navigate('eventDetail', {
-                          detailItem: item.id,
-                          imageUri: item.imageUrl,
-                        })
+                       this.eventDetail(item.id)
                       }
                       style={styles.shareView}>
                       <Image source={require('../../assets/Right.png')} />
