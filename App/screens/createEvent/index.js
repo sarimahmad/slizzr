@@ -275,7 +275,7 @@ class CreateEvent extends Component {
       this.setState({detailItem: response.Event});
 
       this.setState({Name: response.Event.Name});
-      this.setState({DateTime: response.Event.DateTime});
+      this.setState({DateTime: new Date(response.Event.DateTime)});
       this.setState({Description: response.Event.Description});
       this.setState({EventType: response.Event.EventType});
       this.setState({Fee: response.Event.Fee});
@@ -616,7 +616,7 @@ class CreateEvent extends Component {
                             textAlignVertical: 'center',
                           },
                         }}
-                        disabled={this.state.screenTypeEdit === 'edit'}
+                        disabled={this.state.screenTypeEdit}
                         selectedValue={this.state.EventType}
                         onValueChange={(itemValue, itemIndex) =>
                           this.setState({EventType: itemValue})

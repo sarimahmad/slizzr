@@ -315,6 +315,29 @@ export async function CustomerCharge(data) {
   return GetResponse;
 }
 
+
+
+export async function findPeoplebyDistance() {
+ let min_age="0"
+ let max_age="0"
+ let user_id= "3wDLplGq1oYQMO3xRnS4ZtpdK0M2"
+  return fetch(`${Server}/user/people/find-people?min_age=${min_age}&max_age=${max_age}&user_id=${user_id}`)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+// export async function findPeoplebyDistance(min_age,max_age,user_id) {
+//  return  axios.get(`${Server}/user/people/find-people`, {
+//     params: {
+//       min_age: min_age,
+//       max_age: max_age,
+//       user_id: user_id
+//     }
+//   });
+// }
 export async function payAndJoin(data) {
   var config = {
     method: 'post',

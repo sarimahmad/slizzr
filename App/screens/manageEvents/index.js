@@ -163,17 +163,17 @@ class manageEvents extends Component {
             <Text style={styles.emptyFont}>
               You are not hosting any events at the moment.
             </Text>
-            <TouchableOpacity style={styles.btnMap}>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("createEvent")} style={styles.btnMap}>
               <Text style={styles.btnText}>HOST?</Text>
             </TouchableOpacity>
           </View>
         )}
         {this.state.index === 2 && (
-          <View>
+          <View >
             <Text style={styles.emptyFont}>
               You are not attending any events at the moment.
             </Text>
-            <TouchableOpacity style={styles.btnMap}>
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("HomeStack")} style={styles.btnMap}>
               <Text style={styles.btnText}>LOOK FOR EVENTS</Text>
             </TouchableOpacity>
           </View>
@@ -331,11 +331,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  btnMap: {
+    marginTop: 10,
+    width: SCREEN.width - 40,
+    borderRadius: 25,
+    height: 55,
+    marginBottom: 20,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+  },
   contentView: {
     flex: 1,
 
     // width: SCREEN.width - 40,
     backgroundColor: WHITE.dark,
+  },
+  emptyFont: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    marginBottom: 20,
   },
   btnTextLocation: {
     fontSize: 16,
@@ -348,22 +364,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontFamily: FONT.Nunito.regular,
-  },
-  emptyFont: {
-    fontSize: 20,
-    textAlign: 'center',
-    color: '#494949',
-    fontFamily: FONT.Nunito.regular,
-    marginBottom: 20,
-  },
-  btnMap: {
-    borderRadius: 25,
-    height: 50,
-    alignSelf: 'center',
-    marginBottom: 20,
-    width: SCREEN.width - 40,
-    backgroundColor: 'black',
-    justifyContent: 'center',
   },
   btnLocation: {
     width: wp('80%'),
