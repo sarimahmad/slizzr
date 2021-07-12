@@ -788,6 +788,12 @@ PODS:
     - React-RCTImage
   - RNVectorIcons (8.1.0):
     - React-Core
+  - Stripe (21.6.0):
+    - Stripe/Stripe3DS2 (= 21.6.0)
+  - stripe-react-native (0.1.4):
+    - React
+    - Stripe (~> 21.6.0)
+  - Stripe/Stripe3DS2 (21.6.0)
   - TOCropViewController (2.6.0)
   - Yoga (1.14.0)
 
@@ -852,6 +858,7 @@ DEPENDENCIES:
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - "stripe-react-native (from `../node_modules/@stripe/stripe-react-native`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -883,6 +890,7 @@ SPEC REPOS:
     - leveldb-library
     - nanopb
     - PromisesObjC
+    - Stripe
     - TOCropViewController
 
 EXTERNAL SOURCES:
@@ -996,6 +1004,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-screens"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  stripe-react-native:
+    :path: "../node_modules/@stripe/stripe-react-native"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -1082,9 +1092,11 @@ SPEC CHECKSUMS:
   RNReanimated: 9c13c86454bfd54dab7505c1a054470bfecd2563
   RNScreens: bf59f17fbf001f1025243eeed5f19419d3c11ef2
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
+  Stripe: 6cc7bb348f4b1fad111129f6ee40eb6682deaefb
+  stripe-react-native: 86469904cad7d2a2e07f38f5d10c003048d5d6fc
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: a7de31c64fe738607e7a3803e3f591a4b1df7393
 
-PODFILE CHECKSUM: 09c65aa271ea283e6c4e505c47241c42fbc16dcf
+PODFILE CHECKSUM: 5c2f629c5ae9356d9d83659b7d6983e87902682d
 
 COCOAPODS: 1.10.1
