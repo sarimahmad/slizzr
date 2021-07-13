@@ -17,30 +17,38 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import firestore from '@react-native-firebase/firestore';
+import Loader from '../../component/Loader';
 export default class findPeople extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      privateEvents:[],
+      loading:false,
         findpeople: [
         {
+          id:0,
           imgProfile:'',  
           profileName: 'Marriage Anniversary',
           adress: 'Host: Tallah Cotton',
           date: '11:30 PM | Feb 25, 2020 - WED',
         },
         {
+          id:1,
             imgProfile:'',
           profileName: 'Celebration Time',
           adress: 'Host: Jaclynn Bradley',
           date: '11:30 PM | Feb 25, 2020 - WED',
         },
         {
+          id:2,
             imgProfile:'',
           profileName: 'Sagar’s Birthday',
           adress: 'Host: Kita Chihoko',
           date: '11:30 PM | Feb 25, 2020 - WED',
         },
         {
+          id:3,
             imgProfile:'',
           profileName: 'GMU Party',
           adress: 'Host: Jaclynn Bradley',
@@ -49,7 +57,50 @@ export default class findPeople extends Component {
       ],
     };
   }
-
+  componentDidMount(){
+    this.getPrivateEvents()
+  }
+  getPrivateEvents = async () => {
+    let privateEvents = [];
+    const usersRef = firestore().collection('events');
+    this.setState({loading: true});
+    usersRef
+      .where('PublicPrivate', '==', 'Private')
+      .get()
+      .then(async doc => {
+        doc._docs.forEach(element => {
+            console.log(element)
+          privateEvents.push(element)
+          
+        });
+        this.setState({
+          loading: false,
+          privateEvents: privateEvents,
+        });
+      });
+    console.log(privateEvents);
+  };
+  emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+          <View >
+          <Image source={require('../../assets/logo.png')} style={{alignSelf:'center',marginVertical:10,height:80,width:80}}/>
+      
+            <Text style={styles.emptyFont}>
+            Your currently not hosting any Private events to find people and send Direct Invites for.   </Text>
+          </View>
+      </View>
+    );
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -70,7 +121,9 @@ export default class findPeople extends Component {
         <FlatList
                 data={this.state.findpeople}
                 keyExtractor={item => item.id}
-                renderItem={({ item }) => (
+                ListEmptyComponent={this.emptyListComponent}
+             
+                renderItem={({ item }) => (   
                   <View
                     style={{
                       height: 80,
@@ -108,6 +161,8 @@ export default class findPeople extends Component {
                 )}
               />
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+    
       </View>
     );
   }
@@ -116,10 +171,17 @@ const styles = StyleSheet.create({
   topView: {
     // height: hp('35%'),
   },
+  emptyFont: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    marginBottom: 20,
+  },
+ 
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
-    paddingHorizontal:10,
     
   },
   detail: {

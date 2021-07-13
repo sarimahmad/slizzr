@@ -104,7 +104,7 @@ class home extends Component {
 
   checkStripeClientId = async () => {
     const userData = this.props.userDetail;
-    console.log(userData);
+   
     if (userData.STRIPE_CUST_ID === '') {
       await createCustomerStripe({user_id: userData.id}).then(_response => {
         console.log(_response);
@@ -271,7 +271,7 @@ class home extends Component {
         }
       })
       .then(() => {
-        console.warn(this.state.allEvents);
+      
       })
 
       .catch(error => {

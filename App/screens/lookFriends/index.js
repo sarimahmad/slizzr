@@ -18,7 +18,10 @@ import {
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
   import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class lookFriends extends Component {
+  import { getAllFriends } from '../../helper/Api';
+  import {connect} from 'react-redux';
+  import Loader from '../../component/Loader';
+ class lookFriends extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,6 +54,17 @@ export default class lookFriends extends Component {
     };
   }
 
+  async getAllFriends() {
+    this.setState({loading:true})
+    await getAllFriends(this.props.userToken).then(response => {
+      console.log("response"+response)
+      this.setState({findpeople: response.Users, loading: false});
+    });
+    
+  }
+  componentDidMount(){
+    this.getAllFriends()
+  }
   render() {
     return (
         <View style={styles.wrapperView}>
@@ -95,8 +109,8 @@ export default class lookFriends extends Component {
               
               </View>
               <View style={styles.detail}>
-                <Text style={styles.titleText}>{item.profileName}</Text>
-                <Text style={styles.subtitleText}>{item.adress}</Text>
+                <Text style={styles.titleText}>{item.Friend && item.Friend.displayName}</Text>
+                <Text style={styles.subtitleText}>Adress empty</Text>
               
               </View>
              
@@ -107,10 +121,23 @@ export default class lookFriends extends Component {
         /> 
    
       </SafeAreaView>
+      {this.state.loading && <Loader loading={this.state.loading} />}
+  
  </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(lookFriends);
 const styles = StyleSheet.create({
     ageView:{
     flexDirection:'row',

@@ -6,41 +6,85 @@ import {
   StyleSheet,
   SafeAreaView,
   FlatList,
+  TouchableOpacity,
   Image,
 } from 'react-native';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class notification extends Component {
+import Loader from '../../component/Loader';
+import {connect} from 'react-redux';
+import { getAllRequests,acceptandRejectRequest } from '../../helper/Api';
+class notification extends Component {
   constructor(props) {
     super(props);
     this.state = {
       findpeople: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: '2 hours ago',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Celebration Time',
-          adress: '2 hours ago',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Sagar’s Birthday',
-          adress: '2 hours ago',
-        },
-        {
-          imgProfile: '',
-          profileName: 'GMU Party',
-          adress: '2 hours ago',
-        },
+        // {
+        //   imgProfile: '',
+        //   profileName: 'Marriage Anniversary',
+        //   adress: '2 hours ago',
+        // },
+        // {
+        //   imgProfile: '',
+        //   profileName: 'Celebration Time',
+        //   adress: '2 hours ago',
+        // },
+        // {
+        //   imgProfile: '',
+        //   profileName: 'Sagar’s Birthday',
+        //   adress: '2 hours ago',
+        // },
+        // {
+        //   imgProfile: '',
+        //   profileName: 'GMU Party',
+        //   adress: '2 hours ago',
+        // },
       ],
     };
   }
 
+  async getAllRequests() {
+    this.setState({loading:true})
+    await getAllRequests(this.props.userToken).then(response => {
+      this.setState({findpeople: response.Users, loading: false});
+    });
+  }
+  async acceptandRejectRequest(status,item) {
+ const data={
+    user_id:this.props.userToken,
+    mutual_connection_id:item.MutualConnectionID,
+    status:status,
+
+  }
+    this.setState({loading:true})
+    await acceptandRejectRequest(data).then(response => {
+    alert(response.message)
+    this.setState({loading:false})
+    });
+  }
+componentDidMount(){
+  this.getAllRequests()
+}
+emptyListComponent = () => {
+  return (
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        flexGrow: 1,
+        display: 'flex',
+        marginTop: SCREEN.height / 4,
+      }}>
+          <Text style={styles.emptyFont}>
+            You have no notification 
+          </Text>
+    </View>
+  );
+};
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -55,18 +99,56 @@ export default class notification extends Component {
           <FlatList
             data={this.state.findpeople}
             keyExtractor={item => item.id}
+            ListEmptyComponent={this.emptyListComponent}
             renderItem={({item}) => (
               <View>
                 <View style={styles.flexRow}>
-                  <View style={styles.imgView}>
+                  <View style={{flexDirection:'row',alignItems:'center'}}>             
+                         <View style={styles.imgView}>
                     <Image source={require('../../assets/notification2.png')} />
                   </View>
                   <View style={styles.detail}>
-                    <Text style={[styles.subtitleText]}>
-                      {item.profileName}
+                    <Text style={[styles.subtitleText]}>  
+                      {item.Friend.displayName}
                     </Text>
                     <Text style={styles.greyText}>{item.adress}</Text>
                   </View>
+                  </View>
+
+                  <View>
+                    <TouchableOpacity
+                      onPress={() =>
+                       this.acceptandRejectRequest("ACCEPTED",item)
+                      }
+                      style={{
+                        marginBottom: 5,
+                        marginRight: 5,
+                        height: 30,
+                        width: 30,
+                        borderRadius: 24,
+                        backgroundColor: '#4CD964',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Image source={require('../../assets/check.png')} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() =>
+                       this.acceptandRejectRequest("REJECTED",item)
+                      }
+                      style={{
+                        marginRight: 5,
+                        height: 30,
+                        width: 30,
+                        borderRadius: 24,
+                        backgroundColor: '#FF3B30',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Image source={require('../../assets/closeIcon.png')} />
+                    </TouchableOpacity>
+                  </View>
+  
                 </View>
                 <View
                   style={{
@@ -80,16 +162,37 @@ export default class notification extends Component {
             )}
           />
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(notification);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
 
     backgroundColor: WHITE.dark,
   },
+  emptyFont: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    marginBottom: 20,
+  },
+ 
   imgView: {
     width: SCREEN.width * 0.16,
   },
@@ -106,7 +209,10 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
     height: 80,
-    alignItems: 'center',
+    width:SCREEN.width-40,
+    alignSelf:'center',
+    justifyContent: 'space-between',
+ 
   },
 
   subtitleText: {

@@ -1,25 +1,59 @@
 import React, {Component} from 'react';
 import {Text, View, StyleSheet, FlatList, Image} from 'react-native';
-import {FONT} from '../../helper/Constant';
+
 import Header from '../../component/Header';
 import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
-
-export default class BlockedUser extends Component {
+import {getAllBlockedUsers} from '../../helper/Api';
+import Loader from '../../component/Loader';
+import {connect} from 'react-redux';
+import {FONT, SCREEN} from '../../helper/Constant';
+ class BlockedUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading:false,
       blockedUser: [
-        {id: 1, name: 'Christina Sin'},
-        {id: 2, name: 'Sandra Martinez'},
-        {id: 3, name: 'Gerald Martinez'},
-        {id: 4, name: 'Bryan Jordan'},
-        {id: 5, name: 'Keith Santos'},
-        {id: 6, name: 'Tiffany Pena'},
+        // {id: 1, name: 'Christina Sin'},
+        // {id: 2, name: 'Sandra Martinez'},
+        // {id: 3, name: 'Gerald Martinez'},
+        // {id: 4, name: 'Bryan Jordan'},
+        // {id: 5, name: 'Keith Santos'},
+        // {id: 6, name: 'Tiffany Pena'},
       ],
     };
   }
-
+  componentDidMount(){
+    this.blockedUsers()
+  }
+  async blockedUsers() {
+    this.setState({loading:true})
+    await getAllBlockedUsers(this.props.userToken).then(response => {
+      this.setState({blockedUser: response.Users});
+      this.setState({loading:false})
+    });
+  }
+  emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+          <View>
+            <Text style={styles.emptyFont}>
+              No Blocked User .
+            </Text>
+          </View>
+      </View>
+    );
+  };
+ 
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -31,6 +65,8 @@ export default class BlockedUser extends Component {
           />
           <FlatList
             data={this.state.blockedUser}
+            ListEmptyComponent={this.emptyListComponent}
+            
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <View style={styles.blockView}>
@@ -51,15 +87,37 @@ export default class BlockedUser extends Component {
             )}
           />
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+     
       </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(BlockedUser);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
     backgroundColor: WHITE.dark,
   },
+  emptyFont: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    marginBottom: 20,
+  },
+  
   contextView: {
     flex: 1,
   },

@@ -25,14 +25,15 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { findPeoplebyDistance  } from '../../helper/Api';
 import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
+import WaitingFor from '../../component/WaitingFor';
 class peopleProfiles extends Component {
   constructor(props) {
     super(props);
     this.state = {
       searchPeople: false,
       loading:false,
-      min_age:0,
-      max_age:20,
+      min_age:"17",
+      max_age:"25",
       findpeople: [
       ],
       image: [
@@ -71,6 +72,8 @@ class peopleProfiles extends Component {
   render() {
     return (
       <View style={styles.wrapperView}>
+       {this.state.loading === false && (
+       
         <SafeAreaView style={styles.contentView}>
           <HeaderWithOptionBtn
             borderBottom={true}
@@ -82,7 +85,6 @@ class peopleProfiles extends Component {
             centerIcon={require('../../assets/homeLogo.png')}
           />
 
-          <ScrollView>
             <TouchableOpacity
               // onPress={() => this.props.navigation.navigate('lookFriends')}
               style={styles.inputSearch}>
@@ -205,10 +207,10 @@ class peopleProfiles extends Component {
                 </View>
               )}
             />
-          </ScrollView>
         </SafeAreaView>
-        {this.state.loading && <Loader loading={this.state.loading} />}
-  
+       )}
+       {this.state.loading === true && <WaitingFor type="People" />}
+       
       </View>
     );
   }
@@ -237,8 +239,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     height:50,
-    width:50,
-    paddingLeft:20,
+    width:50,  
+    paddingLeft:15,
     borderColor: 'lightgrey',
     elevation: 2,
   },
