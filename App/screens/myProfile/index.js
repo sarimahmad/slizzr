@@ -18,9 +18,11 @@ import * as userActions from '../../redux/actions/user';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
-import {getUserImages} from '../../helper/Api';
+import {blockUser, getUserImages} from '../../helper/Api';
 import ErrorPopup from '../../component/ErrorPopup';
 import firestore from '@react-native-firebase/firestore';
+import { sendMutualConnection } from '../../helper/Api';
+import Loader from '../../component/Loader';
 
 class Profile extends Component {
   constructor() {
@@ -90,6 +92,42 @@ class Profile extends Component {
       this.setState({imageOfuser: response.Pictures});
     });
   }
+rightIconPress=async()=>{
+  if(this.props.route.params.from === 'drawer' || (this.props.route.params.id === this.props.userToken) ){
+  this.props.navigation.navigate('editProfle', {
+    imageOfuser: this.state.imageOfuser,
+  })
+}else if(this.props.route.params.id !== this.props.userToken){
+  data={
+    user_id:this.props.userToken,
+    mutual_connection_id:this.props.route.params.id
+  }
+  this.setState({loading:true})
+    await  sendMutualConnection(data).then(response => {
+      this.setState({loading:false})
+      alert(response.message)
+   
+ 
+    this.props.navigation.pop()
+    });
+  
+}
+}
+blockUser=async()=>{
+  data={
+    user_id:this.props.userToken,
+    mutual_connection_id:this.props.route.params.id
+   
+  }
+  this.setState({loading:true})
+  
+  await  blockUser(data).then(response => {
+    alert(response.message)/
+    this.setState({loading:false})
+  
+    this.props.navigation.pop()
+    });
+}
 
   render() {
     return (
@@ -97,18 +135,17 @@ class Profile extends Component {
         <SafeAreaView style={styles.wrapperView}>
           <HeaderWithOptionBtn
             leftIcon={require('../../assets/back.png')}
-            leftPress={() => this.props.navigation.navigate('HomeStack')}
+            leftPress={() => this.props.navigation.pop()}
             rightPress={() =>
-              this.props.navigation.navigate('editProfle', {
-                imageOfuser: this.state.imageOfuser,
-              })
+             this.rightIconPress()
             }
             borderBottom={true}
+
             rightIcon={
-              this.props.route.params.from === 'drawer'
+              this.props.route.params.from === 'drawer' || (this.props.route.params.id === this.props.userToken  )
                 ? require('../../assets/edit.png')
                 : require('../../assets/Slizzer-icon/group.png')
-            }
+            }  
           />
           <ScrollView style={styles.wrapperView} bounces={true}>
             <View style={styles.wrapperView2}>
@@ -269,8 +306,11 @@ class Profile extends Component {
                     {this.footer()}
                   </View>
                 )}
-              {!this.props.route.params.id && (
-                <Text style={styles.blockUser}>BLOCK USER</Text>
+              {this.props.route.params.id !== this.props.userToken && (
+                <TouchableOpacity onPress={()=>this.blockUser()} style={styles.blockUser}>
+                  
+                 <Text style={[styles.titleText,{color:'#FF2D55',textDecorationLine:'underline'}]}>BLOCK USER</Text>
+                  </TouchableOpacity>
               )}
             </View>
           </ScrollView>
@@ -298,6 +338,8 @@ class Profile extends Component {
             />
           </Modal>
         )}
+          {this.state.loading && <Loader loading={this.state.loading} />}
+   
       </View>
     );
   }

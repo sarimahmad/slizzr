@@ -302,7 +302,7 @@ class SignIn extends Component {
     auth()
       .signInWithCredential(googleCredential)
       .then(response => {
-        const data = {
+      const data = {
           Email: response.user._user.email,
           FirstName: response.user._user.displayName,
           LastName: response.user._user.displayName,
@@ -313,20 +313,31 @@ class SignIn extends Component {
           displayName: response.user._user.displayName,
           email_verified: true,
           socialLogin: true,
-          age: 14,
-          STRIPE_CUST_ID: '',
-          STRIPE_HOST_ID: '',
-          AttendedEvents: [],
-          Address: '',
-          HostedEvents: [],
-          BlockedUser: [],
-          BirthDate: new Date(),
-          Gender: '',
+          age: '13',
+          Address: {
+            city: '',
+            line1: '',
+            postal_code: '',
+            state: '',
+            country: '',
+          },
+          BirthDate: {
+            day: 0,
+            month: 0,
+            year: 0,
+          },
           Visibility: true,
           Radius: 50,
+          Gender: '',
+          PushNotification: true,
           bio: '',
+          Location: {
+            latitude: 0,
+            longitude: 0,
+          },
         };
-        this.firestoreLinking(data);
+
+          this.firestoreLinking(data);
       })
       .catch(error => {
         this.setState({

@@ -238,15 +238,16 @@ class CreateEvent extends Component {
     if (isParamsExist) {
       this.setState({screenTypeEdit: true});
 
-      this.getEventDetail(this.props.route.params.id);
+     await this.getEventDetail(this.props.route.params.id);
     }
-    this.checkStripeHostId();
+   await this.checkStripeHostId();
   }
 
   checkStripeHostId = async () => {
     const userData = this.props.userDetail;
-    this.setState({loading: true});
     if (userData.STRIPE_HOST_ID === '') {
+      this.setState({loading: true});
+  
       await createHostStripe({
         user_id: userData.id,
         email: userData.Email,
@@ -274,7 +275,7 @@ class CreateEvent extends Component {
       this.setState({detailItem: response.Event});
 
       this.setState({Name: response.Event.Name});
-      this.setState({DateTime: response.Event.DateTime});
+      this.setState({DateTime: new Date(response.Event.DateTime)});
       this.setState({Description: response.Event.Description});
       this.setState({EventType: response.Event.EventType});
       this.setState({Fee: response.Event.Fee});
@@ -615,7 +616,7 @@ class CreateEvent extends Component {
                             textAlignVertical: 'center',
                           },
                         }}
-                        disabled={this.state.screenTypeEdit === 'edit'}
+                        disabled={this.state.screenTypeEdit}
                         selectedValue={this.state.EventType}
                         onValueChange={(itemValue, itemIndex) =>
                           this.setState({EventType: itemValue})

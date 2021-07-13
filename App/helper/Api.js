@@ -172,6 +172,16 @@ export async function getAllPaymentMethods(user_id) {
     });
 }
 
+
+export async function getAllBlockedUsers(user_id) {
+  return fetch(`${Server}/user/get-all-block-list/` + user_id)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
 export async function newPaymentMethod(formdata) {
   var config = {
     method: 'post',
@@ -251,7 +261,9 @@ export async function updateEvent(event_id, dataToUpdate) {
     .catch(error => console.log('error', error));
 }
 
-export async function getZicketDetails({event_id, user_id}) {
+export async function getZicketDetails() {
+  let user_id="3wDLplGq1oYQMO3xRnS4ZtpdK0M2"
+  let event_id="074d6e00-6fbf-4eed-9884-984fd56e84e4"
   return fetch(`${Server}/zicket?user_id=${user_id}&event_id=${event_id}`)
     .then(async response => {
       return await response.json();
@@ -276,7 +288,7 @@ export async function getAllMessages({event_id, user_id}) {
   console.log(data);
   var config = {
     method: 'post',
-    url: `${Server}/chatroom/get-all-message`,
+    url: `${Server}/chatroom/messages`,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -313,6 +325,105 @@ export async function CustomerCharge(data) {
   return GetResponse;
 }
 
+export async function getAllRequests(user_id) {
+  return fetch(`${Server}/user/get-all-request/${user_id}`)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+
+
+export async function getAllFriends(user_id) {
+   return fetch(`${Server}/user/get-all-friends/${user_id}`)
+     .then(async response => {
+       return await response.json();
+     })
+     .catch(error => {
+       console.error(error);
+     });
+ }
+export async function findPeoplebyDistance() {
+ let min_age="0"
+ let max_age="0"
+ let user_id= "3wDLplGq1oYQMO3xRnS4ZtpdK0M2"
+  return fetch(`${Server}/user/people/find-people?min_age=${min_age}&max_age=${max_age}&user_id=${user_id}`)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+export async function acceptandRejectRequest(data) {
+  var config = {
+    method: 'post',
+    url: `${Server}/user/decide-mutual-connect-request`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+// export async function findPeoplebyDistance(min_age,max_age,user_id) {
+//  return  axios.get(`${Server}/user/people/find-people`, {
+//     params: {
+//       min_age: min_age,
+//       max_age: max_age,
+//       user_id: user_id
+//     }
+//   });
+// }
+export async function sendMutualConnection(data) {
+  var config = {
+    method: 'post',
+    url: `${Server}/user/send-mutual-connect-request`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+export async function blockUser(data) {
+  var config = {
+    method: 'post',
+    url: `${Server}/user/block-user`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
 export async function payAndJoin(data) {
   var config = {
     method: 'post',

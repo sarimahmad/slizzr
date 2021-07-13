@@ -183,9 +183,7 @@ class eventDetail extends Component {
                   marginTop: 3,
                   fontWeight: 'bold',
                 }}>
-                {moment(this.state.detailItem.Start_date).format(
-                  'hh:mm A | MMM DD, YYYY - ddd',
-                )}{' '}
+                {this.state.detailItem.DateTime}{' '}
                 | {this.state.detailItem.duration} HRS
               </Text>
               <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>

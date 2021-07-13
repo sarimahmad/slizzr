@@ -1,6 +1,8 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
+import axios from 'axios';
+import Server from '../../helper/Server';
 
 import {
   View,
@@ -10,6 +12,7 @@ import {
   SafeAreaView,
   FlatList,
   Image,
+  TextInput
 } from 'react-native';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -19,36 +22,19 @@ import {
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class peopleProfiles extends Component {
+import { findPeoplebyDistance  } from '../../helper/Api';
+import {connect} from 'react-redux';
+import Loader from '../../component/Loader';
+import WaitingFor from '../../component/WaitingFor';
+class peopleProfiles extends Component {
   constructor(props) {
     super(props);
     this.state = {
       searchPeople: false,
+      loading:false,
+      min_age:"17",
+      max_age:"25",
       findpeople: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Celebration Time',
-          adress: 'Host: Jaclynn Bradley',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Sagar’s Birthday',
-          adress: 'Host: Kita Chihoko',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'GMU Party',
-          adress: 'Host: Jaclynn Bradley',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
       ],
       image: [
         {id: 1, image: require('../../assets/profile2.png')},
@@ -63,10 +49,31 @@ export default class peopleProfiles extends Component {
       ],
     };
   }
-
+  componentDidMount(){
+    this.findPeoplebyDistance()
+  }
+  async findPeoplebyDistance() {
+    this.setState({loading:true})
+    await findPeoplebyDistance(this.state.min_age,this.state.max_age,this.props.userToken).then(response => {
+      console.log("response"+response)
+      this.setState({findpeople: response.Users, loading: false});
+    });
+    
+  }
+  handleSubmit=(type,value)=>{
+    if(type=="max_age"){
+      this.setState({max_age:value})
+      this.findPeoplebyDistance()
+    }else if(type=="min_age"){
+      this.setState({min_age:value})
+      this.findPeoplebyDistance()
+    }
+  }
   render() {
     return (
       <View style={styles.wrapperView}>
+       {this.state.loading === false && (
+       
         <SafeAreaView style={styles.contentView}>
           <HeaderWithOptionBtn
             borderBottom={true}
@@ -78,7 +85,6 @@ export default class peopleProfiles extends Component {
             centerIcon={require('../../assets/homeLogo.png')}
           />
 
-          <ScrollView>
             <TouchableOpacity
               // onPress={() => this.props.navigation.navigate('lookFriends')}
               style={styles.inputSearch}>
@@ -106,9 +112,15 @@ export default class peopleProfiles extends Component {
                 Min:
               </Text>
 
-              <View style={styles.box}>
-                <Text>17</Text>
-              </View>
+              <TextInput
+                  style={styles.box}
+                    value={this.state.min_age}
+                    onSubmitEditing={value => this.findPeoplebyDistance()}
+                    onChangeText={value => this.setState({min_age:value})}
+                    placeholder="0"
+                    keyboardType="number-pad"
+                    placeholderTextColor={'#B2ABB1'}
+                  />
               <Text
                 style={{
                   fontSize: 17,
@@ -118,10 +130,16 @@ export default class peopleProfiles extends Component {
                 }}>
                 Max :
               </Text>
-              <View style={styles.box}>
-                <Text>25</Text>
+              <TextInput
+                  style={styles.box}
+                    value={this.state.max_age}
+                    onSubmitEditing={value => this.findPeoplebyDistance()}
+                    onChangeText={value => this.setState({max_age:value})}
+                  placeholder="0"
+                    keyboardType="number-pad"
+                    placeholderTextColor={'#B2ABB1'}
+                  />
               </View>
-            </View>
 
             <FlatList
               data={this.state.findpeople}
@@ -143,7 +161,7 @@ export default class peopleProfiles extends Component {
                   <View style={styles.bottomView}>
                     <View
                       style={{alignItems: 'center', justifyContent: 'center'}}>
-                      <Text style={styles.titleText}>Mary Poppins, 22, F</Text>
+                      <Text style={styles.titleText}>{item.displayName}</Text>
                       <View style={{flexDirection: 'row', marginTop: 5}}>
                         <Image
                           source={require('../../assets/location.png')}
@@ -183,18 +201,32 @@ export default class peopleProfiles extends Component {
                     </TouchableOpacity>
                   </View>
                   <Image
-                    source={require('../../assets/cardImage1.png')}
+                    source={{uri:item.image}}
                     style={{position: 'absolute', alignSelf: 'center', top: 40}}
                   />
                 </View>
               )}
             />
-          </ScrollView>
         </SafeAreaView>
+       )}
+       {this.state.loading === true && <WaitingFor type="People" />}
+       
       </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(peopleProfiles);
+
 const styles = StyleSheet.create({
   ageView: {
     flexDirection: 'row',
@@ -206,8 +238,9 @@ const styles = StyleSheet.create({
   box: {
     borderWidth: 1,
     borderRadius: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 15,
+    height:50,
+    width:50,  
+    paddingLeft:15,
     borderColor: 'lightgrey',
     elevation: 2,
   },

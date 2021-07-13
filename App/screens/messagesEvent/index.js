@@ -42,7 +42,7 @@ const messagesEvent = (props) => {
         "event_id": EventID,
         "user_id": TOKEN.slice(1, -1),
       }).then((response) => {
-        SetMessages(response.messages)
+        SetMessages(response.Messages)
       }).catch((error) => {
         console.log(error)
       })
@@ -106,15 +106,15 @@ const messagesEvent = (props) => {
               <View style={styles.flexRow}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={styles.imgView}>
-                    <Image style={{ height: 50, width: 50 }} source={{uri : item.Messages[0].ProfilePicture[0].Profile_Url}} />
+                    <Image style={{ height: 50, width: 50 }} source={{uri : item.ProfilePicture[0].Profile_Url}} />
                   </View>
                   <View style={styles.detail}>
-                    <Text style={[styles.titleText, { fontFamily: FONT.Nunito.semiBold }]}>{item.Messages[0].profile.displayName}</Text>
-                    <Text style={{ color: '#B2ABB1', fontSize: 12 }}>{item.Messages[0].text}</Text>
+                    <Text style={[styles.titleText, { fontFamily: FONT.Nunito.semiBold }]}>{ item.userdisplayName}</Text>
+                    <Text style={{ color: '#B2ABB1', fontSize: 12 }}>{item.text}</Text>
                   </View>
-                </View>
+                </View>  
                 <View style={{ height: 23, width: 23, borderRadius: 24, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F818D9', marginRight: 9 }}>
-                  <Text style={[styles.titleText, { color: 'white' }]}>{item.Messages.length}</Text>
+                  <Text style={[styles.titleText, { color: 'white' }]}>{item.length}</Text>
                 </View>
               </View>
               <View style={{ height: 1, borderBottomWidth: 1, borderBottomColor: 'lightgrey', width: SCREEN.width }}></View>
