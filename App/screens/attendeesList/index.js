@@ -20,15 +20,17 @@ import {
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { getAttendeesList } from '../../helper/Api';
 import Loader from '../../component/Loader';
+import {connect} from 'react-redux';
 
-export default class attendeesList extends Component {
+ class attendeesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       attendingEvents: true,
       myevents: false,
       attendeesList:[],
-      attendeesCount:0
+      attendeesCount:0,
+      attendeesIdList:[]
     };
   }
   
@@ -40,11 +42,17 @@ componentDidMount(){
  
 }
 async getAttendeesList(eventId) {
+ let attendeesIdList=[]
  this.setState({loading:true})
   await getAttendeesList(eventId).then((response) => {
     this.setState({ attendeesLIst: response.Attendees }) 
     this.setState({attendeesCount:response.Attendees.length})
+    response.Attendees.forEach(element => {
+      attendeesIdList.push(element.id)
+  });
+    this.setState({attendeesIdList:attendeesIdList})
     this.setState({loading:false})
+  
   });
 
 }
@@ -126,7 +134,13 @@ async getAttendeesList(eventId) {
             )}
           />
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('chat')}
+            onPress={() => this.props.navigation.navigate('chat',{
+              HostUID: this.props.userToken,
+              AttendeesList: this.state.attendeesIdList,
+              EventID: this.props.route.params.id,
+              chatType:"group"
+    
+            })}
             style={styles.btnMap}>
             <Text style={styles.btnText}>Message all {this.state.attendeesCount} attendees</Text>
           </TouchableOpacity>
@@ -137,6 +151,18 @@ async getAttendeesList(eventId) {
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(attendeesList);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,

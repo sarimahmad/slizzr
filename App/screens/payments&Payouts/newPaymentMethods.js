@@ -121,7 +121,6 @@ class newPaymentMethods extends Component {
                   backColor={WHITE.dark}
                 />
                 <CreditCardInput onChange={this._onChange} />
-                <View style={{flex: 1}}>
                   <TouchableOpacity
                     onPress={() => this.addPaymenmtMethod()}
                     style={[
@@ -141,7 +140,6 @@ class newPaymentMethods extends Component {
                       Done
                     </Text>
                   </TouchableOpacity>
-                </View>
               </SafeAreaView>
             </Modal>
           )}

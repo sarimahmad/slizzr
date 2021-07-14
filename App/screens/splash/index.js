@@ -28,19 +28,19 @@ const splash = props => {
     setTimeout(async () => {
       if (userDetail) {
         const userParsed = JSON.parse(userDetail);
-        if (userParsed.user.email_verified === true) {
-          if (userParsed.user.age && parseInt(userParsed.user.age) > 16) {
-            props.callApi(JSON.parse(userDetail).user, JSON.parse(TOKEN));
+        if (userParsed.email_verified === true) {
+          if (userParsed.age && parseInt(userParsed.age) > 16) {
+            props.callApi(JSON.parse(userDetail), JSON.parse(TOKEN));
             props.navigation.navigate('HomeStack');
           } else {
-            props.callApi(JSON.parse(userDetail).user, JSON.parse(TOKEN));
+            props.callApi(JSON.parse(userDetail), JSON.parse(TOKEN));
             props.navigation.navigate('BirthDateSplash', {from: 'splash'});
           }
         } else {
           Alert.alert(
             'Email not Verified',
             'Please verify your email ' +
-              userParsed.user.email +
+              userParsed.email +
               ' and sign in again',
             [
               {

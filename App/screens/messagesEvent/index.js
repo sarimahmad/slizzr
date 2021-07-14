@@ -94,7 +94,7 @@ const messagesEvent = (props) => {
 
         <FlatList
           data={messages}
-          keyExtractor={item => item.id}
+          keyExtractor={item => item._id}
           ListEmptyComponent={emptyListComponent}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -106,16 +106,19 @@ const messagesEvent = (props) => {
               <View style={styles.flexRow}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={styles.imgView}>
-                    <Image style={{ height: 50, width: 50 }} source={{uri : item.ProfilePicture[0].Profile_Url}} />
+                    <Image style={{ height: 50, width: 50 }} source={item.Pictures.length > 0 ?
+                        {uri : item.Pictures[1].Profile_Url}:
+                        {}
+                        } />
                   </View>
                   <View style={styles.detail}>
-                    <Text style={[styles.titleText, { fontFamily: FONT.Nunito.semiBold }]}>{ item.userdisplayName}</Text>
+                    <Text style={[styles.titleText, { fontFamily: FONT.Nunito.semiBold }]}>{item.user && item.user.displayName}</Text>
                     <Text style={{ color: '#B2ABB1', fontSize: 12 }}>{item.text}</Text>
                   </View>
                 </View>  
-                <View style={{ height: 23, width: 23, borderRadius: 24, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F818D9', marginRight: 9 }}>
-                  <Text style={[styles.titleText, { color: 'white' }]}>{item.length}</Text>
-                </View>
+                {/* <View style={{ height: 23, width: 23, borderRadius: 24, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F818D9', marginRight: 9 }}>
+                  <Text style={[styles.titleText, { color: 'white' }]}>{item.Messages && item.Messages.length}</Text>
+                </View> */}
               </View>
               <View style={{ height: 1, borderBottomWidth: 1, borderBottomColor: 'lightgrey', width: SCREEN.width }}></View>
 

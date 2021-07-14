@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 
 import {FONT, SCREEN} from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import {getAllPaymentMethods, makeDefaultPayment} from '../../helper/Api';
+import {getAllPaymentMethods, makeDefaultPayment,removePaymentMethod} from '../../helper/Api';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
 import Loader from '../../component/Loader';
@@ -57,7 +57,17 @@ class paymentMethod extends Component {
       this.getPaymentMethods();
     });
   };
-
+  removePaymentMethod=async(payment_card_id)=>{
+   let  data={
+      user_id: this.props.userToken,
+      payment_card_id: payment_card_id
+    }
+    await removePaymentMethod(data).then(response => {
+     
+      this.setState({loading: false});
+    alert(response.message)
+    });
+  }
   footer = () => {
     return (
       <TouchableOpacity
@@ -95,11 +105,14 @@ class paymentMethod extends Component {
                         style={styles.imageView}
                       />
                     ) : (
+                    <TouchableOpacity onPress={()=>this.removePaymentMethod(item.id)}>
                       <Image
                         source={require('../../assets/Slizzer-icon/cross.png')}
                         style={[styles.imageView, {height: 25}]}
                       />
-                    )}
+                      </TouchableOpacity>
+                    )
+                    }
                     <Text
                       style={[
                         styles.textView,

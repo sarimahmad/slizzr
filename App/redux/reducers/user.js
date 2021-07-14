@@ -21,7 +21,7 @@ const userReducer = (state = INITIAL_USER, action) => {
         userToken: action.payload.uid,
         loading: false,
       });
-      AsyncStorage.setItem(USERDETAIL, JSON.stringify(action.payload));
+      AsyncStorage.setItem(USERDETAIL, JSON.stringify(action.payload.user));
       AsyncStorage.setItem(TOKEN, JSON.stringify(action.payload.uid));
 
       return state;

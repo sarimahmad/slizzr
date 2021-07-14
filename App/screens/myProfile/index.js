@@ -100,7 +100,7 @@ rightIconPress=async()=>{
 }else if(this.props.route.params.id !== this.props.userToken){
   data={
     user_id:this.props.userToken,
-    mutual_connection_id:this.props.route.params.id
+    friend_user_id:this.props.route.params.id
   }
   this.setState({loading:true})
     await  sendMutualConnection(data).then(response => {
