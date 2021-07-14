@@ -24,7 +24,6 @@ import Geolocation from 'react-native-geolocation-service';
 import {openSettings} from 'react-native-permissions';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
-import moment from 'moment';
 
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
@@ -104,7 +103,7 @@ class home extends Component {
 
   checkStripeClientId = async () => {
     const userData = this.props.userDetail;
-   
+
     if (userData.STRIPE_CUST_ID === '') {
       await createCustomerStripe({user_id: userData.id}).then(_response => {
         console.log(_response);
@@ -213,7 +212,9 @@ class home extends Component {
 
     fetch(
       `${Server}/event?radius=${
-        this.props.userDetail && this.props.userDetail.Radius ? '5000' : '5000'
+        this.props.userDetail && this.props.userDetail.Radius
+          ? this.props.userDetail.Radius
+          : '5000'
       }&lat=${this.state.allLocations.latitude}&long=${
         this.state.allLocations.longitude
       }&page=${this.state.pageNumber}&limit=30`,
@@ -223,7 +224,7 @@ class home extends Component {
       .then(async querySnapShot => {
         if (querySnapShot.Events.length > 0) {
           await querySnapShot.Events.forEach(async doc => {
-            console.warn(doc)
+            console.warn(doc);
             let event = {
               Description: doc.Description,
               id: doc.id,
@@ -271,9 +272,7 @@ class home extends Component {
           this.setState({loading: false});
         }
       })
-      .then(() => {
-      
-      })
+      .then(() => {})
 
       .catch(error => {
         this.setState({
@@ -312,16 +311,14 @@ class home extends Component {
     }
     this.getEvents('update');
   };
- eventDetail=(event_id)=>{
-   if(event_id){
-  this.props.navigation.navigate('eventDetail', {
-    detailItem: event_id,
-    
-  })
-}else{
-  
-}
- }
+  eventDetail = event_id => {
+    if (event_id) {
+      this.props.navigation.navigate('eventDetail', {
+        detailItem: event_id,
+      });
+    } else {
+    }
+  };
   listView = () => {
     return (
       <View style={{flex: 1}}>
@@ -368,9 +365,7 @@ class home extends Component {
                       <Text style={styles.adressText}>
                         Host: {item.Host.displayName}
                       </Text>
-                      <Text style={styles.purpleText}>
-                        {item.DateTime}
-                      </Text>
+                      <Text style={styles.purpleText}>{item.DateTime}</Text>
                       <View style={styles.flexRow}>
                         <Image
                           style={{height: 16, width: 12, marginRight: 5}}
@@ -381,9 +376,7 @@ class home extends Component {
                       </View>
                     </View>
                     <TouchableOpacity
-                      onPress={() =>
-                       this.eventDetail(item.id)
-                      }
+                      onPress={() => this.eventDetail(item.id)}
                       style={styles.shareView}>
                       <Image source={require('../../assets/Right.png')} />
                     </TouchableOpacity>

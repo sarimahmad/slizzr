@@ -51,12 +51,18 @@ class eventDetail extends Component {
   componentDidMount() {
     let id = this.props.route.params.detailItem;
     this.setState({user_id: this.props.userDetail.id});
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.props.userDetail &&
+        this.getEventStatus({
+          user_id: this.props.userDetail.id,
+          event_id: this.props.route.params.detailItem,
+        });
+    });
     this.props.userDetail && this.getEventDetail(id, this.props.userDetail.id);
-    this.props.userDetail &&
-      this.getEventStatus({
-        user_id: this.props.userDetail.id,
-        event_id: this.props.route.params.detailItem,
-      });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
   }
 
   getEventDetail(id, userId) {
@@ -183,8 +189,8 @@ class eventDetail extends Component {
                   marginTop: 3,
                   fontWeight: 'bold',
                 }}>
-                {this.state.detailItem.DateTime}{' '}
-                | {this.state.detailItem.duration} HRS
+                {this.state.detailItem.DateTime} |{' '}
+                {this.state.detailItem.duration} HRS
               </Text>
               <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>
                 <View style={[styles.flexRow, {paddingTop: 5}]}>
@@ -239,14 +245,17 @@ class eventDetail extends Component {
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
-                  if (
-                    this.state.Check_Status === 'Active' &&
-                    this.state.User_Attending_Event === false
-                  ) {
-                    this.attendEvent({
-                      user_id: this.props.userDetail.id,
-                      event_id: this.props.route.params.detailItem,
-                    });
+                  if (this.state.Check_Status === 'Active') {
+                    if (this.state.User_Attending_Event === false) {
+                      this.attendEvent({
+                        user_id: this.props.userDetail.id,
+                        event_id: this.props.route.params.detailItem,
+                      });
+                    } else {
+                      this.props.navigation.navigate('attendingEventInfo', {
+                        id: this.props.route.params.detailItem,
+                      });
+                    }
                   }
                 }}
                 style={
