@@ -84,11 +84,14 @@ class Profile extends Component {
   };
   async getOtherUserImages(id) {
     await getUserImages(id).then(response => {
+      this.setState({loading:false})
       this.setState({imageOfuser: response.Pictures});
     });
   }
   async getUserImages() {
     await getUserImages(this.props.userToken).then(response => {
+      this.setState({loading:false})
+     
       this.setState({imageOfuser: response.Pictures});
     });
   }
@@ -114,17 +117,17 @@ rightIconPress=async()=>{
 }
 }
 blockUser=async()=>{
-  data={
+ let data={
     user_id:this.props.userToken,
-    mutual_connection_id:this.props.route.params.id
+    mutual_connection_id:this.props.route.params.MutualConnectionID
    
   }
   this.setState({loading:true})
   
   await  blockUser(data).then(response => {
-    alert(response.message)/
     this.setState({loading:false})
-  
+    alert(response.message)
+   
     this.props.navigation.pop()
     });
 }

@@ -8,6 +8,7 @@ import {
   Image,
   StyleSheet,
   TextInput,
+  Modal,
   FlatList,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
@@ -21,7 +22,8 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { getAttendeesList } from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
-
+import ErrorPopup from '../../component/ErrorPopup';
+import { sendMessageToAttendees } from '../../helper/Api';
  class attendeesList extends Component {
   constructor(props) {
     super(props);
@@ -30,7 +32,13 @@ import {connect} from 'react-redux';
       myevents: false,
       attendeesList:[],
       attendeesCount:0,
-      attendeesIdList:[]
+      attendeesIdList:[],
+      popUpError: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
+      messageAllText:''
+
     };
   }
   
@@ -56,6 +64,30 @@ async getAttendeesList(eventId) {
   });
 
 }
+storeInputData = (text) => {
+  this.setState({messageAllText:text})
+};
+
+done = async() => {
+  this.setState({popUpError: false});
+  this.setState({btnOneText: false});
+  this.setState({errorTitle: false});
+  this.setState({errorText: false});
+  
+
+  this.setState({loading:true})
+ 
+ let data={
+  HostUID: this.props.userToken,
+  AttendeesList: this.state.attendeesIdList,
+  EventID: this.props.route.params.id,
+              Text:this.state.messageAllText
+  }
+ await sendMessageToAttendees(data).then((response)=>{
+  this.setState({loading:false})
+    alert(response.message)
+  })
+};
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -134,19 +166,39 @@ async getAttendeesList(eventId) {
             )}
           />
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('chat',{
-              HostUID: this.props.userToken,
-              AttendeesList: this.state.attendeesIdList,
-              EventID: this.props.route.params.id,
-              chatType:"group"
-    
-            })}
+            onPress={() => this.setState({ 
+            errorTitle: 'Chat',
+            errorText: 'Send Message to All Attendees',
+            btnOneText: 'Ok',
+            popUpError: true}) 
+            
+            }
             style={styles.btnMap}>
             <Text style={styles.btnText}>Message all {this.state.attendeesCount} attendees</Text>
           </TouchableOpacity>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-    
+        {this.state.popUpError && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() =>
+                this.done()
+              }
+          
+              parentCallBack={this.storeInputData}
+              doneButtonPress={() => console.log("tapped")}
+              errorTitle={this.state.errorTitle}
+              textInput={true}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+              btnTwoText={this.state.btnTwoText}
+            />
+          </Modal>
+        )}
       </View>
     );
   }

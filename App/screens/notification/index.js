@@ -60,9 +60,10 @@ class notification extends Component {
   }
     this.setState({loading:true})
     await acceptandRejectRequest(data).then(response => {
-    alert(response.message)
+    
     this.setState({loading:false})
-    });
+    alert(response.message)  
+  });
   }
 componentDidMount(){
   this.getAllRequests()

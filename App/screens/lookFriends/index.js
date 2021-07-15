@@ -102,7 +102,7 @@ import {
           data={this.state.findpeople}
           keyExtractor={item => item.id}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={()=>this.props.navigation.navigate("myProfile",{id:item.Friend.id})} >
+            <TouchableOpacity onPress={()=>this.props.navigation.navigate("myProfile",{id:item.UserID,MutualConnectionID:item.MutualConnectionID})} >
             <View style={styles.flexRow}>
               <View style={styles.imgView}>
                 <Image source={require('../../assets/lookFriend1.png')} />

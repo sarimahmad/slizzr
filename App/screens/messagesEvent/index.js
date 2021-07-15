@@ -32,7 +32,7 @@ const messagesEvent = (props) => {
   useEffect(() => {
     getMessage()
     
-  }, [])
+}, [])
 
   async function getMessage(){
     const TOKEN = await AsyncStorage.getItem('token');
@@ -100,16 +100,26 @@ const messagesEvent = (props) => {
             <TouchableOpacity
               onPress={() => navigation.navigate('chat', {
                 CurrentUserUID: currentUID.slice(1, -1), 
-                HostUID : event.Host.Id, 
+                HostUID : item.user.id, 
                 EventID : event.id
               })}>
               <View style={styles.flexRow}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <View style={styles.imgView}>
-                    <Image style={{ height: 50, width: 50 }} source={item.Pictures.length > 0 ?
-                        {uri : item.Pictures[1].Profile_Url}:
-                        {}
-                        } />
+                    
+             {item.Pictures.length > 0 ? (
+              <Image
+                source={ {uri : item.Pictures[1].Profile_Url}}
+                style={styles.logo}
+              />
+            ) : (
+             <View style={[styles.logo,{alignItems:'center',justifyContent: 'center',backgroundColor:'#7b1fa2',borderColor:'#7b1fa2'}]}>
+               <Text style={{fontSize:28,fontWeight:'600',color:'white'}}>
+                 {  item.user.FirstName.charAt(0).concat(item.user.LastName.charAt(0))    }
+                 </Text>
+             </View>
+            )}
+
                   </View>
                   <View style={styles.detail}>
                     <Text style={[styles.titleText, { fontFamily: FONT.Nunito.semiBold }]}>{item.user && item.user.displayName}</Text>
@@ -183,7 +193,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  logo: {},
+  logo: {   height: 60,
+    width: 60,
+    borderWidth: 2,
+    borderRadius: 30,
+ },
   titleText: {
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,

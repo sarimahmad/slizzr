@@ -323,15 +323,16 @@ export async function getAllMessages({event_id, user_id}) {
   return GetResponse;
 }
 export async function sendMessageToAttendees(data) {
-  var data = JSON.stringify(data);
-  console.log(data);
+  var dataJson = JSON.stringify(data);
+  // conso/le.log(data);
+
   var config = {
     method: 'post',
     url: `${Server}/chatroom/send-message-to-attendees`,
     headers: {
       'Content-Type': 'application/json',
     },
-    data: data,
+    data: dataJson,
   };
 
   const GetResponse = await axios(config)
@@ -446,13 +447,14 @@ export async function sendMutualConnection(data) {
   return GetResponse;
 }
 export async function blockUser(data) {
+ let formData = JSON.stringify(data)
   var config = {
     method: 'post',
     url: `${Server}/user/block-user`,
     headers: {
       'Content-Type': 'application/json',
     },
-    data: data,
+    data: formData,
   };
 
   const GetResponse = await axios(config)

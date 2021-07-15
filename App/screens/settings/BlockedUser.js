@@ -75,7 +75,7 @@ import {FONT, SCREEN} from '../../helper/Constant';
                     style={styles.imageView}
                     source={require('../../assets/Slizzer-icon/Oval.png')}
                   />
-                  <Text style={styles.textView}>{item.name}</Text>
+                  <Text style={styles.textView}>{item.Friend.displayName}</Text>
                 </View>
                 <View>
                   <Image

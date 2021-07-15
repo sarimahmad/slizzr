@@ -26,12 +26,7 @@ function HeaderWithOptionBtn({ leftPress, headerTitle,rightIconText, leftIcon,pr
           activeOpacity={0.85} style={{ position: 'absolute', left: 20, justifyContent: 'center', alignItems: 'center', height: 20, width: 20 }}>
           <Image source={leftIcon} style={{ height: 40, width: 40, justifyContent: 'center' }} />
         </TouchableOpacity>}
-        {profileIcon &&
-
-      <Image
-      style={{position: 'absolute',left: 60, justifyContent: 'center', alignItems: 'center', height: 40, width: 40}}
-      source={{uri: profileIcon}}
-    />}
+       
 
         {centerIcon &&
       <View
@@ -57,7 +52,14 @@ function HeaderWithOptionBtn({ leftPress, headerTitle,rightIconText, leftIcon,pr
         <View style={{
           flexDirection: 'row', alignItems: 'center',
         }}>
+         {profileIcon &&
+
+<Image
+style={{ justifyContent: 'center', alignItems: 'center', height: 60, width: 40}}
+source={{uri: profileIcon}}
+/>}
           <Text style={{ fontSize: 17, fontFamily: FONT.Nunito.bold, color: BLACK.app }}>{headerTitle}</Text>
+        
         </View>
       </View>
 }

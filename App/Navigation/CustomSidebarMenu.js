@@ -21,12 +21,16 @@ import {FONT, SCREEN} from '../helper/Constant';
 
 const CustomSidebarMenu = props => {
   const [userObject, setUserObject] = useState({});
+  const [name,setName]=useState("")
   useEffect(() => {
     async function fetchData() {
       const userDetail = await AsyncStorage.getItem('userdetail');
       setUserObject(JSON.parse(userDetail));
+     let name = userObject.FirstName.charAt(0).concat(userObject.LastName.charAt(0))
+    setName(name)
     }
     fetchData();
+
   });
   return (
     <View style={{flex: 1}}>
@@ -49,18 +53,20 @@ const CustomSidebarMenu = props => {
             props.navigation.navigate('myProfile', {from: 'drawer'})
           }>
           <View style={styles.NameDetailWrapper}>
-            {userObject && userObject.user ? (
+            {userObject &&  userObject.Profile  ? (
               <Image
-                source={{uri: userObject.user.Profile}}
+                source={{uri: userObject.Profile}}
                 style={styles.logo}
               />
             ) : (
-              <View style={styles.logo} />
+             <View style={[styles.logo,{alignItems:'center',justifyContent: 'center',backgroundColor:'#7b1fa2',borderColor:'#7b1fa2'}]}>
+               <Text style={{fontSize:28,fontWeight:'600',color:'white'}}>{name}</Text>
+             </View>
             )}
 
             <Text style={styles.EmailText}>
-              {userObject && userObject.user
-                ? userObject.user.FirstName
+              {userObject && userObject
+                ? userObject.FirstName
                 : 'User'}
             </Text>
           </View>
