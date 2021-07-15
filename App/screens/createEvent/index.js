@@ -245,7 +245,7 @@ class CreateEvent extends Component {
 
   checkStripeHostId = async () => {
     const userData = this.props.userDetail;
-    if (userData.STRIPE_HOST_ID === '') {
+    if (!userData.STRIPE_HOST_ID || userData.STRIPE_HOST_ID === '') {
       this.setState({loading: true});
   
       await createHostStripe({

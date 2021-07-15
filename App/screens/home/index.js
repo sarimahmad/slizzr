@@ -31,7 +31,8 @@ import WaitingFor from '../../component/WaitingFor';
 import ErrorPopup from '../../component/ErrorPopup';
 import {createCustomerStripe} from '../../helper/Api';
 import Server from '../../helper/Server';
-
+import firestore from '@react-native-firebase/firestore';
+import { updateProfile }  from '../../helper/Api';
 let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
@@ -66,6 +67,7 @@ class home extends Component {
       errorTitle: '',
       errorText: '',
       pageNumber: 1,
+      StripeId: ''
     };
     this.getLocation = this.getLocation.bind(this);
     this.getEvents = this.getEvents.bind(this);
@@ -73,6 +75,7 @@ class home extends Component {
   componentDidMount() {
     this.getLocation();
     this.checkStripeClientId();
+ 
   }
   hasPermissionIOS = async () => {
     const openSetting = () => {
@@ -100,13 +103,57 @@ class home extends Component {
 
     return false;
   };
-
+  getUserFromFirestore = id => {
+    this.setState({loading: true});
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(id)
+      .get()
+      .then(firestoreDocument => {
+        if (!firestoreDocument.exists) {
+          return;
+        } else {
+          this.setState({
+            loading: false,
+          });
+          props.callApi(JSON.parse(firestoreDocument._data).user, JSON.parse(firestoreDocument._data.id));
+        }
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          btnOneText: 'Ok',
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
+          popUpError: true,
+        });
+      });
+  };
+  // updateProfile=async(response)=>{
+  //  this.setState({loading:true})
+   
+  //   await updateProfile(this.props.userToken,response).then(
+  //     response => {
+  //   this.getUserFromFirestore(this.props.userToken);
+  //   console.log(response)
+  // },);
+  // }
   checkStripeClientId = async () => {
     const userData = this.props.userDetail;
 
-    if (userData.STRIPE_CUST_ID === '') {
-      await createCustomerStripe({user_id: userData.id}).then(_response => {
-        console.log(_response);
+    if (!userData.STRIPE_CUST_ID || userData.STRIPE_CUST_ID === '') {
+      await createCustomerStripe({user_id: userData.id}).then(async _response => {
+        this.setState({StripeId: _response})
+        this.setState({loading:true})
+        this.getUserFromFirestore(this.props.userToken)
+      //   if(_response){
+      //   await updateProfile(this.props.userToken,_response).then(
+      //     response => {
+      //   this.getUserFromFirestore(this.props.userToken);
+      //   console.log(response)
+        
+      // },);
+      // }
         this.setState({loading: false});
       });
     } else {

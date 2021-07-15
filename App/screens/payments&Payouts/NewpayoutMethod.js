@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -9,20 +9,22 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import {FONT, SCREEN} from '../../helper/Constant';
+import { FONT, SCREEN } from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import {SafeAreaView} from 'react-navigation';
-import {WHITE} from '../../helper/Color';
-import {ScrollView} from 'react-native';
+import { SafeAreaView } from 'react-navigation';
+import { WHITE } from '../../helper/Color';
+import { ScrollView } from 'react-native';
 import {
-  newPaymentMethod,
+  newPayoutMethod,
   createHostStripe,
   getUserProfile,
 } from '../../helper/Api';
 import * as userActions from '../../redux/actions/user';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
+import RNPickerSelect from 'react-native-picker-select';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import Validations from '../../helper/Validations';
 class NewpayoutMethod extends Component {
@@ -30,10 +32,10 @@ class NewpayoutMethod extends Component {
     super(props);
     this.state = {
       accountholderName: '',
-      accountholderType: '',
-      routing_Number: '',
+      Account_Number: '',
+      Transit_Number: '',
       state: '',
-      account_number: '',
+      Institue_number: '',
       editType: true,
       country: '',
       isModalVisible: false,
@@ -42,6 +44,7 @@ class NewpayoutMethod extends Component {
       errorTitle: '',
       errorText: '',
       btnTwoText: '',
+      AccountType: ''
     };
   }
   isFormFilled() {
@@ -49,20 +52,20 @@ class NewpayoutMethod extends Component {
       this.state.accountholderName,
     );
     let checkaccount_holder_type = Validations.checkUsername(
-      this.state.accountholderType,
+      this.state.Account_Number,
     );
     let checkrouting_number = Validations.checkUsername(
-      this.state.routing_Number,
+      this.state.Transit_Number,
     );
-    let checkaccount_number = Validations.checkUsername(
-      this.state.account_number,
+    let checkInstitue_number = Validations.checkUsername(
+      this.state.Institue_number,
     );
 
     if (
       checkaccount_holder_name &&
       checkaccount_holder_type &&
       checkrouting_number &&
-      checkaccount_number
+      checkInstitue_number
     ) {
       return true;
     }
@@ -85,14 +88,14 @@ class NewpayoutMethod extends Component {
         errorTitle: 'Invalid Form',
         btnOneText: 'Ok',
         popUpError: true,
-        errorText: 'Add routing_Number in form',
+        errorText: 'Add Transit_Number in form',
       });
-    } else if (!checkaccount_number) {
+    } else if (!checkInstitue_number) {
       this.setState({
         errorTitle: 'Invalid Form',
         btnOneText: 'Ok',
         popUpError: true,
-        errorText: 'Add account_number in form',
+        errorText: 'Add Institue_number in form',
       });
     }
     return false;
@@ -105,19 +108,19 @@ class NewpayoutMethod extends Component {
         let data = {
           account_holder_name: this.state.accountholderName,
           account_holder_type: 'individual',
-          routing_number: this.state.routing_Number,
-          account_number: this.state.account_number,
+          routing_number: this.state.Transit_Number+'-'+this.state.Institue_number,
+          account_number: this.state.Account_Number,
           user_id: userData.id,
           host_id: userData.STRIPE_HOST_ID,
         };
-        this.setState({loading: true});
+        this.setState({ loading: true });
         this.addPayment(data);
       }
     } else {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       await createHostStripe({
         user_id: userData.id,
-        email: userData.Email,
+        email: userData.email,
         city: userData.Address.city,
         name: userData.FirstName,
         line1: userData.Address.line1,
@@ -129,35 +132,44 @@ class NewpayoutMethod extends Component {
         first_name: userData.FirstName,
         last_name: userData.LastName,
       }).then(async _response => {
-        this.setState({loading: true});
-        await getUserProfile(userData.id).then(userResponse => {
-          this.props.callApi(userResponse.User, userData.id);
-          if (this.isFormFilled()) {
-            let data = {
-              account_holder_name: this.state.accountholderName,
-              account_holder_type: 'individual',
-              routing_number: this.state.routing_Number,
-              account_number: this.state.account_number,
-              user_id: userData.id,
-              host_id: userData.STRIPE_HOST_ID,
-            };
-            this.setState({loading: true});
-            this.addPayment(data);
-          }
-        });
+        if(_response.status === 404) {
+          this.setState({
+            loading: false,
+            errorTitle: 'ERROR',
+            errorText: 'Please complete your profile first',
+            btnOneText: 'Ok',
+            popUpError: true,
+          });
+        } else {
+          await getUserProfile(userData.id).then(userResponse => {
+            this.props.callApi(userResponse.User, userData.id);
+            if (this.isFormFilled()) {
+              let data = {
+                account_holder_name: this.state.accountholderName,
+            account_holder_type: 'individual',
+            routing_number: this.state.Transit_Number+'-'+this.state.Institue_number,
+            account_number: this.state.Account_Number,
+            user_id: userData.id,
+            host_id: this.props.userDetail.STRIPE_HOST_ID,
+              };
+              this.setState({ loading: true });
+              this.addPayment(data);
+            }
+          });
+        }
       });
-      this.setState({loading: false});
+      this.setState({ loading: false });
     }
   };
 
   addPayment = async data => {
-    await newPaymentMethod(data).then(response => {
+    await newPayoutMethod(data).then(response => {
       if (
         response &&
         response !== undefined &&
         response.message === 'Successfully Added Card'
       ) {
-        this.setState({loading: false});
+        this.setState({ loading: false });
         this.props.navigation.navigate('paymentsandPayouts2');
       } else {
         this.setState({
@@ -181,8 +193,8 @@ class NewpayoutMethod extends Component {
               transparent={true}
               presentationStyle={'overFullScreen'}>
               <ErrorPopup
-                cancelButtonPress={() => this.setState({popUpError: false})}
-                doneButtonPress={() => this.setState({popUpError: false})}
+                cancelButtonPress={() => this.setState({ popUpError: false })}
+                doneButtonPress={() => this.setState({ popUpError: false })}
                 errorTitle={this.state.errorTitle}
                 errorText={this.state.errorText}
                 btnOneText={this.state.btnOneText}
@@ -203,7 +215,7 @@ class NewpayoutMethod extends Component {
                 <View style={styles.blockView}>
                   <Text style={styles.textView}>Bank Transfer</Text>
                   <TouchableOpacity
-                    onPress={() => this.setState({editType: false})}>
+                    onPress={() => this.setState({ editType: false })}>
                     <Image
                       style={styles.sideImage}
                       source={require('../../assets/listDetail.png')}
@@ -212,49 +224,106 @@ class NewpayoutMethod extends Component {
                 </View>
               </View>
             ) : (
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 <HeaderWithOptionBtn
                   headerTitle={'Bank Transfer'}
                   backColor={WHITE.dark}
                   borderBottom={true}
                   leftIcon={require('../../assets/back.png')}
-                  leftPress={() => this.setState({editType: true})}
+                  leftPress={() => this.setState({ editType: true })}
                 />
                 <View style={styles.blockView2}>
                   <TextInput
                     style={styles.firstInput}
                     placeholder={'Account Holder Name'}
                     onChangeText={value =>
-                      this.setState({accountholderName: value})
+                      this.setState({ accountholderName: value })
                     }
                     value={this.state.accountholderName}
                   />
-                  <TextInput
-                    style={styles.firstInput}
-                    placeholder={'Account Holder Type'}
-                    onChangeText={value =>
-                      this.setState({accountholderType: value})
-                    }
-                    value={this.state.accountholderType}
-                  />
+                  <RNPickerSelect
+                    Icon={() => {
+                      return <Icon
+                        name="arrow-drop-down"
+                        size={30}
+                        color={"grey"}
+                        style={{ paddingTop: 35, marginRight: 25 }}
 
-                  <TextInput
-                    style={styles.firstInput}
-                    placeholder={'Routing No'}
-                    onChangeText={value =>
-                      this.setState({routing_Number: value})
-                    }
-                    value={this.state.routing_Number}
-                  />
+                      />
+                    }}
+                    style={{
+                      inputIOS: {
+                        width: SCREEN.width - 40,
+                        height: 53,
+                        marginTop: 20,
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        paddingLeft: 20,
+                        borderColor: 'lightgrey',
+                        fontSize: 16,
+                        fontFamily: FONT.Nunito.regular,
+                        alignSelf: 'center',
 
-                  <TextInput
-                    style={styles.firstInput}
-                    placeholder={'Account No'}
-                    onChangeText={value =>
-                      this.setState({account_number: value})
+
+                      },
+                      inputAndroid: {
+                        width: SCREEN.width - 40,
+                        height: 53,
+                        marginTop: 20,
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        paddingLeft: 20,
+                        borderColor: 'lightgrey',
+                        fontSize: 16,
+                        fontFamily: FONT.Nunito.regular,
+                        alignSelf: 'center',
+
+                      },
+                    }}
+                    placeholder={{
+                      label: "Acount Type"
+                    }}
+
+                    selectedValue={this.state.AccountType}
+                    onValueChange={(itemValue, itemIndex) =>
+                      this.setState({ AccountType: itemValue })
                     }
-                    value={this.state.account_number}
+                    items={[
+                      { label: 'individual', value: 'individual' },
+                    ]}
                   />
+                  <View style={styles.shortInputView}>
+                    <TextInput
+                      style={styles.shortInput}
+                      keyboardType='numeric'
+                      placeholder={'Transit Number'}
+                      maxLength={5}
+                      onChangeText={value =>
+                        this.setState({ Transit_Number: value })
+                      }
+                      value={this.state.Transit_Number}
+                    />
+
+                    <TextInput
+                      style={styles.shortInput}
+                      keyboardType='numeric'
+                      placeholder={'Institute Number'}
+                      maxLength={3}
+                      onChangeText={value =>
+                        this.setState({ Institue_number: value })
+                      }
+                      value={this.state.Institue_number}
+                    />
+                  </View>
+                  <TextInput
+                      style={styles.firstInput}
+                      placeholder={'Account Number'}
+                      maxLength={12}
+                      onChangeText={value =>
+                        this.setState({ Account_Number: value })
+                      }
+                      value={this.state.Account_Number}
+                    />
                 </View>
                 <TouchableOpacity
                   onPress={() => this.newPayoutMethod()}
@@ -273,8 +342,8 @@ class NewpayoutMethod extends Component {
             transparent={true}
             presentationStyle={'overFullScreen'}>
             <ErrorPopup
-              cancelButtonPress={() => this.setState({popUpError: false})}
-              doneButtonPress={() => this.setState({popUpError: false})}
+              cancelButtonPress={() => this.setState({ popUpError: false })}
+              doneButtonPress={() => this.setState({ popUpError: false })}
               errorTitle={this.state.errorTitle}
               errorText={this.state.errorText}
               btnOneText={this.state.btnOneText}
@@ -295,7 +364,7 @@ function mapStateToProps(state, props) {
 
 const mapDispatchToProps = dispatch => {
   return {
-    callApi: (user, uid) => dispatch(userActions.setUser({user, uid})),
+    callApi: (user, uid) => dispatch(userActions.setUser({ user, uid })),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(NewpayoutMethod);
@@ -362,4 +431,21 @@ const styles = StyleSheet.create({
     letterSpacing: 0.7,
     fontWeight: 'bold',
   },
+  shortInputView: {
+    width: SCREEN.width - 40,
+    height: 53,
+    marginTop: 20,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  shortInput: {
+    width: SCREEN.width * 0.42,
+    height: 53,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingLeft: 20,
+    borderColor: 'lightgrey',
+
+  }
 });

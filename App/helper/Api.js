@@ -147,7 +147,7 @@ export async function createHostStripe(dataToUpdate) {
   };
   return fetch(`${Server}/stripe/host/create-host`, requestOptions)
     .then(async response => {
-      return await response.json();
+      return await response;
     })
     .catch(error => console.log('error', error));
 }
@@ -185,6 +185,26 @@ export async function newPaymentMethod(formdata) {
   var config = {
     method: 'post',
     url: `${Server}/stripe/customer/add-payment`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: formdata,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+export async function newPayoutMethod(formdata) {
+  var config = {
+    method: 'post',
+    url: `${Server}/stripe/host/add-payout`,
     headers: {
       'Content-Type': 'application/json',
     },
