@@ -3,7 +3,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, Image, StyleSheet,Platform} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -18,7 +18,35 @@ import {
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {CreditCardInput} from 'react-native-credit-card-input';
 import {CustomerCharge, AtendPublicEvent, payAndJoin} from '../../helper/Api';
-
+const allowedCardNetworks = ['VISA', 'MASTERCARD'];
+const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
+import { GooglePay } from 'react-native-google-pay';
+ 
+const requestData = {
+  cardPaymentMethod: {
+    tokenizationSpecification: {
+      type: 'PAYMENT_GATEWAY',
+      // stripe (see Example):
+      gateway: 'stripe',
+      gatewayMerchantId: '',
+      stripe: {
+        publishableKey: 'pk_test_TYooMQauvdEDq54NiTphI7jx',
+        version: '2018-11-08',
+      },
+      // other:
+      gateway: 'example',
+      gatewayMerchantId: 'exampleGatewayMerchantId',
+    },
+    allowedCardNetworks,
+    allowedCardAuthMethods,
+  },
+  transaction: {
+    totalPrice: '10',
+    totalPriceStatus: 'FINAL',
+    currencyCode: 'USD',
+  },
+  merchantName: 'Example Merchant',
+};
 export default class prepay extends Component {
   constructor(props) {
     super(props);
@@ -90,6 +118,10 @@ export default class prepay extends Component {
   }
 
   componentDidMount() {
+    
+    GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
+ 
+    console.log(Platform)
     this.setState({
       user_id: this.props.route.params.user_id,
       event_id: this.props.route.params.event_id,
@@ -106,7 +138,24 @@ export default class prepay extends Component {
       this.setState({formValid: true});
     }
   };
-
+  googlePay=()=>{
+    GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
+    .then((ready) => {
+      if (ready) {
+        // Request payment token
+        GooglePay.requestPayment(requestData)
+          .then((token) => {
+          console.log(token)
+          })
+          .catch((error) => 
+          console.log(error.code, error.message));
+      }
+    })
+   
+  }
+  applePay=()=>{
+    
+  }
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -198,6 +247,8 @@ export default class prepay extends Component {
                       : '10'}
                   </Text>
                 </View>
+               { Platform.OS === 'android'  &&
+               <View>
                 <Text
                   style={[
                     {
@@ -209,13 +260,31 @@ export default class prepay extends Component {
                   ]}>
                   Pay now with Google Pay
                 </Text>
-
-                <TouchableOpacity style={[styles.btnMap]}>
-                  <Image
-                    source={require('../../assets/Gpay.png')}
-                    style={{alignItems: 'center', justifyContent: 'center'}}
-                  />
+                 <TouchableOpacity onPress={()=>this.googlePay()} style={[styles.btnMap]}>
+                 <Image
+                   source={require('../../assets/Gpay.png')}
+                   style={{alignItems: 'center', justifyContent: 'center'}}
+                 />
+               </TouchableOpacity>
+               </View>
+              
+                }
+               { Platform.OS === 'ios'  &&
+                <TouchableOpacity onPress={()=>this.applePay()}>
+                <Text
+                  style={[
+                    {
+                      fontFamily: FONT.Nunito.extraBold,
+                      textAlign: 'center',
+                      fontSize: 15,
+                      marginTop: 15,
+                    },
+                  ]}>
+                  Pay now with Apple Pay
+                </Text>
                 </TouchableOpacity>
+   
+                 }  
                 <Text
                   onPress={() => this.setState({prepayModal: true})}
                   style={[
