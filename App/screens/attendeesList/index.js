@@ -8,6 +8,7 @@ import {
   Image,
   StyleSheet,
   TextInput,
+  Modal,
   FlatList,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
@@ -20,15 +21,24 @@ import {
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { getAttendeesList } from '../../helper/Api';
 import Loader from '../../component/Loader';
-
-export default class attendeesList extends Component {
+import {connect} from 'react-redux';
+import ErrorPopup from '../../component/ErrorPopup';
+import { sendMessageToAttendees } from '../../helper/Api';
+ class attendeesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       attendingEvents: true,
       myevents: false,
       attendeesList:[],
-      attendeesCount:0
+      attendeesCount:0,
+      attendeesIdList:[],
+      popUpError: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
+      messageAllText:''
+
     };
   }
   
@@ -40,14 +50,44 @@ componentDidMount(){
  
 }
 async getAttendeesList(eventId) {
+ let attendeesIdList=[]
  this.setState({loading:true})
   await getAttendeesList(eventId).then((response) => {
     this.setState({ attendeesLIst: response.Attendees }) 
     this.setState({attendeesCount:response.Attendees.length})
+    response.Attendees.forEach(element => {
+      attendeesIdList.push(element.id)
+  });
+    this.setState({attendeesIdList:attendeesIdList})
     this.setState({loading:false})
+  
   });
 
 }
+storeInputData = (text) => {
+  this.setState({messageAllText:text})
+};
+
+done = async() => {
+  this.setState({popUpError: false});
+  this.setState({btnOneText: false});
+  this.setState({errorTitle: false});
+  this.setState({errorText: false});
+  
+
+  this.setState({loading:true})
+ 
+ let data={
+  HostUID: this.props.userToken,
+  AttendeesList: this.state.attendeesIdList,
+  EventID: this.props.route.params.id,
+              Text:this.state.messageAllText
+  }
+ await sendMessageToAttendees(data).then((response)=>{
+  this.setState({loading:false})
+    alert(response.message)
+  })
+};
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -126,17 +166,55 @@ async getAttendeesList(eventId) {
             )}
           />
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('chat')}
+            onPress={() => this.setState({ 
+            errorTitle: 'Chat',
+            errorText: 'Send Message to All Attendees',
+            btnOneText: 'Ok',
+            popUpError: true}) 
+            
+            }
             style={styles.btnMap}>
             <Text style={styles.btnText}>Message all {this.state.attendeesCount} attendees</Text>
           </TouchableOpacity>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-    
+        {this.state.popUpError && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() =>
+                this.done()
+              }
+          
+              parentCallBack={this.storeInputData}
+              doneButtonPress={() => console.log("tapped")}
+              errorTitle={this.state.errorTitle}
+              textInput={true}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+              btnTwoText={this.state.btnTwoText}
+            />
+          </Modal>
+        )}
       </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(attendeesList);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,

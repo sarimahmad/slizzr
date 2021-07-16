@@ -200,6 +200,15 @@ export async function newPaymentMethod(formdata) {
     });
   return GetResponse;
 }
+export async function removePaymentMethod(formdata) {
+  var config = {
+    method: 'delete',
+    url: `${Server}/stripe/customer/remove-card`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: formdata,
+  };
 
 export async function newPayoutMethod(formdata) {
   var config = {
@@ -221,6 +230,15 @@ export async function newPayoutMethod(formdata) {
   return GetResponse;
 }
 
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
 export async function makeDefaultPayout(formdata) {
   var config = {
     method: 'put',
@@ -323,6 +341,29 @@ export async function getAllMessages({event_id, user_id}) {
     });
   return GetResponse;
 }
+export async function sendMessageToAttendees(data) {
+  var dataJson = JSON.stringify(data);
+  // conso/le.log(data);
+
+  var config = {
+    method: 'post',
+    url: `${Server}/chatroom/send-message-to-attendees`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: dataJson,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
 
 export async function CustomerCharge(data) {
   var config = {
@@ -426,13 +467,14 @@ export async function sendMutualConnection(data) {
   return GetResponse;
 }
 export async function blockUser(data) {
+ let formData = JSON.stringify(data)
   var config = {
     method: 'post',
     url: `${Server}/user/block-user`,
     headers: {
       'Content-Type': 'application/json',
     },
-    data: data,
+    data: formData,
   };
 
   const GetResponse = await axios(config)

@@ -21,7 +21,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { getUserImages, getUserProfile } from '../../helper/Api';
 import { GiftedChat,Bubble,InputToolbar} from 'react-native-gifted-chat'
 import firestore from '@react-native-firebase/firestore'
-
+import { sendMessageToAttendees } from '../../helper/Api';
 const chat = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -32,7 +32,7 @@ const chat = () => {
   const [isLoading, setLoading] = useState(true)
   const [messages, setMessages] = useState([]);
 
-  const { CurrentUserUID, HostUID, EventID } = route.params;
+  const { CurrentUserUID, HostUID, EventID,AttendeesList,chatType } = route.params;
 
   useEffect(() => {
     getUserDetails().then(() =>  {
@@ -122,7 +122,21 @@ const chat = () => {
 
  }
 
- const onSend =(messageArray) => {
+ const onSend = async(messageArray) => {
+   if(chatType==="group"){
+    const msg = messageArray[0]
+ 
+    data={
+      HostUID: HostUID,
+      AttendeesList: AttendeesList,
+      EventID: EventID,
+      Text:msg
+
+     }
+      await sendMessageToAttendees(data).then(response => {
+       alert(response.message)
+      });
+   }else{
   const msg = messageArray[0]
   const mymsg = {
       ...msg,
@@ -138,7 +152,7 @@ const chat = () => {
  .doc(docid)
  .collection('messages')
  .add({...mymsg,createdAt:firestore.FieldValue.serverTimestamp()})
-
+   }
 
 }
 
