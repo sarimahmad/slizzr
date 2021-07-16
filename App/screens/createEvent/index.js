@@ -334,7 +334,7 @@ class CreateEvent extends Component {
               userName: this.props.userDetail.displayName,
               image: responseImage.url,
               id: uniqueId,
-              Attendees: [],
+              Total: 0,
               job: 'scheduled',
               Start_date: moment(this.state.DateTime).format('llll'),
               End_date: moment(this.state.DateTime)

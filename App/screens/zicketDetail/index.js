@@ -28,6 +28,8 @@ class zicketDetail extends Component {
   componentDidMount() {
     let event_id = this.props.route.params.EventID;
     let user_id = this.props.route.params.UserID;
+    console.log(event_id)
+    console.log(user_id)
     if (event_id) {
       this.getZicketDetail({event_id, user_id});
     }

@@ -176,10 +176,14 @@ class attendingEventInfo extends Component {
               style={styles.btnMap}>
               <Text style={styles.btnText}>ATTENDEES</Text>
             </TouchableOpacity>
+            {console.warn('Detail Item')}
+
+            {console.warn(this.state.detailItem)}
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate('zicketDetail', {
-                  id: this.state.detailItem.id,
+                  EventID: this.state.detailItem.id,
+                  UserID: this.state.currentUserUID.slice(1, -1),
                 })
               }
               style={styles.btnMap}>

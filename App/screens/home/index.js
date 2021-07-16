@@ -223,6 +223,7 @@ class home extends Component {
       .then(async querySnapShot => {
         if (querySnapShot.Events.length > 0) {
           await querySnapShot.Events.forEach(async doc => {
+            console.warn(doc)
             let event = {
               Description: doc.Description,
               id: doc.id,

@@ -299,7 +299,7 @@ class Zickets extends Component {
                 <TouchableOpacity
                 onPress={() =>
                   this.props.navigation.navigate('zicketDetail',{
-                    EventID: item.id,
+                    EventID: item.Event.id,
                     UserID: this.state.userID
                   })
                 }

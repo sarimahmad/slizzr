@@ -10,6 +10,7 @@ import DateAndTimePicker from '../../component/DateAndTimePicker';
 import * as userActions from '../../redux/actions/user';
 import Loader from '../../component/Loader';
 import {updateProfile} from '../../helper/Api';
+import moment from 'moment';
 
 class BirthDate extends Component {
   constructor(props) {
@@ -22,18 +23,17 @@ class BirthDate extends Component {
   }
 
   onChange = selectedDate => {
-    const currentDate = selectedDate || this.state.DateTime;
-    const current_date = new Date();
-    const difference_date =
-      current_date.getTime() - new Date(currentDate).getTime();
-    const difference_in_days = difference_date / (1000 * 3600 * 24);
-    const age_in_year = difference_in_days / 365;
+    let currentDate = moment(selectedDate).format('llll') || moment(this.state.DateTime).format('llll')
+    let current_date = moment(new Date()).format('llll');
+
+    const age_in_year = moment(current_date).diff(currentDate, 'years');
+
     if (age_in_year > 16) {
       this.setState({
         DateTime: currentDate,
-        day: currentDate.getUTCDate(),
-        month: currentDate.getUTCMonth(),
-        year: currentDate.getUTCFullYear(),
+        day: moment(currentDate).format('M'),
+        month: moment(currentDate).format('DD'),
+        year: moment(currentDate).format('YYYY'),
         age: age_in_year,
       });
     }
@@ -74,11 +74,11 @@ class BirthDate extends Component {
     this.setState({showDate: true});
   };
   handleSubmit = () => {
-    const current_date = new Date();
-    const difference_date =
-      current_date.getTime() - new Date(this.state.date).getTime();
-    const difference_in_days = difference_date / (1000 * 3600 * 24);
-    const age_in_year = difference_in_days / 365;
+    let currentDate = moment(this.state.date).format('llll')
+    let current_date = moment(new Date()).format('llll');
+
+    const age_in_year = moment(current_date).diff(currentDate, 'years');
+
     if (age_in_year > 16) {
       this.updateProfileApi();
     } else {

@@ -544,3 +544,66 @@ export async function DeleteUser(user_id) {
     });
   return GetResponse;
 }
+
+// Make sure User Redux is updated well i see sometime its showing old data
+// Amount must be Number
+// Call this API for payment and Once the Payment is successfully call Attend Event API and SuccessfullyPaidViaProvider to get User in the Event and Data saved
+export async function ProviderPaymentsForCustomer({cust_id, amount}) {
+  var data = JSON.stringify({
+    "cust_id": cust_id,
+    "amount": amount
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/stripe/customer/provider-payment`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data : data
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+// Call this API once Payment is successfull from the Provider only 
+export async function SuccessfullyPaidViaProvider({event_id, user_id}) {
+  var data = JSON.stringify({
+    "event_id": event_id,
+    "user_id": user_id
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/stripe/customer/suceessfull-payment-provider`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data : data
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+
+/**
+ * IMPORTANT -:
+ * ALL PREPAID EVENTS ARE 2 STEPS -> GET THE PAYMENT AND IF SUCCESSFULL CALL ATTENEDEVENT API TO GET ZICKET.
+ * ALL FREE EVENTS ARE 1 STEPS -> CALL ATTENEDEVENT API TO GET ZICKET.
+ * ALL SCAN & PAY ARE 4 STEPS -> MAKE SURE BEFORE THEY ATTEND THERE PAYMENT METHOD IS SETUP'ED, THEN CALL ATTENEDEVENT API TO GET ZICKET, BY THE TIME OF SCAN GET THE PAYMENT FIRST IF SUCCESSFULL THEN CALL SCANNER API 
+ * ALL PROVIDER PAYMENT(APPLE/GOOGLE) ARE 3 STEPS -> CALL API TO GET PAYMENTINTENDS, STRIPE PROVIDE REACT NATIVE SPECIFIC PAYMENT SHEET TO PROCESS PAYMENTS AND ONCE SUCCESSFULL DONE CALL ATTENEDEVENT API TO GET ZICKET AND SuccessfullyPaidViaProvider API TO STORE USER DATA
+ */
