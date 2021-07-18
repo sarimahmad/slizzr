@@ -186,6 +186,10 @@ class SignUp extends Component {
               latitude: 0,
               longitude: 0,
             },
+            MessageToken:{
+              PLATFORM: "",
+              TOKEN: ""
+            }
           };
           const usersRef = firestore().collection('users');
           usersRef
@@ -243,7 +247,7 @@ class SignUp extends Component {
       .signInWithCredential(googleCredential)
       .then(response => {
         const data = {
-          Email: response.user._user.email,
+          email: response.user._user.email,
           FirstName: response.user._user.displayName,
           LastName: response.user._user.displayName,
           Profile: response.user._user.photoURL,
@@ -275,6 +279,10 @@ class SignUp extends Component {
             latitude: 0,
             longitude: 0,
           },
+          MessageToken:{
+            PLATFORM: "",
+            TOKEN: ""
+          }
         };
 
         usersRef
