@@ -1,3 +1,6 @@
+/* eslint-disable radix */
+/* eslint-disable no-alert */
+/* eslint-disable react/no-did-mount-set-state */
 /* eslint-disable react-native/no-inline-styles */
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {Component} from 'react';
@@ -9,50 +12,52 @@ import {
   Image,
   Linking,
   Switch,
-  Modal,
+  Alert,
+  ToastAndroid,
   Platform,
   PermissionsAndroid,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
 import {StackActions} from '@react-navigation/native';
-import {connect} from 'react-redux'
+import {openSettings} from 'react-native-permissions';
+import {connect} from 'react-redux';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import Loader from '../../component/Loader';
-import {DeleteUser, updateProfile} from '../../helper/Api'
-import ErrorPopup from '../../component/ErrorPopup';
+import {DeleteUser, updateProfile} from '../../helper/Api';
 import firestore from '@react-native-firebase/firestore';
 import Slider from '@react-native-community/slider';
 import * as userActions from '../../redux/actions/user';
 import Geolocation from 'react-native-geolocation-service';
 import ConfirmPopup from '../../component/ConfirmPopup';
- class settings extends Component {
+class settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading:false,
-      pushNotifications:false,
-      profileVisibility:false,
+      loading: false,
+      pushNotifications: false,
+      profileVisibility: false,
       isModalVisible: false,
       popUpError: false,
       btnOneText: '',
       errorTitle: '',
       errorText: '',
       btnTwoText: '',
-      radius:0,
-      enableLocation:false,
-      confirmPopup:false,
-     
+      radius: 0,
+      enableLocation: false,
+      confirmPopup: false,
     };
   }
-  componentDidMount(){
-   this.getLocation()
-    if(this.props.userDetail){
-    this.setState({profileVisibility:this.props.userDetail.Visibility})
-    this.setState({pushNotifications:this.props.userDetail.PushNotification})
-    this.setState({radius:this.props.userDetail.Radius})
+  componentDidMount() {
+    this.getLocation();
+    if (this.props.userDetail) {
+      this.setState({profileVisibility: this.props.userDetail.Visibility});
+      this.setState({
+        pushNotifications: this.props.userDetail.PushNotification,
+      });
+      this.setState({radius: this.props.userDetail.Radius});
     }
   }
   hasPermissionIOS = async () => {
@@ -82,7 +87,6 @@ import ConfirmPopup from '../../component/ConfirmPopup';
     return false;
   };
 
-  
   hasLocationPermission = async () => {
     if (Platform.OS === 'ios') {
       const hasPermission = await this.hasPermissionIOS();
@@ -136,13 +140,12 @@ import ConfirmPopup from '../../component/ConfirmPopup';
 
     Geolocation.getCurrentPosition(
       position => {
-        this.setState({enableLocation: true,});
-        console.log(this.state.enableLocation)
+        this.setState({enableLocation: true});
+        console.log(this.state.enableLocation);
       },
       error => {
         this.setState({
           loading: false,
-       
         });
       },
       {
@@ -159,32 +162,25 @@ import ConfirmPopup from '../../component/ConfirmPopup';
       },
     );
   };
- updateProfile=async(value,type)=>{
-   
-    let updatedData={};
-    if(type==="profileVisibility"){
-   updatedData={Visibility :value}
-   this.setState({profileVisibility:value})
-    
+  updateProfile = async (value, type) => {
+    let updatedData = {};
+    if (type === 'profileVisibility') {
+      updatedData = {Visibility: value};
+      this.setState({profileVisibility: value});
+    } else if (type === 'pushNotifications') {
+      updatedData = {PushNotification: value};
+      this.setState({pushNotifications: value});
+    } else if (type === 'radius') {
+      updatedData = {Radius: parseInt(value)};
+      this.setState({radius: parseInt(value)});
     }
-   else if(type==="pushNotifications"){
-    updatedData={PushNotification: value}
-    this.setState({pushNotifications:value})
-   
-  }else if(type==="radius"){
-    updatedData={"Radius":value}
-    this.setState({radius:value})
-   
-  }
-   this.setState({loading:true})
-   
-    await updateProfile(this.props.userToken,updatedData).then(
-      response => {
-    this.getUserFromFirestore(this.props.userToken);
-        
-  },);
-  }
-  
+    this.setState({loading: true});
+
+    await updateProfile(this.props.userToken, updatedData).then(response => {
+      this.getUserFromFirestore(this.props.userToken);
+    });
+  };
+
   getUserFromFirestore = id => {
     const usersRef = firestore().collection('users');
     usersRef
@@ -195,36 +191,32 @@ import ConfirmPopup from '../../component/ConfirmPopup';
           return;
         } else {
           this.props.callApi(firestoreDocument.data(), id);
-          console.log(firestoreDocument._data)
+          console.log(firestoreDocument._data);
           this.setState({
             loading: false,
-           });
+          });
         }
       })
       .catch(error => {
-        console.log(error)
+        console.log(error);
         this.setState({
           loading: false,
         });
       });
   };
-  removeAccount = async ()=>{
-    
-    await DeleteUser(this.props.userToken).then(
-      response => {
-        if(response.status===200){
-          this.setState({confirmPopup:false})
+  removeAccount = async () => {
+    await DeleteUser(this.props.userToken).then(response => {
+      if (response.status === 200) {
+        this.setState({confirmPopup: false});
         AsyncStorage.clear();
         this.props.navigation.dispatch(StackActions.popToTop());
-        }else{
-          this.setState({confirmPopup:false})
-          alert("Failed Deleting Account")
-        }
-     }
-    )
-
-  }
-   render() {
+      } else {
+        this.setState({confirmPopup: false});
+        alert('Failed Deleting Account');
+      }
+    });
+  };
+  render() {
     return (
       <View style={styles.wrapperview}>
         <SafeAreaView style={styles.contentView}>
@@ -239,51 +231,68 @@ import ConfirmPopup from '../../component/ConfirmPopup';
           />
 
           <ScrollView styel={styles.contentView} bounces={false}>
-            {this.state.enableLocation === false &&
-            <View style={{width:SCREEN.width,height:SCREEN.height*0.5,alignItems:'center',justifyContent: 'center',}}>
+            {this.state.enableLocation === false && (
+              <View
+                style={{
+                  width: SCREEN.width,
+                  height: SCREEN.height * 0.5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
                 <Image
-              source={require('../../assets/loader.png')}
-              style={{ opacity:0.5}}
-            />
-          <View style={{position: 'absolute',height:SCREEN.height*0.5,alignSelf:'center'}}>
-            <Image
-              source={require('../../assets/Slizzer-icon/locationIcon.png')}
-              style={styles.locationIcon}
-            />
-            <Text style={styles.textStyle}>Enable Location</Text>
-            <Text style={[styles.lowerText,{textAlign:'center'}]}>
-              Allow location to turn on and set the radius to find nearby events
-              or people
-            </Text>
-            <TouchableOpacity onPress={()=>this.getLocation()} style={styles.btn1}>
-              <Text> ALLOW LOCATION</Text>
-            </TouchableOpacity>
+                  source={require('../../assets/loader.png')}
+                  style={{opacity: 0.5}}
+                />
+                <View
+                  style={{
+                    position: 'absolute',
+                    height: SCREEN.height * 0.5,
+                    alignSelf: 'center',
+                  }}>
+                  <Image
+                    source={require('../../assets/Slizzer-icon/locationIcon.png')}
+                    style={styles.locationIcon}
+                  />
+                  <Text style={styles.textStyle}>Enable Location</Text>
+                  <Text style={[styles.lowerText, {textAlign: 'center'}]}>
+                    Allow location to turn on and set the radius to find nearby
+                    events or people
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => this.getLocation()}
+                    style={styles.btn1}>
+                    <Text> ALLOW LOCATION</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            {this.state.enableLocation === true && (
+              <View style={{marginVertical: 10}}>
+                <Text
+                  style={[
+                    styles.lowerText,
+                    {textAlign: 'center', marginTop: 10},
+                  ]}>
+                  Set the radius to find nearby events or people
+                </Text>
+                <Image
+                  source={require('../../assets/loader.png')}
+                  style={{alignSelf: 'center'}}
+                />
+                <View style={styles.sliderBox}>
+                  <Text> {this.state.radius} KM</Text>
+                </View>
 
-            </View>
-            </View>
-   }
-           {this.state.enableLocation === true &&
-            <View style={{marginVertical:10}}>
-              <Text style={[styles.lowerText,{textAlign:'center',marginTop:10}]}>Set the radius to find nearby events or people</Text>
-            <Image
-              source={require('../../assets/loader.png')}
-              style={{ alignSelf: 'center',}}
-            />
-               <View style={styles.sliderBox}>
-            <Text> {this.state.radius} KM</Text>
-            </View>
-
-             <Slider 
-           value={this.state.radius}
-           maximumValue={100}
-           thumbTintColor={'#F818D9'}
-           thumbTouchSize={styles.thumbSize}
-           trackStyle={'lightgrey'}
-           onValueChange={(value) => this.updateProfile(value,"radius")} />
-          
-         
-            </View>
-   }
+                <Slider
+                  value={this.state.radius}
+                  maximumValue={100}
+                  thumbTintColor={'#F818D9'}
+                  thumbTouchSize={styles.thumbSize}
+                  trackStyle={'lightgrey'}
+                  onValueChange={value => this.updateProfile(value, 'radius')}
+                />
+              </View>
+            )}
             <View style={styles.verticalView}>
               <TouchableOpacity
                 onPress={() =>
@@ -311,43 +320,49 @@ import ConfirmPopup from '../../component/ConfirmPopup';
               <TouchableOpacity style={styles.rowView}>
                 <Text style={styles.textView}>Push Notifications</Text>
                 <Switch
-                 style={[styles.icon, {width: 55, height: 37}]}
-            
-                 trackColor={{ false: "lightgrey", true: "lightgrey" }}
-                 thumbColor={this.state.pushNotifications ? "#F818D9" : "grey"}
+                  style={[styles.icon]}
+                  trackColor={{false: 'lightgrey', true: 'lightgrey'}}
+                  thumbColor={this.state.pushNotifications ? '#F818D9' : 'grey'}
                   ios_backgroundColor="lightgrey"
-        onValueChange={(value)=>this.updateProfile(value,"pushNotifications")}
-        value={this.state.pushNotifications}
-      />
+                  onValueChange={value =>
+                    this.updateProfile(value, 'pushNotifications')
+                  }
+                  value={this.state.pushNotifications}
+                />
               </TouchableOpacity>
               <TouchableOpacity style={styles.rowView}>
                 <Text style={styles.textView}>
                   Profile Visibility in People Radar
                 </Text>
                 <Switch
-                 style={[styles.icon, {width: 55, height: 37}]}
-            
-        trackColor={{ false: "lightgrey", true: "lightgrey" }}
-        thumbColor={this.state.profileVisibility ? "#F818D9" : "grey"}
-        ios_backgroundColor="lightgrey"
-        onValueChange={(value)=>this.updateProfile(value,"profileVisibility")}
-        value={this.state.profileVisibility}
-      />
+                  style={[styles.icon]}
+                  trackColor={{false: 'lightgrey', true: 'lightgrey'}}
+                  thumbColor={this.state.profileVisibility ? '#F818D9' : 'grey'}
+                  ios_backgroundColor="lightgrey"
+                  onValueChange={value =>
+                    this.updateProfile(value, 'profileVisibility')
+                  }
+                  value={this.state.profileVisibility}
+                />
               </TouchableOpacity>
-              <TouchableOpacity  onPress={() =>
-                      Linking.openURL(
-                        'https://slizzrapp.com/#privacy-and-cookie-policy',
-                      )
-                    } style={styles.rowView}>
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL(
+                    'https://slizzrapp.com/#privacy-and-cookie-policy',
+                  )
+                }
+                style={styles.rowView}>
                 <Text style={styles.textView}>Privacy Policy</Text>
-                <Image  
+                <Image
                   style={styles.icon}
                   source={require('../../assets/Slizzer-icon/Right.png')}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() =>
-                      Linking.openURL('https://slizzrapp.com/#terms-of-service')
-                    }  style={styles.rowView}>
+              <TouchableOpacity
+                onPress={() =>
+                  Linking.openURL('https://slizzrapp.com/#terms-of-service')
+                }
+                style={styles.rowView}>
                 <Text style={styles.textView}>Term of Service</Text>
                 <Image
                   style={styles.icon}
@@ -385,7 +400,7 @@ import ConfirmPopup from '../../component/ConfirmPopup';
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() =>       this.setState({confirmPopup:true})            }
+                onPress={() => this.setState({confirmPopup: true})}
                 style={[styles.rowView, {borderBottomWidth: 0}]}>
                 <Text
                   style={[
@@ -403,11 +418,12 @@ import ConfirmPopup from '../../component/ConfirmPopup';
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-        {this.state.confirmPopup === true && <ConfirmPopup    
-                delete={()=>this.removeAccount()}
-                cancel={()=>this.setState({confirmPopup:false})}
-                />}
-     
+        {this.state.confirmPopup === true && (
+          <ConfirmPopup
+            delete={() => this.removeAccount()}
+            cancel={() => this.setState({confirmPopup: false})}
+          />
+        )}
       </View>
     );
   }
@@ -423,7 +439,6 @@ function mapStateToProps(state, props) {
 const mapDispatchToProps = dispatch => {
   return {
     callApi: (user, uid) => dispatch(userActions.setUser({user, uid})),
- 
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(settings);
@@ -433,11 +448,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: WHITE.dark,
   },
-  thumbSize:{
-  height:30
+  thumbSize: {
+    height: 30,
   },
-  sliderBox:{
-    alignSelf:'center',marginVertical:10,height:53,width:91,borderRadius:10,backgroundColor:'white',elevation:6,alignItems:'center',justifyContent: 'center',
+  sliderBox: {
+    alignSelf: 'center',
+    marginVertical: 10,
+    height: 53,
+    width: 91,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    elevation: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   contentView: {
     flex: 1,
@@ -504,8 +527,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 20,
-    height: 35,
-    width: 35,
   },
   slideBar: {
     marginBottom: 20,
