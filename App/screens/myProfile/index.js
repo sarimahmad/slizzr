@@ -146,6 +146,17 @@ class Profile extends Component {
       this.props.navigation.pop();
     });
   };
+  getMutualProfile=(id)=>{
+    
+    this.props.navigation.push('myProfile',{id:id})
+    // this._unsubscribe = this.props.navigation.addListener('focus', () => {
+    //   this.getUserFromFirestore(id);
+    //   this.getOtherUserImages(id);
+    //   this.getMutualConnections(id);
+    //   this.findRelation(this.props.userToken,id)
+    // });
+
+  }
   IconImage = (item) => {
     let name = item.FirstName.charAt(0);
     return (   
@@ -313,10 +324,7 @@ class Profile extends Component {
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item}) => (
                           <TouchableOpacity
-                            onPress={() =>
-                              this.props.navigation.navigate(
-                                'mutualConnections',
-                              )
+                            onPress={() =>this.getMutualProfile(item.id)
                             }
                             style={styles.listView}>
                             {item.Pictures.length !== 0 && (
