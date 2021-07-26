@@ -1,5 +1,6 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+require 'xcodeproj'
 
 platform :ios, '12.0'
 
@@ -38,6 +39,13 @@ post_install do |installer|
   fix_deployment_target(installer)
   installer.pods_project.build_configurations.each do |config|
     config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+  end
+  installer.pods_project.targets.each do |target|
+    headers_phase = target.build_phases.find { |p| p.kind_of?(Xcodeproj::Project::Object::PBXHeadersBuildPhase) }
+    if headers_phase
+      puts "#{target.name}: Moving Headers build phase to top"
+      target.build_phases.insert(0, target.build_phases.delete_at(target.build_phases.index(headers_phase)))
+    end
   end
 end
 
