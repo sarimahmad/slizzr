@@ -18,7 +18,7 @@ import * as userActions from '../../redux/actions/user';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
-import {blockUser, getUserImages} from '../../helper/Api';
+import {blockUser, getUserImages,findRelation} from '../../helper/Api';
 import ErrorPopup from '../../component/ErrorPopup';
 import firestore from '@react-native-firebase/firestore';
 import {sendMutualConnection, getMutualConnections} from '../../helper/Api';
@@ -30,6 +30,7 @@ class Profile extends Component {
     this.state = {
       imageOfuser: [],
       mutualConnections: [],
+      relation:false
     };
   }
   footer = () => {
@@ -51,10 +52,17 @@ class Profile extends Component {
       this._unsubscribe = this.props.navigation.addListener('focus', () => {
         this.getUserFromFirestore(this.props.route.params.id);
         this.getOtherUserImages(this.props.route.params.id);
-        this.getMutualConnections("2J2ioGAlKnbV1Cnkn0f9KA6QKrl1");
+        this.getMutualConnections(this.props.route.params.id);
+        this.findRelation(this.props.userToken,this.props.route.params.id)
       });
     }
   }
+  async findRelation(user_id,otheruser_id) {
+    await findRelation(user_id,otheruser_id).then(response => {
+      this.setState({relation: response.Relation, loading: false});
+    });
+  }
+ 
   async getMutualConnections(id) {
     await getMutualConnections(id).then(response => {
       this.setState({mutualConnections: response.Users, loading: false});
@@ -243,6 +251,7 @@ class Profile extends Component {
               </View>
               {this.props.userDetail &&
                 this.state.userDetail &&
+                this.state.relation == true &&
                 this.props.userDetail.id !== this.state.userDetail.id && (
                   <View style={styles.messageIcon}>
                     <Image

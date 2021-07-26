@@ -450,6 +450,29 @@ export async function acceptandRejectRequest(data) {
     });
   return GetResponse;
 }
+export async function findRelation(user_id,otheruser_id) {
+  data={
+    current_user_id: user_id,
+    opposite_user_id: otheruser_id
+}
+  var config = {
+    method: 'post',
+    url: `${Server}/user/find-relationship-between-users`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
 
 // export async function findPeoplebyDistance(min_age,max_age,user_id) {
 //  return  axios.get(`${Server}/user/people/find-people`, {
