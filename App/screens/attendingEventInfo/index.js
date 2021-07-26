@@ -9,12 +9,12 @@ import {
   Modal,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
+import {connect} from 'react-redux';
+
+import * as userActions from '../../redux/actions/user';
+import ErrorPopup from '../../component/ErrorPopup';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as userActions from '../../redux/actions/user';
-import {connect} from 'react-redux';
-import ErrorPopup from '../../component/ErrorPopup';
 
 import {
   widthPercentageToDP as wp,
@@ -50,8 +50,7 @@ class attendingEventInfo extends Component {
       this.setState({detailItem: response.Event});
       this.setState({loading: false});
     });
-    const TOKEN = await AsyncStorage.getItem('token');
-    this.setState({currentUserUID: TOKEN});
+    this.setState({currentUserUID: this.props.userDetail.id});
   }
 
   cancelEvent = async () => {
@@ -171,6 +170,7 @@ class attendingEventInfo extends Component {
               onPress={() =>
                 this.props.navigation.navigate('attendeesList', {
                   id: this.props.route.params.id,
+                  host: this.state.detailItem.Host,
                   from: 'attend',
                 })
               }

@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable react/no-did-mount-set-state */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/self-closing-comp */
 import React, {Component} from 'react';
@@ -23,7 +25,7 @@ import {getAttendeesList} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 import ErrorPopup from '../../component/ErrorPopup';
-import {sendMessageToAttendees} from '../../helper/Api';
+import {sendMessageToAttendees, disInviteAttendee} from '../../helper/Api';
 class attendeesList extends Component {
   constructor(props) {
     super(props);
@@ -38,13 +40,20 @@ class attendeesList extends Component {
       errorTitle: '',
       errorText: '',
       messageAllText: '',
+      hostEvent: true,
     };
   }
 
   componentDidMount() {
     let eventId = this.props.route.params.id;
+    let host = this.props.route.params.host;
     if (eventId) {
       this.getAttendeesList(eventId);
+    }
+    if (host) {
+      this.setState({hostEvent: host.id === this.props.userDetail.id});
+    } else {
+      this.setState({hostEvent: false});
     }
   }
   async getAttendeesList(eventId) {
@@ -82,6 +91,20 @@ class attendeesList extends Component {
       alert(response.message);
     });
   };
+
+  disInvite = async userId => {
+    this.setState({loading: true});
+
+    let data = {
+      user_id: userId,
+      event_id: this.props.route.params.id,
+    };
+    await disInviteAttendee(data).then(response => {
+      this.setState({loading: false});
+      this.getAttendeesList(this.props.route.params.id);
+    });
+  };
+
   render() {
     const fromAttend =
       this.props.route.params.from && this.props.route.params.from === 'attend';
@@ -112,7 +135,7 @@ class attendeesList extends Component {
           <FlatList
             data={this.state.attendeesLIst}
             keyExtractor={item => item.id}
-            renderItem={({item}) => (
+            renderItem={({item, index}) => (
               <TouchableOpacity
                 onPress={() =>
                   this.props.navigation.navigate('myProfile', {
@@ -123,6 +146,8 @@ class attendeesList extends Component {
                   width: SCREEN.width,
                   borderBottomWidth: 1,
                   borderBottomColor: 'lightgrey',
+                  marginBottom:
+                    this.state.attendeesLIst.length - 1 === index ? 80 : 0,
                 }}>
                 <View style={[styles.flexRow, {height: 70}]}>
                   <View
@@ -153,7 +178,8 @@ class attendeesList extends Component {
                   </View>
 
                   {!fromAttend && (
-                    <View
+                    <TouchableOpacity
+                      onPress={() => this.disInvite(item.User.id)}
                       style={{
                         height: 30,
                         width: 80,
@@ -162,27 +188,31 @@ class attendeesList extends Component {
                         alignItems: 'center',
                         backgroundColor: '#F818D9',
                       }}>
-                      <Text style={{color: 'white'}}>DISINVITE</Text>
-                    </View>
+                      <Text style={{color: 'white', paddingHorizontal: 5}}>
+                        DISINVITE
+                      </Text>
+                    </TouchableOpacity>
                   )}
                 </View>
               </TouchableOpacity>
             )}
           />
-          <TouchableOpacity
-            onPress={() =>
-              this.setState({
-                errorTitle: 'Chat',
-                errorText: 'Send Message to All Attendees',
-                btnOneText: 'Ok',
-                popUpError: true,
-              })
-            }
-            style={styles.btnMap}>
-            <Text style={styles.btnText}>
-              Message all {this.state.attendeesCount} attendees
-            </Text>
-          </TouchableOpacity>
+          {this.state.hostEvent && (
+            <TouchableOpacity
+              onPress={() =>
+                this.setState({
+                  errorTitle: 'Chat',
+                  errorText: 'Send Message to All Attendees',
+                  btnOneText: 'Ok',
+                  popUpError: true,
+                })
+              }
+              style={styles.btnMap}>
+              <Text style={styles.btnText}>
+                Message all {this.state.attendeesCount} attendees
+              </Text>
+            </TouchableOpacity>
+          )}
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
         {this.state.popUpError && (
