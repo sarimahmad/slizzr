@@ -200,15 +200,6 @@ export async function newPaymentMethod(formdata) {
     });
   return GetResponse;
 }
-export async function removePaymentMethod(formdata) {
-  var config = {
-    method: 'delete',
-    url: `${Server}/stripe/customer/remove-card`,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: formdata,
-  };
 
 export async function newPayoutMethod(formdata) {
   var config = {
@@ -230,15 +221,6 @@ export async function newPayoutMethod(formdata) {
   return GetResponse;
 }
 
-  const GetResponse = await axios(config)
-    .then(function (response) {
-      return response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  return GetResponse;
-}
 export async function makeDefaultPayout(formdata) {
   var config = {
     method: 'put',
@@ -251,10 +233,10 @@ export async function makeDefaultPayout(formdata) {
 
   const GetResponse = await axios(config)
     .then(function (response) {
-      return response.data;
+      return response;
     })
     .catch(function (error) {
-      console.log(error);
+      return error;
     });
   return GetResponse;
 }
@@ -364,7 +346,6 @@ export async function sendMessageToAttendees(data) {
   return GetResponse;
 }
 
-
 export async function CustomerCharge(data) {
   var config = {
     method: 'post',
@@ -381,6 +362,26 @@ export async function CustomerCharge(data) {
     })
     .catch(function (error) {
       console.log(error);
+    });
+  return GetResponse;
+}
+
+export async function removePayoutMethod(dataToSend) {
+  var config = {
+    method: 'delete',
+    url: `${Server}/stripe/host/remove-card`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: dataToSend,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error;
     });
   return GetResponse;
 }
@@ -467,7 +468,7 @@ export async function sendMutualConnection(data) {
   return GetResponse;
 }
 export async function blockUser(data) {
- let formData = JSON.stringify(data)
+  let formData = JSON.stringify(data);
   var config = {
     method: 'post',
     url: `${Server}/user/block-user`,
@@ -522,6 +523,26 @@ export async function deleteHostEvent(id, dataToSend) {
     })
     .catch(function (error) {
       console.log(error);
+    });
+  return GetResponse;
+}
+
+export async function removePaymentMethod(dataToSend) {
+  var config = {
+    method: 'delete',
+    url: `${Server}/stripe/customer/remove-card`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: dataToSend,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error;
     });
   return GetResponse;
 }
@@ -617,6 +638,16 @@ export async function SuccessfullyPaidViaProvider({event_id, user_id}) {
       console.log(error);
     });
   return GetResponse;
+}
+
+export async function getDefaultCustomerCard(cust_stripe_id) {
+  return fetch(`${Server}/stripe/customer/default-card/${cust_stripe_id}`)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
 }
 
 /**

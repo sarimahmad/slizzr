@@ -171,6 +171,7 @@ class attendingEventInfo extends Component {
               onPress={() =>
                 this.props.navigation.navigate('attendeesList', {
                   id: this.props.route.params.id,
+                  from: 'attend',
                 })
               }
               style={styles.btnMap}>
@@ -352,7 +353,7 @@ const styles = StyleSheet.create({
 
   logoEvent: {
     marginTop: 10,
-    width: SCREEN.width-40,
+    width: SCREEN.width - 40,
     height: 110,
     borderRadius: 10,
     display: 'flex',

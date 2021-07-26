@@ -12,7 +12,11 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
-import {getAllPayoutMethods, makeDefaultPayout} from '../../helper/Api';
+import {
+  getAllPayoutMethods,
+  makeDefaultPayout,
+  removePayoutMethod,
+} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 
@@ -20,10 +24,7 @@ class payoutMethod extends Component {
   constructor() {
     super();
     this.state = {
-      payoutData: [
-        //   {id: 1, name: 'TD Bank', card_number: '#********101'},
-        //   {id: 2, name: 'Scotia Bank', card_number: '#********101'},
-      ],
+      payoutData: [],
       loading: false,
       editType: false,
       selectedMethod: 1,
@@ -43,8 +44,7 @@ class payoutMethod extends Component {
     this.setState({loading: true});
 
     await getAllPayoutMethods(this.props.userToken).then(response => {
-      this.setState({payoutData: response});
-      this.setState({loading: false});
+      this.setState({payoutData: response, loading: false, editType: false});
     });
   }
 
@@ -56,6 +56,27 @@ class payoutMethod extends Component {
       payout_card_id: id,
     }).then(response => {
       this.getPayoutMethods();
+    });
+  };
+
+  removePayoutMethod = async payment_card_id => {
+    this.setState({loading: true});
+    let data = {
+      user_id: this.props.userToken,
+      payout_card_id: payment_card_id,
+    };
+    await removePayoutMethod(data).then(response => {
+      if (response.status === 200) {
+        this.getPayoutMethods();
+      } else {
+        this.setState({
+          loading: false,
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(response),
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
+      }
     });
   };
 
@@ -89,10 +110,13 @@ class payoutMethod extends Component {
                 <View style={styles.blockView}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     {this.state.editType && (
-                      <Image
-                        style={{width: 23, height: 22, marginLeft: 8}}
-                        source={require('../../assets/Slizzer-icon/cross.png')}
-                      />
+                      <TouchableOpacity
+                        onPress={() => this.removePayoutMethod(item.id)}>
+                        <Image
+                          style={{width: 23, height: 22, marginLeft: 8}}
+                          source={require('../../assets/Slizzer-icon/cross.png')}
+                        />
+                      </TouchableOpacity>
                     )}
                     <View>
                       <Text
@@ -100,9 +124,7 @@ class payoutMethod extends Component {
                           styles.textView,
                           {
                             color:
-                              item.Card.default_for_currency === false
-                                ? '#494949'
-                                : '#F818D9',
+                              item.default !== true ? '#494949' : '#F818D9',
                           },
                         ]}>
                         {item.Card.bank_name}
@@ -113,9 +135,7 @@ class payoutMethod extends Component {
                           {
                             fontSize: 12,
                             color:
-                              item.Card.default_for_currency === false
-                                ? '#494949'
-                                : '#F818D9',
+                              item.default !== true ? '#494949' : '#F818D9',
                           },
                         ]}>
                         #******{item.Card.last4}
@@ -128,7 +148,7 @@ class payoutMethod extends Component {
                       />
                     )}
                   </View>
-                  {item.Card.default_for_currency === true ? (
+                  {item.default === true ? (
                     <Image
                       style={{marginRight: 5}}
                       source={require('../../assets/Slizzer-icon/default.png')}

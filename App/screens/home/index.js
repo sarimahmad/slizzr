@@ -32,7 +32,6 @@ import ErrorPopup from '../../component/ErrorPopup';
 import {createCustomerStripe} from '../../helper/Api';
 import Server from '../../helper/Server';
 import firestore from '@react-native-firebase/firestore';
-import { updateProfile }  from '../../helper/Api';
 let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
@@ -67,7 +66,7 @@ class home extends Component {
       errorTitle: '',
       errorText: '',
       pageNumber: 1,
-      StripeId: ''
+      StripeId: '',
     };
     this.getLocation = this.getLocation.bind(this);
     this.getEvents = this.getEvents.bind(this);
@@ -75,7 +74,6 @@ class home extends Component {
   componentDidMount() {
     this.getLocation();
     this.checkStripeClientId();
- 
   }
   hasPermissionIOS = async () => {
     const openSetting = () => {
@@ -116,7 +114,10 @@ class home extends Component {
           this.setState({
             loading: false,
           });
-          props.callApi(JSON.parse(firestoreDocument._data).user, JSON.parse(firestoreDocument._data.id));
+          this.props.callApi(
+            firestoreDocument.data(),
+            firestoreDocument.data().id,
+          );
         }
       })
       .catch(error => {
@@ -131,7 +132,7 @@ class home extends Component {
   };
   // updateProfile=async(response)=>{
   //  this.setState({loading:true})
-   
+
   //   await updateProfile(this.props.userToken,response).then(
   //     response => {
   //   this.getUserFromFirestore(this.props.userToken);
@@ -142,20 +143,13 @@ class home extends Component {
     const userData = this.props.userDetail;
 
     if (!userData.STRIPE_CUST_ID || userData.STRIPE_CUST_ID === '') {
-      await createCustomerStripe({user_id: userData.id}).then(async _response => {
-        this.setState({StripeId: _response})
-        this.setState({loading:true})
-        this.getUserFromFirestore(this.props.userToken)
-      //   if(_response){
-      //   await updateProfile(this.props.userToken,_response).then(
-      //     response => {
-      //   this.getUserFromFirestore(this.props.userToken);
-      //   console.log(response)
-        
-      // },);
-      // }
-        this.setState({loading: false});
-      });
+      await createCustomerStripe({user_id: userData.id}).then(
+        async _response => {
+          this.setState({StripeId: _response});
+          this.setState({loading: true});
+          this.getUserFromFirestore(this.props.userToken);
+        },
+      );
     } else {
       console.log(userData.STRIPE_CUST_ID === '');
     }

@@ -3,8 +3,16 @@
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Image, StyleSheet,Platform} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 import {SafeAreaView} from 'react-navigation';
+
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {width} from '../../helper/Constant';
@@ -17,24 +25,30 @@ import {
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {CreditCardInput} from 'react-native-credit-card-input';
-import {CustomerCharge, AtendPublicEvent, payAndJoin} from '../../helper/Api';
+import {connect} from 'react-redux';
+import * as userActions from '../../redux/actions/user';
+
+import {
+  CustomerCharge,
+  AtendPublicEvent,
+  payAndJoin,
+  getDefaultCustomerCard,
+} from '../../helper/Api';
 const allowedCardNetworks = ['VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
-import { GooglePay } from 'react-native-google-pay';
- 
+import {GooglePay} from 'react-native-google-pay';
+
 const requestData = {
   cardPaymentMethod: {
     tokenizationSpecification: {
       type: 'PAYMENT_GATEWAY',
       // stripe (see Example):
       gateway: 'stripe',
-      gatewayMerchantId: '',
       stripe: {
         publishableKey: 'pk_test_TYooMQauvdEDq54NiTphI7jx',
         version: '2018-11-08',
       },
       // other:
-      gateway: 'example',
       gatewayMerchantId: 'exampleGatewayMerchantId',
     },
     allowedCardNetworks,
@@ -47,7 +61,7 @@ const requestData = {
   },
   merchantName: 'Example Merchant',
 };
-export default class prepay extends Component {
+class prepay extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -118,15 +132,26 @@ export default class prepay extends Component {
   }
 
   componentDidMount() {
-    
-    GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
- 
-    console.log(Platform)
+    Platform.OS === 'android' &&
+      GooglePay.setEnvironment(GooglePay.ENVIRONMENT_TEST);
     this.setState({
       user_id: this.props.route.params.user_id,
       event_id: this.props.route.params.event_id,
       detailItem: this.props.route.params.detailItem,
     });
+    this.getUserDefaultCard();
+  }
+  async getUserDefaultCard() {
+    if (
+      this.props.userDetail.STRIPE_CUST_ID &&
+      this.props.userDetail.STRIPE_CUST_ID !== ''
+    ) {
+      await getDefaultCustomerCard(this.props.userDetail.STRIPE_CUST_ID).then(
+        response => {
+          console.log('responseDefaultCrad', response);
+        },
+      );
+    }
   }
   _onChange = form => {
     this.setState({cvc: form.values.cvc});
@@ -138,24 +163,23 @@ export default class prepay extends Component {
       this.setState({formValid: true});
     }
   };
-  googlePay=()=>{
-    GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods)
-    .then((ready) => {
-      if (ready) {
-        // Request payment token
-        GooglePay.requestPayment(requestData)
-          .then((token) => {
-          console.log(token)
-          })
-          .catch((error) => 
-          console.log(error.code, error.message));
-      }
-    })
-   
-  }
-  applePay=()=>{
-    
-  }
+  googlePay = () => {
+    GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods).then(
+      ready => {
+        if (ready) {
+          // Request payment token
+          GooglePay.requestPayment(requestData)
+            .then(token => {
+              console.log(token);
+            })
+            .catch(error => console.log(error.code, error.message));
+        }
+      },
+    );
+  };
+  applePay = async () => {
+    this.props.navigation.navigate('Pay', {fee: this.state.detailItem.Fee});
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -247,44 +271,57 @@ export default class prepay extends Component {
                       : '10'}
                   </Text>
                 </View>
-               { Platform.OS === 'android'  &&
-               <View>
-                <Text
-                  style={[
-                    {
-                      fontFamily: FONT.Nunito.extraBold,
-                      textAlign: 'center',
-                      fontSize: 15,
-                      marginTop: 15,
-                    },
-                  ]}>
-                  Pay now with Google Pay
-                </Text>
-                 <TouchableOpacity onPress={()=>this.googlePay()} style={[styles.btnMap]}>
-                 <Image
-                   source={require('../../assets/Gpay.png')}
-                   style={{alignItems: 'center', justifyContent: 'center'}}
-                 />
-               </TouchableOpacity>
-               </View>
-              
-                }
-               { Platform.OS === 'ios'  &&
-                <TouchableOpacity onPress={()=>this.applePay()}>
-                <Text
-                  style={[
-                    {
-                      fontFamily: FONT.Nunito.extraBold,
-                      textAlign: 'center',
-                      fontSize: 15,
-                      marginTop: 15,
-                    },
-                  ]}>
-                  Pay now with Apple Pay
-                </Text>
-                </TouchableOpacity>
-   
-                 }  
+                {Platform.OS === 'android' && (
+                  <View>
+                    <Text
+                      style={[
+                        {
+                          fontFamily: FONT.Nunito.extraBold,
+                          textAlign: 'center',
+                          fontSize: 15,
+                          marginTop: 15,
+                        },
+                      ]}>
+                      Pay now with Google Pay
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => this.googlePay()}
+                      style={[styles.btnMap]}>
+                      <Image
+                        source={require('../../assets/Gpay.png')}
+                        style={{alignItems: 'center', justifyContent: 'center'}}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+                {Platform.OS === 'ios' && (
+                  <View>
+                    <Text
+                      style={[
+                        {
+                          fontFamily: FONT.Nunito.extraBold,
+                          textAlign: 'center',
+                          fontSize: 15,
+                          marginTop: 10,
+                        },
+                      ]}>
+                      Pay now with Apple Pay
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => this.applePay()}
+                      style={[styles.btnMap]}>
+                      <Image
+                        source={require('../../assets/apple.png')}
+                        style={{
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          resizeMode: 'contain',
+                          height: 29,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
                 <Text
                   onPress={() => this.setState({prepayModal: true})}
                   style={[
@@ -367,6 +404,19 @@ export default class prepay extends Component {
     );
   }
 }
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.alterUser({user, uid})),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(prepay);
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
@@ -404,7 +454,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 50,
     marginBottom: 30,
-    marginTop: 30,
+    marginTop: 10,
     alignItems: 'center',
     backgroundColor: '#000000',
     justifyContent: 'center',

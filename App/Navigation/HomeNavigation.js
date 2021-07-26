@@ -38,6 +38,7 @@ import index from '../screens/directInvites';
 import zickets from '../screens/zickets';
 import scan from '../screens/scan';
 import notification from '../screens/notification';
+import Pay from '../screens/prepay/Pay';
 
 import newPaymentMethods from '../screens/payments&Payouts/newPaymentMethods';
 import paymentMethod from '../screens/payments&Payouts/paymentMethod';
@@ -328,6 +329,7 @@ export const MainNavigation = () => {
           component={paymentsandPayouts2}></Stack.Screen>
 
         <Stack.Screen name="payouts" component={payouts}></Stack.Screen>
+        <Stack.Screen name="Pay" component={Pay}></Stack.Screen>
         <Stack.Screen
           name="payoutMethod"
           component={payoutMethod}></Stack.Screen>
