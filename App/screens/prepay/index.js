@@ -164,18 +164,20 @@ class prepay extends Component {
     }
   };
   googlePay = () => {
-    GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods).then(
-      ready => {
-        if (ready) {
-          // Request payment token
-          GooglePay.requestPayment(requestData)
-            .then(token => {
-              console.log(token);
-            })
-            .catch(error => console.log(error.code, error.message));
-        }
-      },
-    );
+    this.props.navigation.navigate('Pay', {fee: this.state.detailItem.Fee});
+ 
+    // GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods).then(
+    //   ready => {
+    //     if (ready) {
+    //       // Request payment token
+    //       GooglePay.requestPayment(requestData)
+    //         .then(token => {
+    //           console.log(token);
+    //         })
+    //         .catch(error => console.log(error.code, error.message));
+    //     }
+    //   },
+    // );
   };
   applePay = async () => {
     this.props.navigation.navigate('Pay', {fee: this.state.detailItem.Fee});

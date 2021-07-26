@@ -419,6 +419,18 @@ export async function findPeoplebyDistance() {
       console.error(error);
     });
 }
+export async function getMutualConnections(user_id) {
+  return fetch(
+    `${Server}/user/get-mutual-connections/${user_id}`,
+  )
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
+
 export async function acceptandRejectRequest(data) {
   var config = {
     method: 'post',

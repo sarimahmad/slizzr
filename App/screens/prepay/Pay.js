@@ -10,7 +10,7 @@ import * as userActions from '../../redux/actions/user';
 const Pay = props => {
   const {initPaymentSheet, presentPaymentSheet} = useStripe();
   const [loading, setLoading] = useState(false);
-  const [secret, setSecret] = useState('');
+  const [secret, setSecret] = useState({});
 
   const fetchPaymentSheetParams = async () => {
     const fee = props.route.params.fee;
@@ -19,7 +19,7 @@ const Pay = props => {
       amount: fee,
     }).then(response => {
 
-      setSecret(response.data.paymentIntent)
+      setSecret(response.data)
       return {
         paymentIntent: response.data.paymentIntent,
         ephemeralKey: response.data.ephemeralKey,
@@ -29,12 +29,12 @@ const Pay = props => {
   };
 
   const initializePaymentSheet = async () => {
-    const {paymentIntent, ephemeralKey, customer} =
-      await fetchPaymentSheetParams();
+    // const {paymentIntent, ephemeralKey, customer} = 
+    await fetchPaymentSheetParams();
     const {error} = await initPaymentSheet({
-      customerId: customer,
-      customerEphemeralKeySecret: ephemeralKey,
-      paymentIntentClientSecret: paymentIntent,
+      customerId: secret.customer,
+      customerEphemeralKeySecret: secret.ephemeralKey,
+      paymentIntentClientSecret: secret.paymentIntent,
     });
     if (!error) {
       setLoading(true);
@@ -42,7 +42,8 @@ const Pay = props => {
   };
 
   const openPaymentSheet = async () => {
-    const {error} = await presentPaymentSheet({clientSecret: secret});
+    console.log("function")
+    const {error} = await presentPaymentSheet({clientSecret: secret.paymentIntent});
 
     if (error) {
       Alert.alert(`Error code: ${error.code}`, error.message);
@@ -59,7 +60,7 @@ const Pay = props => {
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <TouchableOpacity
         style={{height: 40, paddingHorizontal: 20}}
-        onPress={() => openPaymentSheet()}>
+        onPress={openPaymentSheet}>
         <Text>Pay</Text>
       </TouchableOpacity>
     </View>

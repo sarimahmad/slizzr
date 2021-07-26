@@ -210,19 +210,7 @@ class eventDetail extends Component {
               </Text>
               <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>
                 <View style={[styles.flexRow, {paddingTop: 5}]}>
-                  <Image
-                    style={{width: 12, height: 16, marginRight: 5}}
-                    source={require('../../assets/location.png')}
-                  />
-                  <Text
-                    style={{
-                      fontFamily: FONT.Nunito.semiBold,
-                      fontSize: 12,
-                      color: BLACK.grey,
-                    }}>
-                    {this.state.detailItem.Distance} KM away
-                  </Text>
-                </View>
+                  </View>
                 <Text
                   style={{
                     fontFamily: FONT.Nunito.bold,
