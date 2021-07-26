@@ -12,7 +12,11 @@ import {connect} from 'react-redux';
 
 import {FONT, SCREEN} from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import {getAllPaymentMethods, makeDefaultPayment,removePaymentMethod} from '../../helper/Api';
+import {
+  getAllPaymentMethods,
+  makeDefaultPayment,
+  removePaymentMethod,
+} from '../../helper/Api';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
 import Loader from '../../component/Loader';
@@ -42,7 +46,7 @@ class paymentMethod extends Component {
     this.setState({loading: true});
 
     await getAllPaymentMethods(this.props.userToken).then(response => {
-      this.setState({paymentMethod: response});
+      this.setState({paymentMethod: response, editType: true});
       this.setState({loading: false});
     });
   }
@@ -57,17 +61,26 @@ class paymentMethod extends Component {
       this.getPaymentMethods();
     });
   };
-  removePaymentMethod=async(payment_card_id)=>{
-   let  data={
+  removePaymentMethod = async payment_card_id => {
+    this.setState({loading: true});
+    let data = {
       user_id: this.props.userToken,
-      payment_card_id: payment_card_id
-    }
+      payment_card_id: payment_card_id,
+    };
     await removePaymentMethod(data).then(response => {
-     
-      this.setState({loading: false});
-    alert(response.message)
+      if (response.status === 200) {
+        this.getPaymentMethods();
+      } else {
+        this.setState({
+          loading: false,
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(response),
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
+      }
     });
-  }
+  };
   footer = () => {
     return (
       <TouchableOpacity
@@ -105,14 +118,14 @@ class paymentMethod extends Component {
                         style={styles.imageView}
                       />
                     ) : (
-                    <TouchableOpacity onPress={()=>this.removePaymentMethod(item.id)}>
-                      <Image
-                        source={require('../../assets/Slizzer-icon/cross.png')}
-                        style={[styles.imageView, {height: 25}]}
-                      />
+                      <TouchableOpacity
+                        onPress={() => this.removePaymentMethod(item.id)}>
+                        <Image
+                          source={require('../../assets/Slizzer-icon/cross.png')}
+                          style={[styles.imageView, {height: 25}]}
+                        />
                       </TouchableOpacity>
-                    )
-                    }
+                    )}
                     <Text
                       style={[
                         styles.textView,

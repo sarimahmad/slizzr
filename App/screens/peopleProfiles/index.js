@@ -12,7 +12,7 @@ import {
   SafeAreaView,
   FlatList,
   Image,
-  TextInput
+  TextInput,
 } from 'react-native';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -22,20 +22,21 @@ import {
 } from 'react-native-responsive-screen';
 import {ScrollView} from 'react-native-gesture-handler';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import { findPeoplebyDistance  } from '../../helper/Api';
+import {findPeoplebyDistance, getMutualConnections} from '../../helper/Api';
 import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
 import WaitingFor from '../../component/WaitingFor';
+import MutualConnectionImages from '../../component/MutualConnectionImages';
+
 class peopleProfiles extends Component {
   constructor(props) {
     super(props);
     this.state = {
       searchPeople: false,
-      loading:false,
-      min_age:"17",
-      max_age:"25",
-      findpeople: [
-      ],
+      loading: false,
+      min_age: '17',
+      max_age: '25',
+      findpeople: [],
       image: [
         {id: 1, image: require('../../assets/profile2.png')},
         {id: 2, image: require('../../assets/profile2.png')},
@@ -49,46 +50,58 @@ class peopleProfiles extends Component {
       ],
     };
   }
-  componentDidMount(){
-    this.findPeoplebyDistance()
+  componentDidMount() {
+    this.findPeoplebyDistance();
   }
   async findPeoplebyDistance() {
-    this.setState({loading:true})
-    await findPeoplebyDistance(this.state.min_age,this.state.max_age,this.props.userToken).then(response => {
-      console.log("response"+response)
+    this.setState({loading: true});
+    await findPeoplebyDistance(
+      this.state.min_age,
+      this.state.max_age,
+      this.props.userToken,
+    ).then(response => {
+      console.log('response' + response);
       this.setState({findpeople: response.Users, loading: false});
     });
-    
   }
-  handleSubmit=(type,value)=>{
-    if(type=="max_age"){
-      this.setState({max_age:value})
-      this.findPeoplebyDistance()
-    }else if(type=="min_age"){
-      this.setState({min_age:value})
-      this.findPeoplebyDistance()
+  handleSubmit = (type, value) => {
+    if (type == 'max_age') {
+      this.setState({max_age: value});
+      this.findPeoplebyDistance();
+    } else if (type == 'min_age') {
+      this.setState({min_age: value});
+      this.findPeoplebyDistance();
     }
-  }
+  };
+  
+  
+IconImage = (item) => {
+  let name = item.FirstName.charAt(0);
+  return ( 
+  <View style={[styles.logo,{position: 'absolute', alignSelf: 'center', top: 65,alignItems:'center',justifyContent: 'center',backgroundColor:'#7b1fa2',borderColor:'#7b1fa2'}]}>
+  <Text style={{fontSize:28,fontWeight:'600',color:'white'}}>{name}</Text>
+</View>
+  )
+};
   render() {
     return (
       <View style={styles.wrapperView}>
-       {this.state.loading === false && (
-       
-        <SafeAreaView style={styles.contentView}>
-          <HeaderWithOptionBtn
-            borderBottom={true}
-            backColor={WHITE.dark}
-            leftPress={() => this.props.navigation.pop()}
-            leftIcon={require('../../assets/back.png')}
-            rightPress={() => this.props.navigation.navigate('lookFriends')}
-            searchIcon={require('../../assets/searchGrey.png')}
-            centerIcon={require('../../assets/homeLogo.png')}
-          />
+        {this.state.loading === false && (
+          <SafeAreaView style={styles.contentView}>
+            <HeaderWithOptionBtn
+              borderBottom={true}
+              backColor={WHITE.dark}
+              leftPress={() => this.props.navigation.pop()}
+              leftIcon={require('../../assets/back.png')}
+              rightPress={() => this.props.navigation.navigate('lookFriends')}
+              searchIcon={require('../../assets/searchGrey.png')}
+              centerIcon={require('../../assets/homeLogo.png')}
+            />
 
             <TouchableOpacity
               // onPress={() => this.props.navigation.navigate('lookFriends')}
               style={styles.inputSearch}>
-              <Text style={[styles.titleText, {fontSize: 11,marginTop:0}]}>
+              <Text style={[styles.titleText, {fontSize: 11, marginTop: 0}]}>
                 FINDING PEOPLE FOR MY PARTY
               </Text>
             </TouchableOpacity>
@@ -113,14 +126,14 @@ class peopleProfiles extends Component {
               </Text>
 
               <TextInput
-                  style={styles.box}
-                    value={this.state.min_age}
-                    onSubmitEditing={value => this.findPeoplebyDistance()}
-                    onChangeText={value => this.setState({min_age:value})}
-                    placeholder="0"
-                    keyboardType="number-pad"
-                    placeholderTextColor={'#B2ABB1'}
-                  />
+                style={styles.box}
+                value={this.state.min_age}
+                onSubmitEditing={value => this.findPeoplebyDistance()}
+                onChangeText={value => this.setState({min_age: value})}
+                placeholder="0"
+                keyboardType="number-pad"
+                placeholderTextColor={'#B2ABB1'}
+              />
               <Text
                 style={{
                   fontSize: 17,
@@ -131,15 +144,15 @@ class peopleProfiles extends Component {
                 Max :
               </Text>
               <TextInput
-                  style={styles.box}
-                    value={this.state.max_age}
-                    onSubmitEditing={value => this.findPeoplebyDistance()}
-                    onChangeText={value => this.setState({max_age:value})}
-                  placeholder="0"
-                    keyboardType="number-pad"
-                    placeholderTextColor={'#B2ABB1'}
-                  />
-              </View>
+                style={styles.box}
+                value={this.state.max_age}
+                onSubmitEditing={value => this.findPeoplebyDistance()}
+                onChangeText={value => this.setState({max_age: value})}
+                placeholder="0"
+                keyboardType="number-pad"
+                placeholderTextColor={'#B2ABB1'}
+              />
+            </View>
 
             <FlatList
               data={this.state.findpeople}
@@ -161,7 +174,7 @@ class peopleProfiles extends Component {
                   <View style={styles.bottomView}>
                     <View
                       style={{alignItems: 'center', justifyContent: 'center'}}>
-                      <Text style={styles.titleText}>{item.displayName}</Text>
+                      <Text style={styles.titleText}>{item.FirstName}</Text>
                       <View style={{flexDirection: 'row', marginTop: 5}}>
                         <Image
                           source={require('../../assets/location.png')}
@@ -177,22 +190,8 @@ class peopleProfiles extends Component {
                       ]}>
                       Mutual Connections
                     </Text>
-
-                    <View style={{marginTop: 10}}>
-                      <FlatList
-                        data={this.state.image}
-                        horizontal
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({item}) => (
-                          <View>
-                            <Image
-                              style={{height: 50, width: 50}}
-                              source={item.image}
-                            />
-                          </View>
-                        )}
-                      />
-                    </View>
+                   <MutualConnectionImages userId={item.id}/>
+                    {/* {this.getUserMutualConnections(item.id)} */}
                     <Text style={[styles.purpleText, {marginTop: 10}]}>
                       See more
                     </Text>
@@ -200,17 +199,24 @@ class peopleProfiles extends Component {
                       <Text style={styles.btnTextLocation}>DIRECT INVITE</Text>
                     </TouchableOpacity>
                   </View>
-                  <Image
-                    source={{uri:item.image}}
-                    style={{position: 'absolute', alignSelf: 'center', top: 40}}
+                 {item.Pictures.length !==0 &&
+                  //  this.IconImage(item)
+                 
+                  <Image 
+                  style={[styles.logo,{position: 'absolute', alignSelf: 'center', top: 65,alignItems:'center',justifyContent: 'center'}]}
+                    source={{uri: item.Pictures[0].Profile_Url}}
                   />
+            
+                 }
+                    {item.Pictures.length === 0 &&
+                   this.IconImage(item)
+                  } 
                 </View>
               )}
             />
-        </SafeAreaView>
-       )}
-       {this.state.loading === true && <WaitingFor type="People" />}
-       
+          </SafeAreaView>
+        )}
+        {this.state.loading === true && <WaitingFor type="People" />}
       </View>
     );
   }
@@ -238,11 +244,18 @@ const styles = StyleSheet.create({
   box: {
     borderWidth: 1,
     borderRadius: 5,
-    height:50,
-    width:50,  
-    paddingLeft:15,
+    height: 50,
+    width: 50,
+    paddingLeft: 15,
     borderColor: 'lightgrey',
     elevation: 2,
+  },
+  logo: {
+    height: 60,
+    width: 60,
+    borderWidth: 2,
+    borderRadius: 50,
+    marginLeft:5
   },
   btnLocation: {
     // width: wp('0%'),
@@ -377,14 +390,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
 
     fontFamily: FONT.Nunito.semiBold,
-  },
-  logo: {
-    //   height: 80,
-    //   width: 100,
-    //   resizeMode: 'contain',
-    marginTop: 25,
-
-    alignSelf: 'center',
   },
   logoAdd: {
     alignSelf: 'flex-end',

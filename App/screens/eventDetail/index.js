@@ -25,7 +25,11 @@ import * as userActions from '../../redux/actions/user';
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {width} from '../../helper/Constant';
-import {CheckEventStatus, AtendPublicEvent} from '../../helper/Api';
+import {
+  CheckEventStatus,
+  AtendPublicEvent,
+  getEventDetail,
+} from '../../helper/Api';
 import Loader from '../../component/Loader';
 
 class eventDetail extends Component {
@@ -51,32 +55,47 @@ class eventDetail extends Component {
   componentDidMount() {
     let id = this.props.route.params.detailItem;
     this.setState({user_id: this.props.userDetail.id});
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.props.userDetail &&
+        this.getEventStatus({
+          user_id: this.props.userDetail.id,
+          event_id: this.props.route.params.detailItem,
+        });
+    });
     this.props.userDetail && this.getEventDetail(id, this.props.userDetail.id);
-    this.props.userDetail &&
-      this.getEventStatus({
-        user_id: this.props.userDetail.id,
-        event_id: this.props.route.params.detailItem,
-      });
   }
 
-  getEventDetail(id, userId) {
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
+  async getEventDetail(id, userId) {
     this.setState({loading: true});
-    const eventRef = firestore().collection('events');
-    eventRef
-      .doc(id)
-      .get()
-      .then(firestoreDocument => {
-        if (!firestoreDocument.exists) {
-        } else {
-          this.setState({
-            myEvent: firestoreDocument.data().Host.id === userId,
-          });
-          this.setState({detailItem: firestoreDocument.data()});
-          this.setState({
-            date: firestoreDocument.data(),
-          });
-        }
-      });
+    await getEventDetail(id)
+      .then(response => {
+        this.setState({
+          myEvent: response.Event.Host.id === userId.Address,
+          detailItem: response.Event,
+          date: response.Event,
+        });
+      })
+      .catch(error => console.log(error));
+    // const eventRef = firestore().collection('events');
+    // eventRef
+    //   .doc(id)
+    //   .get()
+    //   .then(firestoreDocument => {
+    //     if (!firestoreDocument.exists) {
+    //     } else {
+    //       this.setState({
+    //         myEvent: firestoreDocument.data().Host.id === userId,
+    //       });
+    //       this.setState({detailItem: firestoreDocument.data()});
+    //       this.setState({
+    //         date: firestoreDocument.data(),
+    //       });
+    //     }
+    //   });
     this.setState({loading: false});
   }
 
@@ -121,6 +140,9 @@ class eventDetail extends Component {
             leftIcon={require('../../assets/back.png')}
             rightIcon={require('../../assets/share.png')}
             centerIcon={require('../../assets/slizerLogo.png')}
+            rightPress={() =>
+              console.log('responseEvent', this.state.detailItem)
+            }
           />
 
           <ScrollView bounces={false}>
@@ -183,24 +205,12 @@ class eventDetail extends Component {
                   marginTop: 3,
                   fontWeight: 'bold',
                 }}>
-                {this.state.detailItem.DateTime}{' '}
-                | {this.state.detailItem.duration} HRS
+                {this.state.detailItem.DateTime} |{' '}
+                {this.state.detailItem.duration} HRS
               </Text>
               <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>
                 <View style={[styles.flexRow, {paddingTop: 5}]}>
-                  <Image
-                    style={{width: 12, height: 16, marginRight: 5}}
-                    source={require('../../assets/location.png')}
-                  />
-                  <Text
-                    style={{
-                      fontFamily: FONT.Nunito.semiBold,
-                      fontSize: 12,
-                      color: BLACK.grey,
-                    }}>
-                    15 KM away
-                  </Text>
-                </View>
+                  </View>
                 <Text
                   style={{
                     fontFamily: FONT.Nunito.bold,
@@ -239,14 +249,17 @@ class eventDetail extends Component {
               <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
-                  if (
-                    this.state.Check_Status === 'Active' &&
-                    this.state.User_Attending_Event === false
-                  ) {
-                    this.attendEvent({
-                      user_id: this.props.userDetail.id,
-                      event_id: this.props.route.params.detailItem,
-                    });
+                  if (this.state.Check_Status === 'Active') {
+                    if (this.state.User_Attending_Event === false) {
+                      this.attendEvent({
+                        user_id: this.props.userDetail.id,
+                        event_id: this.props.route.params.detailItem,
+                      });
+                    } else {
+                      this.props.navigation.navigate('attendingEventInfo', {
+                        id: this.props.route.params.detailItem,
+                      });
+                    }
                   }
                 }}
                 style={

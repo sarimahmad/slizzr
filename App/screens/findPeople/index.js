@@ -65,12 +65,12 @@ export default class findPeople extends Component {
     const usersRef = firestore().collection('events');
     this.setState({loading: true});
     usersRef
-      .where('PublicPrivate', '==', 'Private')
       .get()
       .then(async doc => {
         doc._docs.forEach(element => {
-            console.log(element)
-          privateEvents.push(element)
+            
+          if(element._data.PublicPrivate === 'Private')
+            privateEvents.push(element._data)
           
         });
         this.setState({
@@ -119,46 +119,52 @@ export default class findPeople extends Component {
                        
                     />
         <FlatList
-                data={this.state.findpeople}
+                data={this.state.privateEvents}
                 keyExtractor={item => item.id}
                 ListEmptyComponent={this.emptyListComponent}
              
                 renderItem={({ item }) => (   
                   <View
-                    style={{
-                      height: 80,
-                      borderBottomColor: 'lightgrey',
-                      borderBottomWidth: 1,
-                      width: SCREEN.width,
-                   
-                    }}>
-                    <View style={[styles.flexRow, { width: SCREEN.width ,alignItems: 'center',}]}>
+                  style={{
+                    minHeight: 80,
+                    borderBottomColor: 'lightgrey',
+                    borderBottomWidth: 1,
+                    width: SCREEN.width,
+                  }}>
+                  <View
+                    style={[
+                      styles.flexRow,
+                      {width: SCREEN.width - 20, alignItems: 'center'},
+                    ]}>
                     <View style={styles.imgView}>
-                   
-                   <Image source={require('../../assets/image2.jpg')} style={{borderRadius:44,height:60,width:60}} />
-                  
-                   <Image
-                     style={{position: 'absolute',right:-10}}
-                     source={require('../../assets/private.png')}
-                   />
-                 </View>
+                      <Image
+                        source={{uri: item.image}}
+                        style={{borderRadius: 44, height: 60, width: 60}}
+                      />
 
-                      <View style={styles.detail}>
-                        <Text style={styles.titleText}>{item.profileName}</Text>
-                        <Text style={styles.adressText}>{item.adress}</Text>
-                        <Text style={styles.purpleText}>{item.date}</Text>
-                    
-                      </View>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.props.navigation.navigate('peopleProfiles')
-                        }
-                        style={styles.shareView}>
-                        <Image source={require('../../assets/Right.png')} />
-                      </TouchableOpacity>
+                      <Image
+                        style={{position: 'absolute', right: -10}}
+                        source={require('../../assets/private.png')}
+                      />
                     </View>
+
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>{item.Name}</Text>
+                      <Text style={styles.adressText}>
+                        Host: {item.Host.displayName}
+                      </Text>
+                      <Text style={styles.purpleText}>{item.DateTime}</Text>
+                    </View>
+                    <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate('peopleProfiles')
+                    }
+                      style={styles.shareView}>
+                      <Image source={require('../../assets/Right.png')} />
+                    </TouchableOpacity>
                   </View>
-                )}
+                </View>
+               )}
               />
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}

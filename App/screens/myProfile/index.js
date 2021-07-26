@@ -21,7 +21,7 @@ import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
 import {blockUser, getUserImages} from '../../helper/Api';
 import ErrorPopup from '../../component/ErrorPopup';
 import firestore from '@react-native-firebase/firestore';
-import { sendMutualConnection } from '../../helper/Api';
+import {sendMutualConnection, getMutualConnections} from '../../helper/Api';
 import Loader from '../../component/Loader';
 
 class Profile extends Component {
@@ -29,6 +29,7 @@ class Profile extends Component {
     super();
     this.state = {
       imageOfuser: [],
+      mutualConnections: [],
     };
   }
   footer = () => {
@@ -44,15 +45,21 @@ class Profile extends Component {
       this._unsubscribe = this.props.navigation.addListener('focus', () => {
         this.setState({userDetail: this.props.userDetail});
         this.getUserImages();
+        // this.getMutualFriends(this.props.userDetail.id)
       });
     } else if (this.props.route.params.id) {
       this._unsubscribe = this.props.navigation.addListener('focus', () => {
         this.getUserFromFirestore(this.props.route.params.id);
         this.getOtherUserImages(this.props.route.params.id);
+        this.getMutualConnections("2J2ioGAlKnbV1Cnkn0f9KA6QKrl1");
       });
     }
   }
-
+  async getMutualConnections(id) {
+    await getMutualConnections(id).then(response => {
+      this.setState({mutualConnections: response.Users, loading: false});
+    });
+  }
   componentWillUnmount() {
     this._unsubscribe();
   }
@@ -84,54 +91,61 @@ class Profile extends Component {
   };
   async getOtherUserImages(id) {
     await getUserImages(id).then(response => {
-      this.setState({loading:false})
+      this.setState({loading: false});
       this.setState({imageOfuser: response.Pictures});
     });
   }
   async getUserImages() {
     await getUserImages(this.props.userToken).then(response => {
-      this.setState({loading:false})
-     
+      this.setState({loading: false});
+
       this.setState({imageOfuser: response.Pictures});
     });
   }
-rightIconPress=async()=>{
-  if(this.props.route.params.from === 'drawer' || (this.props.route.params.id === this.props.userToken) ){
-  this.props.navigation.navigate('editProfle', {
-    imageOfuser: this.state.imageOfuser,
-  })
-}else if(this.props.route.params.id !== this.props.userToken){
-  data={
-    user_id:this.props.userToken,
-    friend_user_id:this.props.route.params.id
-  }
-  this.setState({loading:true})
-    await  sendMutualConnection(data).then(response => {
-      this.setState({loading:false})
-      alert(response.message)
-   
- 
-    this.props.navigation.pop()
-    });
-  
-}
-}
-blockUser=async()=>{
- let data={
-    user_id:this.props.userToken,
-    mutual_connection_id:this.props.route.params.MutualConnectionID
-   
-  }
-  this.setState({loading:true})
-  
-  await  blockUser(data).then(response => {
-    this.setState({loading:false})
-    alert(response.message)
-   
-    this.props.navigation.pop()
-    });
-}
+  rightIconPress = async () => {
+    if (
+      this.props.route.params.from === 'drawer' ||
+      this.props.route.params.id === this.props.userToken
+    ) {
+      this.props.navigation.navigate('editProfle', {
+        imageOfuser: this.state.imageOfuser,
+      });
+    } else if (this.props.route.params.id !== this.props.userToken) {
+      data = {
+        user_id: this.props.userToken,
+        friend_user_id: this.props.route.params.id,
+      };
+      this.setState({loading: true});
+      await sendMutualConnection(data).then(response => {
+        this.setState({loading: false});
+        alert(response.message);
 
+        this.props.navigation.pop();
+      });
+    }
+  };
+  blockUser = async () => {
+    let data = {
+      user_id: this.props.userToken,
+      mutual_connection_id: this.props.route.params.MutualConnectionID,
+    };
+    this.setState({loading: true});
+
+    await blockUser(data).then(response => {
+      this.setState({loading: false});
+      alert(response.message);
+
+      this.props.navigation.pop();
+    });
+  };
+  IconImage = (item) => {
+    let name = item.FirstName.charAt(0);
+    return (   
+    <View style={[styles.logo,{alignItems:'center',justifyContent: 'center',backgroundColor:'#7b1fa2',borderColor:'#7b1fa2'}]}>
+    <Text style={{fontSize:28,fontWeight:'600',color:'white'}}>{name}</Text>
+  </View>
+    )
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -139,16 +153,14 @@ blockUser=async()=>{
           <HeaderWithOptionBtn
             leftIcon={require('../../assets/back.png')}
             leftPress={() => this.props.navigation.pop()}
-            rightPress={() =>
-             this.rightIconPress()
-            }
+            rightPress={() => this.rightIconPress()}
             borderBottom={true}
-
             rightIcon={
-              this.props.route.params.from === 'drawer' || (this.props.route.params.id === this.props.userToken  )
+              this.props.route.params.from === 'drawer' ||
+              this.props.route.params.id === this.props.userToken
                 ? require('../../assets/edit.png')
                 : require('../../assets/Slizzer-icon/group.png')
-            }  
+            }
           />
           <ScrollView style={styles.wrapperView} bounces={true}>
             <View style={styles.wrapperView2}>
@@ -287,7 +299,7 @@ blockUser=async()=>{
                     <View
                       style={{height: 50, width: SCREEN.width, marginTop: 11}}>
                       <FlatList
-                        data={this.state.image}
+                        data={this.state.mutualConnections}
                         horizontal
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item}) => (
@@ -298,10 +310,21 @@ blockUser=async()=>{
                               )
                             }
                             style={styles.listView}>
-                            <Image
-                              style={styles.ImageView}
-                              source={item.image}
-                            />
+                            {item.Pictures.length !== 0 && (
+                              <Image
+                                style={styles.ImageView}
+                                source={{uri: item.Pictures[0].Profile_Url}}
+                              />
+                            )}
+                            {item.Pictures.length === 0 && item.Profile && (
+                              <Image
+                                style={styles.ImageView}
+                                source={{uri: item.Profile}}
+                              />
+                            )}
+                            {item.Pictures.length === 0 &&
+                              !item.Profile &&
+                              this.IconImage(item)}
                           </TouchableOpacity>
                         )}
                       />
@@ -309,12 +332,21 @@ blockUser=async()=>{
                     {this.footer()}
                   </View>
                 )}
-              {this.props.route.params.id !== this.props.userToken && (
-                <TouchableOpacity onPress={()=>this.blockUser()} style={styles.blockUser}>
-                  
-                 <Text style={[styles.titleText,{color:'#FF2D55',textDecorationLine:'underline'}]}>BLOCK USER</Text>
+              {this.props.userDetail &&
+                this.state.userDetail &&
+                this.props.userDetail.id !== this.state.userDetail.id && (
+                  <TouchableOpacity
+                    onPress={() => this.blockUser()}
+                    style={styles.blockUser}>
+                    <Text
+                      style={[
+                        styles.titleText,
+                        {color: '#FF2D55', textDecorationLine: 'underline'},
+                      ]}>
+                      BLOCK USER
+                    </Text>
                   </TouchableOpacity>
-              )}
+                )}
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -341,8 +373,7 @@ blockUser=async()=>{
             />
           </Modal>
         )}
-          {this.state.loading && <Loader loading={this.state.loading} />}
-   
+        {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
     );
   }
@@ -367,6 +398,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: WHITE.dark,
   },
+  logo: {
+    height: 50,
+    width: 50,
+    borderWidth: 2,
+    borderRadius: 30,
+  },
+ 
   wrapperView2: {
     flex: 1,
     alignItems: 'center',

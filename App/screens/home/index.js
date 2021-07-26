@@ -24,7 +24,6 @@ import Geolocation from 'react-native-geolocation-service';
 import {openSettings} from 'react-native-permissions';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
-import moment from 'moment';
 
 import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
@@ -32,7 +31,7 @@ import WaitingFor from '../../component/WaitingFor';
 import ErrorPopup from '../../component/ErrorPopup';
 import {createCustomerStripe} from '../../helper/Api';
 import Server from '../../helper/Server';
-
+import firestore from '@react-native-firebase/firestore';
 let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
@@ -67,6 +66,7 @@ class home extends Component {
       errorTitle: '',
       errorText: '',
       pageNumber: 1,
+      StripeId: '',
     };
     this.getLocation = this.getLocation.bind(this);
     this.getEvents = this.getEvents.bind(this);
@@ -101,15 +101,55 @@ class home extends Component {
 
     return false;
   };
+  getUserFromFirestore = id => {
+    this.setState({loading: true});
+    const usersRef = firestore().collection('users');
+    usersRef
+      .doc(id)
+      .get()
+      .then(firestoreDocument => {
+        if (!firestoreDocument.exists) {
+          return;
+        } else {
+          this.setState({
+            loading: false,
+          });
+          this.props.callApi(
+            firestoreDocument.data(),
+            firestoreDocument.data().id,
+          );
+        }
+      })
+      .catch(error => {
+        this.setState({
+          loading: false,
+          btnOneText: 'Ok',
+          errorTitle: 'ERROR',
+          errorText: JSON.stringify(error),
+          popUpError: true,
+        });
+      });
+  };
+  // updateProfile=async(response)=>{
+  //  this.setState({loading:true})
 
+  //   await updateProfile(this.props.userToken,response).then(
+  //     response => {
+  //   this.getUserFromFirestore(this.props.userToken);
+  //   console.log(response)
+  // },);
+  // }
   checkStripeClientId = async () => {
     const userData = this.props.userDetail;
-   
-    if (userData.STRIPE_CUST_ID === '') {
-      await createCustomerStripe({user_id: userData.id}).then(_response => {
-        console.log(_response);
-        this.setState({loading: false});
-      });
+
+    if (!userData.STRIPE_CUST_ID || userData.STRIPE_CUST_ID === '') {
+      await createCustomerStripe({user_id: userData.id}).then(
+        async _response => {
+          this.setState({StripeId: _response});
+          this.setState({loading: true});
+          this.getUserFromFirestore(this.props.userToken);
+        },
+      );
     } else {
       console.log(userData.STRIPE_CUST_ID === '');
     }
@@ -213,7 +253,9 @@ class home extends Component {
 
     fetch(
       `${Server}/event?radius=${
-        this.props.userDetail && this.props.userDetail.Radius ? '5000' : '5000'
+        this.props.userDetail && this.props.userDetail.Radius
+          ? this.props.userDetail.Radius
+          : '5000'
       }&lat=${this.state.allLocations.latitude}&long=${
         this.state.allLocations.longitude
       }&page=${this.state.pageNumber}&limit=30`,
@@ -223,7 +265,7 @@ class home extends Component {
       .then(async querySnapShot => {
         if (querySnapShot.Events.length > 0) {
           await querySnapShot.Events.forEach(async doc => {
-            console.warn(doc)
+            console.warn(doc);
             let event = {
               Description: doc.Description,
               id: doc.id,
@@ -271,9 +313,7 @@ class home extends Component {
           this.setState({loading: false});
         }
       })
-      .then(() => {
-      
-      })
+      .then(() => {})
 
       .catch(error => {
         this.setState({
@@ -312,16 +352,14 @@ class home extends Component {
     }
     this.getEvents('update');
   };
- eventDetail=(event_id)=>{
-   if(event_id){
-  this.props.navigation.navigate('eventDetail', {
-    detailItem: event_id,
-    
-  })
-}else{
-  
-}
- }
+  eventDetail = event_id => {
+    if (event_id) {
+      this.props.navigation.navigate('eventDetail', {
+        detailItem: event_id,
+      });
+    } else {
+    }
+  };
   listView = () => {
     return (
       <View style={{flex: 1}}>
@@ -368,9 +406,7 @@ class home extends Component {
                       <Text style={styles.adressText}>
                         Host: {item.Host.displayName}
                       </Text>
-                      <Text style={styles.purpleText}>
-                        {item.DateTime}
-                      </Text>
+                      <Text style={styles.purpleText}>{item.DateTime}</Text>
                       <View style={styles.flexRow}>
                         <Image
                           style={{height: 16, width: 12, marginRight: 5}}
@@ -381,9 +417,7 @@ class home extends Component {
                       </View>
                     </View>
                     <TouchableOpacity
-                      onPress={() =>
-                       this.eventDetail(item.id)
-                      }
+                      onPress={() => this.eventDetail(item.id)}
                       style={styles.shareView}>
                       <Image source={require('../../assets/Right.png')} />
                     </TouchableOpacity>

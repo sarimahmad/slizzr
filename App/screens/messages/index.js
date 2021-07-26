@@ -22,7 +22,7 @@ import {getUserAttendedEvents, getUserEvents} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 
- class messages extends Component {
+class messages extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -199,7 +199,9 @@ import {connect} from 'react-redux';
         }}>
         {this.state.index === 1 && (
           <View>
-            <Text style={styles.emptyFont}>You are not hosting any events at the moment.</Text>
+            <Text style={styles.emptyFont}>
+              You are not hosting any events at the moment.
+            </Text>
             <TouchableOpacity style={styles.btnMap}>
               <Text style={styles.btnText}>HOST?</Text>
             </TouchableOpacity>
@@ -246,8 +248,8 @@ import {connect} from 'react-redux';
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>
-                    this.props.navigation.navigate('messagesEvent',{
-                      EventID: item.id
+                    this.props.navigation.navigate('messagesEvent', {
+                      EventID: item.id,
                     })
                   }
                   style={{
@@ -257,7 +259,7 @@ import {connect} from 'react-redux';
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image
-                        source={{uri:item.image}}
+                        source={{uri: item.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
 
@@ -298,8 +300,8 @@ import {connect} from 'react-redux';
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>
-                    this.props.navigation.navigate('messagesEvent',{
-                      EventID: item.Event.id
+                    this.props.navigation.navigate('messagesEvent', {
+                      EventID: item.Event.id,
                     })
                   }
                   style={{
@@ -309,7 +311,7 @@ import {connect} from 'react-redux';
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image
-                        source={{uri:item.Event.image}}
+                        source={{uri: item.Event.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
 
@@ -364,7 +366,7 @@ const styles = StyleSheet.create({
 
     backgroundColor: WHITE.dark,
   },
-  
+
   sharedView: {
     width: SCREEN.width,
     height: 40,

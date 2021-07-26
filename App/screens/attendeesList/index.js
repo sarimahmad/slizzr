@@ -19,76 +19,72 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import { getAttendeesList } from '../../helper/Api';
+import {getAttendeesList} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 import ErrorPopup from '../../component/ErrorPopup';
-import { sendMessageToAttendees } from '../../helper/Api';
- class attendeesList extends Component {
+import {sendMessageToAttendees} from '../../helper/Api';
+class attendeesList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       attendingEvents: true,
       myevents: false,
-      attendeesList:[],
-      attendeesCount:0,
-      attendeesIdList:[],
+      attendeesList: [],
+      attendeesCount: 0,
+      attendeesIdList: [],
       popUpError: false,
       btnOneText: '',
       errorTitle: '',
       errorText: '',
-      messageAllText:''
-
+      messageAllText: '',
     };
   }
-  
-componentDidMount(){
-  let eventId = this.props.route.params.id;
-  if(eventId){
-    this.getAttendeesList(eventId)
+
+  componentDidMount() {
+    let eventId = this.props.route.params.id;
+    if (eventId) {
+      this.getAttendeesList(eventId);
+    }
   }
- 
-}
-async getAttendeesList(eventId) {
- let attendeesIdList=[]
- this.setState({loading:true})
-  await getAttendeesList(eventId).then((response) => {
-    this.setState({ attendeesLIst: response.Attendees }) 
-    this.setState({attendeesCount:response.Attendees.length})
-    response.Attendees.forEach(element => {
-      attendeesIdList.push(element.id)
-  });
-    this.setState({attendeesIdList:attendeesIdList})
-    this.setState({loading:false})
-  
-  });
-
-}
-storeInputData = (text) => {
-  this.setState({messageAllText:text})
-};
-
-done = async() => {
-  this.setState({popUpError: false});
-  this.setState({btnOneText: false});
-  this.setState({errorTitle: false});
-  this.setState({errorText: false});
-  
-
-  this.setState({loading:true})
- 
- let data={
-  HostUID: this.props.userToken,
-  AttendeesList: this.state.attendeesIdList,
-  EventID: this.props.route.params.id,
-              Text:this.state.messageAllText
+  async getAttendeesList(eventId) {
+    let attendeesIdList = [];
+    this.setState({loading: true});
+    await getAttendeesList(eventId).then(response => {
+      this.setState({attendeesLIst: response.Attendees});
+      this.setState({attendeesCount: response.Attendees.length});
+      response.Attendees.forEach(element => {
+        attendeesIdList.push(element.User.id);
+      });
+      this.setState({attendeesIdList: attendeesIdList});
+      this.setState({loading: false});
+    });
   }
- await sendMessageToAttendees(data).then((response)=>{
-  this.setState({loading:false})
-    alert(response.message)
-  })
-};
+  storeInputData = text => {
+    this.setState({messageAllText: text});
+  };
+
+  done = async () => {
+    this.setState({popUpError: false, fbtnOneText: false});
+    this.setState({errorTitle: false});
+    this.setState({errorText: false});
+
+    this.setState({loading: true});
+
+    let data = {
+      HostUID: this.props.userToken,
+      AttendeesList: this.state.attendeesIdList,
+      EventID: this.props.route.params.id,
+      Text: this.state.messageAllText,
+    };
+    await sendMessageToAttendees(data).then(response => {
+      this.setState({loading: false});
+      alert(response.message);
+    });
+  };
   render() {
+    const fromAttend =
+      this.props.route.params.from && this.props.route.params.from === 'attend';
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
@@ -117,18 +113,24 @@ done = async() => {
             data={this.state.attendeesLIst}
             keyExtractor={item => item.id}
             renderItem={({item}) => (
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate("myProfile",{id:item.User.id})}
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('myProfile', {
+                    id: item.User.id,
+                  })
+                }
                 style={{
-                  width:SCREEN.width,
+                  width: SCREEN.width,
                   borderBottomWidth: 1,
                   borderBottomColor: 'lightgrey',
                 }}>
                 <View style={[styles.flexRow, {height: 70}]}>
-                  <View style={{flexDirection: 'row',width:SCREEN.width*0.6,}}>
+                  <View
+                    style={{flexDirection: 'row', width: SCREEN.width * 0.6}}>
                     <View style={styles.imgView}>
                       <Image
                         style={{height: 50, width: 50}}
-                        source={{uri:item.User.Profile}}
+                        source={{uri: item.User.Profile}}
                       />
                     </View>
                     <View
@@ -150,31 +152,36 @@ done = async() => {
                     </View>
                   </View>
 
-                  <View
-                    style={{
-                      height: 30,
-                      width: 80,
-                      borderRadius: 24,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: '#F818D9',
-                    }}>
-                    <Text style={{color: 'white'}}>DISINVITE</Text>
-                  </View>
+                  {!fromAttend && (
+                    <View
+                      style={{
+                        height: 30,
+                        width: 80,
+                        borderRadius: 24,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#F818D9',
+                      }}>
+                      <Text style={{color: 'white'}}>DISINVITE</Text>
+                    </View>
+                  )}
                 </View>
               </TouchableOpacity>
             )}
           />
           <TouchableOpacity
-            onPress={() => this.setState({ 
-            errorTitle: 'Chat',
-            errorText: 'Send Message to All Attendees',
-            btnOneText: 'Ok',
-            popUpError: true}) 
-            
+            onPress={() =>
+              this.setState({
+                errorTitle: 'Chat',
+                errorText: 'Send Message to All Attendees',
+                btnOneText: 'Ok',
+                popUpError: true,
+              })
             }
             style={styles.btnMap}>
-            <Text style={styles.btnText}>Message all {this.state.attendeesCount} attendees</Text>
+            <Text style={styles.btnText}>
+              Message all {this.state.attendeesCount} attendees
+            </Text>
           </TouchableOpacity>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
@@ -185,12 +192,9 @@ done = async() => {
             transparent={true}
             presentationStyle={'overFullScreen'}>
             <ErrorPopup
-              cancelButtonPress={() =>
-                this.done()
-              }
-          
+              cancelButtonPress={() => this.done()}
               parentCallBack={this.storeInputData}
-              doneButtonPress={() => console.log("tapped")}
+              doneButtonPress={() => console.log('tapped')}
               errorTitle={this.state.errorTitle}
               textInput={true}
               errorText={this.state.errorText}
