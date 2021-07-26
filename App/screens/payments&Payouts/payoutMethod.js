@@ -109,7 +109,7 @@ class payoutMethod extends Component {
               <View>
                 <View style={styles.blockView}>
                   <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    {this.state.editType && (
+                    {this.state.editType && item.default !== true && (
                       <TouchableOpacity
                         onPress={() => this.removePayoutMethod(item.id)}>
                         <Image

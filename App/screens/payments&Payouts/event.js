@@ -1,13 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import {FONT, SCREEN} from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {SafeAreaView} from 'react-navigation';
@@ -30,8 +23,6 @@ export default class event extends Component {
             backColor={WHITE.dark}
             leftIcon={require('../../assets/back.png')}
             leftPress={() => this.props.navigation.navigate('payouts')}
-            // rightIcon={require('../../assets/Slizzer-icon/edit.png')}
-            // rightPress={() => this.setState({ editType: !this.state.editType })}
           />
           <ScrollView>
             <View style={[styles.wrapperView, {alignItems: 'center'}]}>
@@ -55,7 +46,11 @@ export default class event extends Component {
                 Uroojs Banger
               </Text>
               <Text style={styles.textView1}>Prepaid |$5</Text>
-              <Text style={[styles.textView1, {color: '#F818D9',fontFamily:FONT.Nunito.bold}]}>
+              <Text
+                style={[
+                  styles.textView1,
+                  {color: '#F818D9', fontFamily: FONT.Nunito.bold},
+                ]}>
                 11:30 PM | Feb 25, 2020 - WED
               </Text>
               <View style={{flexDirection: 'row', marginBottom: 20}}>
@@ -85,7 +80,7 @@ export default class event extends Component {
                 Total Event Earnings:
                 <Text style={styles.numValue}> $378.40</Text>
               </Text>
-              <Text style={[styles.textView2,{fontSize:12}]}>
+              <Text style={[styles.textView2, {fontSize: 12}]}>
                 (All currencies shown in CAD)
               </Text>
               <Text style={styles.text3}>Status:</Text>
@@ -174,8 +169,8 @@ const styles = StyleSheet.create({
   text5: {
     fontFamily: FONT.Nunito.semiBold,
     fontSize: 12,
-    marginTop:49,
-    marginBottom:10,
+    marginTop: 49,
+    marginBottom: 10,
     fontWeight: '600',
     textAlign: 'center',
     textDecorationLine: 'underline',

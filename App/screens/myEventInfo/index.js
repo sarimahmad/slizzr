@@ -159,6 +159,8 @@ class myEventInfo extends Component {
               onPress={() =>
                 this.props.navigation.navigate('attendeesList', {
                   id: this.state.detailItem.id,
+                  host: this.state.detailItem.Host,
+                  from: 'host',
                 })
               }>
               <Text style={styles.btnText}>ATTENDEES</Text>
@@ -311,7 +313,7 @@ const styles = StyleSheet.create({
   logo: {},
   logoEvent1: {
     marginVertical: 10,
-    width: SCREEN.width-40,
+    width: SCREEN.width - 40,
     height: 110,
     borderRadius: 10,
     display: 'flex',

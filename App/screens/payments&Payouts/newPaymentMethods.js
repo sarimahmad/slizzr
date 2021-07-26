@@ -25,11 +25,7 @@ class newPaymentMethods extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      paymentMethod: [
-        {id: 1, name: 'Apple Pay'},
-        {id: 2, name: 'Google Pay'},
-        {id: 3, name: 'Credit Card'},
-      ],
+      paymentMethod: [{id: 3, name: 'Credit Card'}],
       prepayModal: false,
     };
   }
@@ -121,25 +117,25 @@ class newPaymentMethods extends Component {
                   backColor={WHITE.dark}
                 />
                 <CreditCardInput onChange={this._onChange} />
-                  <TouchableOpacity
-                    onPress={() => this.addPaymenmtMethod()}
+                <TouchableOpacity
+                  onPress={() => this.addPaymenmtMethod()}
+                  style={[
+                    styles.btnPay,
+                    {alignSelf: 'center', marginBottom: 100},
+                  ]}>
+                  <Text
                     style={[
-                      styles.btnPay,
-                      {alignSelf: 'center', marginBottom: 100},
+                      {
+                        fontSize: 14,
+                        fontFamily: FONT.Nunito.bold,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                      },
                     ]}>
-                    <Text
-                      style={[
-                        {
-                          fontSize: 14,
-                          fontFamily: FONT.Nunito.bold,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          color: 'white',
-                        },
-                      ]}>
-                      Done
-                    </Text>
-                  </TouchableOpacity>
+                    Done
+                  </Text>
+                </TouchableOpacity>
               </SafeAreaView>
             </Modal>
           )}

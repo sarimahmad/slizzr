@@ -386,6 +386,26 @@ export async function removePayoutMethod(dataToSend) {
   return GetResponse;
 }
 
+export async function disInviteAttendee(dataToSend) {
+  var config = {
+    method: 'delete',
+    url: `${Server}/zicket/disinvite`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: dataToSend,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      return error;
+    });
+  return GetResponse;
+}
+
 export async function getAllRequests(user_id) {
   return fetch(`${Server}/user/get-all-request/${user_id}`)
     .then(async response => {
@@ -420,9 +440,7 @@ export async function findPeoplebyDistance() {
     });
 }
 export async function getMutualConnections(user_id) {
-  return fetch(
-    `${Server}/user/get-mutual-connections/${user_id}`,
-  )
+  return fetch(`${Server}/user/get-mutual-connections/${user_id}`)
     .then(async response => {
       return await response.json();
     })

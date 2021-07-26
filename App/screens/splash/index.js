@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable radix */
 /* eslint-disable react-hooks/rules-of-hooks */
@@ -10,11 +11,10 @@ import {connect} from 'react-redux';
 
 import * as userActions from '../../redux/actions/user';
 import {WHITE} from '../../helper/Color';
-import messaging from '@react-native-firebase/messaging'
+import messaging from '@react-native-firebase/messaging';
 
 const splash = props => {
-
-  const [fcmToken, setFcmToken] = React.useState(null)
+  const [fcmToken, setFcmToken] = React.useState(null);
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', () => {
       // do something
@@ -25,36 +25,34 @@ const splash = props => {
   }, [checkUSer, props.navigation]);
 
   useEffect(() => {
-    getToken()
-    requestUserPermission()
-  }, [])
+    getToken();
+    requestUserPermission();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage))
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
       // console.log(remoteMessage)
-    })
-    return unsubscribe
-  }, [])
+    });
+    return unsubscribe;
+  }, []);
 
   const requestUserPermission = async () => {
-    const authStatus = await messaging().requestPermission()
+    const authStatus = await messaging().requestPermission();
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      console.log('Authorization status:', authStatus)
+      console.log('Authorization status:', authStatus);
     }
-  }
+  };
 
-//fl9ZzRl_SZCj7rT4aqTzdd:APA91bG6XEiv9YBr3H209-LsB-pa-420tca7QSBO1voxVWieAZ3yIpLDiOjIwKNoIcgsuaZon_FMZfctsBy4Y20UxqfHxetNt8PKTq_rB6tzEI7kLVN4D_bQP_NvqaC40QjNZ_CTdVvv
-  async function getToken(){
+  //fl9ZzRl_SZCj7rT4aqTzdd:APA91bG6XEiv9YBr3H209-LsB-pa-420tca7QSBO1voxVWieAZ3yIpLDiOjIwKNoIcgsuaZon_FMZfctsBy4Y20UxqfHxetNt8PKTq_rB6tzEI7kLVN4D_bQP_NvqaC40QjNZ_CTdVvv
+  async function getToken() {
     await messaging().registerDeviceForRemoteMessages();
-    const token = await messaging().getToken()
-    console.log("token")
-    console.log(token)
-
+    const token = await messaging().getToken();
+    console.log(token);
   }
   const checkUSer = async () => {
     // AsyncStorage.clear();

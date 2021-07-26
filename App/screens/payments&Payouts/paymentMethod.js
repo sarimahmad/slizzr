@@ -112,7 +112,7 @@ class paymentMethod extends Component {
               renderItem={({item}) => (
                 <View style={styles.blockView}>
                   <View style={styles.directionView}>
-                    {this.state.editType ? (
+                    {this.state.editType && item.default !== true ? (
                       <Image
                         source={require('../../assets/Slizzer-icon/visa.png')}
                         style={styles.imageView}
