@@ -484,6 +484,14 @@ class CreateEvent extends Component {
     this.setState({popUpError: false});
     this.props.navigation.goBack();
   };
+  onChange = selectedDate => {
+    const currentDate = selectedDate || this.state.DateTime;
+    const current_date = new Date(currentDate);
+      this.setState({
+        DateTime: current_date,
+      });
+   
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -582,9 +590,7 @@ class CreateEvent extends Component {
                     mode="datetime"
                     editable={this.state.screenTypeEdit}
                     value={this.state.DateTime}
-                    setDateAndTime={value =>
-                      this.setState({datetimeSelected: value})
-                    }
+                    setDateAndTime={value => this.onChange(value)}
                     showPlaceholder="+ Add"
                     datebutton={styles.datebutton}
                   />

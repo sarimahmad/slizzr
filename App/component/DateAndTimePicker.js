@@ -28,6 +28,7 @@ export default class DateAndTimePicker extends React.Component {
     platform: true,
     dateTime: this.props.value,
     dateSelect:false,
+    timeSelect:false,
   };
   // platform true === android
   // platform false === ios
@@ -49,23 +50,30 @@ export default class DateAndTimePicker extends React.Component {
   OnChange = (event) => {
     if(this.props.type!=="onlyDate"){
      if(this.state.dateSelect === true){
-       this.setState({time: moment(event.nativeEvent.timestamp).format('hh:mm a'),})
+      console.log("time")
+      this.setState({timeSelect:true})
+      this.setState({time: moment(event.nativeEvent.timestamp).format('hh:mm a'),})
      }else if(this.state.dateSelect === false){
+       console.log("date")
       this.setState({date: moment(event.nativeEvent.timestamp).format('DD MMM YYYY')})
       this.setState({dateSelect:true})
+      
       this.setState({show:false})
      
      }   
-     console.log(this.state.date,this.state.time)
     
-     if (this.state.date !== '' && this.state.time !== '') {
+     if (this.state.dateSelect === true && this.state.timeSelect === true) {
       let selectedValue = this.state.date.concat('  ' + this.state.time)
-      
       this.props.setDateAndTime(selectedValue);
-    }}
+      this.setState({dateSelect:false,show:false,timeSelect:false})
+    
+    }
+  }
      else {
-      this.setState({dateSelect:event.nativeEvent.timestamp})
-      this.setState({show:false})
+      this.setState({
+        dateSelect:event.nativeEvent.timestamp,
+        dateSelect:false,
+        show:false})
       this.props.setDateAndTime(this.state.dateSelect);
     }
   };
@@ -78,21 +86,28 @@ export default class DateAndTimePicker extends React.Component {
       console.log(moment(selectedValue).format('DD MMM YYYY'))
       let newselectedValue = moment(selectedValue).format('D MMM YYYY').concat('  ' + moment(selectedValue).format('hh:mm a'))
       console.log(newselectedValue)
+      this.setState({
+        dateSelect:false,
+        show:false})
+    
       this.props.setDateAndTime(newselectedValue);
+
     } else {
-      this.setState({show: false});
+      this.setState({show: false,dateSelect:false,});
     }
   };
   _onConfirm = () => {
     this.setState({show: false});
     this.props.setDateAndTime(this.state.dateTime);
+
+    this.setState({dateSelect:false,show:false,timeSelect:false})
   };
 
   datePicker = () => {
     if (this.state.platform) {
       if (this.state.show ) {
         return (
-          <View>
+          <View style={{backgroundColor:'red'}}>
           <DateTimePicker
             testID="dateTimePicker"
             value={this.props.value}
@@ -139,6 +154,21 @@ export default class DateAndTimePicker extends React.Component {
       );
     }
   };
+  timePicker=()=>{
+    return(
+  <DateTimePicker
+    testID="dateTimePicker"
+    value={this.props.value}
+    mode={"time"}
+    is24Hour={true}
+    display="default"
+    onChange={this.OnChange}
+    onTouchCancel={value => {
+      console.log('touch cancel', value);
+      this.setState({show: false});
+    }}
+  />
+    )}
 openModel=()=>{
   // if(this.props.editable===false){
   this.setState({show: true});
@@ -158,7 +188,7 @@ openModel=()=>{
                 style={this.props.datebutton}  
                 element={Text}
                 format={this.props.format}>
-                {this.state.dateTime}
+                {this.props.value}
               </Moment>
             ) : (
               <View style={this.props.datebutton}>
@@ -174,21 +204,13 @@ openModel=()=>{
             />
           </TouchableOpacity>
         </View>
-        {(this.state.dateSelect === true && this.props.type!=="onlyDate") &&
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={this.props.value}
-            mode={"time"}
-            is24Hour={true}
-            display="default"
-            onChange={this.OnChange}
-            onTouchCancel={value => {
-              console.log('touch cancel', value);
-              this.setState({show: false});
-            }}
-          />
-      }
-        {this.datePicker()}
+       
+        {( this.state.dateSelect === true && this.props.type!=="onlyDate") &&
+ 
+       this.timePicker()
+       }
+           {this.datePicker()}
+       
       </View>
     );
   }

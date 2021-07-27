@@ -119,10 +119,14 @@ class editProfle extends Component {
         day: day,
         month: month,
         year: year,
-        DateTime: new Date(`${year},${month},${day}`),
+        DateTime:  this.props.userDetail.BirthDate,
         imageOfuser: this.props.route.params.imageOfuser,
       });
     }
+ 
+    
+    console.log(this.state.DateTime)
+  
   }
 
   firestoreLinking = async () => {
@@ -436,9 +440,9 @@ class editProfle extends Component {
                     format="MMM DD, YYYY"
                     mode="date"
                     type="onlyDate"
-                    value={this.state.DateTime}
+                    value={this.props.userDetail.BirthDate}
                     setDateAndTime={value => this.onChange(value)}
-                    showPlaceholder={this.state.DateTime}
+                    showPlaceholder={this.props.userDetail.BirthDate}
                     datebutton={styles.datebutton}
                   />
                 )}
