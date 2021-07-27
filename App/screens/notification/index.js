@@ -53,7 +53,7 @@ class notification extends Component {
   }
   async acceptandRejectRequest(status,item) {
  const data={
-    user_id:this.props.userToken,
+  current_user_id:this.props.userToken,
     mutual_connection_id:item.MutualConnectionID,
     status:status,
 

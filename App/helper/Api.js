@@ -450,6 +450,9 @@ export async function getMutualConnections(user_id) {
 }
 
 export async function acceptandRejectRequest(data) {
+  // "current_user_id": "This should be current user id",
+  // "mutual_connection_id" : "mutual connection id",
+  // "status": "ACCEPTED" OR ""REJECTED
   var config = {
     method: 'post',
     url: `${Server}/user/decide-mutual-connect-request`,
@@ -502,6 +505,8 @@ export async function findRelation(user_id,otheruser_id) {
 //   });
 // }
 export async function sendMutualConnection(data) {
+  // "user_id": "This should be Current User ID",
+  // "friend_user_id" : "This should be the User ID which you are sending request"
   var config = {
     method: 'post',
     url: `${Server}/user/send-mutual-connect-request`,
@@ -701,6 +706,276 @@ export async function getDefaultCustomerCard(cust_stripe_id) {
     .catch(error => {
       console.error(error);
     });
+}
+
+
+// New API's
+
+// Notify Attendees After Edit event
+export async function EditEventNotify({event_id}) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/notify-edit-event/${event_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+
+// Notify User for new message's
+export async function UserNotifyForMessage({current_user_id, host_id}) {
+  var data = JSON.stringify({
+    current_user_id: current_user_id,
+    host_id: host_id,
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/user/notify-send-message`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+// Welcome Email when user signup first time
+export async function WelcomeEmail({name, email}) {
+  var data = JSON.stringify({
+    name: name,
+    email: email,
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/send-email/welcome`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+// Email Change confirmation
+export async function EmailChangeConfirmation({name, email}) {
+  var data = JSON.stringify({
+    name: name,
+    email: email,
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/send-email/email-change-confirmation`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+// Password Change confirmation
+export async function PasswordChangeConfirmation({name, email}) {
+  var data = JSON.stringify({
+    name: name,
+    email: email,
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/send-email/password-change-confirmation`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+// Get All User Notifications
+//There are 3 types of notification 1 -> MESSAGE, 2 -> MUTUAL, 3 -> SHARED
+export async function GetUserNotification({current_user_id}) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/notifications/${current_user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+
+// Shared HOST STARTS HERE
+
+// Send Shared Host request
+export async function SendSharedHostRequest({current_user_id, host_id, event_id}) {
+  var data = JSON.stringify({
+    host_id: host_id,
+    event_id: event_id,
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/event/send-sharedhost-request/${current_user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+// Decide Shared host Request
+// ACCEPTED can be either TRUE or FALSE
+export async function DecideSharedHostRequest({ACCEPTED, shared_host_id}) {
+  var data = JSON.stringify({
+    ACCEPTED: ACCEPTED
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/event/decide-sharedhost-request/${shared_host_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+//Get All Shared Host request for user
+export async function GetUserSharedHostRequest({current_user_id}) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-sharedhost-request/${current_user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+//Get All Shared event for user
+export async function GetSharedEventsForUser({current_user_id}) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-all-sharedevents/${current_user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+// REMOVE Shared HOST can be used for self remove or can be user by host to remove
+//self_removed can be TRUE or FALSE
+export async function RemoveSharedHost({self_removed, shared_host_id}) {
+  var data = JSON.stringify({
+    self_removed: self_removed
+  });
+
+  var config = {
+    method: 'DELETE',
+    url: `${Server}/event/remove-shared-host/${shared_host_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
 }
 
 /**
