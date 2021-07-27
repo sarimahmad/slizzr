@@ -41,12 +41,14 @@ class attendeesList extends Component {
       errorText: '',
       messageAllText: '',
       hostEvent: true,
+      hostId:''
     };
   }
 
   componentDidMount() {
     let eventId = this.props.route.params.id;
     let host = this.props.route.params.host;
+    this.setState({eventId:eventId,hostId:host.id})
     if (eventId) {
       this.getAttendeesList(eventId);
     }
@@ -140,6 +142,9 @@ class attendeesList extends Component {
                 onPress={() =>
                   this.props.navigation.navigate('myProfile', {
                     id: item.User.id,
+                    eventId:this.state.eventId,
+                    hostId:this.state.hostId
+
                   })
                 }
                 style={{

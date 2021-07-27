@@ -107,7 +107,7 @@ const messagesEvent = props => {
                   <View style={styles.imgView}>
                     {item.Pictures.length > 0 ? (
                       <Image
-                        source={{uri: item.Pictures[1].Profile_Url}}
+                        source={{uri: item.Pictures[0].Profile_Url}}
                         style={styles.logo}
                       />
                     ) : (
@@ -127,7 +127,7 @@ const messagesEvent = props => {
                             fontWeight: '600',
                             color: 'white',
                           }}>
-                          {item.user.FirstName.charAt(0).concat(
+                          {item.user && item.user.FirstName.charAt(0).concat(
                             item.user.LastName.charAt(0),
                           )}
                         </Text>

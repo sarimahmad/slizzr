@@ -30,7 +30,9 @@ class Profile extends Component {
     this.state = {
       imageOfuser: [],
       mutualConnections: [],
-      relation:false
+      relation:false,
+      hostId:'',
+      eventId:''
     };
   }
   footer = () => {
@@ -49,6 +51,9 @@ class Profile extends Component {
         // this.getMutualFriends(this.props.userDetail.id)
       });
     } else if (this.props.route.params.id) {
+      let eventId = this.props.route.params.eventId;
+      let hostId = this.props.route.params.hostId;  
+      this.setState({eventId:eventId,hostId:hostId})
       this._unsubscribe = this.props.navigation.addListener('focus', () => {
         this.getUserFromFirestore(this.props.route.params.id);
         this.getOtherUserImages(this.props.route.params.id);
@@ -264,7 +269,11 @@ class Profile extends Component {
                 this.state.userDetail &&
                 this.state.relation == true &&
                 this.props.userDetail.id !== this.state.userDetail.id && (
-                  <View style={styles.messageIcon}>
+                  <TouchableOpacity onPress={()=>this.props.navigation.navigate('chat', {
+                    CurrentUserUID: this.props.userToken,
+                    HostUID: this.state.hostId,
+                    EventID: this.state.eventId,
+                  })} style={styles.messageIcon}>
                     <Image
                       style={{width: 51, resizeMode: 'contain'}}
                       source={require('../../assets/Slizzer-icon/message.png')}
@@ -279,7 +288,7 @@ class Profile extends Component {
                         source={require('../../assets/Slizzer-icon/insideMessage.png')}
                       />
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 )}
               <Text style={styles.text1}>
                 {this.state.userDetail && this.state.userDetail.FirstName}
