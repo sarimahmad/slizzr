@@ -193,7 +193,7 @@ class attendingEventInfo extends Component {
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate('chat', {
-                  CurrentUserUID: this.state.currentUserUID.slice(1, -1),
+                  CurrentUserUID: this.state.currentUserUID,
                   HostUID: this.state.detailItem.Host.Id,
                   EventID: this.props.route.params.id,
                 })

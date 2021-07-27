@@ -637,6 +637,7 @@ class CreateEvent extends Component {
                     </View>
                   </View>
                   <View style={{flex: 1}}>
+                   
                     <View style={{flexDirection: 'row', marginVertical: 11}}>
                       <Text style={[{marginLeft: 0, marginTop: -2}]}>Fee</Text>
                       <TouchableOpacity
@@ -659,7 +660,7 @@ class CreateEvent extends Component {
                         editable={
                           (this.state.EventType !== 'FREE' &&
                             this.state.screenTypeEdit === false) ||
-                          this.state.screenTypeEdit === false
+                          this.state.screenTypeEdit !== false
                         }
                         onChangeText={value =>
                           this.setState({Fee: value.slice(2)})

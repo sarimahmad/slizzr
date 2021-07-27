@@ -21,7 +21,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { getUserImages, getUserProfile } from '../../helper/Api';
 import { GiftedChat,Bubble,InputToolbar} from 'react-native-gifted-chat'
 import firestore from '@react-native-firebase/firestore'
-import { sendMessageToAttendees } from '../../helper/Api';
+
 const chat = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -123,27 +123,14 @@ const chat = () => {
  }
 
  const onSend = async(messageArray) => {
-   if(chatType==="group"){
-    const msg = messageArray[0]
- 
-    data={
-      HostUID: HostUID,
-      AttendeesList: AttendeesList,
-      EventID: EventID,
-      Text:msg
-
-     }
-      await sendMessageToAttendees(data).then(response => {
-       alert(response.message)
-      });
-   }else{
   const msg = messageArray[0]
   const mymsg = {
       ...msg,
       sentBy:CurrentUserUID,
       sentTo:HostUID,
       createdAt:new Date(),
-      eventId: EventID
+      eventId: EventID,
+      user:CurrentUser
   }
  setMessages(previousMessages => GiftedChat.append(previousMessages,mymsg))
  const docid  = HostUID > CurrentUserUID ? CurrentUserUID+ "-" + HostUID : HostUID+"-"+CurrentUserUID 
@@ -152,7 +139,7 @@ const chat = () => {
  .doc(docid)
  .collection('messages')
  .add({...mymsg,createdAt:firestore.FieldValue.serverTimestamp()})
-   }
+   
 
 }
 
@@ -175,7 +162,7 @@ const chat = () => {
 
           borderBottom={true}
           backColor={WHITE.dark}
-          headerTitle={HostProfile.User.displayName}
+          headerTitle={HostProfile.User && HostProfile.User.displayName}
           leftPress={() => navigation.goBack()}
           leftIcon={require('../../assets/back.png')}
           profileIcon={isLoading ? 'https://storage.googleapis.com/slizzr-6a887.appspot.com/DefaultProfile.png' : (HostUserProfilePicture)}
