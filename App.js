@@ -40,11 +40,11 @@
        <Provider store={store}>
          <View style={{flex: 1}}>
            <StatusBar hidden={true} />
-           {/* <StripeProvider
+           <StripeProvider
       publishableKey={STRIPE_PUBLISHABLE_KEY}
       merchantIdentifier={APPLE_MERCHANT_IDENTIFIER} // required for Apple Pay
     >
-    </StripeProvider> */}
+    </StripeProvider>
            <SwitchNavigator />
          </View>
       </Provider>

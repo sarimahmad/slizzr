@@ -16,7 +16,7 @@ const Pay = props => {
     const fee = props.route.params.fee;
     await ProviderPaymentsForCustomer({
       cust_id: props.userDetail.STRIPE_CUST_ID,
-      amount: fee,
+      amount: "40",
     }).then(response => {
 
       setSecret(response.data)
@@ -30,15 +30,22 @@ const Pay = props => {
 
   const initializePaymentSheet = async () => {
     // const {paymentIntent, ephemeralKey, customer} = 
-    await fetchPaymentSheetParams();
-    const {error} = await initPaymentSheet({
-      customerId: secret.customer,
-      customerEphemeralKeySecret: secret.ephemeralKey,
-      paymentIntentClientSecret: secret.paymentIntent,
+    await ProviderPaymentsForCustomer({
+      cust_id: props.userDetail.STRIPE_CUST_ID,
+      amount: "40",
+    }).then(async response => {
+       setSecret(response.data)
+      const {error} = await initPaymentSheet({
+        googlePay: true,
+        customerId: response.data.customer,
+        customerEphemeralKeySecret: response.data.ephemeralKey,
+        paymentIntentClientSecret: response.data.paymentIntent,
+      });
+      if (!error) {
+        setLoading(true);
+      }
     });
-    if (!error) {
-      setLoading(true);
-    }
+    
   };
 
   const openPaymentSheet = async () => {

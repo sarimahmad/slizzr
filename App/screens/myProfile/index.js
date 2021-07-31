@@ -146,10 +146,28 @@ class Profile extends Component {
 
     await blockUser(data).then(response => {
       this.setState({loading: false});
-      alert(response.message);
+     if(response!==undefined){
+    this.setState({
+      loading: false,
+      errorTitle: 'Successful',
+      errorText: response.message,
 
-      this.props.navigation.pop();
+      btnOneText: 'Ok',
+      popUpError: true,
     });
+  }else{
+    this.setState({
+      loading: false,
+      errorTitle: 'Failed',
+      errorText: "Failed to block User",
+
+      btnOneText: 'Ok',
+      popUpError: true,
+    });
+  
+  }
+   
+})
   };
   getMutualProfile=(id)=>{
     

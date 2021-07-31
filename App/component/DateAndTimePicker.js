@@ -71,10 +71,9 @@ export default class DateAndTimePicker extends React.Component {
   }
      else {
       this.setState({
-        dateSelect:event.nativeEvent.timestamp,
         dateSelect:false,
         show:false})
-      this.props.setDateAndTime(this.state.dateSelect);
+      this.props.setDateAndTime(event.nativeEvent.timestamp,);
     }
   };
 

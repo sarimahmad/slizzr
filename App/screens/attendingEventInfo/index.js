@@ -184,7 +184,7 @@ class attendingEventInfo extends Component {
               onPress={() =>
                 this.props.navigation.navigate('zicketDetail', {
                   EventID: this.state.detailItem.id,
-                  UserID: this.state.currentUserUID.slice(1, -1),
+                  UserID: this.state.currentUserUID,
                 })
               }
               style={styles.btnMap}>

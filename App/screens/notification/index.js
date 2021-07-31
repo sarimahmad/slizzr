@@ -6,6 +6,7 @@ import {
   StyleSheet,
   SafeAreaView,
   FlatList,
+  Modal,
   TouchableOpacity,
   Image,
 } from 'react-native';
@@ -14,6 +15,7 @@ import {FONT, SCREEN} from '../../helper/Constant';
 
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import Loader from '../../component/Loader';
+import ErrorPopup from '../../component/ErrorPopup';
 import {connect} from 'react-redux';
 import { getAllRequests,acceptandRejectRequest } from '../../helper/Api';
 class notification extends Component {
@@ -21,26 +23,6 @@ class notification extends Component {
     super(props);
     this.state = {
       findpeople: [
-        // {
-        //   imgProfile: '',
-        //   profileName: 'Marriage Anniversary',
-        //   adress: '2 hours ago',
-        // },
-        // {
-        //   imgProfile: '',
-        //   profileName: 'Celebration Time',
-        //   adress: '2 hours ago',
-        // },
-        // {
-        //   imgProfile: '',
-        //   profileName: 'Sagar’s Birthday',
-        //   adress: '2 hours ago',
-        // },
-        // {
-        //   imgProfile: '',
-        //   profileName: 'GMU Party',
-        //   adress: '2 hours ago',
-        // },
       ],
     };
   }
@@ -60,10 +42,27 @@ class notification extends Component {
   }
     this.setState({loading:true})
     await acceptandRejectRequest(data).then(response => {
+    if(response!==undefined){
+    this.setState({
+      loading: false,
+      errorTitle: 'Successful',
+      errorText: response.message,
+
+      btnOneText: 'Ok',
+      popUpError: true,
+    });
+  }else{
+    this.setState({
+      loading: false,
+      errorTitle: 'Failed',
+      errorText: "Failed to accept/reject Request",
+
+      btnOneText: 'Ok',
+      popUpError: true,
+    });
+  }
+});
     
-    this.setState({loading:false})
-    alert(response.message)  
-  });
   }
 componentDidMount(){
   this.getAllRequests()
@@ -86,6 +85,11 @@ emptyListComponent = () => {
     </View>
   );
 };
+done = () => {
+  this.setState({popUpError: false});
+  this.props.navigation.goBack();
+};
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -164,6 +168,22 @@ emptyListComponent = () => {
           />
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
+        {this.state.popUpError === true && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() => this.done()}
+              doneButtonPress={() => this.done()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+            />
+          </Modal>
+        )}
+
       </View>
     );
   }

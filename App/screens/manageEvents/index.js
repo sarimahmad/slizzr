@@ -227,11 +227,13 @@ class manageEvents extends Component {
                         source={{uri: item.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-
+   {item.PublicPrivate==="Private" &&
+                    
                       <Image
                         style={{position: 'absolute', right: -10}}
                         source={require('../../assets/private.png')}
                       />
+                }
                     </View>
 
                     <View style={styles.detail}>
@@ -277,11 +279,13 @@ class manageEvents extends Component {
                         source={{uri: item.Event.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-
+   {item.PublicPrivate==="Private" &&
+                    
                       <Image
                         style={{position: 'absolute', right: -10}}
                         source={require('../../assets/private.png')}
                       />
+                }
                     </View>
 
                     <View style={styles.detail}>

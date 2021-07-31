@@ -367,7 +367,7 @@ class prepay extends Component {
                   ]}>
                   Visa 
                 </Text>
-                <Text style={[styles.titleText,{color:'black',marginTop:5,marginLeft:10}]}>{this.state.defaultCard.last4}</Text>
+                {/* <Text style={[styles.titleText,{color:'black',marginTop:5,marginLeft:10}]}>{this.state.defaultCard && this.state.defaultCard.last4}</Text> */}
 
               </View>
             

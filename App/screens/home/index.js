@@ -325,7 +325,7 @@ class home extends Component {
         });
       });
   }
-  onChange = (event, selectedDate) => {
+  onChange = (selectedDate) => {
     const currentDate = selectedDate || this.state.date;
 
     this.setState({date: currentDate});
@@ -394,11 +394,12 @@ class home extends Component {
                         source={{uri: item.imageUrl}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-
+                       {item.PublicPrivate==="Private" &&
                       <Image
                         style={{position: 'absolute', right: -10}}
                         source={require('../../assets/private.png')}
                       />
+                     }
                     </View>
 
                     <View style={styles.detail}>
@@ -746,10 +747,11 @@ class home extends Component {
               format="MMM DD, YYYY "
               value={this.state.date}
               mode={'date'}
+              type={'onlyDate'}
               is24Hour={true}
               display="default"
-              setDateAndTime={date => this.setState({date})}
-              onChange={this.onChange}
+              setDateAndTime={value => this.onChange(value)}
+            
             />
           </TouchableOpacity>
           {this.state.mapView === true && (

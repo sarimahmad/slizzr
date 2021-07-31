@@ -73,16 +73,34 @@ class peopleProfiles extends Component {
       this.findPeoplebyDistance();
     }
   };
-  
-  
-IconImage = (item) => {
-  let name = item.FirstName.charAt(0);
-  return ( 
-  <View style={[styles.logo,{position: 'absolute', alignSelf: 'center', top: 65,alignItems:'center',justifyContent: 'center',backgroundColor:'#7b1fa2',borderColor:'#7b1fa2'}]}>
-  <Text style={{fontSize:28,fontWeight:'600',color:'white'}}>{name}</Text>
-</View>
-  )
-};
+
+  IconImage = item => {
+    let name = item.FirstName.charAt(0);
+    return (
+      <TouchableOpacity
+        onPress={() =>
+          this.props.navigation.navigate('myProfile', {
+            id: item.id,
+          })
+        }
+        style={[
+          styles.logo,
+          {
+            position: 'absolute',
+            alignSelf: 'center',
+            top: 65,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#7b1fa2',
+            borderColor: '#7b1fa2',
+          },
+        ]}>
+        <Text style={{fontSize: 28, fontWeight: '600', color: 'white'}}>
+          {name}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -190,7 +208,7 @@ IconImage = (item) => {
                       ]}>
                       Mutual Connections
                     </Text>
-                   <MutualConnectionImages userId={item.id}/>
+                    <MutualConnectionImages userId={item.id} />
                     {/* {this.getUserMutualConnections(item.id)} */}
                     <Text style={[styles.purpleText, {marginTop: 10}]}>
                       See more
@@ -199,18 +217,30 @@ IconImage = (item) => {
                       <Text style={styles.btnTextLocation}>DIRECT INVITE</Text>
                     </TouchableOpacity>
                   </View>
-                 {item.Pictures.length !==0 &&
-                  //  this.IconImage(item)
-                 
-                  <Image 
-                  style={[styles.logo,{position: 'absolute', alignSelf: 'center', top: 65,alignItems:'center',justifyContent: 'center'}]}
-                    source={{uri: item.Pictures[0].Profile_Url}}
-                  />
-            
-                 }
-                    {item.Pictures.length === 0 &&
-                   this.IconImage(item)
-                  } 
+
+                  {item.Pictures.length !== 0 && (
+                    //  this.IconImage(item)
+                    <TouchableOpacity 
+                    style={{  position: 'absolute',
+                    alignSelf: 'center',
+                    top: 65,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                      onPress={() =>
+                        this.props.navigation.navigate('myProfile', {
+                          id: item.id,
+                        })
+                      }>
+                      <Image
+                        style={[
+                          styles.logo,
+                        ]}
+                        source={{uri: item.Pictures[0].Profile_Url}}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  {item.Pictures.length === 0 && this.IconImage(item)}
                 </View>
               )}
             />
@@ -255,7 +285,7 @@ const styles = StyleSheet.create({
     width: 60,
     borderWidth: 2,
     borderRadius: 50,
-    marginLeft:5
+    marginLeft: 5,
   },
   btnLocation: {
     // width: wp('0%'),

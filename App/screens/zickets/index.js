@@ -83,12 +83,14 @@ class Zickets extends Component {
   }
 
   async getUserEvents() {
+    this.setState({loading:true})
     await getUserEvents(this.props.userToken).then(response => {
       this.setState({userEvents: response.UserHostedEvent, loading: false});
     });
   }
 
   async getUserAttendedEvents() {
+    this.setState({loading:true})
     await getUserAttendedEvents(this.props.userToken).then(response => {
       this.setState({userAttendedEvents: response.UserAttendedEvents});
     });

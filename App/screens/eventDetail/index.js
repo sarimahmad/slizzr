@@ -29,6 +29,7 @@ import {
   CheckEventStatus,
   AtendPublicEvent,
   getEventDetail,
+  getDefaultCustomerCard,
 } from '../../helper/Api';
 import Loader from '../../component/Loader';
 
@@ -50,10 +51,14 @@ class eventDetail extends Component {
       Ticket_Left: '',
       User_Attending_Event: '',
       loading: false,
+      defaultCard: {},
+      nodefaultCard:false
     };
   }
   componentDidMount() {
     let id = this.props.route.params.detailItem;
+    this.getUserDefaultCard();
+
     this.setState({user_id: this.props.userDetail.id});
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.props.userDetail &&
@@ -64,7 +69,19 @@ class eventDetail extends Component {
     });
     this.props.userDetail && this.getEventDetail(id, this.props.userDetail.id);
   }
-
+  async getUserDefaultCard() {
+    if (
+      this.props.userDetail.STRIPE_CUST_ID &&
+      this.props.userDetail.STRIPE_CUST_ID !== ''
+    ) {
+      await getDefaultCustomerCard(this.props.userDetail.STRIPE_CUST_ID).then(
+        response => {
+          console.log('responseDefaultCrad', response);
+          this.setState({defaultCard: response});
+        },
+      );
+    }
+  }
   componentWillUnmount() {
     this._unsubscribe();
   }
@@ -112,20 +129,33 @@ class eventDetail extends Component {
 
   async attendEvent({user_id, event_id}) {
     this.setState({loading: true});
-    if (this.state.detailItem.EventType !== 'PREPAID') {
-      AtendPublicEvent({user_id, event_id}).then(response => {
-        this.getEventDetail(
-          this.props.route.params.detailItem,
-          this.props.userDetail.id,
-        );
-      });
-    } else {
-      this.props.navigation.navigate('prepay', {
-        event_id: event_id,
-        user_id: user_id,
-        detailItem: this.state.detailItem,
-      });
-    }
+    this.props.navigation.navigate('prepay', {
+      event_id: event_id,
+      user_id: user_id,
+      detailItem: this.state.detailItem,
+    });
+  
+  //   if (this.state.detailItem.EventType !== 'PREPAID' && this.state.defaultCard ) {
+  //     this.setState({nodefaultCard:false})
+  
+  //     AtendPublicEvent({user_id, event_id}).then(response => {
+      
+  //       this.getEventDetail(
+  //         this.props.route.params.detailItem,
+  //         this.props.userDetail.id,
+  //       );   
+  //     });
+  //   } else if(!this.state.defaultCard){
+  //  this.setState({nodefaultCard:true})
+  //   } else {
+  //     this.setState({nodefaultCard:false})
+  
+  //     this.props.navigation.navigate('prepay', {
+  //       event_id: event_id,
+  //       user_id: user_id,
+  //       detailItem: this.state.detailItem,
+  //     });
+  //   }
     this.setState({loading: false});
   }
 
@@ -209,8 +239,7 @@ class eventDetail extends Component {
                 {this.state.detailItem.duration} HRS
               </Text>
               <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>
-                <View style={[styles.flexRow, {paddingTop: 5}]}>
-                  </View>
+                <View style={[styles.flexRow, {paddingTop: 5}]}></View>
                 <Text
                   style={{
                     fontFamily: FONT.Nunito.bold,
@@ -248,14 +277,15 @@ class eventDetail extends Component {
             {!this.state.myEvent && (
               <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => {
+                onPress={() => { 
                   if (this.state.Check_Status === 'Active') {
                     if (this.state.User_Attending_Event === false) {
                       this.attendEvent({
                         user_id: this.props.userDetail.id,
                         event_id: this.props.route.params.detailItem,
                       });
-                    } else {
+                    } 
+                    else {
                       this.props.navigation.navigate('attendingEventInfo', {
                         id: this.props.route.params.detailItem,
                       });
@@ -265,7 +295,9 @@ class eventDetail extends Component {
                 style={
                   this.state.Check_Status === 'Active'
                     ? this.state.User_Attending_Event === false
-                      ? styles.btnAttend
+                      ? !this.state.defaultCard
+                        ? styles.defaluStyles
+                        : styles.btnAttend
                       : styles.btnMapAttend
                     : styles.btnMapBooked
                 }>
@@ -285,10 +317,17 @@ class eventDetail extends Component {
                     ? this.state.User_Attending_Event === false
                       ? 'ATTEND'
                       : 'ATTENDING'
+                    
                     : 'Booked'}
                 </Text>
               </TouchableOpacity>
-            )}
+               )}
+                 {this.state.nodefaultCard == true &&
+                <Text style={{textAlign:'center',marginBottom:10,color:'red'}}>
+                Please select your default card
+              </Text>
+                }
+           
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
@@ -362,7 +401,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     justifyContent: 'center',
   },
-
+  defaluStyles: {
+    width: wp('90%'),
+    marginHorizontal: '5%',
+    borderRadius: 25,
+    height: 50,
+    marginVertical: 10,
+    backgroundColor: 'grey',
+    justifyContent: 'center',
+  },
   btnMapAttend: {
     width: wp('90%'),
     marginHorizontal: '5%',
