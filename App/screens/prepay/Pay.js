@@ -12,13 +12,16 @@ const Pay = props => {
   const [loading, setLoading] = useState(false);
   const [secret, setSecret] = useState({});
 
+  useEffect(() => {
+    initializePaymentSheet();
+  }, []);
+
   const fetchPaymentSheetParams = async () => {
     const fee = props.route.params.fee;
     await ProviderPaymentsForCustomer({
       cust_id: props.userDetail.STRIPE_CUST_ID,
-      amount: "40",
+      amount: 40,
     }).then(response => {
-
       setSecret(response.data)
       return {
         paymentIntent: response.data.paymentIntent,
@@ -32,7 +35,7 @@ const Pay = props => {
     // const {paymentIntent, ephemeralKey, customer} = 
     await ProviderPaymentsForCustomer({
       cust_id: props.userDetail.STRIPE_CUST_ID,
-      amount: "40",
+      amount: 40,
     }).then(async response => {
        setSecret(response.data)
       const {error} = await initPaymentSheet({
@@ -40,6 +43,8 @@ const Pay = props => {
         customerId: response.data.customer,
         customerEphemeralKeySecret: response.data.ephemeralKey,
         paymentIntentClientSecret: response.data.paymentIntent,
+        merchantCountryCode: 'CA',
+        testEnv: true, // use test environment
       });
       if (!error) {
         setLoading(true);
@@ -53,15 +58,12 @@ const Pay = props => {
     const {error} = await presentPaymentSheet({clientSecret: secret.paymentIntent});
 
     if (error) {
+      console.log(error)
       Alert.alert(`Error code: ${error.code}`, error.message);
     } else {
       Alert.alert('Success', 'Your order is confirmed!');
     }
   };
-
-  useEffect(() => {
-    initializePaymentSheet();
-  }, []);
 
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
