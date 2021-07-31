@@ -17,7 +17,7 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
 import {connect} from 'react-redux';
-import { getAllRequests,acceptandRejectRequest } from '../../helper/Api';
+import {getAllRequests, acceptandRejectRequest} from '../../helper/Api';
 class notification extends Component {
   constructor(props) {
     super(props);
@@ -28,68 +28,49 @@ class notification extends Component {
   }
 
   async getAllRequests() {
-    this.setState({loading:true})
+    this.setState({loading: true});
     await getAllRequests(this.props.userToken).then(response => {
       this.setState({findpeople: response.Users, loading: false});
     });
   }
-  async acceptandRejectRequest(status,item) {
- const data={
-  current_user_id:this.props.userToken,
-    mutual_connection_id:item.MutualConnectionID,
-    status:status,
-
-  }
-    this.setState({loading:true})
+  async acceptandRejectRequest(status, item) {
+    const data = {
+      current_user_id: this.props.userToken,
+      mutual_connection_id: item.MutualConnectionID,
+      status: status,
+    };
+    this.setState({loading: true});
     await acceptandRejectRequest(data).then(response => {
-    if(response!==undefined){
-    this.setState({
-      loading: false,
-      errorTitle: 'Successful',
-      errorText: response.message,
-
-      btnOneText: 'Ok',
-      popUpError: true,
-    });
-  }else{
-    this.setState({
-      loading: false,
-      errorTitle: 'Failed',
-      errorText: "Failed to accept/reject Request",
-
-      btnOneText: 'Ok',
-      popUpError: true,
+      this.setState({loading: false});
+      this.getAllRequests();
     });
   }
-});
-    
-  }
-componentDidMount(){
-  this.getAllRequests()
-}
-emptyListComponent = () => {
-  return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: 'center',
-        alignSelf: 'center',
-        justifyContent: 'center',
-        flexGrow: 1,
-        display: 'flex',
-        marginTop: SCREEN.height / 4,
-      }}>
-          <Text style={styles.emptyFont}>
-            You have no notification 
-          </Text>
-    </View>
-  );
-};
-done = () => {
-  this.setState({popUpError: false});
-  this.props.navigation.goBack();
-};
 
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getAllRequests();
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+  emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+        <Text style={styles.emptyFont}>You have no notification</Text>
+      </View>
+    );
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -108,22 +89,24 @@ done = () => {
             renderItem={({item}) => (
               <View>
                 <View style={styles.flexRow}>
-                  <View style={{flexDirection:'row',alignItems:'center'}}>             
-                         <View style={styles.imgView}>
-                    <Image source={require('../../assets/notification2.png')} />
-                  </View>
-                  <View style={styles.detail}>
-                    <Text style={[styles.subtitleText]}>  
-                      {item.Friend.displayName}
-                    </Text>
-                    <Text style={styles.greyText}>{item.adress}</Text>
-                  </View>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={styles.imgView}>
+                      <Image
+                        source={require('../../assets/notification2.png')}
+                      />
+                    </View>
+                    <View style={styles.detail}>
+                      <Text style={[styles.subtitleText]}>
+                        {item.Friend.displayName}
+                      </Text>
+                      <Text style={styles.greyText}>{item.adress}</Text>
+                    </View>
                   </View>
 
                   <View>
                     <TouchableOpacity
                       onPress={() =>
-                       this.acceptandRejectRequest("ACCEPTED",item)
+                        this.acceptandRejectRequest('ACCEPTED', item)
                       }
                       style={{
                         marginBottom: 5,
@@ -139,7 +122,7 @@ done = () => {
                     </TouchableOpacity>
                     <TouchableOpacity
                       onPress={() =>
-                       this.acceptandRejectRequest("REJECTED",item)
+                        this.acceptandRejectRequest('REJECTED', item)
                       }
                       style={{
                         marginRight: 5,
@@ -153,7 +136,6 @@ done = () => {
                       <Image source={require('../../assets/closeIcon.png')} />
                     </TouchableOpacity>
                   </View>
-  
                 </View>
                 <View
                   style={{
@@ -213,7 +195,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
     marginBottom: 20,
   },
- 
+
   imgView: {
     width: SCREEN.width * 0.16,
   },
@@ -230,10 +212,9 @@ const styles = StyleSheet.create({
   flexRow: {
     flexDirection: 'row',
     height: 80,
-    width:SCREEN.width-40,
-    alignSelf:'center',
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
     justifyContent: 'space-between',
- 
   },
 
   subtitleText: {

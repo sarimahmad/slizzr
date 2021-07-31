@@ -112,19 +112,21 @@ class paymentMethod extends Component {
               renderItem={({item}) => (
                 <View style={styles.blockView}>
                   <View style={styles.directionView}>
-                    {this.state.editType && item.default !== true ? (
+                    {item.default === true || this.state.editType ? (
                       <Image
                         source={require('../../assets/Slizzer-icon/visa.png')}
                         style={styles.imageView}
                       />
                     ) : (
-                      <TouchableOpacity
-                        onPress={() => this.removePaymentMethod(item.id)}>
-                        <Image
-                          source={require('../../assets/Slizzer-icon/cross.png')}
-                          style={[styles.imageView, {height: 25}]}
-                        />
-                      </TouchableOpacity>
+                      !this.state.editType && (
+                        <TouchableOpacity
+                          onPress={() => this.removePaymentMethod(item.id)}>
+                          <Image
+                            source={require('../../assets/Slizzer-icon/cross.png')}
+                            style={[styles.imageView, {height: 25}]}
+                          />
+                        </TouchableOpacity>
+                      )
                     )}
                     <Text
                       style={[

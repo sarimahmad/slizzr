@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 /* eslint-disable react/no-did-mount-set-state */
 /* eslint-disable radix */
 /* eslint-disable no-alert */
@@ -38,7 +39,7 @@ import {
 const allowedCardNetworks = ['VISA', 'MASTERCARD'];
 const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS'];
 import {GooglePay} from 'react-native-google-pay';
-import { ScrollView } from 'react-native';
+import {ScrollView} from 'react-native';
 
 const requestData = {
   cardPaymentMethod: {
@@ -63,6 +64,7 @@ const requestData = {
   },
   merchantName: 'Example Merchant',
 };
+
 class prepay extends Component {
   constructor(props) {
     super(props);
@@ -78,9 +80,9 @@ class prepay extends Component {
       monthSelected: false,
       detailItem: {},
       loading: false,
-      visa:false,
-      card:false,
-      defaultCard:{}
+      visa: false,
+      card: false,
+      defaultCard: {},
     };
   }
 
@@ -153,8 +155,11 @@ class prepay extends Component {
     ) {
       await getDefaultCustomerCard(this.props.userDetail.STRIPE_CUST_ID).then(
         response => {
-          console.log('responseDefaultCrad', response);
-          this.setState({defaultCard:response})
+          if (response.id) {
+            this.setState({defaultCard: response});
+          } else {
+            this.setState({defaultCard: {}});
+          }
         },
       );
     }
@@ -171,7 +176,7 @@ class prepay extends Component {
   };
   googlePay = () => {
     this.props.navigation.navigate('Pay', {fee: this.state.detailItem.Fee});
- 
+
     // GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods).then(
     //   ready => {
     //     if (ready) {
@@ -188,24 +193,25 @@ class prepay extends Component {
   applePay = async () => {
     this.props.navigation.navigate('Pay', {fee: this.state.detailItem.Fee});
   };
-  Pay=()=>{
-    if(this.state.visa===true){
-   this.payFromDefault()
-    }else if(this.state.card===true)
-    this.prepay()
-  }
+  Pay = () => {
+    if (this.state.visa === true) {
+      this.payFromDefault();
+    } else if (this.state.card === true) {
+      this.prepay();
+    }
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
         <ScrollView>
-        <SafeAreaView style={styles.contentView}>
-          <HeaderWithOptionBtn
-            headerTitle={'PreyPay to Attend'}
-            borderBottom={true}
-            backColor={WHITE.dark}
-            leftIcon={require('../../assets/back.png')}
-            leftPress={() => this.props.navigation.goBack()}
-          />
+          <SafeAreaView style={styles.contentView}>
+            <HeaderWithOptionBtn
+              headerTitle={'PreyPay to Attend'}
+              borderBottom={true}
+              backColor={WHITE.dark}
+              leftIcon={require('../../assets/back.png')}
+              leftPress={() => this.props.navigation.goBack()}
+            />
             <View style={{flex: 1}}>
               <View style={{marginTop: 20}}>
                 {!this.state.detailItem && !this.state.detailItem.image ? (
@@ -336,79 +342,106 @@ class prepay extends Component {
                     </TouchableOpacity>
                   </View>
                 )}
- <View style={{flexDirection:'row'}}>
-                 <CheckBox
-              style={{width:40}}
-                disabled={false}
-                value={this.state.visa}
-                onValueChange={() =>
-                 {
-                  this.setState({prepayModal:false})   
-                
-                 {this.setState({visa: !this.state.visa})}
-                 {this.setState({card: false})}
-            
-                }
-                }
-              />
-                  <Image
-                    source={require('../../assets/visa.png')}
-                    style={{width: 30,marginRight:10,height:30,resizeMode:'contain'}}
-                  />
-              
-                  <Text
-                  style={[
-                    {
-                      fontFamily: FONT.Nunito.extraBold,
-                      textAlign: 'center',
-                      fontSize: 15,
-                      marginTop:5
-                    },
-                  ]}>
-                  Visa 
-                </Text>
-                {/* <Text style={[styles.titleText,{color:'black',marginTop:5,marginLeft:10}]}>{this.state.defaultCard && this.state.defaultCard.last4}</Text> */}
+                <View style={{flexDirection: 'row'}}>
+                  {this.state.defaultCard && this.state.defaultCard.last4 && (
+                    <CheckBox
+                      style={{width: 40}}
+                      disabled={false}
+                      value={this.state.visa}
+                      onValueChange={() => {
+                        this.setState({prepayModal: false});
 
-              </View>
-            
-                <View style={{flexDirection:'row'}}>
-                 <CheckBox
-              style={{width:40,}}
-                disabled={false}
-                value={this.state.card}
-                onValueChange={() =>
-                  {
-                 this.setState({prepayModal: !this.state.prepayModal})   
-                 {this.setState({card: !this.state.card})}
-                 {this.setState({visa: false})}
-            
-                } }
-              />
-             
-                <Text
-                  onPress={() => {
-                    this.setState({prepayModal: !this.state.prepayModal})
-                                 {this.setState({card: !this.state.card})
-                                }
-              }
-                }
-                  style={[
-                    {
-                      fontFamily: FONT.Nunito.extraBold,
-                      textAlign: 'center',
-                      fontSize: 15,
-                      marginTop:5
-                  
-                    },
-                  ]}>
-                  Or use a card below
-                </Text>
+                        {
+                          this.setState({visa: !this.state.visa});
+                        }
+                        {
+                          this.setState({card: false});
+                        }
+                      }}
+                    />
+                  )}
+                  {this.state.defaultCard && this.state.defaultCard.last4 && (
+                    <Image
+                      source={require('../../assets/visa.png')}
+                      style={{
+                        width: 30,
+                        marginRight: 10,
+                        height: 30,
+                        resizeMode: 'contain',
+                      }}
+                    />
+                  )}
+
+                  {this.state.defaultCard && this.state.defaultCard.last4 && (
+                    <Text
+                      style={[
+                        {
+                          fontFamily: FONT.Nunito.extraBold,
+                          textAlign: 'center',
+                          fontSize: 15,
+                          marginTop: 5,
+                        },
+                      ]}>
+                      Visa
+                    </Text>
+                  )}
+                  <Text
+                    style={[
+                      styles.titleText,
+                      {
+                        color:
+                          this.state.defaultCard && this.state.defaultCard.last4
+                            ? 'black'
+                            : 'red',
+                        marginTop: 5,
+                        marginLeft: 10,
+                      },
+                    ]}>
+                    {this.state.defaultCard && this.state.defaultCard.last4
+                      ? this.state.defaultCard.last4
+                      : 'Please Add some payment method in setting'}
+                  </Text>
+                </View>
+
+                <View style={{flexDirection: 'row', marginTop: 10}}>
+                  <CheckBox
+                    style={{width: 40}}
+                    disabled={false}
+                    value={this.state.card}
+                    onValueChange={() => {
+                      this.setState({prepayModal: !this.state.prepayModal});
+                      {
+                        this.setState({card: !this.state.card});
+                      }
+                      {
+                        this.setState({visa: false});
+                      }
+                    }}
+                  />
+
+                  <Text
+                    onPress={() => {
+                      this.setState({prepayModal: !this.state.prepayModal});
+                      {
+                        this.setState({card: !this.state.card});
+                      }
+                    }}
+                    style={[
+                      {
+                        fontFamily: FONT.Nunito.extraBold,
+                        textAlign: 'center',
+                        fontSize: 15,
+                        marginTop: 5,
+                      },
+                    ]}>
+                    Or use a card below
+                  </Text>
                 </View>
                 {this.state.prepayModal === true && (
-            <View style={{marginTop: 20}}>
-              <CreditCardInput onChange={this._onChange} />
-            </View>
-          )}
+                  <View style={{marginTop: 20}}>
+                    <CreditCardInput onChange={this._onChange} />
+                  </View>
+                )}
                 <Text
                   style={[
                     styles.subtitleText,
@@ -446,8 +479,7 @@ class prepay extends Component {
                 </TouchableOpacity>
               </View>
             </View>
-          
-        </SafeAreaView>
+          </SafeAreaView>
         </ScrollView>
         {this.state.loading && <Loader loading={this.state.loading} />}
       </View>
