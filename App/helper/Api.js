@@ -280,9 +280,8 @@ export async function updateEvent(event_id, dataToUpdate) {
     .catch(error => console.log('error', error));
 }
 
-export async function getZicketDetails() {
-  let user_id = '3wDLplGq1oYQMO3xRnS4ZtpdK0M2';
-  let event_id = '074d6e00-6fbf-4eed-9884-984fd56e84e4';
+export async function getZicketDetails({user_id,event_id }) {
+
   return fetch(`${Server}/zicket?user_id=${user_id}&event_id=${event_id}`)
     .then(async response => {
       return await response.json();
