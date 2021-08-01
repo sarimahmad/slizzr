@@ -977,6 +977,67 @@ export async function RemoveSharedHost({self_removed, shared_host_id}) {
   return GetResponse;
 }
 
+//Get All Shared HOST for EVENT
+export async function GetSharedHostForEvents({event_id}) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-sharedhost-event/${event_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+//Get All Shared Pending Request for EVENT
+export async function GetSharedHostForEvents({event_id}) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-sharedhost-pending-event/${event_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+//Delete Shared Host request
+export async function DeleteSharedHostRequest({shared_host_id}) {
+
+  var config = {
+    method: 'DELETE',
+    url: `${Server}/event/remove-sharedhost-request/${shared_host_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
 /**
  * IMPORTANT -:
  * ALL PREPAID EVENTS ARE 2 STEPS -> GET THE PAYMENT AND IF SUCCESSFULL CALL ATTENEDEVENT API TO GET ZICKET.
