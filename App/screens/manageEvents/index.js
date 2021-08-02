@@ -16,7 +16,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import {getUserAttendedEvents, getUserEvents} from '../../helper/Api';
+import {getUserAttendedEvents, getUserEvents,getAllSharedRequests} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 class manageEvents extends Component {
@@ -29,6 +29,7 @@ class manageEvents extends Component {
       index: 1,
       userEvents: [],
       userAttendedEvents: [],
+      userSharedRequests:[]
     };
   }
 
@@ -36,9 +37,9 @@ class manageEvents extends Component {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getUserEvents();
       this.getUserAttendedEvents();
+      this.getAllSharedRequests()
     });
   }
-
   componentWillUnmount() {
     this._unsubscribe();
   }
@@ -52,6 +53,12 @@ class manageEvents extends Component {
   async getUserAttendedEvents() {
     await getUserAttendedEvents(this.props.userToken).then(response => {
       this.setState({userAttendedEvents: response.UserAttendedEvents});
+    });
+  }
+  async getAllSharedRequests() {
+    await getAllSharedRequests(this.props.userToken).then(response => {
+      this.setState({loading:false})
+      this.setState({userSharedRequests: response.data.SharedhostRequest.length});
     });
   }
 
@@ -89,12 +96,12 @@ class manageEvents extends Component {
                   borderColor: 'lightgrey',
                   justifyContent: 'center',
                   borderWidth: 1,
-                  width: SCREEN.width * 0.5,
+                  width: SCREEN.width * 0.34,
                   height: 39,
                 }
               : {
                   color: 'black',
-                  width: SCREEN.width * 0.5,
+                  width: SCREEN.width * 0.34,
                   height: 39,
                   borderColor: 'lightgrey',
                   borderWidth: 1,
@@ -120,12 +127,12 @@ class manageEvents extends Component {
                   borderColor: 'grey',
                   justifyContent: 'center',
                   borderWidth: 1,
-                  width: SCREEN.width * 0.5,
+                  width: SCREEN.width * 0.34,
                   height: 39,
                 }
               : {
                   color: 'black',
-                  width: SCREEN.width * 0.5,
+                  width: SCREEN.width * 0.34,
                   height: 39,
                   borderColor: 'grey',
                   justifyContent: 'center',
@@ -141,6 +148,37 @@ class manageEvents extends Component {
             ATTENDING EVENTS
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={
+            this.state.index === 3
+              ? {
+                  borderBottomColor: '#F818D9',
+                  borderBottomWidth: 3,
+                  borderColor: 'grey',
+                  justifyContent: 'center',
+                  borderWidth: 1,
+                  width: SCREEN.width * 0.34,
+                  height: 39,
+                }
+              : {
+                  color: 'black',
+                  width: SCREEN.width * 0.34,
+                  height: 39,
+                  borderColor: 'grey',
+                  justifyContent: 'center',
+                  borderWidth: 1,
+                }
+          }
+          onPress={() => this.barTapped(3)}>
+          <Text
+            style={[
+              styles.barText,
+              this.state.index === 3 ? {color: '#F818D9'} : {color: 'black'},
+            ]}>
+            Shared Events 
+          </Text>
+        </TouchableOpacity>
+    
       </View>
     );
   };
@@ -182,6 +220,13 @@ class manageEvents extends Component {
             </TouchableOpacity>
           </View>
         )}
+        {this.state.index === 3 && (
+          <View>
+            <Text style={styles.emptyFont}>
+              You are not sharing any events at the moment.
+            </Text>
+          </View>
+        )}
       </View>
     );
   };
@@ -202,10 +247,10 @@ class manageEvents extends Component {
           {this.topBar()}
 
           {/* Shared Host */}
-          {/* <TouchableOpacity onPress={() => this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
             <Text style={{ color: 'white', paddingLeft: 20 }}>SHARED HOST REQUESTS</Text>
-            <Text style={{ color: 'white', paddingRight: 20 }}>+2</Text>
-          </TouchableOpacity> */}
+            <Text style={{ color: 'white', paddingRight: 20 }}>+{this.state.userSharedRequests}</Text>
+          </TouchableOpacity>
 
           {this.state.index === 1 && (
             <FlatList
@@ -293,9 +338,9 @@ class manageEvents extends Component {
                       <Text style={styles.subtitleText}>
                         Host: {item.Event.Host.displayName}
                       </Text>
-                      {/* <Text style={[styles.purpleText, {marginTop: 5}]}>
+                      <Text style={[styles.purpleText, {marginTop: 5}]}>
                         {item.Event.DateTime}
-                      </Text> */}
+                      </Text>
                     </View>
                     <TouchableOpacity
                       // onPress={()=>this.props.navigation.navigate("directInvites")}
@@ -307,6 +352,84 @@ class manageEvents extends Component {
               )}
             />
           )}
+           {this.state.index === 3 && (
+       <FlatList
+       data={this.state.userSharedRequests}
+       keyExtractor={item => item.id}
+       renderItem={({item}) => (
+         <TouchableOpacity
+           onPress={() =>
+             this.props.navigation.navigate('attendingEventInfo')
+           }
+           style={{
+             width:SCREEN.width,
+             borderBottomWidth: 1,
+             borderBottomColor: 'lightgrey',
+           }}>
+           
+           <View style={styles.flexRow}>
+           <View style={styles.flexRow}>
+                    <View style={styles.imgView}>
+                      <Image
+                        source={{uri: item.Event.image}}
+                        style={{borderRadius: 44, height: 60, width: 60}}
+                      />
+   {item.Event.PublicPrivate==="Private" &&
+                    
+                      <Image
+                        style={{position: 'absolute', right: -10}}
+                        source={require('../../assets/private.png')}
+                      />
+                }
+                    </View>
+
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>{item.Event.Name}</Text>
+                      <Text style={styles.subtitleText}>
+                        Host: {item.Event.Host.displayName}
+                      </Text>
+                      <Text style={[styles.purpleText, {marginTop: 5}]}>
+                        {item.Event.DateTime}
+                      </Text>
+                    </View>
+                    <View>
+               <TouchableOpacity
+                 onPress={() =>this.approveSharedHostRequest(item.SharedHostID)
+                 }
+                 style={{
+                   marginBottom: 5,
+                   marginRight: 5,
+                   height: 30,
+                   width: 30,
+                   borderRadius: 24,
+                   backgroundColor: '#4CD964',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                 }}>
+                 <Image source={require('../../assets/check.png')} />
+               </TouchableOpacity>
+               <TouchableOpacity
+                 onPress={() =>
+                  this.removeSharedHostRequest(item.SharedHostID) 
+                }
+               style={{
+                   marginRight: 5,
+                   height: 30,
+                   width: 30,
+                   borderRadius: 24,
+                   backgroundColor: '#FF3B30',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                 }}>
+                 <Image source={require('../../assets/closeIcon.png')} />
+               </TouchableOpacity>
+             </View>
+        </View>
+           </View>
+         </TouchableOpacity>
+       )}
+     />
+        )}
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
       </View>

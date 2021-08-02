@@ -62,6 +62,28 @@ import {
     });
     
   }
+  emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+          <View>
+            <Text style={styles.emptyFont}>
+              You have  no friend at the moment.
+            </Text>
+          </View>
+        
+      </View>
+    );
+  };
+  
   componentDidMount(){
     this.getAllFriends()
   }
@@ -100,6 +122,8 @@ import {
       <FlatList
           
           data={this.state.findpeople}
+          ListEmptyComponent={this.emptyListComponent}
+            
           keyExtractor={item => item.id}
           renderItem={({item}) => (
             <TouchableOpacity onPress={()=>this.props.navigation.navigate("myProfile",{id:item.UserID,MutualConnectionID:item.MutualConnectionID})} >
@@ -127,6 +151,7 @@ import {
     );
   }
 }
+
 function mapStateToProps(state) {
   return {
     userDetail: state.user.userDetail,

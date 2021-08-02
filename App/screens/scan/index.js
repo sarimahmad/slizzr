@@ -9,7 +9,7 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import {APPCOLOR, BLACK, WHITE} from '../../helper/Color';
 import {SafeAreaView} from 'react-native';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-
+import {ScanZicket, payAndJoin} from '../../helper/Api';
 export default class scan extends Component {
   constructor(props) {
     super(props);
@@ -17,11 +17,36 @@ export default class scan extends Component {
       loading: false,
       flash: RNCamera.Constants.FlashMode.off,
       cameraType: 'back',
+      item: '',
     };
   }
-
-  onSuccess = e => {
+  componentDidMount() {
+    let item = this.props.route.params.item;
+    this.setState({item: item});
+  }
+  onSuccess = async e => {
     alert(JSON.stringify(e));
+    let userId = e.data.split('_')[0].trim();
+    let eventId = e.data.split('_')[1].trim();
+
+    console.log(userId);
+    if (this.state.item === 'PREPAID' || this.state.item === 'FREE') {
+      await ScanZicket(eventId,e.data).then(response => {
+        alert(response.Message);
+      });
+    } else if (this.state.item === 'SCAN-&-PAY AT DOOR') {
+      data = {
+        user_id: userId,
+        event_id: eventId,
+      };
+      await payAndJoin(data).then(async response => {
+        if (response === 'success') {
+          await ScanZicket(eventId).then(response => {
+            console.log(response);
+          });
+        }
+      });
+    }
   };
 
   render() {
@@ -43,7 +68,7 @@ export default class scan extends Component {
             flashMode={this.state.flash}
           />
           <View style={styles.AbsoluteScanner}>
-            <View style={styles.IconWrapper}>  
+            <View style={styles.IconWrapper}>
               <Image
                 style={[
                   styles.IconWrapper,

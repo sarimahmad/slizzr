@@ -129,33 +129,33 @@ class eventDetail extends Component {
 
   async attendEvent({user_id, event_id}) {
     this.setState({loading: true});
-    this.props.navigation.navigate('prepay', {
-      event_id: event_id,
-      user_id: user_id,
-      detailItem: this.state.detailItem,
-    });
+    // this.props.navigation.navigate('prepay', {
+    //   event_id: event_id,
+    //   user_id: user_id,
+    //   detailItem: this.state.detailItem,
+    // });
   
-  //   if (this.state.detailItem.EventType !== 'PREPAID' && this.state.defaultCard ) {
-  //     this.setState({nodefaultCard:false})
+    if (this.state.detailItem.EventType !== 'PREPAID' && this.state.defaultCard ) {
+      this.setState({nodefaultCard:false})
   
-  //     AtendPublicEvent({user_id, event_id}).then(response => {
+      AtendPublicEvent({user_id, event_id}).then(response => {
       
-  //       this.getEventDetail(
-  //         this.props.route.params.detailItem,
-  //         this.props.userDetail.id,
-  //       );   
-  //     });
-  //   } else if(!this.state.defaultCard){
-  //  this.setState({nodefaultCard:true})
-  //   } else {
-  //     this.setState({nodefaultCard:false})
+        this.getEventDetail(
+          this.props.route.params.detailItem,
+          this.props.userDetail.id,
+        );   
+      });
+    } else if(!this.state.defaultCard){
+   this.setState({nodefaultCard:true})
+    } else {
+      this.setState({nodefaultCard:false})
   
-  //     this.props.navigation.navigate('prepay', {
-  //       event_id: event_id,
-  //       user_id: user_id,
-  //       detailItem: this.state.detailItem,
-  //     });
-  //   }
+      this.props.navigation.navigate('prepay', {
+        event_id: event_id,
+        user_id: user_id,
+        detailItem: this.state.detailItem,
+      });
+    }
     this.setState({loading: false});
   }
 

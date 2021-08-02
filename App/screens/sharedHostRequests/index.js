@@ -16,57 +16,46 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-export default class sharedHostRequests extends Component {
+import {connect} from 'react-redux';
+import {getAllSharedRequests,approveSharedHostRequest,removeSharedHostRequest} from '../../helper/Api';
+import Loader from '../../component/Loader';
+
+class sharedHostRequests extends Component {
   constructor(props) {
     super(props);
     this.state = {
       attendingEvents: true,
       myevents: false,
-      messages: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
-      findpeople: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
+      userSharedRequests:[] ,
+      loading:false
     };
   }
+  componentDidMount(){
+    this.getAllSharedRequests()
+  }
+  async getAllSharedRequests() {
+    await getAllSharedRequests(this.props.userToken).then(response => {
+      this.setState({loading:false})
+      this.setState({userSharedRequests: response.data.SharedhostRequest});
+    });
+  }
 
+
+
+  approveSharedHostRequest=async(id)=>{
+    await approveSharedHostRequest(id).then(response=>{
+      if(response.ACCEPTED === true){
+      alert("Request Accepted")
+      }
+    })
+    }
+    removeSharedHostRequest=async(id)=>{
+      await removeSharedHostRequest(id).then(response=>{
+        alert(response.message)
+        
+      })
+      }
+    
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -91,73 +80,98 @@ export default class sharedHostRequests extends Component {
           leftPress={() => this.props.navigation.goBack()}
           leftIcon={require('../../assets/back.png')}
         />
-          <FlatList
-            data={this.state.findpeople}
-            keyExtractor={item => item.id}
-            renderItem={({item}) => (
-              <TouchableOpacity
-                onPress={() =>
-                  this.props.navigation.navigate('attendingEventInfo')
+       <FlatList
+       data={this.state.userSharedRequests}
+       keyExtractor={item => item.id}
+       renderItem={({item}) => (
+         <View
+           style={{
+             width:SCREEN.width,
+             borderBottomWidth: 1,
+             borderBottomColor: 'lightgrey',
+           }}>
+           
+           <View style={styles.flexRow}>
+           <View style={styles.flexRow}>
+                    <View style={styles.imgView}>
+                      <Image
+                        source={{uri: item.Event.image}}
+                        style={{borderRadius: 44, height: 60, width: 60}}
+                      />
+   {item.Event.PublicPrivate==="Private" &&
+                    
+                      <Image
+                        style={{position: 'absolute', right: -10}}
+                        source={require('../../assets/private.png')}
+                      />
                 }
-                style={{
-                  width:SCREEN.width,
-                  borderBottomWidth: 1,
-                  borderBottomColor: 'lightgrey',
-                }}>
-                
-                <View style={styles.flexRow}>
-                  <View style={{flexDirection:"row"}}>
-                  <View style={styles.imgView}>
-                    <Image 
-                    style={{width:50, height:50, borderRadius:25}}
-                    source={require('../../assets/image2.jpg')} />
-                  </View>
-
-                  <View style={styles.detail}>
-                    <Text style={styles.titleText}>{item.profileName}</Text>
-                    <Text style={styles.subtitleText}>{item.adress}</Text>
-                    <Text style={styles.purpleText}>{item.date}</Text>
-                  </View>
-                  </View>
-                  <View>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.props.navigation.navigate('manageEvent')
-                      }
-                      style={{
-                        marginBottom: 5,
-                        marginRight: 5,
-                        height: 30,
-                        width: 30,
-                        borderRadius: 24,
-                        backgroundColor: '#4CD964',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <Image source={require('../../assets/check.png')} />
-                    </TouchableOpacity>
-                    <View
-                      style={{
-                        marginRight: 5,
-                        height: 30,
-                        width: 30,
-                        borderRadius: 24,
-                        backgroundColor: '#FF3B30',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <Image source={require('../../assets/closeIcon.png')} />
                     </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            )}
-          />
+
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>{item.Event.Name}</Text>
+                      <Text style={styles.subtitleText}>
+                        Host: {item.Event.Host.displayName}
+                      </Text>
+                      <Text style={[styles.purpleText, {marginTop: 5}]}>
+                        {item.Event.DateTime}
+                      </Text>
+                    </View>
+                    <View>
+               <TouchableOpacity
+                 onPress={() =>this.approveSharedHostRequest(item.SharedHostID)
+                 }
+                 style={{
+                   marginBottom: 5,
+                   marginRight: 5,
+                   height: 30,
+                   width: 30,
+                   borderRadius: 24,
+                   backgroundColor: '#4CD964',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                 }}>
+                 <Image source={require('../../assets/check.png')} />
+               </TouchableOpacity>
+               <TouchableOpacity
+                 onPress={() =>
+                  this.removeSharedHostRequest(item.SharedHostID) 
+                }
+               style={{
+                   marginRight: 5,
+                   height: 30,
+                   width: 30,
+                   borderRadius: 24,
+                   backgroundColor: '#FF3B30',
+                   alignItems: 'center',
+                   justifyContent: 'center',
+                 }}>
+                 <Image source={require('../../assets/closeIcon.png')} />
+               </TouchableOpacity>
+             </View>
+        </View>
+           </View>
+         </View>
+       )}
+     />
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+    
       </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(sharedHostRequests);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,

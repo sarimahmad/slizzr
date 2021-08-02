@@ -18,8 +18,12 @@ import {
 } from 'react-native-responsive-screen';
 import {Picker} from '@react-native-picker/picker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import { getAllFriends } from '../../helper/Api';
+import {connect} from 'react-redux';
+import Loader from '../../component/Loader';
+import { ScrollView } from 'react-native';
 
-export default class sharedHosts extends Component {
+ class sharedHosts extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,61 +40,7 @@ export default class sharedHosts extends Component {
         {id: 5, image: require('../../assets/profile2.png')},
       ],
 
-      attendeesLIst: [
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
-        {
-          imgProfile: '',
-          attendee: 'Ava Gregoraci',
-          count: 3,
-        },
+      friendsList: [
       ],
     };
   }
@@ -101,6 +51,52 @@ export default class sharedHosts extends Component {
       this.setState({index: 1});
     }
   };
+  async getAllFriends() {
+    this.setState({loading:true})
+    await getAllFriends(this.props.userToken).then(response => {
+      this.setState({friendsList: response.Users, loading: false});
+    });
+    
+  }
+  
+  async getMutualConnections(id) {
+    await getMutualConnections(id).then(response => {
+      this.setState({mutualConnections: response.Users, loading: false});
+    });
+  }
+  async shareEventRequest() {
+    this.setState({loading:true})
+    await shareEventRequest(this.props.userToken).then(response => {
+      this.setState({friendsList: response.Users, loading: false});
+    });
+    
+  }
+  componentDidMount(){
+    this.getAllFriends()
+    // this.getMutualConnections(this.props.route.params.id);
+       
+  }
+  emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+          <View>
+            <Text style={styles.emptyFont}>
+              You have no friend at the moment.
+            </Text>
+          </View>
+      </View>
+    );
+  };
+  
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -111,6 +107,8 @@ export default class sharedHosts extends Component {
           leftPress={() => this.props.navigation.goBack()}
           leftIcon={require('../../assets/back.png')}
         />
+         <ScrollView>
+       
         <SafeAreaView style={styles.contentView}>
           <View style={{width: SCREEN.width - 40, alignSelf: 'center'}}>
             <Text
@@ -232,19 +230,21 @@ export default class sharedHosts extends Component {
           </View>
 
           <FlatList
-            data={this.state.attendeesLIst}
+            data={this.state.friendsList}
             keyExtractor={item => item.id}
+            ListEmptyComponent={this.emptyListComponent}
+            
             renderItem={({item}) => (
-              <TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.1}>
                 <View style={styles.flexRow}>
                   <View style={styles.imgView}>
                     <Image
                       style={{height: 50, width: 50}}
-                      source={require('../../assets/profile1.png')}
+                      source={{uri:item.Friend.image}}
                     />
                   </View>
                   <View style={styles.detail}>
-                    <Text style={styles.titleText}>{item.attendee}</Text>
+                    <Text style={styles.titleText}>{item.Friend.displayName}</Text>
                   </View>
                   <View
                     style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -264,10 +264,25 @@ export default class sharedHosts extends Component {
             )}
           />
         </SafeAreaView>
+        </ScrollView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+    
       </View>
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(sharedHosts);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,

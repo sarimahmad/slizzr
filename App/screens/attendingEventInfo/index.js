@@ -183,8 +183,8 @@ class attendingEventInfo extends Component {
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate('zicketDetail', {
-                  EventID: this.state.detailItem.id,
-                  UserID: this.state.currentUserUID,
+                  EventID: "79ea0c21-dbfc-4cbe-84fd-a864e03df3bc",
+                  UserID: "US8UGFHuijWmDRDx25LC69r0pYJ2",
                 })
               }
               style={styles.btnMap}>

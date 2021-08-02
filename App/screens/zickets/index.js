@@ -248,7 +248,7 @@ class Zickets extends Component {
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>
-                    this.props.navigation.navigate('Scan')
+                    this.props.navigation.navigate('Scan',{item:item.EventType})
                   }
                   style={{
                     borderBottomWidth: 1,
@@ -279,10 +279,10 @@ class Zickets extends Component {
                           'hh:mm A | MMM DD, YYYY - ddd',
                         )}
                       </Text>
-                    </View>
+                    </View>   
                     <TouchableOpacity
                       onPress={() =>
-                        this.props.navigation.navigate('Scan')
+                        this.props.navigation.navigate('Scan',{item:item.EventType})
                       }
                       style={styles.shareView}>
                       <Image source={require('../../assets/Right.png')} />
