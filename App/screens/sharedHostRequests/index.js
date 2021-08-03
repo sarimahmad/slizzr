@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   FlatList,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {BLACK, WHITE} from '../../helper/Color';
@@ -34,6 +35,7 @@ class sharedHostRequests extends Component {
     this.getAllSharedRequests()
   }
   async getAllSharedRequests() {
+    this.setState({loading:true})
     await getAllSharedRequests(this.props.userToken).then(response => {
       this.setState({loading:false})
       this.setState({userSharedRequests: response.data.SharedhostRequest});
@@ -43,19 +45,71 @@ class sharedHostRequests extends Component {
 
 
   approveSharedHostRequest=async(id)=>{
+    this.setState({loading:true})
     await approveSharedHostRequest(id).then(response=>{
-      if(response.ACCEPTED === true){
-      alert("Request Accepted")
+      if(response.status === 200){
+        this.setState({loading:false})
+     
+        Alert.alert(
+          "Successfull",
+          response.data.message,
+          [
+           
+            { text: "OK", onPress: () =>  this.getAllSharedRequests()}
+          ])
+       }else{
+        this.setState({loading:false})
+     
+        alert("Failed")
       }
     })
     }
     removeSharedHostRequest=async(id)=>{
+      this.setState({loading:true})
+  
       await removeSharedHostRequest(id).then(response=>{
-        alert(response.message)
-        
+        if(response.status === 200){
+          this.setState({loading:false})
+          Alert.alert(
+            "Successfull",
+            response.data.message,
+            [
+             
+              { text: "OK", onPress: () =>  this.getAllSharedRequests()}
+            ])
+          }else{
+            this.setState({loading:false})
+     
+            alert("Failed")
+          }
+          this.setState({loading:false})
+     
       })
       }
-    
+      emptyListComponent = () => {
+        return (
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              alignSelf: 'center',
+              justifyContent: 'center',
+              flexGrow: 1,
+              display: 'flex',
+              marginTop: SCREEN.height / 4,
+            }}>
+           
+              <View>
+                <Text style={styles.emptyFont}>
+                  You have no notification at the moment.
+                </Text>
+               
+              </View>
+         
+           </View>
+        );
+      };
+     
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -83,6 +137,8 @@ class sharedHostRequests extends Component {
        <FlatList
        data={this.state.userSharedRequests}
        keyExtractor={item => item.id}
+       ListEmptyComponent={this.emptyListComponent}
+            
        renderItem={({item}) => (
          <View
            style={{
@@ -177,6 +233,13 @@ const styles = StyleSheet.create({
     flex: 1,
 
     backgroundColor: WHITE.dark,
+  },
+  emptyFont: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    marginBottom: 20,
   },
   contentView: {
     flex: 1,

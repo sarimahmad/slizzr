@@ -18,16 +18,24 @@ import {
 } from 'react-native-responsive-screen';
 import {Picker} from '@react-native-picker/picker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import { getAllFriends } from '../../helper/Api';
+import {
+  getAllFriends,
+  inviteSharedHost,
+  getAllSharedEvents,
+  getAllSharedHostsforEventAccepted,
+  getAllPendingSharedHostsforEvent
+} from '../../helper/Api';
 import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
-import { ScrollView } from 'react-native';
+import {ScrollView} from 'react-native';
 
- class sharedHosts extends Component {
+class sharedHosts extends Component {
   constructor(props) {
     super(props);
     this.state = {
       index: 0,
+      eventId:'',
+      hostSelected: {},
       image: [
         {id: 1, image: require('../../assets/profile2.png')},
         {id: 2, image: require('../../assets/profile2.png')},
@@ -39,9 +47,9 @@ import { ScrollView } from 'react-native';
         {id: 4, image: require('../../assets/profile2.png')},
         {id: 5, image: require('../../assets/profile2.png')},
       ],
-
-      friendsList: [
-      ],
+      sharedHosts: [],
+      sharedEvents: [],
+      friendsList: [],
     };
   }
   barTapped = indexTap => {
@@ -52,29 +60,65 @@ import { ScrollView } from 'react-native';
     }
   };
   async getAllFriends() {
-    this.setState({loading:true})
+    this.setState({loading: true});
     await getAllFriends(this.props.userToken).then(response => {
       this.setState({friendsList: response.Users, loading: false});
     });
-    
   }
-  
+
   async getMutualConnections(id) {
     await getMutualConnections(id).then(response => {
       this.setState({mutualConnections: response.Users, loading: false});
     });
   }
   async shareEventRequest() {
-    this.setState({loading:true})
+    this.setState({loading: true});
     await shareEventRequest(this.props.userToken).then(response => {
       this.setState({friendsList: response.Users, loading: false});
     });
-    
   }
-  componentDidMount(){
-    this.getAllFriends()
-    // this.getMutualConnections(this.props.route.params.id);
-       
+  componentDidMount() {
+    this.getAllFriends();
+    this.getAllSharedEvents()
+    }
+  async getAllFriends() {
+    this.setState({loading: true});
+    await getAllFriends(this.props.userToken).then(response => {
+      console.log('response' + response);
+      this.setState({friendsList: response.Users, loading: false});
+    });
+  }
+  async getAllSharedEvents() {
+    this.setState({loading: true});
+    await getAllSharedEvents(this.props.userToken).then(response => {
+      console.log('response' + response);
+      if (response.status === 200 || response == undefined) {
+        
+        this.setState({
+          sharedEvents: response.data.SharedEvents,
+          
+          loading: false,
+        });
+      } else {
+        this.setState({loading: false});
+      }
+    });
+  }
+  async getAllSharedHostsforEventAccepted(id) {
+    this.setState({loading: true});
+
+    await getAllSharedHostsforEventAccepted(id).then(response => {
+      console.log('response' + response);
+      this.setState({sharedHostsEventsAccepted: response.data.SharedEvents, loading: false});
+    });
+  }
+  async getAllPendingSharedHostsforEvent(id) {
+    this.setState({loading: true});
+    
+    await getAllPendingSharedHostsforEvent(id).then(response => {
+      console.log('response' + response);
+      this.setState({sharedHostsEventsPending: response .data.SharedEvents, loading: false});
+    });
   }
   emptyListComponent = () => {
     return (
@@ -88,15 +132,59 @@ import { ScrollView } from 'react-native';
           display: 'flex',
           marginTop: SCREEN.height / 4,
         }}>
+        {this.state.index === 1 && (
           <View>
             <Text style={styles.emptyFont}>
-              You have no friend at the moment.
+              You are not hosting any events at the moment.
             </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('createEvent')}
+              style={styles.btnMap}>
+              <Text style={styles.btnText}>HOST?</Text>
+            </TouchableOpacity>
           </View>
+        )}
+        {this.state.index === 2 && (
+          <View>
+            <Text style={styles.emptyFont}>
+              You are not attending any events at the moment.
+            </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('HomeStack')}
+              style={styles.btnMap}>
+              <Text style={styles.btnText}>LOOK FOR EVENTS</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        
       </View>
     );
+  };getSharedEventData=(id)=>{
+    this.getAllPendingSharedHostsforEvent(id)
+    this.getAllSharedHostsforEventAccepted(id)
+  }
+  inviteSharedHost = async () => {
+    if (this.state.hostSelected) {
+      console.log(this.state.hostSelected);
+      let data = {
+        host_id: this.state.hostSelected.Friend.id,
+        event_id: this.props.route.params.id,
+      };
+      this.setState({loading: true});
+
+      await inviteSharedHost(data, this.props.userToken).then(response => {
+        if (response.status === 200) {
+          alert(response.data.message);
+          this.setState({loading: false, hostSelected: {}});
+        } else {
+          alert('failed');
+          this.setState({loading: false});
+        }
+      });
+    } else {
+      alert('Select host');
+    }
   };
-  
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -107,166 +195,243 @@ import { ScrollView } from 'react-native';
           leftPress={() => this.props.navigation.goBack()}
           leftIcon={require('../../assets/back.png')}
         />
-         <ScrollView>
-       
-        <SafeAreaView style={styles.contentView}>
-          <View style={{width: SCREEN.width - 40, alignSelf: 'center'}}>
-            <Text
-              style={{
-                color: BLACK.lightgrey,
-                fontSize: 12,
-                fontFamily: FONT.Nunito.regular,
-              }}>
-              Select shared hosts for:
-            </Text>
-
-            <View style={styles.form}>
-              <Picker
-                mode="dropdown"
-                placeholder="Select your Category"
-                placeholderStyle={{color: 'black'}}
-                placeholderIconColor="#007aff"
-                style={{width: wp('100%') / 1.1}}
-                selectedValue={'Adresses sauvegardées'}
-                onValueChange={this.onValueChangeCatagory}>
-                {/* <Picker.Item label="List of Saved Adress" value="adress 1" color="#5f1867"/> */}
-                <Picker.Item
-                  label="Adresses sauvegardées"
-                  value="Adresses sauvegardées"
-                />
-                <Picker.Item label="adress 2" value="adress 2" />
-                <Picker.Item label="adress 3" value="adress 3" />
-                <Picker.Item label="adress 4" value="adress 4" />
-              </Picker>
-            </View>
-
-            <View style={{flexDirection: 'row', marginTop: 20}}>
-              <View
+        <ScrollView>
+          <SafeAreaView style={styles.contentView}>
+            <View style={{width: SCREEN.width - 40, alignSelf: 'center'}}>
+              <Text
                 style={{
-                  marginRight: 5,
-                  height: 45,
-                  width: 45,
-                  borderRadius: 24,
-                  backgroundColor: '#EBE5F1',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  color: BLACK.lightgrey,
+                  fontSize: 12,
+                  fontFamily: FONT.Nunito.regular,
                 }}>
-                <Image source={require('../../assets/searchPurple.png')} />
+                Select shared hosts for:
+              </Text>
+
+              <View style={styles.form}>
+                <Picker
+                onValueChange={(item, itemIndex) => this.getSharedEventData(item)} 
+
+                  style={styles.PickerStyleClass}
+                  selectedValue={this.state.mode}
+                   >
+                  {this.state.sharedEvents.map((item, key) => (
+                   <Picker.Item label={item.Event.Name} value={item.Event.id} key={key} />)
+                   )}
+                </Picker>
               </View>
 
-              <FlatList
-                data={this.state.image}
-                horizontal
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({item}) => (
-                  <View style={styles.listView}>
-                    <Image style={styles.ImageView} source={item.image} />
-                  </View>
-                )}
-              />
-            </View>
-            <TouchableOpacity style={styles.shareButton}>
-              <Text style={styles.sharebtnText}>INVITE SHARED HOSTS</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={[styles.flex, {marginTop: 20}]}>
-            <TouchableOpacity
-              style={
-                this.state.index === 0
-                  ? {
-                      borderBottomColor: '#F818D9',
-                      borderBottomWidth: 3,
-                      justifyContent: 'center',
-                      width: SCREEN.width * 0.5,
-                      height: 39,
-                    }
-                  : {
-                      color: 'black',
-                      width: SCREEN.width * 0.5,
-                      height: 39,
-                      justifyContent: 'center',
-                    }
-              }
-              onPress={() => this.barTapped(0)}>
-              <Text
-                style={[
-                  styles.barChild,
-                  this.state.index === 0
-                    ? {color: '#F818D9'}
-                    : {color: 'black'},
-                ]}>
-                SHARED HOSTS
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={
-                this.state.index === 1
-                  ? {
-                      borderBottomColor: '#F818D9',
-                      borderBottomWidth: 3,
-                      justifyContent: 'center',
-                      width: SCREEN.width * 0.5,
-                      height: 39,
-                    }
-                  : {
-                      color: 'black',
-                      width: SCREEN.width * 0.5,
-                      height: 39,
-                      justifyContent: 'center',
-                    }
-              }
-              onPress={() => this.barTapped(1)}>
-              <Text
-                style={[
-                  styles.barChild,
-                  this.state.index === 1
-                    ? {color: '#F818D9'}
-                    : {color: 'black'},
-                ]}>
-                PENDING REQUESTS
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <FlatList
-            data={this.state.friendsList}
-            keyExtractor={item => item.id}
-            ListEmptyComponent={this.emptyListComponent}
-            
-            renderItem={({item}) => (
-              <TouchableOpacity activeOpacity={0.1}>
-                <View style={styles.flexRow}>
-                  <View style={styles.imgView}>
-                    <Image
-                      style={{height: 50, width: 50}}
-                      source={{uri:item.Friend.image}}
-                    />
-                  </View>
-                  <View style={styles.detail}>
-                    <Text style={styles.titleText}>{item.Friend.displayName}</Text>
-                  </View>
-                  <View
-                    style={{justifyContent: 'center', alignItems: 'center'}}>
-                    <Image
-                      style={{height: 35, width: 35}}
-                      source={require('../../assets/close.png')}
-                    />
-                  </View>
-                </View>
+              <View style={{flexDirection: 'row', marginTop: 20}}>
                 <View
                   style={{
-                    height: 1,
-                    backgroundColor: 'lightgrey',
-                    width: SCREEN.width,
-                  }}></View>
+                    marginRight: 5,
+                    height: 45,
+                    width: 45,
+                    borderRadius: 24,
+                    backgroundColor: '#EBE5F1',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image source={require('../../assets/searchPurple.png')} />
+                </View>
+
+                <FlatList
+                  data={this.state.friendsList}
+                  horizontal
+                  ListEmptyComponent={this.emptyListComponent}
+            
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item}) => (
+                    <TouchableOpacity
+                      onPress={() => this.setState({hostSelected: item})}
+                      style={styles.listView}>
+                           <View style={styles.imgView}>
+                    {item.Pictures && item.Pictures.length > 0 ? (
+                      <Image
+                        source={{uri: item.Pictures[0].Profile_Url}}
+                        style={styles.logo}
+                      />
+                    ) : (
+                      <View
+                        style={[
+                          styles.logo,
+                          {
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#7b1fa2',
+                            borderColor: '#7b1fa2',
+                          },
+                        ]}>
+                        <Text
+                          style={{
+                            fontSize: 28,
+                            fontWeight: '600',
+                            color: 'white',
+                          }}>
+                          {item.Friend && item.Friend.FirstName.charAt(0).concat(
+                            item.Friend.LastName.charAt(0),
+                          )}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+           </TouchableOpacity>
+                  )}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => this.inviteSharedHost()}
+                style={[
+                  styles.shareButton,
+                  {
+                    backgroundColor:
+                      Object.keys(this.state.hostSelected).length !== 0
+                        ? BLACK.btn
+                        : 'grey',
+                  },
+                ]}>
+                <Text style={styles.sharebtnText}>INVITE SHARED HOSTS</Text>
               </TouchableOpacity>
-            )}
-          />
-        </SafeAreaView>
+            </View>
+
+            <View style={[styles.flex, {marginTop: 20}]}>
+              <TouchableOpacity
+                style={
+                  this.state.index === 0
+                    ? {
+                        borderBottomColor: '#F818D9',
+                        borderBottomWidth: 3,
+                        justifyContent: 'center',
+                        width: SCREEN.width * 0.5,
+                        height: 39,
+                      }
+                    : {
+                        color: 'black',
+                        width: SCREEN.width * 0.5,
+                        height: 39,
+                        justifyContent: 'center',
+                      }
+                }
+                onPress={() => this.barTapped(0)}>
+                <Text
+                  style={[
+                    styles.barChild,
+                    this.state.index === 0
+                      ? {color: '#F818D9'}
+                      : {color: 'black'},
+                  ]}>
+                  SHARED HOSTS
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={
+                  this.state.index === 1
+                    ? {
+                        borderBottomColor: '#F818D9',
+                        borderBottomWidth: 3,
+                        justifyContent: 'center',
+                        width: SCREEN.width * 0.5,
+                        height: 39,
+                      }
+                    : {
+                        color: 'black',
+                        width: SCREEN.width * 0.5,
+                        height: 39,
+                        justifyContent: 'center',
+                      }
+                }
+                onPress={() => this.barTapped(1)}>
+                <Text
+                  style={[
+                    styles.barChild,
+                    this.state.index === 1
+                      ? {color: '#F818D9'}
+                      : {color: 'black'},
+                  ]}>
+                  PENDING REQUESTS
+                </Text>
+              </TouchableOpacity>
+            </View>
+{this.state.index==0 &&
+            <FlatList
+              data={this.state.sharedHostsEventsAccepted}
+              keyExtractor={item => item.id}
+              ListEmptyComponent={this.emptyListComponent}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  onPress={() => this.setState({hostSelected: item})}
+                  activeOpacity={0.1}>
+                  <View style={styles.flexRow}>
+                    <View style={styles.imgView}>
+                      <Image
+                        style={{height: 50, width: 50}}
+                        source={{uri: item.Friend.image}}
+                      />
+                    </View>
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>
+                        {item.Friend.displayName}
+                      </Text>
+                    </View>
+                    <View
+                      style={{justifyContent: 'center', alignItems: 'center'}}>
+                      <Image
+                        style={{height: 35, width: 35}}
+                        source={require('../../assets/close.png')}
+                      />
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: 'lightgrey',
+                      width: SCREEN.width,
+                    }}></View>
+                </TouchableOpacity>
+              )}
+            />
+  }
+  {this.state.index==1 &&
+            <FlatList
+              data={this.state.sharedHostsEventsPending}
+              keyExtractor={item => item.id}
+              ListEmptyComponent={this.emptyListComponent}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  onPress={() => this.setState({hostSelected: item})}
+                  activeOpacity={0.1}>
+                  <View style={styles.flexRow}>
+                    <View style={styles.imgView}>
+                      <Image
+                        style={{height: 50, width: 50}}
+                        source={{uri: item.Friend.image}}
+                      />
+                    </View>
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>
+                        {item.Friend.displayName}
+                      </Text>
+                    </View>
+                    <View
+                      style={{justifyContent: 'center', alignItems: 'center'}}>
+                      <Image
+                        style={{height: 35, width: 35}}
+                        source={require('../../assets/close.png')}
+                      />
+                    </View>
+                  </View>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: 'lightgrey',
+                      width: SCREEN.width,
+                    }}></View>
+                </TouchableOpacity>
+              )}
+            />
+  }
+          </SafeAreaView>
         </ScrollView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-    
       </View>
     );
   }
@@ -316,7 +481,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 50,
     marginTop: 20,
-    backgroundColor: 'grey',
     justifyContent: 'center',
   },
   form: {
@@ -354,6 +518,8 @@ const styles = StyleSheet.create({
     borderColor: BLACK.light,
     bottom: 10,
   },
+  logo: {height: 40, width: 40, borderWidth: 2, borderRadius: 30},
+  
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 20,
@@ -369,13 +535,15 @@ const styles = StyleSheet.create({
     paddingTop: 15,
   },
   imgView: {
-    width: wp('20%'),
+    width: 40,
+    height: 40,
+    borderRadius: 25,
+    marginRight: 20,
   },
   flex: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  logo: {},
   titleText: {
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,

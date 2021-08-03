@@ -734,26 +734,65 @@ export async function SuccessfullyPaidViaProvider({event_id, user_id}) {
 }
 
 export async function removeSharedHostRequest(sharedHostID) {
- 
   var config = {
-    method: 'POST',
+    method: 'DELETE',
     url: `${Server}/event/remove-sharedhost-request/${sharedHostID}`,
     headers: {
       'Content-Type': 'application/json',
     },
+  
   };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    return GetResponse;
 }
 // 
 export async function approveSharedHostRequest(sharedHostID) {
-  
   var config = {
     method: 'POST',
     url: `${Server}/event/decide-sharedhost-request/${sharedHostID}`,
     headers: {
       'Content-Type': 'application/json',
     },
+   
   };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    return GetResponse;
 }
+export async function inviteSharedHost(data,id) {
+  
+  var config = {
+    method: 'POST',
+    url: `${Server}/event/send-sharedhost-request/${id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+   data:data
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+    return GetResponse;
+}
+
 export async function getDefaultCustomerCard(cust_stripe_id) {
   return fetch(`${Server}/stripe/customer/default-card/${cust_stripe_id}`)
     .then(async response => {
@@ -768,6 +807,80 @@ export async function getAllSharedRequests(user_id) {
   var config = {
     method: 'GET',
     url: `${Server}/event/get-sharedhost-request/${user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+export async function getAllPendingSharedHostsforEvent(event_id) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-sharedhost-pending-event/${event_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+export async function getAllSharedEvents(user_id) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-all-sharedevents/${user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+export async function getAllSharedHostsforEventAccepted(event_id) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-all-sharedevents/${event_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+export async function getAllSharedHostsforEvent(event_id) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-sharedhost-event/${event_id}`,
     headers: {
       'Content-Type': 'application/json',
     },
