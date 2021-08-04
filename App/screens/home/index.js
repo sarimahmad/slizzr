@@ -29,10 +29,11 @@ import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import WaitingFor from '../../component/WaitingFor';
 import ErrorPopup from '../../component/ErrorPopup';
-import {createCustomerStripe} from '../../helper/Api';
+import {createCustomerStripe,updateProfile} from '../../helper/Api';
 import Server from '../../helper/Server';
 import firestore from '@react-native-firebase/firestore';
-import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
@@ -73,13 +74,32 @@ class home extends Component {
     this.getEvents = this.getEvents.bind(this);
   }
   componentDidMount() {
-     messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-
+   
+    this.updateProfileApi()
     this.getLocation();
     this.checkStripeClientId();
   }
+  
+  
+  updateProfileApi = async  ()=> {
+   let token= await AsyncStorage.getItem('FCMTOKEN');
+    let platform 
+    if(Platform.OS === 'android'){ 
+     platform="ANDROID"
+    }else{
+      platform="ios"
+    }
+    let dataToSend = {
+      platform : platform,
+      token : token 
+    };
+    
+    await updateProfile(this.props.userToken, dataToSend).then(response => {
+      this.getUserFromFirestore(this.props.userToken);
+      this.setState({loading: false});
+    });
+    this.setState({loading: false});
+  };
   hasPermissionIOS = async () => {
     const openSetting = () => {
       openSettings().catch(() => console.warn('cannot open settings'));

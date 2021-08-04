@@ -14,11 +14,10 @@ import {FONT, SCREEN} from '../../helper/Constant';
 import Swiper from 'react-native-swiper';
 class introduction extends Component {
   state = {};
-  componentDidMount() {
-    setTimeout(() => {
-      // this.props.navigation.navigate('User');
-    }, 3000);
+ async componentDidMount() {
+   
   }
+  
   render() {
     return (
       <View style={styles.container}>

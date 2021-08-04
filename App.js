@@ -10,20 +10,28 @@
  * @flow
  */
  import React, {Component} from 'react';
- import {View, ActivityIndicator, BackHandler,Text, StatusBar} from 'react-native';
+ import {View, ActivityIndicator, BackHandler,Alert, StatusBar} from 'react-native';
  import {Provider} from 'react-redux';
  import { StripeProvider } from '@stripe/stripe-react-native';
 
  import SwitchNavigator from './App/Navigation/HomeNavigation';
  import store from './App/redux/store';
+ import AsyncStorage from '@react-native-async-storage/async-storage';
  import {STRIPE_PUBLISHABLE_KEY,APPLE_MERCHANT_IDENTIFIER} from './App/helper/Env'
+import NotifService from './App/helper/NotifService';
  export default class App extends Component {
    constructor(props) {
      super(props);
      this.state = {
        isReady: true,
+       token:'',
+       setMessages:false,
+       fcmRegistered:false,
+       registerToken:''
      };
-   }
+     
+    }
+   
    componentWillUnmount() {
      BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
    }
@@ -31,10 +39,13 @@
      return true;
    }
    async componentDidMount() {
+
      BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
      // eslint-disable-next-line react/no-did-mount-set-state
      this.setState({isReady: true});
+     
    }
+ 
    render() {
      return this.state.isReady ? (
        <Provider store={store}>

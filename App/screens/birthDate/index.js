@@ -25,9 +25,9 @@ class BirthDate extends Component {
   onChange = selectedDate => {
     let currentDate = moment(selectedDate).format('llll') || moment(this.state.DateTime).format('llll')
     let current_date = moment(new Date()).format('llll');
-
+    
     const age_in_year = moment(current_date).diff(currentDate, 'years');
-
+   
     if (age_in_year > 16) {
       this.setState({
         DateTime: currentDate,
@@ -37,7 +37,7 @@ class BirthDate extends Component {
         age: age_in_year,
       });
     }
-    this.setState({date: currentDate});
+    this.setState({date: selectedDate});
     if (age_in_year > 16) {
       this.setState({ageCheck: true});
     } else {
@@ -94,17 +94,23 @@ class BirthDate extends Component {
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
           <Text style={styles.titleText}>How old are you?</Text>
-
+          {/* <DateAndTimePicker
+                    format="MMM DD, YYYY - hh:mm "
+                    mode="datetime"
+                    editable={this.state.screenTypeEdit}
+                    value={this.state.DateTime}
+                    setDateAndTime={value => this.onChange(value)}
+                    showPlaceholder="+ Add"
+                    datebutton={styles.datebutton}
+                  /> */}
           <DateAndTimePicker
             testID="dateTimePicker"
             value={this.state.date}
-            format="MMM DD, YYYY "
+            format="MMM DD, YYYY - hh:mm "
             mode="date"
             type="onlyDate"
-            is24Hour={true}
-            display="default"
             setDateAndTime={date => this.onChange(date)}
-            onChange={this.onChange}
+         
           />
           <ButtonResetPassaword
             btnLabel={'Continue'}

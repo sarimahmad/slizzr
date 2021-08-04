@@ -3,7 +3,7 @@
 /* eslint-disable radix */
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import React, {useEffect} from 'react';
+import React, {useEffect,useState} from 'react';
 import {View, Image, StyleSheet, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -12,10 +12,14 @@ import {connect} from 'react-redux';
 import * as userActions from '../../redux/actions/user';
 import {WHITE} from '../../helper/Color';
 import messaging from '@react-native-firebase/messaging';
+import NotifService from '../../helper/NotifService';
 
 const splash = props => {
   const [fcmToken, setFcmToken] = React.useState(null);
+  const [registerToken, setRegisterToken] = useState(null);
+  const [messageRegister, setMessageRegister] = useState(null);
   useEffect(() => {
+    
     const unsubscribe = props.navigation.addListener('focus', () => {
       // do something
       checkUSer();
@@ -29,14 +33,21 @@ const splash = props => {
     requestUserPermission();
   }, []);
 
-  useEffect(() => {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-      // console.log(remoteMessage)
-    });
-    return unsubscribe;
-  }, []);
-
+  // useEffect(() => {
+  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
+  //     Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+  //     // console.log(remoteMessage)
+  //   });
+  //   return unsubscribe;
+  // }, []);
+  async function registerAppWithFCM() {
+    await messaging().registerDeviceForRemoteMessages();
+    const token = await messaging().getToken();
+    console.log('FCMTOKEN', token)
+    AsyncStorage.setItem('FCMTOKEN', token);
+     
+    this.notif = new NotifService(onRegister.bind(this), onNotif.bind(this))
+  }
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =
@@ -44,6 +55,7 @@ const splash = props => {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
+      registerAppWithFCM()
       console.log('Authorization status:', authStatus);
     }
   };
@@ -54,6 +66,16 @@ const splash = props => {
     const token = await messaging().getToken();
     console.log(token);
   }
+
+  async function onRegister(token) {
+    setRegisterToken(token);
+    setMessageRegister(true);
+    this.setState({registerToken: token.token, fcmRegistered: true});
+  }
+  async function onNotif(notif) {
+    Alert.alert(notif.title, notif.message);
+  }
+
   const checkUSer = async () => {
     // AsyncStorage.clear();
     const userDetail = await AsyncStorage.getItem('userdetail');

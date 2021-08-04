@@ -9,6 +9,8 @@ buildscript {
         ndkVersion = "20.1.5948944"
         playServicesVersion = "17.0.0"
     googlePlayServicesVersion = "11.8.0"
+    
+    firebaseMessagingVersion = "21.1.0"
         
     }
     repositories {
