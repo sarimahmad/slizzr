@@ -10,7 +10,7 @@ import {BLACK, WHITE} from '../../helper/Color';
 import {FONT} from '../../helper/Constant';
 import Validations from '../../helper/Validations';
 import {Alert} from 'react-native';
-
+import { PasswordChangeConfirmation } from '../../helper/Api';
 export default class resetPassword extends Component {
   constructor(props) {
     super(props);
@@ -50,6 +50,14 @@ export default class resetPassword extends Component {
       Alert.alert('Email Not valid', 'Please provide us valuid email ');
     }
   };
+  PasswordChangeConfirmation(){
+   let data={
+     email:this.state.email
+    }
+    PasswordChangeConfirmation(data).then(response=>{
+      console.log(data)
+    })
+  }
   render() {
     return (
       <View style={styles.wrapperView}>

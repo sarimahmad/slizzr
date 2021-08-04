@@ -33,7 +33,7 @@ import DateAndTimePicker from '../../component/DateAndTimePicker';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
 import {Alert} from 'react-native';
-import {getEventDetail, updateEvent, createHostStripe} from '../../helper/Api';
+import {getEventDetail, updateEvent, createHostStripe,EditEventNotify} from '../../helper/Api';
 
 class CreateEvent extends Component {
   constructor() {
@@ -491,6 +491,12 @@ class CreateEvent extends Component {
         DateTime: current_date,
       });
    
+  }
+  editEventNotify=async()=>{
+    let eventId= this.props.route.params.id
+  await EditEventNotify(eventId).then(response=>{
+    console.log(response)
+  })
   }
   render() {
     return (

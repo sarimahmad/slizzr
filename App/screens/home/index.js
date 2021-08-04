@@ -32,6 +32,7 @@ import ErrorPopup from '../../component/ErrorPopup';
 import {createCustomerStripe} from '../../helper/Api';
 import Server from '../../helper/Server';
 import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
 let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
@@ -72,6 +73,10 @@ class home extends Component {
     this.getEvents = this.getEvents.bind(this);
   }
   componentDidMount() {
+     messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
     this.getLocation();
     this.checkStripeClientId();
   }

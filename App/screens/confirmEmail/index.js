@@ -4,8 +4,10 @@ import {View, Text, StyleSheet, Image, SafeAreaView} from 'react-native';
 
 import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
+import { WelcomeEmail } from '../../helper/Api';
+import {connect} from 'react-redux';
 
-export default class ConfirmEmail extends Component {
+ class ConfirmEmail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -17,7 +19,18 @@ export default class ConfirmEmail extends Component {
     this.props.navigation.navigate('passConfirm');
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+
+  }
+  WelcomeEmail=async()=>{
+   let data={
+      name:this.props.userDetail.displayName,
+      email:this.props.userDetail.email
+    }
+    WelcomeEmail(data).then(response=>{
+     console.log(response)
+   })
+   }
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -48,6 +61,20 @@ export default class ConfirmEmail extends Component {
     );
   }
 }
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    callApi: (user, uid) => dispatch(userActions.setUser({user, uid})),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmEmail);
+
 const styles = StyleSheet.create({
   logo: {
     height: 70,
