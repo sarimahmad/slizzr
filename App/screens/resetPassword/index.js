@@ -40,7 +40,7 @@ export default class resetPassword extends Component {
           {
             text: 'Ok',
             onPress: () => {
-              this.props.navigation.navigate('Signin');
+              // this.PasswordChangeConfirmation()
             },
           },
         ],
@@ -51,12 +51,15 @@ export default class resetPassword extends Component {
     }
   };
   PasswordChangeConfirmation(){
+           
    let data={
      email:this.state.email
     }
     PasswordChangeConfirmation(data).then(response=>{
       console.log(data)
     })
+    this.props.navigation.navigate('Signin');
+   
   }
   render() {
     return (

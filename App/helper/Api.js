@@ -177,7 +177,15 @@ export async function getAllPayoutMethods(user_id) {
       console.error(error);
     });
 }
-
+export async function getAllNotifications(user_id) {
+  return fetch(`${Server}/notifications/` + user_id)
+    .then(async response => {
+      return await response.json();
+    })
+    .catch(error => {
+      console.error(error);
+    });
+}
 export async function getAllPaymentMethods(user_id) {
   return fetch(`${Server}/user/get-payment-cards/` + user_id)
     .then(async response => {

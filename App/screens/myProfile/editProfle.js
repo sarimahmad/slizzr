@@ -28,6 +28,7 @@ import DateAndTimePicker from '../../component/DateAndTimePicker';
 import Loader from '../../component/Loader';
 import {updateProfile, uploadImage} from '../../helper/Api';
 import ErrorPopup from '../../component/ErrorPopup';
+import moment from 'moment';
 
 class editProfle extends Component {
   constructor(props) {
@@ -119,12 +120,10 @@ class editProfle extends Component {
         day: day,
         month: month,
         year: year,
-        DateTime:  this.props.userDetail.BirthDate,
+        DateTime: new Date( moment(this.props.userDetail.BirthDate).format('DD MMM YYYY')),
         imageOfuser: this.props.route.params.imageOfuser,
       });
-    }
- 
-    
+    }  
     console.log(this.state.DateTime)
   
   }
@@ -440,9 +439,9 @@ class editProfle extends Component {
                     format="MMM DD, YYYY"
                     mode="date"
                     type="onlyDate"
-                    value={this.props.userDetail.BirthDate}
+                    value={this.state.DateTime}
                     setDateAndTime={value => this.onChange(value)}
-                    showPlaceholder={this.props.userDetail.BirthDate}
+                    // showPlaceholder={this.props.userDetail.BirthDate}
                     datebutton={styles.datebutton}
                   />
                 )}

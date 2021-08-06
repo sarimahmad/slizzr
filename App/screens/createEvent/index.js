@@ -594,6 +594,7 @@ class CreateEvent extends Component {
                   <DateAndTimePicker
                     format="MMM DD, YYYY - hh:mm "
                     mode="datetime"
+                    type="datetime"
                     editable={this.state.screenTypeEdit}
                     value={this.state.DateTime}
                     setDateAndTime={value => this.onChange(value)}

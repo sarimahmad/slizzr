@@ -38,12 +38,14 @@ let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
 let freeEvents = [];
-
+const KEYS_TO_FILTERS = ['Name'];
+ 
 class home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
+      searchTerm: '',
       listView: false,
       mapView: true,
       enableLocation: false,
@@ -78,9 +80,24 @@ class home extends Component {
     this.updateProfileApi()
     this.getLocation();
     this.checkStripeClientId();
+    if (this.props.route.params && this.props.route.params.from === 'signin') {
+     
+    this.WelcomeEmail()
+    }
   }
+  WelcomeEmail=async()=>{
+    let data={
+       name:this.props.userDetail.displayName,
+       email:this.props.userDetail.Email
+     }
+     WelcomeEmail(data).then(response=>{
+  alert(response.data.message)
+    })
+    }
   
-  
+  searchUpdated(term) {
+    this.setState({ searchTerm: term })
+  }
   updateProfileApi = async  ()=> {
    let token= await AsyncStorage.getItem('FCMTOKEN');
     let platform 
@@ -386,6 +403,8 @@ class home extends Component {
     }
   };
   listView = () => {
+    const currentData = this.state.currentData.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+    
     return (
       <View style={{flex: 1}}>
         <View
@@ -395,7 +414,7 @@ class home extends Component {
             alignItems: 'center',
             flex: 1,
           }}>
-          {this.state.currentData.length !== 0 && (
+          {currentData.length !== 0 && (
             <FlatList
               keyExtractor={(item, index) => index.toString()}
               onEndReached={() => console.log('Reach end')}

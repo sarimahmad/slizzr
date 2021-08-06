@@ -52,6 +52,7 @@ class BirthDate extends Component {
         month: this.state.month,
         year: this.state.year,
         age: this.state.age,
+        DateTime:this.state.DateTime
       };
       await updateProfile(this.props.userToken, dataToSend).then(_response => {
         this.props.callApi(_response.data.User, this.props.userToken);

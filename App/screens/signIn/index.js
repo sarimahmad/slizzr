@@ -192,7 +192,7 @@ class SignIn extends Component {
           ) {
             this.props.callApi(firestoreDocument.data(), data.id);
             this.setState({loading: false});
-            this.props.navigation.push('HomeStack');
+            this.props.navigation.push('HomeStack',{from:'signin'});
           } else {
             this.props.callApi(firestoreDocument.data(), data.id);
             this.setState({loading: false});
@@ -227,7 +227,7 @@ class SignIn extends Component {
           ) {
             this.props.callApi(firestoreDocument.data(), id);
             this.setState({loading: false});
-            this.props.navigation.push('HomeStack');
+            this.props.navigation.push('HomeStack',{from:'signin'});
           } else {
             this.props.callApi(firestoreDocument.data(), id);
             this.setState({loading: false});
@@ -249,7 +249,7 @@ class SignIn extends Component {
   checkTheUserCheck(userParsed, verifiedEmail) {
     if (userParsed.email_verified === true) {
       if (userParsed.age && parseInt(userParsed.age) > 16) {
-        this.props.navigation.navigate('HomeStack');
+        this.props.navigation.navigate('HomeStack',{from:'signin'});
       } else {
         this.props.navigation.navigate('BirthDate', {from: 'SignIn'});
       }
@@ -265,9 +265,7 @@ class SignIn extends Component {
             .then(firestoreDocument => {
               this.props.callApi(firestoreDocument.data(), userParsed.id);
               this.setState({loading: false});
-              this.props.navigation.navigate('BirthDate', {
-                from: 'signIn',
-              });
+              this.props.navigation.navigate('BirthDate', {from: 'signIn'});
             });
         })
         .catch(error => {
@@ -275,23 +273,25 @@ class SignIn extends Component {
           Alert.alert('User error', error);
         });
       if (userParsed.age && parseInt(userParsed.age) > 16) {
-        this.props.navigation.navigate('HomeStack');
+        this.props.navigation.navigate('HomeStack',{from:'signin'});
       } else {
         this.props.navigation.navigate('BirthDate', {from: 'SignIn'});
       }
     } else {
-      Alert.alert(
-        'Email not Verified',
-        'Please verify your email ' + userParsed.email + ' and sign in again',
-        [
-          {
-            text: 'Ok',
-            onPress: () => {
-              AsyncStorage.clear();
-            },
-          },
-        ],
-      );
+      this.props.navigation.navigate('ConfirmEmail',{from: 'birth',user:userParsed});
+
+      // Alert.alert(
+      //   'Email not Verified',
+      //   'Please verify your email ' + userParsed.email + ' and sign in again',
+      //   [
+      //     {
+      //       text: 'Ok',
+      //       onPress: () => {
+      //     this.props.navigation.navigate()
+      //       },
+      //     },
+      //   ],
+      // );
     }
   }
 

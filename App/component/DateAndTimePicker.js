@@ -51,13 +51,13 @@ export default class DateAndTimePicker extends React.Component {
     if(this.props.type!=="onlyDate"){
      if(this.state.dateSelect === true){
       console.log("time")
+     
       this.setState({timeSelect:true})
       this.setState({time: moment(event.nativeEvent.timestamp).format('hh:mm a'),})
      }else if(this.state.dateSelect === false){
        console.log("date")
       this.setState({date: moment(event.nativeEvent.timestamp).format('DD MMM YYYY')})
-      this.setState({dateSelect:true})
-      
+      this.setState({dateSelect:true}) 
       this.setState({show:false})
      
      }   
@@ -204,7 +204,7 @@ openModel=()=>{
           </TouchableOpacity>
         </View>
        
-        {( this.state.dateSelect === true && this.props.type!=="onlyDate") &&
+        {(this.state.timeSelect === false && this.state.dateSelect === true && this.props.type!=="onlyDate") &&
  
        this.timePicker()
        }

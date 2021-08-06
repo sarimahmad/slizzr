@@ -6,7 +6,9 @@ import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import { WelcomeEmail } from '../../helper/Api';
 import {connect} from 'react-redux';
-
+import { TouchableOpacity } from 'react-native';
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
  class ConfirmEmail extends Component {
   constructor(props) {
     super(props);
@@ -22,15 +24,18 @@ import {connect} from 'react-redux';
   componentDidMount() {
 
   }
-  WelcomeEmail=async()=>{
-   let data={
-      name:this.props.userDetail.displayName,
-      email:this.props.userDetail.email
-    }
-    WelcomeEmail(data).then(response=>{
-     console.log(response)
-   })
-   }
+  sendEmail(){
+            
+    // auth().createUserWithEmailAndPassword(this.props.route.params.user.email)
+    //     .then(response => {
+    //       response.user.sendEmailVerification();
+    //     })
+    //     .catch(error => {
+    //         alert("failed")
+    //       }) 
+       
+    
+  }
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -55,7 +60,9 @@ import {connect} from 'react-redux';
             style={[styles.textColor, {marginTop: 26, paddingHorizontal: 50}]}>
             Check your email and click on the confirmation link to continue,
           </Text>
+        <TouchableOpacity onPress={()=>this.sendEmail()}>
           <Text style={styles.textPurple}>Resend email</Text>
+          </TouchableOpacity>
         </SafeAreaView>
       </View>
     );

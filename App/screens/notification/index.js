@@ -17,13 +17,14 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
 import {connect} from 'react-redux';
-import {getAllRequests, acceptandRejectRequest} from '../../helper/Api';
+import {getAllRequests, acceptandRejectRequest,getAllNotifications} from '../../helper/Api';
 class notification extends Component {
   constructor(props) {
     super(props);
     this.state = {
       findpeople: [
       ],
+      notifications:[]
     };
   }
 
@@ -31,6 +32,12 @@ class notification extends Component {
     this.setState({loading: true});
     await getAllRequests(this.props.userToken).then(response => {
       this.setState({findpeople: response.Users, loading: false});
+    });
+  }
+  async getAllNotifications() {
+    this.setState({loading: true});
+    await getAllNotifications(this.props.userToken).then(response => {
+      this.setState({notifications: response.Notifications, loading: false});
     });
   }
   async acceptandRejectRequest(status, item) {
@@ -49,6 +56,7 @@ class notification extends Component {
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getAllRequests();
+      this.getAllNotifications()
     });
   }
 
