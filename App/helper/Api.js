@@ -17,16 +17,19 @@ export async function CheckEventStatus({user_id, event_id}) {
     .catch(err => err);
   return Response;
 }
-export async function ScanZicket(event_id,data) {
+export async function ScanZicket(event_id, data) {
   const reqOptions = {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ event_id}),
+    body: JSON.stringify({event_id}),
   };
-  const Response = await fetch(`${Server}/zicket/scan-zicket/`+data, reqOptions)
+  const Response = await fetch(
+    `${Server}/zicket/scan-zicket/` + data,
+    reqOptions,
+  )
     .then(async response => {
       return await response.json();
     })
@@ -304,8 +307,7 @@ export async function updateEvent(event_id, dataToUpdate) {
     .catch(error => console.log('error', error));
 }
 
-export async function getZicketDetails({user_id,event_id }) {
-
+export async function getZicketDetails({user_id, event_id}) {
   return fetch(`${Server}/zicket?user_id=${user_id}&event_id=${event_id}`)
     .then(async response => {
       return await response.json();
@@ -494,11 +496,11 @@ export async function acceptandRejectRequest(data) {
     });
   return GetResponse;
 }
-export async function findRelation(user_id,otheruser_id) {
-  data={
+export async function findRelation(user_id, otheruser_id) {
+  data = {
     current_user_id: user_id,
-    opposite_user_id: otheruser_id
-}
+    opposite_user_id: otheruser_id,
+  };
   var config = {
     method: 'post',
     url: `${Server}/user/find-relationship-between-users`,
@@ -748,7 +750,6 @@ export async function removeSharedHostRequest(sharedHostID) {
     headers: {
       'Content-Type': 'application/json',
     },
-  
   };
 
   const GetResponse = await axios(config)
@@ -758,9 +759,9 @@ export async function removeSharedHostRequest(sharedHostID) {
     .catch(function (error) {
       console.log(error);
     });
-    return GetResponse;
+  return GetResponse;
 }
-// 
+//
 export async function approveSharedHostRequest(sharedHostID) {
   var config = {
     method: 'POST',
@@ -768,7 +769,6 @@ export async function approveSharedHostRequest(sharedHostID) {
     headers: {
       'Content-Type': 'application/json',
     },
-   
   };
 
   const GetResponse = await axios(config)
@@ -778,17 +778,16 @@ export async function approveSharedHostRequest(sharedHostID) {
     .catch(function (error) {
       console.log(error);
     });
-    return GetResponse;
+  return GetResponse;
 }
-export async function inviteSharedHost(data,id) {
-  
+export async function inviteSharedHost(data, id) {
   var config = {
     method: 'POST',
     url: `${Server}/event/send-sharedhost-request/${id}`,
     headers: {
       'Content-Type': 'application/json',
     },
-   data:data
+    data: data,
   };
 
   const GetResponse = await axios(config)
@@ -798,7 +797,7 @@ export async function inviteSharedHost(data,id) {
     .catch(function (error) {
       console.log(error);
     });
-    return GetResponse;
+  return GetResponse;
 }
 
 export async function getDefaultCustomerCard(cust_stripe_id) {
@@ -904,7 +903,6 @@ export async function getAllSharedHostsforEvent(event_id) {
   return GetResponse;
 }
 
-
 // New API's
 
 // Notify Attendees After Edit event
@@ -926,7 +924,6 @@ export async function EditEventNotify({event_id}) {
     });
   return GetResponse;
 }
-
 
 // Notify User for new message's
 export async function UserNotifyForMessage({current_user_id, host_id}) {
@@ -1053,11 +1050,14 @@ export async function GetUserNotification({current_user_id}) {
   return GetResponse;
 }
 
-
 // Shared HOST STARTS HERE
 
 // Send Shared Host request
-export async function SendSharedHostRequest({current_user_id, host_id, event_id}) {
+export async function SendSharedHostRequest({
+  current_user_id,
+  host_id,
+  event_id,
+}) {
   var data = JSON.stringify({
     host_id: host_id,
     event_id: event_id,
@@ -1086,7 +1086,7 @@ export async function SendSharedHostRequest({current_user_id, host_id, event_id}
 // ACCEPTED can be either TRUE or FALSE
 export async function DecideSharedHostRequest({ACCEPTED, shared_host_id}) {
   var data = JSON.stringify({
-    ACCEPTED: ACCEPTED
+    ACCEPTED: ACCEPTED,
   });
 
   var config = {
@@ -1152,7 +1152,7 @@ export async function GetSharedEventsForUser({current_user_id}) {
 //self_removed can be TRUE or FALSE
 export async function RemoveSharedHost({self_removed, shared_host_id}) {
   var data = JSON.stringify({
-    self_removed: self_removed
+    self_removed: self_removed,
   });
 
   var config = {
@@ -1216,10 +1216,74 @@ export async function GetSharedHostForPendingEvents({event_id}) {
 
 //Delete Shared Host request
 export async function DeleteSharedHostRequest({shared_host_id}) {
-
   var config = {
     method: 'DELETE',
     url: `${Server}/event/remove-sharedhost-request/${shared_host_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+//Get All Payout for users
+export async function GetAllPayoutEventsForUser({user_id}) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-all-payout-events/${user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+//Get Payout status for event
+export async function GetAllPayoutEventsForUser({event_id}) {
+  var config = {
+    method: 'GET',
+    url: `${Server}/event/get-payout-status/${event_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
+//Delete Block user Or Unblock user
+export async function UnblockUser({user_id, mutual_connection_id}) {
+  var data = JSON.stringify({
+    user_id: user_id,
+    mutual_connection_id: mutual_connection_id,
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/user/unblock-user`,
     headers: {
       'Content-Type': 'application/json',
     },
@@ -1235,6 +1299,41 @@ export async function DeleteSharedHostRequest({shared_host_id}) {
     });
   return GetResponse;
 }
+
+//Setting -> Contact Us
+export async function ContactUs({
+  current_user_id,
+  name,
+  email,
+  number,
+  message,
+}) {
+  var data = JSON.stringify({
+    name: name,
+    email: email,
+    number: number,
+    message: message,
+  });
+
+  var config = {
+    method: 'POST',
+    url: `${Server}/contact-us/${current_user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
+
 /**
  * IMPORTANT -:
  * ALL PREPAID EVENTS ARE 2 STEPS -> GET THE PAYMENT AND IF SUCCESSFULL CALL ATTENEDEVENT API TO GET ZICKET.
