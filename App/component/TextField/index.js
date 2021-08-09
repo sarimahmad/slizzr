@@ -1,6 +1,12 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {TextInput, View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  TextInput,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {BLACK} from '../../helper/Color';
 
@@ -23,6 +29,7 @@ const TextField = props => {
             : {width: SCREEN.width - 40},
         ]}>
         {props.type === 'password' ? (
+          <View>
           <TextInput
             style={styles.input}
             placeholder={props.placeholder}
@@ -32,33 +39,53 @@ const TextField = props => {
             autoCapitalize="none"
             autoCorrect={false}
           />
-        ) : (
-          <TextInput
-            style={styles.input}
-            placeholder={props.placeholder}
-            placeholderTextColor={'#B2ABB1'}
-            onChangeText={handleText}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-        )}
-        {props.type === 'password' && (
           <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
-            style={{
-              position: 'absolute',
-              right: 10,
-              height: 40,
-              width: 40,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Entypo
-              name={showPassword ? 'eye' : 'eye-with-line'}
-              color={BLACK.dark}
-              size={30}
+          onPress={() => setShowPassword(!showPassword)}
+          style={{
+            position: 'absolute',
+            right: 10,
+            height: 40,
+            backgroundColor:'red',
+            width: 40,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          {props.type === 'password' && showPassword === true && (
+            <Image
+              style={{
+                height: 40,
+                backgroundColor:'red',
+                width: 40,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              source={require('../../assets/eyeImage.png')}
             />
-          </TouchableOpacity>
+          )}
+          {props.type === 'password' && showPassword === false && (
+            <Image
+              style={{
+                height: 40,
+                width: 40,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              source={require('../../assets/eyeclose.png')}
+            />
+          )}
+        </TouchableOpacity>
+</View>
+        ) : (
+          <View>
+            <TextInput
+              style={styles.input}
+              placeholder={props.placeholder}
+              placeholderTextColor={'#B2ABB1'}
+              onChangeText={handleText}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+          </View>
         )}
       </View>
     </View>

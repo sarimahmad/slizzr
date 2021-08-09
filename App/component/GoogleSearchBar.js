@@ -1,5 +1,4 @@
-/* eslint-disable eqeqeq */
-import React, {Fragment} from 'react';
+import React, { Fragment } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -8,21 +7,21 @@ import {
   Text,
   ActivityIndicator,
   TouchableOpacity,
-} from 'react-native';
-import {GoogleAutoComplete} from 'react-native-google-autocomplete';
-import {LocationItem} from '../component/LocationItem';
+} from "react-native";
+import { GoogleAutoComplete } from "react-native-google-autocomplete";
+import { LocationItem } from "../component/LocationItem";
 // import { colors, fonts } from "../Theme";
-import {API_KEY} from '../helper/Constant';
+import {API_KEY} from "../helper/Constant"
 
 export default class GoogleSearchBar extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {selectedFormattedAddress: ''};
+    this.state = { selectedFormattedAddress: "" };
   }
 
-  setSelectedFormattedAddress = formattedAddress => {
-    this.setState({selectedFormattedAddress: formattedAddress});
+  setSelectedFormattedAddress = (formattedAddress) => {
+    this.setState({ selectedFormattedAddress: formattedAddress });
   };
 
   render() {
@@ -54,14 +53,15 @@ export default class GoogleSearchBar extends React.Component {
                   />
                   <TouchableOpacity
                     style={styles.addButton}
-                    onPress={() => this.props.closeLocationModal()}>
+                    onPress={() => this.props.closeLocationModal()}
+                  >
                     <Text style={styles.addButtonText}>✕</Text>
                   </TouchableOpacity>
                 </View>
                 {isSearching && <ActivityIndicator />}
                 {this.state.selectedFormattedAddress != inputValue && (
                   <ScrollView>
-                    {locationResults.map(el => (
+                    {locationResults.map((el) => (
                       <LocationItem
                         {...el}
                         key={el.id}
@@ -87,26 +87,26 @@ export default class GoogleSearchBar extends React.Component {
 
 const styles = StyleSheet.create({
   textInput: {
-    height: 53,
+    // height: 53,
     margin: 10,
-    width: '90%',
+    width: "90%",
     borderWidth: 1,
     paddingHorizontal: 16,
     borderRadius: 10,
     // fontFamily: fonts.fbo,
-    justifyContent: 'center',
+    justifyContent: "center",
     fontSize: 14,
-    color: 'grey',
+    color: "grey",
     borderColor: 'grey', // "rgba(0, 0, 0, 0.247487)",
   },
   inputWrapper: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   addButtonText: {
     fontSize: 17,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
-  addButton: {justifyContent: 'center'},
+  addButton: { justifyContent: "center" },
   googleSearchBar: {
     //marginHorizontal: 10,
   },

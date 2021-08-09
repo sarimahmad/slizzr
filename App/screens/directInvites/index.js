@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-navigation';
 import { BLACK } from '../../helper/Color';
 import { TextInput } from 'react-native';
 var selectedUser = ['Dai J.'];
-
+import Share from 'react-native-share';
 export default class directInvites extends Component {
     constructor() {
         super();
@@ -24,12 +24,21 @@ export default class directInvites extends Component {
     footer = () => {
         return (
             <View>
-            <TouchableOpacity style={styles.btn}>
+            <TouchableOpacity onPress={()=>this.directInvites()} style={styles.btn}>
                 <Text style={styles.btntext}>DIRECT INVITES</Text>
             </TouchableOpacity>
             <Text style={styles.lastText}>More Invite Options</Text>
             </View>
         )
+    }
+    directInvites=()=>{
+        Share.open(options)
+  .then((res) => {
+    console.log(res);
+  })
+  .catch((err) => {
+    err && console.log(err);
+  });
     }
     render() {
         return (

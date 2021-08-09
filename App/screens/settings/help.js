@@ -22,7 +22,7 @@ export default class help extends Component {
           onPress={() => Linking.openURL('https://slizzrapp.com/#faq')}>
           OPEN https://slizzrapp.com/#faq on this page
         </Text>
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity onPress={()=>this.props.navigation.navigate("contactUs")} style={styles.btn}>
           <Text style={styles.btntext}> CONTACT US</Text>
         </TouchableOpacity>
       </View>
@@ -32,6 +32,8 @@ export default class help extends Component {
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,
+    backgroundColor: WHITE.dark,
+ 
     marginTop: 20,
   },
   text: {

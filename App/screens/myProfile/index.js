@@ -283,10 +283,11 @@ class Profile extends Component {
                   />
                 </View>
               </View>
-              {this.props.userDetail &&
-                this.state.userDetail &&
+              {
+              // this.props.userDetail &&
+              //   this.state.userDetail &&
                 this.state.relation == true &&
-                this.props.userDetail.id !== this.state.userDetail.id && (
+                this.props.userDetail.id !== this.props.route.params.id && (
                   <TouchableOpacity onPress={()=>this.props.navigation.navigate('chat', {
                     CurrentUserUID: this.props.userToken,
                     HostUID: this.state.hostId,

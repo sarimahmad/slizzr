@@ -13,7 +13,7 @@ export const SCREEN = {
   height: Dimensions.get('screen').height,
 };
 
-export const API_KEY = 'AIzaSyDHA4wRBlI6-FWpK2C3sTd6kBBxLzMG_f8';
+export const API_KEY = 'AIzaSyCoM2N8BXBveNHlX96-EjCkpaQDd7mVrLI';
 export const ASPECTRATIO = SCREEN.height / SCREEN.width;
 
 export const DOB = {

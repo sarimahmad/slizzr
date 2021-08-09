@@ -5,6 +5,7 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
+  Alert,
   FlatList,
   Modal,
   TouchableOpacity,
@@ -49,7 +50,13 @@ class notification extends Component {
     this.setState({loading: true});
     await acceptandRejectRequest(data).then(response => {
       this.setState({loading: false});
-      this.getAllRequests();
+      Alert.alert(
+        "Successfull",
+        response.message,
+        [
+          { text: "OK", onPress: () => this.getAllRequests() }
+        ]
+      );
     });
   }
 
@@ -89,8 +96,38 @@ class notification extends Component {
             leftPress={() => this.props.navigation.openDrawer()}
             leftIcon={require('../../assets/drawer.png')}
           />
+  {/* <FlatList
+            data={this.state.notifications}
+            ListEmptyComponent={this.emptyListComponent}
+            renderItem={({item}) => (
+              <View>
+                <View style={styles.flexRow}>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={styles.imgView}>
+                      <Image
+                        source={require('../../assets/notification2.png')}
+                      />
+                    </View>
+                    <View style={styles.detail}>
+                      <Text style={[styles.subtitleText]}>
+                        {item.Message}
+                      </Text>
+                    </View>
+                  </View>
 
-          <FlatList
+                </View>
+                <View
+                  style={{
+                    hiehgt: 1,
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'lightgrey',
+                    width: SCREEN.width,
+                  }}
+                />
+              </View>
+            )}
+          />  */}
+           <FlatList
             data={this.state.findpeople}
             keyExtractor={item => item.id}
             ListEmptyComponent={this.emptyListComponent}
@@ -155,7 +192,7 @@ class notification extends Component {
                 />
               </View>
             )}
-          />
+          /> 
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
         {this.state.popUpError === true && (
@@ -207,7 +244,10 @@ const styles = StyleSheet.create({
   imgView: {
     width: SCREEN.width * 0.16,
   },
-  detail: {},
+  detail: {
+    width: SCREEN.width * 0.6,
+    
+  },
   contentView: {
     flex: 1,
     backgroundColor: WHITE.dark,

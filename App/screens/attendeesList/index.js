@@ -58,6 +58,28 @@ class attendeesList extends Component {
       this.setState({hostEvent: false});
     }
   }
+  emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+          <View>
+            <Text style={styles.emptyFont}>
+              You are not attendee at the moment.
+            </Text>
+          </View>
+        
+      </View>
+    );
+  };
+ 
   async getAttendeesList(eventId) {
     let attendeesIdList = [];
     this.setState({loading: true});
@@ -137,6 +159,8 @@ class attendeesList extends Component {
           <FlatList
             data={this.state.attendeesLIst}
             keyExtractor={item => item.id}
+            ListEmptyComponent={this.emptyListComponent}
+          
             renderItem={({item, index}) => (
               <TouchableOpacity
                 onPress={() =>
@@ -293,7 +317,13 @@ const styles = StyleSheet.create({
     color: WHITE.dark,
     fontFamily: FONT.Nunito.regular,
   },
-
+  emptyFont: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    marginBottom: 20,
+  },
   btnMap: {
     width: wp('90%'),
     marginHorizontal: '5%',

@@ -25,7 +25,7 @@ import firestore from '@react-native-firebase/firestore';
 
   }
   sendEmail(){
-            
+   
     // auth().createUserWithEmailAndPassword(this.props.route.params.user.email)
     //     .then(response => {
     //       response.user.sendEmailVerification();

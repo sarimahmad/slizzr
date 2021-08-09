@@ -145,15 +145,15 @@ class CreateEvent extends Component {
     }
   }
   isFormFilled() {
+    let checkTitle = Validations.checkUsername(this.state.Name);
+    
     let checkAddress = Validations.checkUsername(this.state.Address);
-    let checkAttendeeLimit = Validations.checkUsername(
-      this.state.AttendeeLimit,
-    );
+    
+    let checkAttendeeLimit = Validations.checkUsername(this.state.AttendeeLimit);
     let checkDateTime = Validations.checkUsername(this.state.DateTime);
     let checkDescription = Validations.checkUsername(this.state.Description);
     let checkEventType = Validations.checkUsername(this.state.EventType);
-    let checkFee =
-      this.state.EventType === 'FREE'
+    let checkFee = this.state.EventType === 'FREE'
         ? true
         : Validations.checkUsername(this.state.Fee);
     let checkPublicPrivate = Validations.checkUsername(
@@ -162,6 +162,7 @@ class CreateEvent extends Component {
     let checkduration = Validations.checkUsername(this.state.duration);
 
     if (
+      checkTitle && 
       checkAddress &&
       checkAttendeeLimit &&
       checkDateTime &&
@@ -173,12 +174,20 @@ class CreateEvent extends Component {
     ) {
       return true;
     }
-    if (!checkAddress) {
+     if (!checkTitle) {
       this.setState({
         errorTitle: 'Invalid Form',
         btnOneText: 'Ok',
         popUpError: true,
         errorText: 'Add Title in form',
+      });
+    } 
+    else if (!checkAddress) {
+      this.setState({
+        errorTitle: 'Invalid Form',
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add Adress in form',
       });
     } else if (!checkAttendeeLimit) {
       this.setState({
@@ -193,13 +202,6 @@ class CreateEvent extends Component {
         btnOneText: 'Ok',
         popUpError: true,
         errorText: 'Add Date Time in form',
-      });
-    } else if (!checkDescription) {
-      this.setState({
-        errorTitle: 'Invalid Form',
-        btnOneText: 'Ok',
-        popUpError: true,
-        errorText: 'Add Description in form',
       });
     } else if (!checkEventType) {
       this.setState({
@@ -482,12 +484,15 @@ class CreateEvent extends Component {
   };
   done = () => {
     this.setState({popUpError: false});
+    if(this.isAllDataFilled()){
     this.props.navigation.goBack();
+    }
   };
   onChange = selectedDate => {
     const currentDate = selectedDate || this.state.DateTime;
     const current_date = new Date(currentDate);
       this.setState({
+        datetimeSelected:currentDate,
         DateTime: current_date,
       });
    
@@ -748,7 +753,7 @@ class CreateEvent extends Component {
                     </View>
                   </View>
                   <View style={{flex: 1, alignItems: 'flex-end'}}>
-                    <Text style={[styles.TextInputTitle, {marginRight: 11}]}>
+                    <Text style={[styles.TextInputTitle,]}>
                       Duration (HRS)
                     </Text>
                     <View
@@ -917,7 +922,17 @@ class CreateEvent extends Component {
                       justifyContent: 'flex-start',
                       alignItems: 'center',
                     }}>
-                    <GoogleSearchBar
+                       <GoogleSearchBar
+                      closeLocationModal={() => {
+                        this.setState({selectLocationFlag: false});
+                      }}
+                      getAddress={this.getAdress}
+                      setLocation={this.setLocation}
+                      clearGoogleSearch={""}
+                      inputValue={'Address'}
+                    />
+
+                    {/* <GoogleSearchBar
                       closeLocationModal={() => {
                         this.setState({selectLocationFlag: false});
                       }}
@@ -925,7 +940,7 @@ class CreateEvent extends Component {
                       setLocation={this.setLocation}
                       clearGoogleSearch={this.state.clearGoogleSearch}
                       inputValue={'Address'}
-                    />
+                    /> */}
                   </View>
                 </Modal>
               </View>

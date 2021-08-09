@@ -29,6 +29,7 @@ import {
   CheckEventStatus,
   AtendPublicEvent,
   getEventDetail,
+  getMutualConnections,
   getDefaultCustomerCard,
 } from '../../helper/Api';
 import Loader from '../../component/Loader';
@@ -48,6 +49,7 @@ class eventDetail extends Component {
       date: '',
       imageUri: '',
       Check_Status: '',
+      users:[],
       Ticket_Left: '',
       User_Attending_Event: '',
       loading: false,
@@ -126,7 +128,14 @@ class eventDetail extends Component {
     });
     this.setState({loading: false});
   }
+ async getMutualConnections(){
+   
+  getMutualConnections(this.props.userToken).then(response => {
+      
+    this.setState({users:response.Users})
+  });
 
+ }
   async attendEvent({user_id, event_id}) {
     this.setState({loading: true});
     // this.props.navigation.navigate('prepay', {
@@ -254,16 +263,34 @@ class eventDetail extends Component {
                 Mutual Attendees
               </Text>
               <View style={{height: 50, width: SCREEN.width, marginTop: 11}}>
-                <FlatList
-                  data={this.state.image}
-                  horizontal
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => (
-                    <View style={styles.listView}>
-                      <Image style={styles.ImageView} source={item.image} />
-                    </View>
-                  )}
+              <FlatList
+          data={this.state.users}
+          horizontal
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate('mutualConnections')
+              }
+              style={styles.listView}>
+              {item.Pictures.length !== 0 && (
+                <Image
+                  style={styles.ImageView}
+                  source={{uri: item.Pictures[0].Profile_Url}}
                 />
+              )}
+              {item.Pictures.length === 0 && item.Profile && (
+                <Image
+                  style={styles.ImageView}
+                  source={{uri: item.Profile}}
+                />
+              )}
+              {item.Pictures.length === 0 &&
+                !item.Profile &&
+                this.IconImage(item)}
+            </TouchableOpacity>
+          )}
+        />
               </View>
               <Text
                 style={[

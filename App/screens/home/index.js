@@ -33,12 +33,12 @@ import {createCustomerStripe,updateProfile} from '../../helper/Api';
 import Server from '../../helper/Server';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import SearchInput, { createFilter } from 'react-native-search-filter';
 let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
 let freeEvents = [];
-const KEYS_TO_FILTERS = ['Name'];
+const KEYS_TO_FILTERS = ['Name','EventType'];
  
 class home extends Component {
   constructor(props) {
@@ -284,6 +284,7 @@ class home extends Component {
   };
 
   async getEvents(type) {
+    this.setState({loading:true})
     allEvents = [];
     prepaidEvents = [];
     scanEvents = [];
@@ -418,7 +419,7 @@ class home extends Component {
             <FlatList
               keyExtractor={(item, index) => index.toString()}
               onEndReached={() => console.log('Reach end')}
-              data={this.state.currentData}
+              data={currentData}
               refreshing={true}
               renderItem={({item}) => (
                 <View
@@ -535,6 +536,7 @@ class home extends Component {
             style={{marginTop: 10, marginRight: 10}}
           />
           <TextInput
+            onChangeText={(term) => { this.searchUpdated(term) }} 
             placeholder={'Try “western homecoming party”'}
             placeholderTextColor={'#8e8e93'}
             // onChangeText={handleText}

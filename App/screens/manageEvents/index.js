@@ -19,6 +19,8 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {getUserAttendedEvents, getUserEvents,getAllSharedRequests} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
+import Share from 'react-native-share';
+
 class manageEvents extends Component {
   constructor(props) {
     super(props);
@@ -46,12 +48,14 @@ class manageEvents extends Component {
 
   async getUserEvents() {
     await getUserEvents(this.props.userToken).then(response => {
+      this.setState({loading:false})
       this.setState({userEvents: response.UserHostedEvent, loading: false});
     });
   }
 
   async getUserAttendedEvents() {
     await getUserAttendedEvents(this.props.userToken).then(response => {
+      this.setState({loading:false})
       this.setState({userAttendedEvents: response.UserAttendedEvents});
     });
   }
@@ -230,6 +234,18 @@ class manageEvents extends Component {
       </View>
     );
   };
+  shareEvent=()=>{
+    let options={
+      message:'testing'
+    }
+    Share.open(options)
+.then((res) => {
+console.log(res);
+})
+.catch((err) => {
+err && console.log(err);
+});
+}
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -267,12 +283,12 @@ class manageEvents extends Component {
                     borderBottomColor: 'lightgrey',
                   }}>
                   <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
+                    <View  style={styles.imgView}>
                       <Image
                         source={{uri: item.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-   {item.PublicPrivate==="Private" &&
+                     {item.PublicPrivate==="Private" &&
                     
                       <Image
                         style={{position: 'absolute', right: -10}}
@@ -292,9 +308,8 @@ class manageEvents extends Component {
                         {item.DateTime}
                       </Text>
                     </View>
-                    <TouchableOpacity
-                      //  onPress={()=>this.props.navigation.navigate("directInvites")}
-                      style={styles.shareView}>
+                    <TouchableOpacity onPress={()=>this.shareEvent()}
+                        style={styles.shareView}>
                       <Image source={require('../../assets/share.png')} />
                     </TouchableOpacity>
                   </View>
@@ -324,7 +339,7 @@ class manageEvents extends Component {
                         source={{uri: item.Event.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-   {item.PublicPrivate==="Private" &&
+                {item.PublicPrivate==="Private" &&
                     
                       <Image
                         style={{position: 'absolute', right: -10}}
@@ -343,7 +358,7 @@ class manageEvents extends Component {
                       </Text>
                     </View>
                     <TouchableOpacity
-                      // onPress={()=>this.props.navigation.navigate("directInvites")}
+                      onPress={()=>this.props.navigation.navigate("directInvites")}
                       style={styles.shareView}>
                       <Image source={require('../../assets/messageIcon.png')} />
                     </TouchableOpacity>

@@ -224,7 +224,25 @@ export async function newPaymentMethod(formdata) {
     });
   return GetResponse;
 }
-
+export async function contactUs(formdata,user_id) {
+  var config = {
+    method: 'post',
+    url: `${Server}/contact-us/${user_id}`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: formdata,
+  };
+  
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
 export async function newPayoutMethod(formdata) {
   var config = {
     method: 'post',
