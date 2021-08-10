@@ -21,35 +21,15 @@ import {
   import { getAllFriends } from '../../helper/Api';
   import {connect} from 'react-redux';
   import Loader from '../../component/Loader';
+  const KEYS_TO_FILTERS = ['Name','EventType'];
+  import SearchInput, { createFilter } from 'react-native-search-filter';
+
  class lookFriends extends Component {
   constructor(props) {
     super(props);
     this.state = {
         findpeople: [
-            {
-              imgProfile:'',  
-              profileName: 'Marriage Anniversary',
-              adress: '3 Mutal Connections',
             
-            },
-            {
-                imgProfile:'',
-              profileName: 'Celebration Time',
-              adress: '3 Mutal Connections',
-          
-            },
-            {
-                imgProfile:'',
-              profileName: 'Sagar’s Birthday',
-              adress: '3 Mutal Connections',
-        
-            },
-            {
-                imgProfile:'',
-              profileName: 'GMU Party',
-              adress: 'Host: Jaclynn Bradley',
-         
-            },
         ]
     };
   }
@@ -88,6 +68,8 @@ import {
     this.getAllFriends()
   }
   render() {
+    const findpeople = this.state.findpeople.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+  
     return (
         <View style={styles.wrapperView}>
    <SafeAreaView style={styles.contentView}>
@@ -121,7 +103,7 @@ import {
       </View>
       <FlatList
           
-          data={this.state.findpeople}
+          data={findpeople}
           ListEmptyComponent={this.emptyListComponent}
             
           keyExtractor={item => item.id}

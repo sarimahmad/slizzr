@@ -21,6 +21,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { getUserImages, getUserProfile } from '../../helper/Api';
 import { GiftedChat,Bubble,InputToolbar} from 'react-native-gifted-chat'
 import firestore from '@react-native-firebase/firestore'
+import Loader from '../../component/Loader';
 
 const chat = () => {
   const navigation = useNavigation();
@@ -146,11 +147,7 @@ const chat = () => {
   if (isLoading) {
     return (
       <View style={styles.wrapperView}>
-        <SafeAreaView style={styles.contentView}>
-          <Text>
-            Loading...
-          </Text>
-        </SafeAreaView>
+        {isLoading && <Loader loading={isLoading} />}
       </View>
     )
   }

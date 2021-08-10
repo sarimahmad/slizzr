@@ -17,7 +17,8 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import { HeaderBackButton } from 'react-navigation-stack';
+const KEYS_TO_FILTERS = ['Name'];
+  import SearchInput, { createFilter } from 'react-native-search-filter';
 export default class newMessage extends Component {
   constructor(props) {
     super(props);
@@ -57,6 +58,8 @@ export default class newMessage extends Component {
     };
   }
   render() {
+    const messages = this.state.messages.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+  
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
@@ -74,13 +77,13 @@ export default class newMessage extends Component {
               style={{
                 backgroundColor:BLACK.textInput,
                 flexDirection: 'row',
-                 marginBottom:5,
+                 marginVertical:5,
                 alignItems: 'center',  
                 borderRadius:12,
                 marginHorizontal:20,
-                height: 36
+                // height: 36
               }}>
-              <Image style={{marginHorizontal:10}}
+              <Image style={{marginHorizontal:10,height:20,width:20}}
                 source={require('../../assets/searchWhite.png')}
                
               />
@@ -88,13 +91,13 @@ export default class newMessage extends Component {
                 style={styles.inputSearch}
                 placeholder={'Search'}
                 placeholderTextColor={'#B2ABB1'}
-                style={{fontFamily:FONT.Nunito.regular,fontSize:17,color:'#B2ABB1'}}
+                style={{fontFamily:FONT.Nunito.regular,fontSize:17,color:'#B2ABB1',paddingTop:5}}
                 // onChangeText={handleText}
               ></TextInput>
               
             </View>
           <FlatList
-            data={this.state.messages}
+            data={messages}
             keyExtractor={item => item.id}
             renderItem={({item}) => (
               <TouchableOpacity

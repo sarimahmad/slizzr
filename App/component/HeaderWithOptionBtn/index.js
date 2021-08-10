@@ -55,7 +55,7 @@ function HeaderWithOptionBtn({ leftPress, headerTitle,rightIconText, leftIcon,pr
          {profileIcon &&
 
 <Image
-style={{ justifyContent: 'center', alignItems: 'center', height: 60, width: 40}}
+style={{ justifyContent: 'center', alignItems: 'center', height: 40,marginRight:5, width: 40,borderRadius:22}}
 source={{uri: profileIcon}}
 />}
           <Text style={{ fontSize: 17, fontFamily: FONT.Nunito.bold, color: BLACK.app }}>{headerTitle}</Text>

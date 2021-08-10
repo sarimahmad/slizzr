@@ -298,7 +298,7 @@ class messages extends Component {
             <FlatList
               data={this.state.userAttendedEvents}
               keyExtractor={item => item.id}
-              // ListEmptyComponent={this.emptyListComponent}
+              ListEmptyComponent={this.emptyListComponent}
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>

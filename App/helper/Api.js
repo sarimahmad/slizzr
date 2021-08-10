@@ -1253,7 +1253,7 @@ export async function DeleteSharedHostRequest({shared_host_id}) {
 }
 
 //Get All Payout for users
-export async function GetAllPayoutEventsForUser({user_id}) {
+export async function GetAllPayoutStatusForEvents({user_id}) {
   var config = {
     method: 'GET',
     url: `${Server}/event/get-all-payout-events/${user_id}`,
@@ -1273,7 +1273,7 @@ export async function GetAllPayoutEventsForUser({user_id}) {
 }
 
 //Get Payout status for event
-export async function GetAllPayoutEventsForUser({event_id}) {
+export async function GetAllPayoutStatusEvents({event_id}) {
   var config = {
     method: 'GET',
     url: `${Server}/event/get-payout-status/${event_id}`,

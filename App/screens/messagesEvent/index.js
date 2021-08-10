@@ -19,11 +19,14 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {getAllMessages, getEventDetail} from '../../helper/Api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Loader from '../../component/Loader';
 
 const messagesEvent = props => {
   const [messages, SetMessages] = useState([]);
   const [currentUID, SetCurrentUID] = useState('');
   const [event, SetEvent] = useState({});
+  const [loading, SetLoading] = useState(false);
+  
   const navigation = useNavigation();
   const route = useRoute();
 
@@ -34,6 +37,7 @@ const messagesEvent = props => {
   }, []);
 
   async function getMessage() {
+    SetLoading(true)
     const TOKEN = await AsyncStorage.getItem('token');
     if (TOKEN) {
       SetCurrentUID(TOKEN);
@@ -43,6 +47,7 @@ const messagesEvent = props => {
       })
         .then(response => {
           SetMessages(response.Messages);
+          SetLoading(false)
         })
         .catch(error => {
           console.log(error);
@@ -163,6 +168,8 @@ const messagesEvent = props => {
           )}
         />
       </SafeAreaView>
+      {loading && <Loader loading={loading} />}
+  
     </View>
   );
 };

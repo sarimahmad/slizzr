@@ -371,6 +371,7 @@ err && console.log(err);
        <FlatList
        data={this.state.userSharedRequests}
        keyExtractor={item => item.id}
+       ListEmptyComponent={this.emptyListComponent}
        renderItem={({item}) => (
          <TouchableOpacity
            onPress={() =>

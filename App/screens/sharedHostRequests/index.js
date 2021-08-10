@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
   emptyFont: {
     fontSize: 20,
     textAlign: 'center',
+    marginHorizontal:20,
     color: '#494949',
     fontFamily: FONT.Nunito.regular,
     marginBottom: 20,

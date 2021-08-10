@@ -404,7 +404,7 @@ class home extends Component {
     }
   };
   listView = () => {
-    const currentData = this.state.currentData.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+   const currentData = this.state.currentData.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
     
     return (
       <View style={{flex: 1}}>

@@ -60,9 +60,9 @@ import firestore from '@react-native-firebase/firestore';
             style={[styles.textColor, {marginTop: 26, paddingHorizontal: 50}]}>
             Check your email and click on the confirmation link to continue,
           </Text>
-        <TouchableOpacity onPress={()=>this.sendEmail()}>
+        {/* <TouchableOpacity onPress={()=>this.sendEmail()}>
           <Text style={styles.textPurple}>Resend email</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </SafeAreaView>
       </View>
     );

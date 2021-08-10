@@ -120,11 +120,12 @@ class editProfle extends Component {
         day: day,
         month: month,
         year: year,
-        DateTime: new Date( moment(this.props.userDetail.BirthDate).format('DD MMM YYYY')),
+        DateTime: moment(this.props.userDetail.BirthDate)._d,
         imageOfuser: this.props.route.params.imageOfuser,
       });
     }  
-    console.log(this.state.DateTime)
+    let date =  moment(this.props.userDetail.BirthDate)
+    console.log(date)
   
   }
 
