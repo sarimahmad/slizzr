@@ -1,8 +1,9 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {StyleSheet, View, Modal, ActivityIndicator} from 'react-native';
+import {StyleSheet, View, Modal, ActivityIndicator, Text} from 'react-native';
 
 const Loader = props => {
-  const {loading} = props;
+  const {loading, loadingText} = props;
 
   return (
     <Modal
@@ -19,7 +20,9 @@ const Loader = props => {
             size={'large'}
             color={'black'}
           />
-          {/* <Text style={{alignSelf : 'center'}}>Loading...</Text> */}
+          {loadingText && loadingText !== '' && (
+            <Text style={{alignSelf: 'center'}}>{loadingText}</Text>
+          )}
         </View>
       </View>
     </Modal>

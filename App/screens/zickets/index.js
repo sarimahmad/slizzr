@@ -30,67 +30,23 @@ class Zickets extends Component {
       index: 1,
       userEvents: [],
       userAttendedEvents: [],
-      userID:0,
-      messages: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
-      findpeople: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
     };
   }
 
   componentDidMount() {
     this.getUserEvents();
     this.getUserAttendedEvents();
-    this.setState({userID: this.props.userDetail.Id})
   }
 
   async getUserEvents() {
-    this.setState({loading:true})
+    this.setState({loading: true});
     await getUserEvents(this.props.userToken).then(response => {
       this.setState({userEvents: response.UserHostedEvent, loading: false});
     });
   }
 
   async getUserAttendedEvents() {
-    this.setState({loading:true})
+    this.setState({loading: true});
     await getUserAttendedEvents(this.props.userToken).then(response => {
       this.setState({userAttendedEvents: response.UserAttendedEvents});
     });
@@ -248,7 +204,9 @@ class Zickets extends Component {
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>
-                    this.props.navigation.navigate('Scan',{item:item.EventType})
+                    this.props.navigation.navigate('Scan', {
+                      item: item.EventType,
+                    })
                   }
                   style={{
                     borderBottomWidth: 1,
@@ -257,7 +215,7 @@ class Zickets extends Component {
                   <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image
-                        source={{uri:item.image}}
+                        source={{uri: item.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
 
@@ -279,10 +237,12 @@ class Zickets extends Component {
                           'hh:mm A | MMM DD, YYYY - ddd',
                         )}
                       </Text>
-                    </View>   
+                    </View>
                     <TouchableOpacity
                       onPress={() =>
-                        this.props.navigation.navigate('Scan',{item:item.EventType})
+                        this.props.navigation.navigate('Scan', {
+                          item: item.EventType,
+                        })
                       }
                       style={styles.shareView}>
                       <Image source={require('../../assets/Right.png')} />
@@ -299,12 +259,12 @@ class Zickets extends Component {
               // ListEmptyComponent={this.emptyListComponent}
               renderItem={({item}) => (
                 <TouchableOpacity
-                onPress={() =>
-                  this.props.navigation.navigate('zicketDetail',{
-                    EventID: item.Event.id,
-                    UserID: this.state.userID
-                  })
-                }
+                  onPress={() =>
+                    this.props.navigation.navigate('zicketDetail', {
+                      EventID: item.Event.id,
+                      UserID: this.props.userDetail.id,
+                    })
+                  }
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
@@ -335,9 +295,9 @@ class Zickets extends Component {
                     </View>
                     <TouchableOpacity
                       onPress={() =>
-                        this.props.navigation.navigate('zicketDetail',{
+                        this.props.navigation.navigate('zicketDetail', {
                           EventID: item.Event.id,
-                          UserID: this.state.userID
+                          UserID: this.props.userDetail.id,
                         })
                       }
                       style={styles.shareView}>

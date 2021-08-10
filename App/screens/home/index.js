@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 
@@ -29,17 +30,21 @@ import DateAndTimePicker from '../../component/DateAndTimePicker';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import WaitingFor from '../../component/WaitingFor';
 import ErrorPopup from '../../component/ErrorPopup';
-import {createCustomerStripe,updateProfile} from '../../helper/Api';
+import {
+  createCustomerStripe,
+  updateProfile,
+  WelcomeEmail,
+} from '../../helper/Api';
 import Server from '../../helper/Server';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import SearchInput, { createFilter } from 'react-native-search-filter';
+import {createFilter} from 'react-native-search-filter';
 let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
 let freeEvents = [];
-const KEYS_TO_FILTERS = ['Name','EventType'];
- 
+const KEYS_TO_FILTERS = ['Name', 'EventType'];
+
 class home extends Component {
   constructor(props) {
     super(props);
@@ -76,41 +81,39 @@ class home extends Component {
     this.getEvents = this.getEvents.bind(this);
   }
   componentDidMount() {
-   
-    this.updateProfileApi()
+    this.updateProfileApi();
     this.getLocation();
     this.checkStripeClientId();
     if (this.props.route.params && this.props.route.params.from === 'signin') {
-     
-    this.WelcomeEmail()
+      this.WelcomeEmail();
     }
   }
-  WelcomeEmail=async()=>{
-    let data={
-       name:this.props.userDetail.displayName,
-       email:this.props.userDetail.Email
-     }
-     WelcomeEmail(data).then(response=>{
-  alert(response.data.message)
-    })
-    }
-  
+  WelcomeEmail = async () => {
+    let data = {
+      name: this.props.userDetail.displayName,
+      email: this.props.userDetail.Email,
+    };
+    WelcomeEmail(data).then(response => {
+      alert(response.data.message);
+    });
+  };
+
   searchUpdated(term) {
-    this.setState({ searchTerm: term })
+    this.setState({searchTerm: term});
   }
-  updateProfileApi = async  ()=> {
-   let token= await AsyncStorage.getItem('FCMTOKEN');
-    let platform 
-    if(Platform.OS === 'android'){ 
-     platform="ANDROID"
-    }else{
-      platform="ios"
+  updateProfileApi = async () => {
+    let token = await AsyncStorage.getItem('FCMTOKEN');
+    let platform;
+    if (Platform.OS === 'android') {
+      platform = 'ANDROID';
+    } else {
+      platform = 'ios';
     }
     let dataToSend = {
-      platform : platform,
-      token : token 
+      platform: platform,
+      token: token,
     };
-    
+
     await updateProfile(this.props.userToken, dataToSend).then(response => {
       this.getUserFromFirestore(this.props.userToken);
       this.setState({loading: false});
@@ -284,7 +287,7 @@ class home extends Component {
   };
 
   async getEvents(type) {
-    this.setState({loading:true})
+    this.setState({loading: true});
     allEvents = [];
     prepaidEvents = [];
     scanEvents = [];
@@ -368,7 +371,7 @@ class home extends Component {
         });
       });
   }
-  onChange = (selectedDate) => {
+  onChange = selectedDate => {
     const currentDate = selectedDate || this.state.date;
 
     this.setState({date: currentDate});
@@ -404,8 +407,10 @@ class home extends Component {
     }
   };
   listView = () => {
-   const currentData = this.state.currentData.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
-    
+    const currentData = this.state.currentData.filter(
+      createFilter(this.state.searchTerm, KEYS_TO_FILTERS),
+    );
+
     return (
       <View style={{flex: 1}}>
         <View
@@ -439,12 +444,12 @@ class home extends Component {
                         source={{uri: item.imageUrl}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-                       {item.PublicPrivate==="Private" &&
-                      <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
-                      />
-                     }
+                      {item.PublicPrivate === 'Private' && (
+                        <Image
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
+                        />
+                      )}
                     </View>
 
                     <View style={styles.detail}>
@@ -536,7 +541,9 @@ class home extends Component {
             style={{marginTop: 10, marginRight: 10}}
           />
           <TextInput
-            onChangeText={(term) => { this.searchUpdated(term) }} 
+            onChangeText={term => {
+              this.searchUpdated(term);
+            }}
             placeholder={'Try “western homecoming party”'}
             placeholderTextColor={'#8e8e93'}
             // onChangeText={handleText}
@@ -797,7 +804,6 @@ class home extends Component {
               is24Hour={true}
               display="default"
               setDateAndTime={value => this.onChange(value)}
-            
             />
           </TouchableOpacity>
           {this.state.mapView === true && (

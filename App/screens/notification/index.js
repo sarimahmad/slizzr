@@ -18,14 +18,17 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
 import {connect} from 'react-redux';
-import {getAllRequests, acceptandRejectRequest,getAllNotifications} from '../../helper/Api';
+import {
+  getAllRequests,
+  acceptandRejectRequest,
+  getAllNotifications,
+} from '../../helper/Api';
 class notification extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      findpeople: [
-      ],
-      notifications:[]
+      findpeople: [],
+      notifications: [],
     };
   }
 
@@ -50,20 +53,16 @@ class notification extends Component {
     this.setState({loading: true});
     await acceptandRejectRequest(data).then(response => {
       this.setState({loading: false});
-      Alert.alert(
-        "Successfull",
-        response.message,
-        [
-          { text: "OK", onPress: () => this.getAllRequests() }
-        ]
-      );
+      Alert.alert('Successfull', response.message, [
+        {text: 'OK', onPress: () => this.getAllRequests()},
+      ]);
     });
   }
 
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getAllRequests();
-      this.getAllNotifications()
+      this.getAllNotifications();
     });
   }
 
@@ -96,38 +95,7 @@ class notification extends Component {
             leftPress={() => this.props.navigation.openDrawer()}
             leftIcon={require('../../assets/drawer.png')}
           />
-  {/* <FlatList
-            data={this.state.notifications}
-            ListEmptyComponent={this.emptyListComponent}
-            renderItem={({item}) => (
-              <View>
-                <View style={styles.flexRow}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <View style={styles.imgView}>
-                      <Image
-                        source={require('../../assets/notification2.png')}
-                      />
-                    </View>
-                    <View style={styles.detail}>
-                      <Text style={[styles.subtitleText]}>
-                        {item.Message}
-                      </Text>
-                    </View>
-                  </View>
-
-                </View>
-                <View
-                  style={{
-                    hiehgt: 1,
-                    borderBottomWidth: 1,
-                    borderBottomColor: 'lightgrey',
-                    width: SCREEN.width,
-                  }}
-                />
-              </View>
-            )}
-          />  */}
-           <FlatList
+          <FlatList
             data={this.state.findpeople}
             keyExtractor={item => item.id}
             ListEmptyComponent={this.emptyListComponent}
@@ -192,7 +160,7 @@ class notification extends Component {
                 />
               </View>
             )}
-          /> 
+          />
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
         {this.state.popUpError === true && (
@@ -210,7 +178,6 @@ class notification extends Component {
             />
           </Modal>
         )}
-
       </View>
     );
   }
@@ -246,7 +213,6 @@ const styles = StyleSheet.create({
   },
   detail: {
     width: SCREEN.width * 0.6,
-    
   },
   contentView: {
     flex: 1,

@@ -11,8 +11,6 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {connect} from 'react-redux';
-import firestore from '@react-native-firebase/firestore';
-import moment from 'moment';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -49,12 +47,12 @@ class eventDetail extends Component {
       date: '',
       imageUri: '',
       Check_Status: '',
-      users:[],
+      users: [],
       Ticket_Left: '',
       User_Attending_Event: '',
       loading: false,
       defaultCard: {},
-      nodefaultCard:false
+      nodefaultCard: false,
     };
   }
   componentDidMount() {
@@ -128,14 +126,11 @@ class eventDetail extends Component {
     });
     this.setState({loading: false});
   }
- async getMutualConnections(){
-   
-  getMutualConnections(this.props.userToken).then(response => {
-      
-    this.setState({users:response.Users})
-  });
-
- }
+  async getMutualConnections() {
+    getMutualConnections(this.props.userToken).then(response => {
+      this.setState({users: response.Users});
+    });
+  }
   async attendEvent({user_id, event_id}) {
     this.setState({loading: true});
     // this.props.navigation.navigate('prepay', {
@@ -143,22 +138,24 @@ class eventDetail extends Component {
     //   user_id: user_id,
     //   detailItem: this.state.detailItem,
     // });
-  
-    if (this.state.detailItem.EventType !== 'PREPAID' && this.state.defaultCard ) {
-      this.setState({nodefaultCard:false})
-  
+
+    if (
+      this.state.detailItem.EventType !== 'PREPAID' &&
+      this.state.defaultCard
+    ) {
+      this.setState({nodefaultCard: false});
+
       AtendPublicEvent({user_id, event_id}).then(response => {
-      
         this.getEventDetail(
           this.props.route.params.detailItem,
           this.props.userDetail.id,
-        );   
+        );
       });
-    } else if(!this.state.defaultCard){
-   this.setState({nodefaultCard:true})
+    } else if (!this.state.defaultCard) {
+      this.setState({nodefaultCard: true});
     } else {
-      this.setState({nodefaultCard:false})
-  
+      this.setState({nodefaultCard: false});
+
       this.props.navigation.navigate('prepay', {
         event_id: event_id,
         user_id: user_id,
@@ -248,7 +245,7 @@ class eventDetail extends Component {
                 {this.state.detailItem.duration} HRS
               </Text>
               <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>
-                <View style={[styles.flexRow, {paddingTop: 5}]}></View>
+                <View style={[styles.flexRow, {paddingTop: 5}]} />
                 <Text
                   style={{
                     fontFamily: FONT.Nunito.bold,
@@ -263,34 +260,34 @@ class eventDetail extends Component {
                 Mutual Attendees
               </Text>
               <View style={{height: 50, width: SCREEN.width, marginTop: 11}}>
-              <FlatList
-          data={this.state.users}
-          horizontal
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => (
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('mutualConnections')
-              }
-              style={styles.listView}>
-              {item.Pictures.length !== 0 && (
-                <Image
-                  style={styles.ImageView}
-                  source={{uri: item.Pictures[0].Profile_Url}}
+                <FlatList
+                  data={this.state.users}
+                  horizontal
+                  keyExtractor={(item, index) => index.toString()}
+                  renderItem={({item}) => (
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('mutualConnections')
+                      }
+                      style={styles.listView}>
+                      {item.Pictures.length !== 0 && (
+                        <Image
+                          style={styles.ImageView}
+                          source={{uri: item.Pictures[0].Profile_Url}}
+                        />
+                      )}
+                      {item.Pictures.length === 0 && item.Profile && (
+                        <Image
+                          style={styles.ImageView}
+                          source={{uri: item.Profile}}
+                        />
+                      )}
+                      {item.Pictures.length === 0 &&
+                        !item.Profile &&
+                        this.IconImage(item)}
+                    </TouchableOpacity>
+                  )}
                 />
-              )}
-              {item.Pictures.length === 0 && item.Profile && (
-                <Image
-                  style={styles.ImageView}
-                  source={{uri: item.Profile}}
-                />
-              )}
-              {item.Pictures.length === 0 &&
-                !item.Profile &&
-                this.IconImage(item)}
-            </TouchableOpacity>
-          )}
-        />
               </View>
               <Text
                 style={[
@@ -304,15 +301,14 @@ class eventDetail extends Component {
             {!this.state.myEvent && (
               <TouchableOpacity
                 activeOpacity={0.8}
-                onPress={() => { 
+                onPress={() => {
                   if (this.state.Check_Status === 'Active') {
                     if (this.state.User_Attending_Event === false) {
                       this.attendEvent({
                         user_id: this.props.userDetail.id,
                         event_id: this.props.route.params.detailItem,
                       });
-                    } 
-                    else {
+                    } else {
                       this.props.navigation.navigate('attendingEventInfo', {
                         id: this.props.route.params.detailItem,
                       });
@@ -344,17 +340,16 @@ class eventDetail extends Component {
                     ? this.state.User_Attending_Event === false
                       ? 'ATTEND'
                       : 'ATTENDING'
-                    
                     : 'Booked'}
                 </Text>
               </TouchableOpacity>
-               )}
-                 {this.state.nodefaultCard == true &&
-                <Text style={{textAlign:'center',marginBottom:10,color:'red'}}>
+            )}
+            {this.state.nodefaultCard === true && (
+              <Text
+                style={{textAlign: 'center', marginBottom: 10, color: 'red'}}>
                 Please select your default card
               </Text>
-                }
-           
+            )}
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}

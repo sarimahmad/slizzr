@@ -18,7 +18,6 @@ import firestore from '@react-native-firebase/firestore';
 import {LoginManager, AccessToken} from 'react-native-fbsdk';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {connect} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import TextField from '../../component/TextField/index';
 import {BLACK, WHITE} from '../../helper/Color';
@@ -192,7 +191,7 @@ class SignIn extends Component {
           ) {
             this.props.callApi(firestoreDocument.data(), data.id);
             this.setState({loading: false});
-            this.props.navigation.push('HomeStack',{from:'signin'});
+            this.props.navigation.push('HomeStack', {from: 'signin'});
           } else {
             this.props.callApi(firestoreDocument.data(), data.id);
             this.setState({loading: false});
@@ -227,7 +226,7 @@ class SignIn extends Component {
           ) {
             this.props.callApi(firestoreDocument.data(), id);
             this.setState({loading: false});
-            this.props.navigation.push('HomeStack',{from:'signin'});
+            this.props.navigation.push('HomeStack', {from: 'signin'});
           } else {
             this.props.callApi(firestoreDocument.data(), id);
             this.setState({loading: false});
@@ -249,7 +248,7 @@ class SignIn extends Component {
   checkTheUserCheck(userParsed, verifiedEmail) {
     if (userParsed.email_verified === true) {
       if (userParsed.age && parseInt(userParsed.age) > 16) {
-        this.props.navigation.navigate('HomeStack',{from:'signin'});
+        this.props.navigation.navigate('HomeStack', {from: 'signin'});
       } else {
         this.props.navigation.navigate('BirthDate', {from: 'SignIn'});
       }
@@ -273,12 +272,15 @@ class SignIn extends Component {
           Alert.alert('User error', error);
         });
       if (userParsed.age && parseInt(userParsed.age) > 16) {
-        this.props.navigation.navigate('HomeStack',{from:'signin'});
+        this.props.navigation.navigate('HomeStack', {from: 'signin'});
       } else {
         this.props.navigation.navigate('BirthDate', {from: 'SignIn'});
       }
     } else {
-      this.props.navigation.navigate('ConfirmEmail',{from: 'birth',user:userParsed});
+      this.props.navigation.navigate('ConfirmEmail', {
+        from: 'birth',
+        user: userParsed,
+      });
 
       // Alert.alert(
       //   'Email not Verified',
@@ -302,7 +304,7 @@ class SignIn extends Component {
     auth()
       .signInWithCredential(googleCredential)
       .then(response => {
-      const data = {
+        const data = {
           Email: response.user._user.email,
           FirstName: response.user._user.displayName,
           LastName: response.user._user.displayName,
@@ -337,7 +339,7 @@ class SignIn extends Component {
           },
         };
 
-          this.firestoreLinking(data);
+        this.firestoreLinking(data);
       })
       .catch(error => {
         this.setState({

@@ -1,83 +1,54 @@
+/* eslint-disable curly */
+/* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
 import {
   View,
-  Button,
   Text,
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-  TextInput,
   FlatList,
   Image,
 } from 'react-native';
-import {BLACK, BLUE, WHITE} from '../../helper/Color';
+import {BLACK, WHITE} from '../../helper/Color';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {connect} from 'react-redux';
+
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import firestore from '@react-native-firebase/firestore';
 import Loader from '../../component/Loader';
-export default class findPeople extends Component {
+class findPeople extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      privateEvents:[],
-      loading:false,
-        findpeople: [
-        {
-          id:0,
-          imgProfile:'',  
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          id:1,
-            imgProfile:'',
-          profileName: 'Celebration Time',
-          adress: 'Host: Jaclynn Bradley',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          id:2,
-            imgProfile:'',
-          profileName: 'Sagar’s Birthday',
-          adress: 'Host: Kita Chihoko',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          id:3,
-            imgProfile:'',
-          profileName: 'GMU Party',
-          adress: 'Host: Jaclynn Bradley',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
+      privateEvents: [],
+      loading: false,
     };
   }
-  componentDidMount(){
-    this.getPrivateEvents()
+  componentDidMount() {
+    this.getPrivateEvents();
   }
   getPrivateEvents = async () => {
     let privateEvents = [];
     const usersRef = firestore().collection('events');
     this.setState({loading: true});
-    usersRef
-      .get()
-      .then(async doc => {
-        doc._docs.forEach(element => {
-            
-          if(element._data.PublicPrivate === 'Private')
-            privateEvents.push(element._data)
-          
-        });
-        this.setState({
-          loading: false,
-          privateEvents: privateEvents,
-        });
+    usersRef.get().then(async doc => {
+      doc._docs.forEach(element => {
+        if (
+          element._data.PublicPrivate === 'Private' &&
+          element._data.Host.id === this.props.userDetail.id
+        )
+          privateEvents.push(element._data);
       });
+      this.setState({
+        loading: false,
+        privateEvents: privateEvents,
+      });
+    });
     console.log(privateEvents);
   };
   emptyListComponent = () => {
@@ -92,89 +63,101 @@ export default class findPeople extends Component {
           display: 'flex',
           marginTop: SCREEN.height / 4,
         }}>
-          <View >
-          <Image source={require('../../assets/logo.png')} style={{alignSelf:'center',marginVertical:10,height:80,width:80}}/>
-      
-            <Text style={styles.emptyFont}>
-            Your currently not hosting any Private events to find people and send Direct Invites for.   </Text>
-          </View>
+        <View>
+          <Image
+            source={require('../../assets/logo.png')}
+            style={{
+              alignSelf: 'center',
+              marginVertical: 10,
+              height: 80,
+              width: 80,
+            }}
+          />
+
+          <Text style={styles.emptyFont}>
+            Your currently not hosting any Private events to find people and
+            send Direct Invites for.{' '}
+          </Text>
+        </View>
       </View>
     );
   };
   render() {
     return (
       <View style={styles.wrapperView}>
-
-    
         <SafeAreaView style={styles.contentView}>
-        <HeaderWithOptionBtn
-                    
-                        borderBottom={true}
-                        backColor={WHITE.dark}
-                        leftPress={() => this.props.navigation.openDrawer()}
-                        leftIcon={require('../../assets/drawer.png')}
-                        rightPress={() => this.props.navigation.navigate('lookFriends')}
-                        searchIcon={require('../../assets/searchGrey.png')}
-                        headerTitle={'Find People For'}
-                       
+          <HeaderWithOptionBtn
+            borderBottom={true}
+            backColor={WHITE.dark}
+            leftPress={() => this.props.navigation.openDrawer()}
+            leftIcon={require('../../assets/drawer.png')}
+            rightPress={() => this.props.navigation.navigate('lookFriends')}
+            searchIcon={require('../../assets/searchGrey.png')}
+            headerTitle={'Find People For'}
+          />
+          <FlatList
+            data={this.state.privateEvents}
+            keyExtractor={item => item.id}
+            ListEmptyComponent={this.emptyListComponent}
+            renderItem={({item}) => (
+              <View
+                style={{
+                  minHeight: 80,
+                  borderBottomColor: 'lightgrey',
+                  borderBottomWidth: 1,
+                  width: SCREEN.width,
+                }}>
+                <View
+                  style={[
+                    styles.flexRow,
+                    {width: SCREEN.width - 20, alignItems: 'center'},
+                  ]}>
+                  <View style={styles.imgView}>
+                    <Image
+                      source={{uri: item.image}}
+                      style={{borderRadius: 44, height: 60, width: 60}}
                     />
-        <FlatList
-                data={this.state.privateEvents}
-                keyExtractor={item => item.id}
-                ListEmptyComponent={this.emptyListComponent}
-             
-                renderItem={({ item }) => (   
-                  <View
-                  style={{
-                    minHeight: 80,
-                    borderBottomColor: 'lightgrey',
-                    borderBottomWidth: 1,
-                    width: SCREEN.width,
-                  }}>
-                  <View
-                    style={[
-                      styles.flexRow,
-                      {width: SCREEN.width - 20, alignItems: 'center'},
-                    ]}>
-                    <View style={styles.imgView}>
-                      <Image
-                        source={{uri: item.image}}
-                        style={{borderRadius: 44, height: 60, width: 60}}
-                      />
-   {item.PublicPrivate==="Private" &&
-                    
+                    {item.PublicPrivate === 'Private' && (
                       <Image
                         style={{position: 'absolute', right: -10}}
                         source={require('../../assets/private.png')}
                       />
-                  }
-                    </View>
+                    )}
+                  </View>
 
-                    <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.Name}</Text>
-                      <Text style={styles.adressText}>
-                        Host: {item.Host.displayName}
-                      </Text>
-                      <Text style={styles.purpleText}>{item.DateTime}</Text>
-                    </View>
-                    <TouchableOpacity
+                  <View style={styles.detail}>
+                    <Text style={styles.titleText}>{item.Name}</Text>
+                    <Text style={styles.adressText}>
+                      Host: {item.Host.displayName}
+                    </Text>
+                    <Text style={styles.purpleText}>{item.DateTime}</Text>
+                  </View>
+                  <TouchableOpacity
                     onPress={() =>
                       this.props.navigation.navigate('peopleProfiles')
                     }
-                      style={styles.shareView}>
-                      <Image source={require('../../assets/Right.png')} />
-                    </TouchableOpacity>
-                  </View>
+                    style={styles.shareView}>
+                    <Image source={require('../../assets/Right.png')} />
+                  </TouchableOpacity>
                 </View>
-               )}
-              />
+              </View>
+            )}
+          />
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-    
       </View>
     );
   }
 }
+
+function mapStateToProps(state, props) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+export default connect(mapStateToProps)(findPeople);
 const styles = StyleSheet.create({
   topView: {
     // height: hp('35%'),
@@ -186,25 +169,24 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
     marginBottom: 20,
   },
- 
+
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 10,
-    
   },
   detail: {
-    width: SCREEN.width*0.55,
+    width: SCREEN.width * 0.55,
   },
   next: {
     paddingTop: 15,
   },
   imgView: {
-    marginHorizontal:20,
-    alignItems:'center',
-    
-    alignSelf:'center'
+    marginHorizontal: 20,
+    alignItems: 'center',
+
+    alignSelf: 'center',
   },
- inputSearch: {
+  inputSearch: {
     width: wp('90%'),
     marginHorizontal: '5%',
     borderWidth: 1,
@@ -236,7 +218,6 @@ const styles = StyleSheet.create({
   btnLocation: {
     width: wp('80%'),
     marginHorizontal: '10%',
-    borderRadius: 25,
     marginTop: hp('5%'),
     height: 50,
     // shadowColor: 'black',
@@ -272,7 +253,6 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: 16,
-    color: 'white',
     textAlign: 'center',
     color: 'white',
     fontFamily: FONT.Nunito.regular,
@@ -346,10 +326,10 @@ const styles = StyleSheet.create({
   },
   contentView: {
     flex: 1,
-   
+
     backgroundColor: WHITE.dark,
   },
- policyText: {
+  policyText: {
     alignSelf: 'center',
     marginTop: '2%',
     color: BLACK.appDark,

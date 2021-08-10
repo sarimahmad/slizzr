@@ -23,11 +23,13 @@ class BirthDate extends Component {
   }
 
   onChange = selectedDate => {
-    let currentDate = moment(selectedDate).format('llll') || moment(this.state.DateTime).format('llll')
+    let currentDate =
+      moment(selectedDate).format('llll') ||
+      moment(this.state.DateTime).format('llll');
     let current_date = moment(new Date()).format('llll');
-    
+
     const age_in_year = moment(current_date).diff(currentDate, 'years');
-   
+
     if (age_in_year > 16) {
       this.setState({
         DateTime: currentDate,
@@ -52,7 +54,7 @@ class BirthDate extends Component {
         month: this.state.month,
         year: this.state.year,
         age: this.state.age,
-        DateTime:this.state.DateTime
+        DateTime: this.state.DateTime,
       };
       await updateProfile(this.props.userToken, dataToSend).then(_response => {
         this.props.callApi(_response.data.User, this.props.userToken);
@@ -75,7 +77,7 @@ class BirthDate extends Component {
     this.setState({showDate: true});
   };
   handleSubmit = () => {
-    let currentDate = moment(this.state.date).format('llll')
+    let currentDate = moment(this.state.date).format('llll');
     let current_date = moment(new Date()).format('llll');
 
     const age_in_year = moment(current_date).diff(currentDate, 'years');
@@ -95,23 +97,13 @@ class BirthDate extends Component {
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
           <Text style={styles.titleText}>How old are you?</Text>
-          {/* <DateAndTimePicker
-                    format="MMM DD, YYYY - hh:mm "
-                    mode="datetime"
-                    editable={this.state.screenTypeEdit}
-                    value={this.state.DateTime}
-                    setDateAndTime={value => this.onChange(value)}
-                    showPlaceholder="+ Add"
-                    datebutton={styles.datebutton}
-                  /> */}
           <DateAndTimePicker
             testID="dateTimePicker"
             value={this.state.date}
-            format="MMM DD, YYYY - hh:mm "
+            format="MMM DD, YYYY"
             mode="date"
             type="onlyDate"
             setDateAndTime={date => this.onChange(date)}
-         
           />
           <ButtonResetPassaword
             btnLabel={'Continue'}

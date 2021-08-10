@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useState, useEffect} from 'react';
-import {CardField, useStripe} from '@stripe/stripe-react-native';
+import {useStripe} from '@stripe/stripe-react-native';
 import {ProviderPaymentsForCustomer} from '../../helper/Api';
 import {View, TouchableOpacity, Text, Alert} from 'react-native';
 import {connect} from 'react-redux';
@@ -22,7 +23,7 @@ const Pay = props => {
       cust_id: props.userDetail.STRIPE_CUST_ID,
       amount: 40,
     }).then(response => {
-      setSecret(response.data)
+      setSecret(response.data);
       return {
         paymentIntent: response.data.paymentIntent,
         ephemeralKey: response.data.ephemeralKey,
@@ -32,12 +33,12 @@ const Pay = props => {
   };
 
   const initializePaymentSheet = async () => {
-    // const {paymentIntent, ephemeralKey, customer} = 
+    // const {paymentIntent, ephemeralKey, customer} =
     await ProviderPaymentsForCustomer({
       cust_id: props.userDetail.STRIPE_CUST_ID,
       amount: 40,
     }).then(async response => {
-       setSecret(response.data)
+      setSecret(response.data);
       const {error} = await initPaymentSheet({
         googlePay: true,
         customerId: response.data.customer,
@@ -50,15 +51,16 @@ const Pay = props => {
         setLoading(true);
       }
     });
-    
   };
 
   const openPaymentSheet = async () => {
-    console.log("function")
-    const {error} = await presentPaymentSheet({clientSecret: secret.paymentIntent});
+    console.log('function');
+    const {error} = await presentPaymentSheet({
+      clientSecret: secret.paymentIntent,
+    });
 
     if (error) {
-      console.log(error)
+      console.log(error);
       Alert.alert(`Error code: ${error.code}`, error.message);
     } else {
       Alert.alert('Success', 'Your order is confirmed!');

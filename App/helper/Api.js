@@ -227,7 +227,7 @@ export async function newPaymentMethod(formdata) {
     });
   return GetResponse;
 }
-export async function contactUs(formdata,user_id) {
+export async function contactUs(formdata, user_id) {
   var config = {
     method: 'post',
     url: `${Server}/contact-us/${user_id}`,
@@ -236,7 +236,7 @@ export async function contactUs(formdata,user_id) {
     },
     data: formdata,
   };
-  
+
   const GetResponse = await axios(config)
     .then(function (response) {
       return response.data;
@@ -515,7 +515,7 @@ export async function acceptandRejectRequest(data) {
   return GetResponse;
 }
 export async function findRelation(user_id, otheruser_id) {
-  data = {
+  const data = {
     current_user_id: user_id,
     opposite_user_id: otheruser_id,
   };

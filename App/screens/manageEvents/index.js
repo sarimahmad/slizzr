@@ -16,7 +16,11 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
-import {getUserAttendedEvents, getUserEvents,getAllSharedRequests} from '../../helper/Api';
+import {
+  getUserAttendedEvents,
+  getUserEvents,
+  getAllSharedRequests,
+} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 import Share from 'react-native-share';
@@ -31,7 +35,7 @@ class manageEvents extends Component {
       index: 1,
       userEvents: [],
       userAttendedEvents: [],
-      userSharedRequests:[]
+      userSharedRequests: [],
     };
   }
 
@@ -39,7 +43,7 @@ class manageEvents extends Component {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getUserEvents();
       this.getUserAttendedEvents();
-      this.getAllSharedRequests()
+      this.getAllSharedRequests();
     });
   }
   componentWillUnmount() {
@@ -48,21 +52,23 @@ class manageEvents extends Component {
 
   async getUserEvents() {
     await getUserEvents(this.props.userToken).then(response => {
-      this.setState({loading:false})
+      this.setState({loading: false});
       this.setState({userEvents: response.UserHostedEvent, loading: false});
     });
   }
 
   async getUserAttendedEvents() {
     await getUserAttendedEvents(this.props.userToken).then(response => {
-      this.setState({loading:false})
+      this.setState({loading: false});
       this.setState({userAttendedEvents: response.UserAttendedEvents});
     });
   }
   async getAllSharedRequests() {
     await getAllSharedRequests(this.props.userToken).then(response => {
-      this.setState({loading:false})
-      this.setState({userSharedRequests: response.data.SharedhostRequest.length});
+      this.setState({loading: false});
+      this.setState({
+        userSharedRequests: response.data.SharedhostRequest.length,
+      });
     });
   }
 
@@ -179,10 +185,9 @@ class manageEvents extends Component {
               styles.barText,
               this.state.index === 3 ? {color: '#F818D9'} : {color: 'black'},
             ]}>
-            Shared Events 
+            Shared Events
           </Text>
         </TouchableOpacity>
-    
       </View>
     );
   };
@@ -234,18 +239,18 @@ class manageEvents extends Component {
       </View>
     );
   };
-  shareEvent=()=>{
-    let options={
-      message:'testing'
-    }
+  shareEvent = () => {
+    let options = {
+      message: 'testing',
+    };
     Share.open(options)
-.then((res) => {
-console.log(res);
-})
-.catch((err) => {
-err && console.log(err);
-});
-}
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        err && console.log(err);
+      });
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -263,9 +268,15 @@ err && console.log(err);
           {this.topBar()}
 
           {/* Shared Host */}
-          <TouchableOpacity onPress={() => this.props.navigation.navigate("sharedHostRequests")} style={styles.sharedView}>
-            <Text style={{ color: 'white', paddingLeft: 20 }}>SHARED HOST REQUESTS</Text>
-            <Text style={{ color: 'white', paddingRight: 20 }}>+{this.state.userSharedRequests}</Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('sharedHostRequests')}
+            style={styles.sharedView}>
+            <Text style={{color: 'white', paddingLeft: 20}}>
+              SHARED HOST REQUESTS
+            </Text>
+            <Text style={{color: 'white', paddingRight: 20}}>
+              +{this.state.userSharedRequests}
+            </Text>
           </TouchableOpacity>
 
           {this.state.index === 1 && (
@@ -283,18 +294,17 @@ err && console.log(err);
                     borderBottomColor: 'lightgrey',
                   }}>
                   <View style={styles.flexRow}>
-                    <View  style={styles.imgView}>
+                    <View style={styles.imgView}>
                       <Image
                         source={{uri: item.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-                     {item.PublicPrivate==="Private" &&
-                    
-                      <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
-                      />
-                }
+                      {item.PublicPrivate === 'Private' && (
+                        <Image
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
+                        />
+                      )}
                     </View>
 
                     <View style={styles.detail}>
@@ -308,8 +318,9 @@ err && console.log(err);
                         {item.DateTime}
                       </Text>
                     </View>
-                    <TouchableOpacity onPress={()=>this.shareEvent()}
-                        style={styles.shareView}>
+                    <TouchableOpacity
+                      onPress={() => this.shareEvent()}
+                      style={styles.shareView}>
                       <Image source={require('../../assets/share.png')} />
                     </TouchableOpacity>
                   </View>
@@ -339,13 +350,12 @@ err && console.log(err);
                         source={{uri: item.Event.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-                {item.PublicPrivate==="Private" &&
-                    
-                      <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
-                      />
-                }
+                      {item.PublicPrivate === 'Private' && (
+                        <Image
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
+                        />
+                      )}
                     </View>
 
                     <View style={styles.detail}>
@@ -358,7 +368,9 @@ err && console.log(err);
                       </Text>
                     </View>
                     <TouchableOpacity
-                      onPress={()=>this.props.navigation.navigate("directInvites")}
+                      onPress={() =>
+                        this.props.navigation.navigate('directInvites')
+                      }
                       style={styles.shareView}>
                       <Image source={require('../../assets/messageIcon.png')} />
                     </TouchableOpacity>
@@ -367,85 +379,86 @@ err && console.log(err);
               )}
             />
           )}
-           {this.state.index === 3 && (
-       <FlatList
-       data={this.state.userSharedRequests}
-       keyExtractor={item => item.id}
-       ListEmptyComponent={this.emptyListComponent}
-       renderItem={({item}) => (
-         <TouchableOpacity
-           onPress={() =>
-             this.props.navigation.navigate('attendingEventInfo')
-           }
-           style={{
-             width:SCREEN.width,
-             borderBottomWidth: 1,
-             borderBottomColor: 'lightgrey',
-           }}>
-           
-           <View style={styles.flexRow}>
-           <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
-                      <Image
-                        source={{uri: item.Event.image}}
-                        style={{borderRadius: 44, height: 60, width: 60}}
-                      />
-   {item.Event.PublicPrivate==="Private" &&
-                    
-                      <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
-                      />
-                }
-                    </View>
+          {this.state.index === 3 && (
+            <FlatList
+              data={this.state.userSharedRequests}
+              keyExtractor={item => item.id}
+              ListEmptyComponent={this.emptyListComponent}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  onPress={() =>
+                    this.props.navigation.navigate('attendingEventInfo')
+                  }
+                  style={{
+                    width: SCREEN.width,
+                    borderBottomWidth: 1,
+                    borderBottomColor: 'lightgrey',
+                  }}>
+                  <View style={styles.flexRow}>
+                    <View style={styles.flexRow}>
+                      <View style={styles.imgView}>
+                        <Image
+                          source={{uri: item.Event.image}}
+                          style={{borderRadius: 44, height: 60, width: 60}}
+                        />
+                        {item.Event.PublicPrivate === 'Private' && (
+                          <Image
+                            style={{position: 'absolute', right: -10}}
+                            source={require('../../assets/private.png')}
+                          />
+                        )}
+                      </View>
 
-                    <View style={styles.detail}>
-                      <Text style={styles.titleText}>{item.Event.Name}</Text>
-                      <Text style={styles.subtitleText}>
-                        Host: {item.Event.Host.displayName}
-                      </Text>
-                      <Text style={[styles.purpleText, {marginTop: 5}]}>
-                        {item.Event.DateTime}
-                      </Text>
+                      <View style={styles.detail}>
+                        <Text style={styles.titleText}>{item.Event.Name}</Text>
+                        <Text style={styles.subtitleText}>
+                          Host: {item.Event.Host.displayName}
+                        </Text>
+                        <Text style={[styles.purpleText, {marginTop: 5}]}>
+                          {item.Event.DateTime}
+                        </Text>
+                      </View>
+                      <View>
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.approveSharedHostRequest(item.SharedHostID)
+                          }
+                          style={{
+                            marginBottom: 5,
+                            marginRight: 5,
+                            height: 30,
+                            width: 30,
+                            borderRadius: 24,
+                            backgroundColor: '#4CD964',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <Image source={require('../../assets/check.png')} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.removeSharedHostRequest(item.SharedHostID)
+                          }
+                          style={{
+                            marginRight: 5,
+                            height: 30,
+                            width: 30,
+                            borderRadius: 24,
+                            backgroundColor: '#FF3B30',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}>
+                          <Image
+                            source={require('../../assets/closeIcon.png')}
+                          />
+                        </TouchableOpacity>
+                      </View>
                     </View>
-                    <View>
-               <TouchableOpacity
-                 onPress={() =>this.approveSharedHostRequest(item.SharedHostID)
-                 }
-                 style={{
-                   marginBottom: 5,
-                   marginRight: 5,
-                   height: 30,
-                   width: 30,
-                   borderRadius: 24,
-                   backgroundColor: '#4CD964',
-                   alignItems: 'center',
-                   justifyContent: 'center',
-                 }}>
-                 <Image source={require('../../assets/check.png')} />
-               </TouchableOpacity>
-               <TouchableOpacity
-                 onPress={() =>
-                  this.removeSharedHostRequest(item.SharedHostID) 
-                }
-               style={{
-                   marginRight: 5,
-                   height: 30,
-                   width: 30,
-                   borderRadius: 24,
-                   backgroundColor: '#FF3B30',
-                   alignItems: 'center',
-                   justifyContent: 'center',
-                 }}>
-                 <Image source={require('../../assets/closeIcon.png')} />
-               </TouchableOpacity>
-             </View>
-        </View>
-           </View>
-         </TouchableOpacity>
-       )}
-     />
-        )}
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
       </View>

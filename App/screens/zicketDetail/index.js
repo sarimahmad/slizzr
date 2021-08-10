@@ -22,14 +22,15 @@ class zicketDetail extends Component {
     super(props);
     this.state = {
       detailItem: undefined,
+      loading: true,
     };
   }
 
   componentDidMount() {
     let event_id = this.props.route.params.EventID;
     let user_id = this.props.route.params.UserID;
-    console.log(event_id)
-    console.log(user_id)
+    console.log(event_id);
+    console.log(user_id);
     if (event_id) {
       this.getZicketDetail({event_id, user_id});
     }
@@ -37,7 +38,8 @@ class zicketDetail extends Component {
   async getZicketDetail({event_id, user_id}) {
     await getZicketDetails({event_id: event_id, user_id: user_id}).then(
       response => {
-        this.setState({detailItem: response.User_Zicket[0]});
+        console.log('response', JSON.stringify(response));
+        this.setState({loading: false, detailItem: response.User_Zicket[0]});
       },
     );
   }
@@ -45,8 +47,16 @@ class zicketDetail extends Component {
     if (this.state.detailItem === undefined) {
       return (
         <View style={styles.wrapperView}>
-          <SafeAreaView style={styles.contentView}>
-            <Text>No Zicket found</Text>
+          <SafeAreaView
+            style={[
+              styles.contentView,
+              {justifyContent: 'center', alignItems: 'center'},
+            ]}>
+            {!this.state.loading ? (
+              <Text>No Zicket found</Text>
+            ) : (
+              <Loader loading={this.state.loading} loadingText={'Fetching'} />
+            )}
           </SafeAreaView>
         </View>
       );

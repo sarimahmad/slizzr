@@ -3,7 +3,7 @@
 /* eslint-disable radix */
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import React, {useEffect,useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Image, StyleSheet, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -19,7 +19,6 @@ const splash = props => {
   const [registerToken, setRegisterToken] = useState(null);
   const [messageRegister, setMessageRegister] = useState(null);
   useEffect(() => {
-    
     const unsubscribe = props.navigation.addListener('focus', () => {
       // do something
       checkUSer();
@@ -43,10 +42,10 @@ const splash = props => {
   async function registerAppWithFCM() {
     await messaging().registerDeviceForRemoteMessages();
     const token = await messaging().getToken();
-    console.log('FCMTOKEN', token)
+    console.log('FCMTOKEN', token);
     AsyncStorage.setItem('FCMTOKEN', token);
-     
-    this.notif = new NotifService(onRegister.bind(this), onNotif.bind(this))
+
+    this.notif = new NotifService(onRegister.bind(this), onNotif.bind(this));
   }
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
@@ -55,7 +54,7 @@ const splash = props => {
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      registerAppWithFCM()
+      registerAppWithFCM();
       console.log('Authorization status:', authStatus);
     }
   };
