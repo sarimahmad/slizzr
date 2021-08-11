@@ -29,7 +29,7 @@
       </activity>
        <meta-data
     android:name="com.google.android.geo.API_KEY"
-    android:value="AIzaSyCoM2N8BXBveNHlX96-EjCkpaQDd7mVrLI"/>
+    android:value="AIzaSyDDpKLd7FJ-RM9QRusz72ER0gJ255xed4A"/>
      <meta-data
     android:name="com.google.android.gms.wallet.api.enabled"
     android:value="true" />
