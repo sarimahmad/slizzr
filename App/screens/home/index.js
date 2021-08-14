@@ -39,11 +39,12 @@ import Server from '../../helper/Server';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createFilter} from 'react-native-search-filter';
+import moment from 'moment';
 let allEvents = [];
 let prepaidEvents = [];
 let scanEvents = [];
 let freeEvents = [];
-const KEYS_TO_FILTERS = ['Name', 'EventType'];
+const KEYS_TO_FILTERS = ['Name', 'DateTime'];
 
 class home extends Component {
   constructor(props) {
@@ -373,7 +374,10 @@ class home extends Component {
   }
   onChange = selectedDate => {
     const currentDate = selectedDate || this.state.date;
-
+    let term =  moment(selectedDate).format('llll')
+    console.log(term)
+    // this.searchUpdated(currentDate);
+           
     this.setState({date: currentDate});
     this.setState({showDate: false});
   };
@@ -398,12 +402,14 @@ class home extends Component {
     }
     this.getEvents('update');
   };
-  eventDetail = event_id => {
-    if (event_id) {
+  eventDetail = item => {
+    if (this.props.userDetail.id !== item.Host.id ) {
       this.props.navigation.navigate('eventDetail', {
-        detailItem: event_id,
+        detailItem: item.id,
       });
     } else {
+      this.props.navigation.navigate('myEventInfo', {id: item.id})
+                 
     }
   };
   listView = () => {
@@ -427,7 +433,9 @@ class home extends Component {
               data={currentData}
               refreshing={true}
               renderItem={({item}) => (
-                <View
+                <TouchableOpacity
+                onPress={() => this.eventDetail(item)}
+             
                   style={{
                     minHeight: 80,
                     borderBottomColor: 'lightgrey',
@@ -467,13 +475,12 @@ class home extends Component {
                         <Text>{item.Distance} KM</Text>
                       </View>
                     </View>
-                    <TouchableOpacity
-                      onPress={() => this.eventDetail(item.id)}
+                    <View
                       style={styles.shareView}>
                       <Image source={require('../../assets/Right.png')} />
-                    </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
+              </TouchableOpacity>
               )}
             />
           )}

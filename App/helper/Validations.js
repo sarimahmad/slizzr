@@ -29,7 +29,25 @@ const checkUsername = (username)=>{
         return true
     }
 }
+const checkTitle = (username)=>{
+    if(username.length==0 ||username.length < 1 ){
+        return false
+    }else if(username.length>60){
+      return false
+    }else{
+        return true
+    }
+}
 
+const checkDescription = (username)=>{
+    if(username.length==0 ||username.length < 1 ){
+        return false
+    }else if(username.length>600){
+      return false
+    }else{
+        return true
+    }
+}
 const checkAge = (date) => {
     const birthday = moment(date).format('yyyy/mm/d')
     // it will accept two types of format yyyy-mm-dd and yyyy/mm/dd
@@ -51,4 +69,4 @@ const checkAge = (date) => {
     }
 
 }
-export default {checkEmail,checkPassword,checkUsername, checkAge} 
+export default {checkEmail,checkPassword,checkUsername, checkAge,checkTitle,checkDescription} 

@@ -145,7 +145,7 @@ class CreateEvent extends Component {
     }
   }
   isFormFilled() {
-    let checkTitle = Validations.checkUsername(this.state.Name);
+    let checkTitle = Validations.checkTitle(this.state.Name);
     
     let checkAddress = Validations.checkUsername(this.state.Address);
     
@@ -176,20 +176,28 @@ class CreateEvent extends Component {
     }
      if (!checkTitle) {
       this.setState({
-        errorTitle: 'Invalid Form',
+        errorTitle: 'Invalid Form  Add Title in form',
         btnOneText: 'Ok',
         popUpError: true,
-        errorText: 'Add Title in form',
+        errorText: 'Title must be maximum 60 characters',
       });
     } 
     else if (!checkAddress) {
       this.setState({
-        errorTitle: 'Invalid Form',
+        errorTitle: 'Invalid Form ',
         btnOneText: 'Ok',
         popUpError: true,
         errorText: 'Add Adress in form',
       });
-    } else if (!checkAttendeeLimit) {
+    }else if (!checkDescription) {
+      this.setState({
+        errorTitle: 'Invalid Form Add Description',
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Description must be less then  600 characters',
+      });
+    }  
+    else if (!checkAttendeeLimit) {
       this.setState({
         errorTitle: 'Invalid Form',
         btnOneText: 'Ok',

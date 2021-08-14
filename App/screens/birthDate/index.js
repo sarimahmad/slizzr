@@ -19,31 +19,47 @@ class BirthDate extends Component {
       date: new Date(),
       showDate: false,
       age: 20,
+      age_in_year:0,
+      day:'',
+      month:'',
+      year:''
     };
   }
 
   onChange = selectedDate => {
-    let currentDate =
+   let selected_age_in_year=  moment(selectedDate).format('YYYY') 
+   let current_age_in_year = moment(new Date()).format('YYYY');
+    current_age_in_year =  moment(current_age_in_year).format('YYYY') 
+  
+    const age_in_year = parseInt(current_age_in_year)-parseInt(selected_age_in_year);
+
+   let currentDate =
       moment(selectedDate).format('llll') ||
       moment(this.state.DateTime).format('llll');
-    let current_date = moment(new Date()).format('llll');
-
-    const age_in_year = moment(current_date).diff(currentDate, 'years');
-
+   let year ,month,day
+   year = moment(currentDate).format('YYYY')
+   month = moment(currentDate).format('DD')
+   day =  moment(currentDate).format('M')
+   console.log(year,month,day)
     if (age_in_year > 16) {
       this.setState({
+        age_in_year:age_in_year,
         DateTime: currentDate,
-        day: moment(currentDate).format('M'),
-        month: moment(currentDate).format('DD'),
-        year: moment(currentDate).format('YYYY'),
+        day: day,
+        month: month,
+        year: year,
         age: age_in_year,
       });
     }
+   console.log(this.state)
     this.setState({date: selectedDate});
     if (age_in_year > 16) {
+      console.log(age_in_year)
       this.setState({ageCheck: true});
+      
     } else {
       this.setState({ageCheck: false});
+      console.log(age_in_year)
     }
   };
 
@@ -63,6 +79,7 @@ class BirthDate extends Component {
             from: 'birth',
             user: _response.data.User,
           });
+          console.log(_response.data.User)
         } else {
           this.props.navigation.navigate('HomeStack');
         }
@@ -77,12 +94,8 @@ class BirthDate extends Component {
     this.setState({showDate: true});
   };
   handleSubmit = () => {
-    let currentDate = moment(this.state.date).format('llll');
-    let current_date = moment(new Date()).format('llll');
-
-    const age_in_year = moment(current_date).diff(currentDate, 'years');
-
-    if (age_in_year > 16) {
+    
+    if (this.state.age_in_year > 16) {
       this.updateProfileApi();
     } else {
       Alert.alert(

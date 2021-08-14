@@ -27,28 +27,21 @@ const TextField = props => {
             : {width: SCREEN.width - 40},
         ]}>
         {props.type === 'password' ? (
-          <View style={{justifyContent: 'center'}}>
-            <TextInput
-              style={styles.input}
-              placeholder={props.placeholder}
-              placeholderTextColor={'#B2ABB1'}
-              secureTextEntry={showPassword}
-              onChangeText={handleText}
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-            <TouchableOpacity
+          <View >
+                 <TouchableOpacity
               onPress={() => setShowPassword(!showPassword)}
               style={{
                 position: 'absolute',
                 right: 10,
-                height: 40,
+                height: 80,
+                backgroundColor:'red',
                 width: 40,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
               {props.type === 'password' && showPassword === true && (
-                <Image
+              
+               <Image
                   style={{
                     height: 40,
                     width: 40,
@@ -59,6 +52,7 @@ const TextField = props => {
                 />
               )}
               {props.type === 'password' && showPassword === false && (
+                
                 <Image
                   style={{
                     height: 40,
@@ -67,9 +61,21 @@ const TextField = props => {
                     alignItems: 'center',
                   }}
                   source={require('../../assets/eyeclose.png')}
-                />
+              
+              />
               )}
+
             </TouchableOpacity>
+      
+            <TextInput
+              style={styles.input}
+              placeholder={props.placeholder}
+              placeholderTextColor={'#B2ABB1'}
+              secureTextEntry={showPassword}
+              onChangeText={handleText}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
           </View>
         ) : (
           <View>

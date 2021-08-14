@@ -120,13 +120,14 @@ class editProfle extends Component {
         day: day,
         month: month,
         year: year,
-        DateTime: moment(this.props.userDetail.BirthDate)._d,
+        DateTime:JSON.stringify(day).concat('/'+JSON.stringify(month)).concat('/'+JSON.stringify(year)),
         imageOfuser: this.props.route.params.imageOfuser,
       });
+      
+      console.log((JSON.stringify(day).concat('/'+JSON.stringify(month)).concat('/'+JSON.stringify(year))))
+    
     }  
-    let date =  moment(this.props.userDetail.BirthDate)
-    console.log(date)
-  
+   
   }
 
   firestoreLinking = async () => {
@@ -159,6 +160,7 @@ class editProfle extends Component {
                 day: this.state.day,
                 month: this.state.month,
                 year: this.state.year,
+              
                 bio: this.state.bioText,
                 Gender: this.state.gender,
                 profile_pic_url: pictureUploadUrl,
@@ -176,6 +178,7 @@ class editProfle extends Component {
         day: this.state.day,
         month: this.state.month,
         year: this.state.year,
+        Location:this.state.location,
         age: this.state.age,
         bio: this.state.bioText,
         Gender: this.state.gender,

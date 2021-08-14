@@ -45,9 +45,15 @@ class myEventInfo extends Component {
   async getEventDetail(id) {
     this.setState({loading: true});
     await getEventDetail(id).then(response => {
+      if(response.Event){
       this.setState({detailItem: response.Event});
       this.setState({loading: false});
+      }else{
+        alert(response)
+        this.props.navigation.goBack()
+      }
     });
+  
   }
 
   cancelEvent = async () => {

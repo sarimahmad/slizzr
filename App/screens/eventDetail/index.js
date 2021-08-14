@@ -90,11 +90,16 @@ class eventDetail extends Component {
     this.setState({loading: true});
     await getEventDetail(id)
       .then(response => {
+        if(response.Event){
         this.setState({
           myEvent: response.Event.Host.id === userId.Address,
           detailItem: response.Event,
           date: response.Event,
         });
+      }else{
+        alert(response)
+        this.props.navigation.goBack()
+      }
       })
       .catch(error => console.log(error));
     // const eventRef = firestore().collection('events');
