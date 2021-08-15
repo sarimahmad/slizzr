@@ -762,12 +762,17 @@ export async function SuccessfullyPaidViaProvider({event_id, user_id}) {
 }
 
 export async function removeSharedHostRequest(sharedHostID) {
+  var data = JSON.stringify({
+    ACCEPTED: 'FALSE',
+  });
+
   var config = {
     method: 'DELETE',
     url: `${Server}/event/remove-sharedhost-request/${sharedHostID}`,
     headers: {
       'Content-Type': 'application/json',
     },
+    data: data,
   };
 
   const GetResponse = await axios(config)
@@ -781,12 +786,16 @@ export async function removeSharedHostRequest(sharedHostID) {
 }
 //
 export async function approveSharedHostRequest(sharedHostID) {
+  var data = JSON.stringify({
+    ACCEPTED: 'TRUE',
+  });
   var config = {
     method: 'POST',
     url: `${Server}/event/decide-sharedhost-request/${sharedHostID}`,
     headers: {
       'Content-Type': 'application/json',
     },
+    data: data,
   };
 
   const GetResponse = await axios(config)

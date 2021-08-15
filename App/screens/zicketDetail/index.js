@@ -1,6 +1,15 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {Component} from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  PermissionsAndroid,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
+import CameraRoll from '@react-native-community/cameraroll';
 import {SafeAreaView} from 'react-navigation';
 import {connect} from 'react-redux';
 
@@ -42,6 +51,29 @@ class zicketDetail extends Component {
         this.setState({loading: false, detailItem: response.User_Zicket[0]});
       },
     );
+  }
+
+  async hasAndroidPermission() {
+    const permission = PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE;
+
+    const hasPermission = await PermissionsAndroid.check(permission);
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(permission);
+    return status === 'granted';
+  }
+
+  // Android Doesnt work on URL Fix That
+  // Response show popup message successfully saved like that
+  async savePicture(url) {
+    if (Platform.OS === 'android' && !(await this.hasAndroidPermission())) {
+      return;
+    }
+    CameraRoll.save(url)
+      .then(response => console.log(response))
+      .catch(err => console.error(err));
   }
   render() {
     if (this.state.detailItem === undefined) {
@@ -172,35 +204,41 @@ class zicketDetail extends Component {
                 {this.state.detailItem.User.displayName}
               </Text>
             </View>
-            <View style={{alignSelf: 'center', marginTop: 20}}>
-              <Image
-                source={require('../../assets/appleWallet.png')}
-                style={{height: 55, width: 174}}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignSelf: 'center',
-                marginTop: 26,
 
-                marginBottom: 10,
-              }}>
-              <Image
-                source={require('../../assets/invalid.png')}
-                // style={{height:55,width:174}}
-              />
-              <Text
-                style={{
-                  fontFamily: FONT.Nunito.semiBold,
-                  fontSize: 12,
-                  color: '#F818D9',
-                  textAlign: 'left',
-                }}>
-                {' '}
-                #Valid payment method must be set up to ensure entry at door
-              </Text>
+            {/* Make text look Good */}
+            <View
+              style={{alignSelf: 'center', marginTop: 20, marginBottom: 10}}>
+              <TouchableOpacity
+                onPress={() => this.savePicture(this.state.detailItem.QRImage)}>
+                <Text>Save to Gallery</Text>
+              </TouchableOpacity>
             </View>
+            {this.state.detailItem.Event.EventType === 'SCAN' && (
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignSelf: 'center',
+                  marginTop: 16,
+
+                  marginBottom: 10,
+                }}>
+                <Image
+                  source={require('../../assets/invalid.png')}
+                  // style={{height:55,width:174}}
+                />
+
+                <Text
+                  style={{
+                    fontFamily: FONT.Nunito.semiBold,
+                    fontSize: 12,
+                    color: '#F818D9',
+                    textAlign: 'left',
+                  }}>
+                  {' '}
+                  #Valid payment method must be set up to ensure entry at door
+                </Text>
+              </View>
+            )}
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
