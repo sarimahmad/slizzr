@@ -26,6 +26,9 @@ import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 import ErrorPopup from '../../component/ErrorPopup';
 import {sendMessageToAttendees, disInviteAttendee} from '../../helper/Api';
+const KEYS_TO_FILTERS = ['Name'];
+import SearchInput, { createFilter } from 'react-native-search-filter';
+
 class attendeesList extends Component {
   constructor(props) {
     super(props);
@@ -41,7 +44,9 @@ class attendeesList extends Component {
       errorText: '',
       messageAllText: '',
       hostEvent: true,
-      hostId:''
+      hostId:'',
+      searchTerm:''
+   
     };
   }
 
@@ -130,6 +135,8 @@ class attendeesList extends Component {
   };
 
   render() {
+    const attendeesLIst = this.state.attendeesLIst.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+  
     const fromAttend =
       this.props.route.params.from && this.props.route.params.from === 'attend';
     return (
@@ -157,7 +164,7 @@ class attendeesList extends Component {
           </View>
 
           <FlatList
-            data={this.state.attendeesLIst}
+            data={attendeesLIst}
             keyExtractor={item => item.id}
             ListEmptyComponent={this.emptyListComponent}
           

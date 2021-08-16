@@ -16,49 +16,56 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {connect} from 'react-redux';
+import Loader from '../../component/Loader';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
+import { getAllFriends } from '../../helper/Api';
 const KEYS_TO_FILTERS = ['Name'];
-  import SearchInput, { createFilter } from 'react-native-search-filter';
-export default class newMessage extends Component {
+import SearchInput, { createFilter } from 'react-native-search-filter';
+ class newMessage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       attendingEvents: true,
       myevents: false,
-
-      messages: [
-        {
-          imgProfile: '',
-          message: 'Marriage Anniversary',
-          name: 'Amelia Edwards',
-        },
-        {
-          imgProfile: '',
-          message: 'Marriage Anniversary',
-          name: 'Ava Gregoraci',
-        },
-
-        {
-          imgProfile: '',
-          message: 'Marriage Anniversary',
-          name: 'Carmen Beltrán',
-        },
-
-        {
-          imgProfile: '',
-          message: 'Marriage Anniversary',
-          name: 'Mahnaz Farzin',
-        },
-        {
-          imgProfile: '',
-          message: 'Marriage Anniversary',
-          name: 'Mahnaz Farzin',
-        },
-      ],
+      friends:[]
     };
   }
+  componentDidMount(){
+    this.getAllFriends()
+  }
+  async getAllFriends() {
+    this.setState({loading:true})
+    await getAllFriends(this.props.userToken).then(response => {
+      console.log("response"+response)
+      this.setState({friends: response.Users, loading: false});
+    });
+    
+  }
+  
+  emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+          <View>
+            <Text style={styles.emptyFont}>
+              You have  no friend at the moment.
+            </Text>
+          </View>
+        
+      </View>
+    );
+  };
   render() {
-    const messages = this.state.messages.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+    const friends = this.state.friends.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
   
     return (
       <View style={styles.wrapperView}>
@@ -97,8 +104,10 @@ export default class newMessage extends Component {
               
             </View>
           <FlatList
-            data={messages}
+            data={friends}
             keyExtractor={item => item.id}
+            ListEmptyComponent={this.emptyListComponent}
+        
             renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('chat')}
@@ -126,14 +135,26 @@ export default class newMessage extends Component {
               </TouchableOpacity>
             )}
           />
-             <TouchableOpacity style={styles.btnMap} onPress={()=>this.props.navigation.navigate("chat")}>
-              <Text style={styles.btnText}>MESSAGE ALL 87 ATTENDEES</Text>
-            </TouchableOpacity>
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+  
       </View>
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    userDetail: state.user.userDetail,
+    userToken: state.user.userToken,
+  };
+}
+
+const mapDispatchToProps = dispatch => {
+  return {};
+};
+export default connect(mapStateToProps, mapDispatchToProps)(newMessage);
+
 const styles = StyleSheet.create({
   wrapperView: {
     flex: 1,

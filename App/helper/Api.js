@@ -1317,6 +1317,26 @@ export async function UnblockUser({user_id, mutual_connection_id}) {
     });
   return GetResponse;
 }
+// 
+export async function sendDirectInvite(data) {
+  var config = {
+    method: 'POST',
+    url: `${Server}/direct-invite`,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: JSON.stringify({data}),
+  };
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
+}
 
 //Setting -> Contact Us
 export async function ContactUs({

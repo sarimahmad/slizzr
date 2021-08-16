@@ -114,7 +114,8 @@ class BirthDate extends Component {
             testID="dateTimePicker"
             value={this.state.date}
             format="MMM DD, YYYY"
-            mode="date"
+            mode="date"  
+            showPreviousDate={"yes"}
             type="onlyDate"
             setDateAndTime={date => this.onChange(date)}
           />

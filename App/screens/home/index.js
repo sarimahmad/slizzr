@@ -431,6 +431,7 @@ class home extends Component {
               keyExtractor={(item, index) => index.toString()}
               onEndReached={() => console.log('Reach end')}
               data={currentData}
+              
               refreshing={true}
               renderItem={({item}) => (
                 <TouchableOpacity

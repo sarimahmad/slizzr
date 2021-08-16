@@ -20,6 +20,7 @@ import {
   getUserAttendedEvents,
   getUserEvents,
   getAllSharedRequests,
+  getAllSharedEvents
 } from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
@@ -35,6 +36,7 @@ class manageEvents extends Component {
       index: 1,
       userEvents: [],
       userAttendedEvents: [],
+      userSharedEvents:[],
       userSharedRequests: [],
     };
   }
@@ -71,7 +73,15 @@ class manageEvents extends Component {
       });
     });
   }
-
+  async getAllSharedEvents() {
+    await getAllSharedEvents(this.props.userToken).then(response => {
+      this.setState({loading: false});
+      this.setState({
+        userSharedEvents: response.data.SharedEvents,
+      });
+    });
+  }
+  
   barTapped = indexTap => {
     if (indexTap === 1) {
       this.setState({index: 1});
@@ -318,11 +328,25 @@ class manageEvents extends Component {
                         {item.DateTime}
                       </Text>
                     </View>
+                    {item.PublicPrivate === 'Private' ?
+                    
                     <TouchableOpacity
-                      onPress={() => this.shareEvent()}
+                    onPress={() =>
+                      this.props.navigation.navigate('directInvites')
+                    }
                       style={styles.shareView}>
-                      <Image source={require('../../assets/share.png')} />
+                      <Image source={require('../../assets/messageIcon.png')} />
                     </TouchableOpacity>
+                    :
+                    <TouchableOpacity
+                   
+                    onPress={() => this.shareEvent()}
+                    style={styles.shareView}>
+                    <Image source={require('../../assets/share.png')} />
+                  </TouchableOpacity>
+           
+                 
+              }
                   </View>
                 </TouchableOpacity>
               )}
@@ -363,17 +387,29 @@ class manageEvents extends Component {
                       <Text style={styles.subtitleText}>
                         Host: {item.Event.Host.displayName}
                       </Text>
+                      {item.PublicPrivate !== 'Private' && (
+                      
                       <Text style={[styles.purpleText, {marginTop: 5}]}>
                         {item.Event.DateTime}
                       </Text>
+                      )}
                     </View>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.props.navigation.navigate('directInvites')
-                      }
-                      style={styles.shareView}>
-                      <Image source={require('../../assets/messageIcon.png')} />
-                    </TouchableOpacity>
+                    {item.PublicPrivate === 'Private' ?
+                   <TouchableOpacity
+                   onPress={() => this.shareEvent()}
+                     style={styles.shareView}>
+                     <Image source={require('../../assets/messageIcon.png')} />
+                   </TouchableOpacity>
+                   :
+                   <TouchableOpacity
+                   onPress={() =>
+                     this.props.navigation.navigate('directInvites')
+                   }
+                   style={styles.shareView}>
+                   <Image source={require('../../assets/share.png')} />
+                 </TouchableOpacity>
+          
+              }
                   </View>
                 </TouchableOpacity>
               )}
@@ -381,7 +417,7 @@ class manageEvents extends Component {
           )}
           {this.state.index === 3 && (
             <FlatList
-              data={this.state.userSharedRequests}
+              data={this.state.userSharedEvents}
               keyExtractor={item => item.id}
               ListEmptyComponent={this.emptyListComponent}
               renderItem={({item}) => (

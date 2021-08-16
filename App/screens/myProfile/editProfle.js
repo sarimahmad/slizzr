@@ -44,7 +44,7 @@ class editProfle extends Component {
       event: 'Female',
       firstName: '',
       lastName: '',
-      gender: 'Male',
+      gender: '',
       bioText: '',
       userName: '',
       loading: false,
@@ -111,6 +111,7 @@ class editProfle extends Component {
           this.props.userDetail.Address.state
             ? this.props.userDetail.Address.line1
             : '',
+            gender:this.props.userDetail.Gender,
         city: this.props.userDetail.Address.city
           ? this.props.userDetail.Address.city
           : '',
@@ -120,11 +121,11 @@ class editProfle extends Component {
         day: day,
         month: month,
         year: year,
-        DateTime:JSON.stringify(day).concat('/'+JSON.stringify(month)).concat('/'+JSON.stringify(year)),
+        DateTime: ( JSON.stringify(day).concat('/'+JSON.stringify(month)).concat('/'+JSON.stringify(year))),
         imageOfuser: this.props.route.params.imageOfuser,
       });
-      
-      console.log((JSON.stringify(day).concat('/'+JSON.stringify(month)).concat('/'+JSON.stringify(year))))
+      console.log("dates"+day+month+year)
+      console.log("dates from database in new date" + new Date (JSON.stringify(day).concat('/'+JSON.stringify(month)).concat('/'+JSON.stringify(year))))
     
     }  
    
@@ -178,7 +179,6 @@ class editProfle extends Component {
         day: this.state.day,
         month: this.state.month,
         year: this.state.year,
-        Location:this.state.location,
         age: this.state.age,
         bio: this.state.bioText,
         Gender: this.state.gender,
@@ -223,7 +223,7 @@ class editProfle extends Component {
         if (!firestoreDocument.exists) {
           return;
         } else {
-          this.props.callApi(firestoreDocument.data(), id);
+          this.props.callApi(firestoreDocument._data, id);
           this.setState({
             loading: false,
             btnOneText: 'Ok',

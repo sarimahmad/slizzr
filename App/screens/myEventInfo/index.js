@@ -147,7 +147,7 @@ class myEventInfo extends Component {
               {this.state.detailItem && this.state.detailItem.Description}
             </Text>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('FindPeople')}
+              onPress={() => this.props.navigation.navigate('peopleProfiles')}
               style={styles.btnMap}>
               <Text style={styles.btnText}>Find PEOPLE</Text>
             </TouchableOpacity>

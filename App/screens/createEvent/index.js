@@ -79,6 +79,7 @@ class CreateEvent extends Component {
       errorText: '',
       btnTwoText: '',
       detailItem: {},
+      selected:false
     };
   }
 
@@ -128,7 +129,13 @@ class CreateEvent extends Component {
       this.state.PublicPrivate,
     );
     let checkduration = Validations.checkUsername(this.state.duration);
-
+    let dateCheck
+    if(this.state.selected === true)
+    {
+      dateCheck=true
+    }else{
+      dateCheck=false
+    }
     if (
       checkAddress &&
       checkAttendeeLimit &&
@@ -137,7 +144,8 @@ class CreateEvent extends Component {
       checkduration &&
       checkFee &&
       checkPublicPrivate &&
-      checkEventType
+      checkEventType && 
+      dateCheck 
     ) {
       return true;
     } else {
@@ -160,7 +168,13 @@ class CreateEvent extends Component {
       this.state.PublicPrivate,
     );
     let checkduration = Validations.checkUsername(this.state.duration);
-
+    let dateCheck
+    if(this.state.selected === true)
+    {
+      dateCheck=true
+    }else{
+      dateCheck=false
+    }
     if (
       checkTitle && 
       checkAddress &&
@@ -170,7 +184,8 @@ class CreateEvent extends Component {
       checkduration &&
       checkPublicPrivate &&
       checkFee &&
-      checkEventType
+      checkEventType &&
+      dateCheck
     ) {
       return true;
     }
@@ -238,6 +253,13 @@ class CreateEvent extends Component {
         btnOneText: 'Ok',
         popUpError: true,
         errorText: 'Add Duration in form',
+      });
+    }else if (!dateCheck) {
+      this.setState({
+        errorTitle: 'Invalid Form',
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: 'Add Date and Time in form',
       });
     }
     return false;
@@ -497,11 +519,15 @@ class CreateEvent extends Component {
     }
   };
   onChange = selectedDate => {
+    console.log("selected date"+selectedDate,"date time"+this.state.DateTime)
     const currentDate = selectedDate || this.state.DateTime;
-    const current_date = new Date(currentDate);
+    
+    const current_date = new Date(currentDate);  
+    console.log("current date"+current_date)
       this.setState({
         datetimeSelected:currentDate,
         DateTime: current_date,
+        selected:true
       });
    
   }
@@ -607,6 +633,7 @@ class CreateEvent extends Component {
                   <DateAndTimePicker
                     format="MMM DD, YYYY - hh:mm "
                     mode="datetime"
+                    showPreviousDate="no"
                     type="datetime"
                     editable={this.state.screenTypeEdit}
                     value={this.state.DateTime}

@@ -30,7 +30,8 @@ import {
     this.state = {
         findpeople: [
             
-        ]
+        ],
+        searchTerm:''
     };
   }
 

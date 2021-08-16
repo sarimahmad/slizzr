@@ -91,7 +91,7 @@ class findPeople extends Component {
             backColor={WHITE.dark}
             leftPress={() => this.props.navigation.openDrawer()}
             leftIcon={require('../../assets/drawer.png')}
-            rightPress={() => this.props.navigation.navigate('lookFriends')}
+            rightPress={() => this.props.navigation.navigate('peopleProfiles')}
             searchIcon={require('../../assets/searchGrey.png')}
             headerTitle={'Find People For'}
           />
@@ -134,7 +134,7 @@ class findPeople extends Component {
                   </View>
                   <TouchableOpacity
                     onPress={() =>
-                      this.props.navigation.navigate('peopleProfiles')
+                      this.props.navigation.navigate('myEventInfo', {id: item.id})
                     }
                     style={styles.shareView}>
                     <Image source={require('../../assets/Right.png')} />

@@ -35,7 +35,8 @@ export default class DateAndTimePicker extends React.Component {
     if (Platform.OS === 'ios') {
       this.setState({platform: false});
     }
-    this.setState({dateTime: new Date(this.props.value)});
+    console.log('value in component' + this.props.value);
+    this.setState({dateTime: this.props.value});
   };
 
   componentDidUpdate() {
@@ -108,7 +109,24 @@ export default class DateAndTimePicker extends React.Component {
       if (this.state.show) {
         return (
           <View style={{backgroundColor: 'red'}}>
-            <DateTimePicker
+            {this.props.showPreviousDate === 'no' && (
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={this.props.value}
+                mode={'date'}
+                minimumDate={moment().toDate()}
+                is24Hour={true}
+                display="default"
+                onChange={this.OnChange}
+                onTouchCancel={value => {
+                  console.log('touch cancel', value);
+                  this.setState({show: false});
+                }}
+              />
+            )}
+            {this.props.showPreviousDate === 'yes' && (
+           
+              <DateTimePicker
               testID="dateTimePicker"
               value={this.props.value}
               mode={'date'}
@@ -120,6 +138,9 @@ export default class DateAndTimePicker extends React.Component {
                 this.setState({show: false});
               }}
             />
+          
+            )
+          }
           </View>
         );
       }
@@ -131,14 +152,38 @@ export default class DateAndTimePicker extends React.Component {
           visible={this.state.show}>
           <View>
             <View style={{height: SCREEN.height / 2, marginTop: 200}}>
+            {this.props.showPreviousDate === 'no' && (
               <DateTimePicker
                 testID="dateTimePicker"
-                value={this.state.dateTime}
-                mode={this.props.mode}
-                is24Hour={false}
-                display="spinner"
-                onChange={this.OnChangeIos}
+                value={this.props.value}
+                mode={'date'}
+                minimumDate={moment().toDate()}
+                is24Hour={true}
+                display="default"
+                onChange={this.OnChange}
+                onTouchCancel={value => {
+                  console.log('touch cancel', value);
+                  this.setState({show: false});
+                }}
               />
+            )}
+            {this.props.showPreviousDate === 'yes' && (
+           
+              <DateTimePicker
+              testID="dateTimePicker"
+              value={this.props.value}
+              mode={'date'}
+              is24Hour={true}
+              display="default"
+              onChange={this.OnChange}
+              onTouchCancel={value => {
+                console.log('touch cancel', value);
+                this.setState({show: false});
+              }}
+            />
+          
+            )
+          }
             </View>
             <ButtonResetPassaword
               validate={true}

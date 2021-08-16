@@ -190,8 +190,9 @@ class peopleProfiles extends Component {
                   </View>
 
                   <View style={styles.bottomView}>
+                    <View style={{minHeight:170}}>
                     <View
-                      style={{alignItems: 'center', justifyContent: 'center'}}>
+                      style={{alignItems: 'center', justifyContent: 'center',}}>
                       <Text style={styles.titleText}>{item.FirstName}</Text>
                       <View style={{flexDirection: 'row', marginTop: 5}}>
                         <Image
@@ -201,18 +202,10 @@ class peopleProfiles extends Component {
                         <Text>12 KM away</Text>
                       </View>
                     </View>
-                    <Text
-                      style={[
-                        styles.titleText,
-                        {alignItems: 'flex-start', marginTop: 10},
-                      ]}>
-                      Mutual Connections
-                    </Text>
+                   
                     <MutualConnectionImages userId={item.id} />
-                    {/* {this.getUserMutualConnections(item.id)} */}
-                    <Text style={[styles.purpleText, {marginTop: 10}]}>
-                      See more
-                    </Text>
+                    </View>
+                    
                     <TouchableOpacity style={styles.btnLocation}>
                       <Text style={styles.btnTextLocation}>DIRECT INVITE</Text>
                     </TouchableOpacity>
