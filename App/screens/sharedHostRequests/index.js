@@ -44,9 +44,16 @@ class sharedHostRequests extends Component {
 
 
 
-  approveSharedHostRequest=async(id)=>{
+  approveSharedHostRequest=async(response,id)=>{
     this.setState({loading:true})
-    await approveSharedHostRequest(id).then(response=>{
+    console.log(id)
+    let data
+if(response==="approve"){
+data =  { ACCEPTED : "TRUE"}
+}else{
+   data ={ACCEPTED : "FALSE"}
+}
+    await approveSharedHostRequest(data,id).then(response=>{
       if(response.status === 200){
         this.setState({loading:false})
      
@@ -62,6 +69,7 @@ class sharedHostRequests extends Component {
      
         alert("Failed")
       }
+      this.setState({loading:false})
     })
     }
     removeSharedHostRequest=async(id)=>{
@@ -174,7 +182,7 @@ class sharedHostRequests extends Component {
                     </View>
                     <View>
                <TouchableOpacity
-                 onPress={() =>this.approveSharedHostRequest(item.SharedHostID)
+                 onPress={() =>this.approveSharedHostRequest("approve",item.SharedHostID)
                  }
                  style={{
                    marginBottom: 5,
@@ -190,7 +198,7 @@ class sharedHostRequests extends Component {
                </TouchableOpacity>
                <TouchableOpacity
                  onPress={() =>
-                  this.removeSharedHostRequest(item.SharedHostID) 
+                  this.removeSharedHostRequest("remove",item.SharedHostID) 
                 }
                style={{
                    marginRight: 5,

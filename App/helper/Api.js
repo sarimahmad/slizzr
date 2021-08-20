@@ -83,9 +83,27 @@ export async function getUserImages(user_id) {
       console.error(error);
     });
 }
+// export async function getEventDetail(formdata, event_id) {
+//   var config = {
+   
+//     url: `${Server}/event/${event_id}`,
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     data: formdata,
+//   };
 
-export async function getEventDetail(event_id) {
-  return fetch(`${Server}/event/` + event_id)
+//   const GetResponse = await axios(config)
+//     .then(function (response) {
+//       return response.data;
+//     })
+//     .catch(function (error) {
+//       console.log(error);
+//     });
+//   return GetResponse;
+// }
+export async function getEventDetail(data,event_id) {
+  return fetch(`${Server}/event/`+event_id+"?Lat="+data.Lat+"&Long="+data.Long)
     .then(async response => {
       return await response.json();
     })
@@ -576,7 +594,7 @@ export async function blockUser(data) {
     headers: {
       'Content-Type': 'application/json',
     },
-    data: formData,
+    data: data,
   };
 
   const GetResponse = await axios(config)
@@ -780,13 +798,14 @@ export async function removeSharedHostRequest(sharedHostID) {
   return GetResponse;
 }
 //
-export async function approveSharedHostRequest(sharedHostID) {
+export async function approveSharedHostRequest(data,sharedHostID) {
   var config = {
     method: 'POST',
-    url: `${Server}/event/decide-sharedhost-request/${sharedHostID}`,
+    url: `${Server}/event/decide-sharedhost-request/`+sharedHostID,
     headers: {
       'Content-Type': 'application/json',
     },
+      data: data,
   };
 
   const GetResponse = await axios(config)
@@ -887,7 +906,7 @@ export async function getAllSharedEvents(user_id) {
 export async function getAllSharedHostsforEventAccepted(event_id) {
   var config = {
     method: 'GET',
-    url: `${Server}/event/get-all-sharedevents/${event_id}`,
+    url: `${Server}/event/get-sharedhost-event/${event_id}`,
     headers: {
       'Content-Type': 'application/json',
     },

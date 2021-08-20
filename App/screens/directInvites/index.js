@@ -5,6 +5,7 @@ import {
   StyleSheet,
   FlatList,
   Image,
+  Share,
   TouchableOpacity,
 } from 'react-native';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -13,7 +14,7 @@ import {BLACK} from '../../helper/Color';
 import {getAllFriends} from '../../helper/Api';
 import {TextInput} from 'react-native';
 
-import Share from 'react-native-share';
+// import Share from 'react-native-share';
 import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
 const KEYS_TO_FILTERS = ['Name', 'EventType'];
@@ -94,17 +95,23 @@ class directInvites extends Component {
   shareInvites = async() => {
     try {
         const result = await Share.share({
-          message:'Your message here'
+          message:'Your message here',
+          title:'message',
+          url:''
+
         });
       
         if (result.action === Share.sharedAction) {
           if (result.activityType) {
-              alert(result)
+            console.log(result)  
+            alert(result)
             // shared with activity type of result.activityType
           } else {
+
             // shared
           }
         } else if (result.action === Share.dismissedAction) {
+            alert("dismissed")
           // dismissed
         }
       } catch (error) {

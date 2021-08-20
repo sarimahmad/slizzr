@@ -46,12 +46,21 @@ class manageEvents extends Component {
       this.getUserEvents();
       this.getUserAttendedEvents();
       this.getAllSharedRequests();
+      this.getAllSharedEvents()
     });
   }
   componentWillUnmount() {
     this._unsubscribe();
   }
+  async getAllSharedEvents(id) {
+    this.setState({loading: true});
 
+    await getAllSharedEvents(id).then(response => {
+      console.log('response' + response);
+      this.setState({sharedEvents: response.data.SharedEvents, loading: false});
+    });
+  }
+  
   async getUserEvents() {
     await getUserEvents(this.props.userToken).then(response => {
       this.setState({loading: false});

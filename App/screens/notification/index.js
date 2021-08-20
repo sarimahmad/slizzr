@@ -23,6 +23,8 @@ import {
   acceptandRejectRequest,
   getAllNotifications,
 } from '../../helper/Api';
+import NotifService from '../../helper/NotifService';
+import handler from '../../helper/NotificationHandler';
 class notification extends Component {
   constructor(props) {
     super(props);
@@ -41,7 +43,8 @@ class notification extends Component {
   async getAllNotifications() {
     this.setState({loading: true});
     await getAllNotifications(this.props.userToken).then(response => {
-      this.setState({notifications: response.Notifications, loading: false});
+      // this.setState({notifications: response.Notifications, loading: false});
+handler.onNotification()
     });
   }
   async acceptandRejectRequest(status, item) {

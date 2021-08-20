@@ -46,10 +46,23 @@ class attendingEventInfo extends Component {
   }
   async getEventDetail(id) {
     this.setState({loading: true});
-    await getEventDetail(id).then(response => {
-      this.setState({detailItem: response.Event});
-      this.setState({loading: false});
-    });
+     let location= {
+        Lat: this.props.userDetail.Location.latitude,
+        Long:  this.props.userDetail.Location.longitude
+    }
+    await getEventDetail(location,id)
+      .then(response => {
+        if(response.Event){
+        this.setState({
+          detailItem: response.Event,
+          loading:false
+        });
+      }else{
+        alert(response)
+        this.props.navigation.goBack()
+      }
+      }).catch(error => console.log(error));
+    
     this.setState({currentUserUID: this.props.userDetail.id});
   }
 

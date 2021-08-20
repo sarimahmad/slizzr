@@ -26,7 +26,7 @@ import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 import ErrorPopup from '../../component/ErrorPopup';
 import {sendMessageToAttendees, disInviteAttendee} from '../../helper/Api';
-const KEYS_TO_FILTERS = ['Name'];
+const KEYS_TO_FILTERS = ['item.User.FirstName'];
 import SearchInput, { createFilter } from 'react-native-search-filter';
 
 class attendeesList extends Component {
@@ -77,7 +77,7 @@ class attendeesList extends Component {
         }}>
           <View>
             <Text style={styles.emptyFont}>
-              You are not attendee at the moment.
+              You have not attendee at the moment.
             </Text>
           </View>
         
@@ -89,7 +89,7 @@ class attendeesList extends Component {
     let attendeesIdList = [];
     this.setState({loading: true});
     await getAttendeesList(eventId).then(response => {
-      this.setState({attendeesLIst: response.Attendees});
+      this.setState({attendeesList: response.Attendees});
       this.setState({attendeesCount: response.Attendees.length});
       response.Attendees.forEach(element => {
         attendeesIdList.push(element.User.id);
@@ -102,6 +102,9 @@ class attendeesList extends Component {
     this.setState({messageAllText: text});
   };
 
+  searchUpdated(term) {
+    this.setState({searchTerm: term});
+  }
   done = async () => {
     this.setState({popUpError: false, fbtnOneText: false});
     this.setState({errorTitle: false});
@@ -135,7 +138,7 @@ class attendeesList extends Component {
   };
 
   render() {
-    const attendeesLIst = this.state.attendeesLIst.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
+    const attendeesList = this.state.attendeesList.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
   
     const fromAttend =
       this.props.route.params.from && this.props.route.params.from === 'attend';
@@ -159,12 +162,15 @@ class attendeesList extends Component {
               placeholder={'Search'}
               placeholderTextColor={'#8e8e93'}
               style={{fontSize: 17, fontFamily: FONT.Nunito.regular}}
-              // onChangeText={handleText}
+              onChangeText={term => {
+                this.searchUpdated(term);
+              }}
+          
             ></TextInput>
           </View>
 
           <FlatList
-            data={attendeesLIst}
+            data={attendeesList}
             keyExtractor={item => item.id}
             ListEmptyComponent={this.emptyListComponent}
           
@@ -173,6 +179,7 @@ class attendeesList extends Component {
                 onPress={() =>
                   this.props.navigation.navigate('myProfile', {
                     id: item.User.id,
+                    MutualConnectionID:item.id,
                     eventId:this.state.eventId,
                     hostId:this.state.hostId
 
@@ -183,17 +190,42 @@ class attendeesList extends Component {
                   borderBottomWidth: 1,
                   borderBottomColor: 'lightgrey',
                   marginBottom:
-                    this.state.attendeesLIst.length - 1 === index ? 80 : 0,
+                    this.state.attendeesList.length - 1 === index ? 80 : 0,
                 }}>
                 <View style={[styles.flexRow, {height: 70}]}>
                   <View
                     style={{flexDirection: 'row', width: SCREEN.width * 0.6}}>
-                    <View style={styles.imgView}>
+                       <View style={styles.imgView}>
+                    {item.Pictures && item.Pictures.length > 0 ? (
                       <Image
-                        style={{height: 50, width: 50}}
-                        source={{uri: item.User.Profile}}
+                        source={{uri: item.Pictures[0].Profile_Url}}
+                        style={styles.logo}
                       />
-                    </View>
+                    ) : (
+                      <View
+                        style={[
+                          styles.logo,
+                          {
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#7b1fa2',
+                            borderColor: '#7b1fa2',
+                          },
+                        ]}>
+                        <Text
+                          style={{
+                            fontSize: 28,
+                            fontWeight: '600',
+                            color: 'white',
+                          }}>
+                          {item.User && item.User.FirstName.charAt(0).concat(
+                            item.User.LastName.charAt(0),
+                          )}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+         
                     <View
                       style={[
                         styles.detail,
@@ -373,13 +405,14 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 30,
+    marginBottom:10,
     marginRight: 20,
   },
   flex: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  logo: {},
+  logo: {height: 60, width: 60, borderWidth: 2, borderRadius: 30},
   titleText: {
     color: BLACK.textInputTitle,
     fontFamily: FONT.Nunito.bold,

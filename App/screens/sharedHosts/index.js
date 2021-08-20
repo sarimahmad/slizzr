@@ -23,7 +23,8 @@ import {
   inviteSharedHost,
   getAllSharedEvents,
   getAllSharedHostsforEventAccepted,
-  getAllPendingSharedHostsforEvent
+  getAllPendingSharedHostsforEvent,
+  getUserEvents
 } from '../../helper/Api';
 import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
@@ -48,7 +49,7 @@ class sharedHosts extends Component {
         {id: 5, image: require('../../assets/profile2.png')},
       ],
       sharedHosts: [],
-      sharedEvents: [],
+      userEvents: [],
       friendsList: [],
     };
   }
@@ -79,7 +80,8 @@ class sharedHosts extends Component {
   }
   componentDidMount() {
     this.getAllFriends();
-    this.getAllSharedEvents()
+    this.getUserEvents()
+
     }
   async getAllFriends() {
     this.setState({loading: true});
@@ -88,36 +90,30 @@ class sharedHosts extends Component {
       this.setState({friendsList: response.Users, loading: false});
     });
   }
-  async getAllSharedEvents() {
-    this.setState({loading: true});
-    await getAllSharedEvents(this.props.userToken).then(response => {
-      console.log('response' + response);
-      if (response.status === 200 || response == undefined) {
-        
-        this.setState({
-          sharedEvents: response.data.SharedEvents,
-          
-          loading: false,
-        });
-      } else {
-        this.setState({loading: false});
-      }
+   async getUserEvents() {
+    await getUserEvents(this.props.userToken).then(response => {
+      this.setState({loading: false});
+      this.setState({userEvents: response.UserHostedEvent, loading: false});
     });
   }
-  async getAllSharedHostsforEventAccepted(id) {
+
+ async getAllSharedHostsforEventAccepted(id) {
     this.setState({loading: true});
 
     await getAllSharedHostsforEventAccepted(id).then(response => {
       console.log('response' + response);
-      this.setState({sharedHostsEventsAccepted: response.data.SharedEvents, loading: false});
+      this.setState({sharedHostsEventsAccepted: response.data.Sharedhost, loading: false});
     });
   }
+  
+
+ 
   async getAllPendingSharedHostsforEvent(id) {
     this.setState({loading: true});
     
     await getAllPendingSharedHostsforEvent(id).then(response => {
       console.log('response' + response);
-      this.setState({sharedHostsEventsPending: response .data.SharedEvents, loading: false});
+      this.setState({sharedHostsEventsPending: response.data.SharedEvents, loading: false});
     });
   }
   emptyListComponent = () => {
@@ -130,9 +126,9 @@ class sharedHosts extends Component {
           justifyContent: 'center',
           flexGrow: 1,
           display: 'flex',
-          marginTop: SCREEN.height / 4,
+          marginTop: 50,
         }}>
-        {this.state.index === 1 && (
+        {this.state.index === 0 && (
           <View>
             <Text style={styles.emptyFont}>
               You are not hosting any events at the moment.
@@ -144,7 +140,7 @@ class sharedHosts extends Component {
             </TouchableOpacity>
           </View>
         )}
-        {this.state.index === 2 && (
+        {this.state.index === 1 && (
           <View>
             <Text style={styles.emptyFont}>
               You are not attending any events at the moment.
@@ -159,7 +155,8 @@ class sharedHosts extends Component {
         
       </View>
     );
-  };getSharedEventData=(id)=>{
+  };
+  getSharedEventData=(id)=>{
     this.getAllPendingSharedHostsforEvent(id)
     this.getAllSharedHostsforEventAccepted(id)
   }
@@ -167,12 +164,12 @@ class sharedHosts extends Component {
     if (this.state.hostSelected) {
       console.log(this.state.hostSelected);
       let data = {
-        host_id: this.state.hostSelected.Friend.id,
+        host_id: this.props.userToken,
         event_id: this.props.route.params.id,
       };
       this.setState({loading: true});
 
-      await inviteSharedHost(data, this.props.userToken).then(response => {
+      await inviteSharedHost(data, this.state.hostSelected.Friend.id).then(response => {
         if (response.status === 200) {
           alert(response.data.message);
           this.setState({loading: false, hostSelected: {}});
@@ -214,8 +211,8 @@ class sharedHosts extends Component {
                   style={styles.PickerStyleClass}
                   selectedValue={this.state.mode}
                    >
-                  {this.state.sharedEvents.map((item, key) => (
-                   <Picker.Item label={item.Event.Name} value={item.Event.id} key={key} />)
+                  {this.state.userEvents.map((item, key) => (
+                   <Picker.Item label={item.Name} value={item.id} key={key} />)
                    )}
                 </Picker>
               </View>
@@ -361,15 +358,46 @@ class sharedHosts extends Component {
                   onPress={() => this.setState({hostSelected: item})}
                   activeOpacity={0.1}>
                   <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
+                    {/* <View style={styles.imgView}>
                       <Image
                         style={{height: 50, width: 50}}
-                        source={{uri: item.Friend.image}}
+                        source={{uri: item.User.Profile}}
                       />
-                    </View>
+                    </View> */}
+         <View style={styles.imgView}>
+                    {item.User && item.User.Profile  ? (
+                      <Image
+                        source={{uri: item.User.Profile}}
+                        style={styles.logo}
+                      />
+                    ) : (
+                      <View
+                        style={[
+                          styles.logo,
+                          {
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#7b1fa2',
+                            borderColor: '#7b1fa2',
+                          },
+                        ]}>
+                        <Text
+                          style={{
+                            fontSize: 28,
+                            fontWeight: '600',
+                            color: 'white',
+                          }}>
+                          {item.User && item.User.FirstName.charAt(0).concat(
+                            item.User.LastName.charAt(0),
+                          )}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                    {/*  */}
                     <View style={styles.detail}>
                       <Text style={styles.titleText}>
-                        {item.Friend.displayName}
+                        {item.User.displayName}
                       </Text>
                     </View>
                     <View
@@ -400,15 +428,47 @@ class sharedHosts extends Component {
                   onPress={() => this.setState({hostSelected: item})}
                   activeOpacity={0.1}>
                   <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
+                    {/* <View style={styles.imgView}>
                       <Image
                         style={{height: 50, width: 50}}
-                        source={{uri: item.Friend.image}}
+                        source={{uri: item.User.Profile}}
                       />
-                    </View>
+                    </View> */}
+
+<View style={styles.imgView}>
+                    {item.User && item.User.Profile  ? (
+                      <Image
+                        source={{uri: item.User.Profile}}
+                        style={styles.logo}
+                      />
+                    ) : (
+                      <View
+                        style={[
+                          styles.logo,
+                          {
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#7b1fa2',
+                            borderColor: '#7b1fa2',
+                          },
+                        ]}>
+                        <Text
+                          style={{
+                            fontSize: 28,
+                            fontWeight: '600',
+                            color: 'white',
+                          }}>
+                          {item.User && item.User.FirstName.charAt(0).concat(
+                            item.User.LastName.charAt(0),
+                          )}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                    {/*  */}
                     <View style={styles.detail}>
                       <Text style={styles.titleText}>
-                        {item.Friend.displayName}
+                        {item.User.displayName}
                       </Text>
                     </View>
                     <View
@@ -459,6 +519,14 @@ const styles = StyleSheet.create({
     width: SCREEN.width,
     backgroundColor: WHITE.dark,
   },
+  emptyFont: {
+    fontSize: 20,
+    textAlign: 'center',
+    color: '#494949',
+    fontFamily: FONT.Nunito.regular,
+    marginBottom: 20,
+  },
+ 
   btnTextLocation: {
     fontSize: 16,
     color: 'white',
@@ -499,8 +567,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
-    position: 'absolute',
-    bottom: 0,
+  
     backgroundColor: 'black',
     justifyContent: 'center',
   },

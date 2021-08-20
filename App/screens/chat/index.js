@@ -54,8 +54,7 @@ const chat = () => {
   useEffect(() => {
     // getAllMessages()
 
-    const docid =
-      HostUID > CurrentUserUID
+    const docid = HostUID > CurrentUserUID
         ? CurrentUserUID + '-' + HostUID
         : HostUID + '-' + CurrentUserUID;
     const messageRef = firestore()
@@ -119,7 +118,7 @@ const chat = () => {
 
   const getAllMessages = async () => {
     const docid =
-      HostUID > CurrentUserUID
+      HostUID < CurrentUserUID
         ? CurrentUserUID + '-' + HostUID
         : HostUID + '-' + CurrentUserUID;
     const querySanp = await firestore()

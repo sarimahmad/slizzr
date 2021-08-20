@@ -72,6 +72,9 @@ class editProfle extends Component {
   }
   onChange = selectedDate => {
     const currentDate = selectedDate || this.state.DateTime;
+    console.log("current Date"+currentDate)
+    console.log("current Datenew "+new Date(currentDate))
+    
     const current_date = new Date();
     const difference_date =
       current_date.getTime() - new Date(currentDate).getTime();
@@ -121,13 +124,14 @@ class editProfle extends Component {
         day: day,
         month: month,
         year: year,
-        DateTime: ( JSON.stringify(day).concat('/'+JSON.stringify(month)).concat('/'+JSON.stringify(year))),
+        DateTime: new Date(year,month,day),
         imageOfuser: this.props.route.params.imageOfuser,
       });
       console.log("dates"+day+month+year)
-      console.log("dates from database in new date" + new Date (JSON.stringify(day).concat('/'+JSON.stringify(month)).concat('/'+JSON.stringify(year))))
+      console.log("dates from database in new date" + new Date (year, month, day)
+      )
     
-    }  
+    } 
    
   }
 
@@ -442,6 +446,8 @@ class editProfle extends Component {
                   <DateAndTimePicker
                     format="MMM DD, YYYY"
                     mode="date"
+                    showPreviousDate={"yes"}
+                    editable={false}
                     type="onlyDate"
                     value={this.state.DateTime}
                     setDateAndTime={value => this.onChange(value)}

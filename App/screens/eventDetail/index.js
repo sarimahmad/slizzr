@@ -8,6 +8,7 @@ import {
   Image,
   StyleSheet,
   FlatList,
+  Modal
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -31,28 +32,29 @@ import {
   getDefaultCustomerCard,
 } from '../../helper/Api';
 import Loader from '../../component/Loader';
+import ErrorPopup from '../../component/ErrorPopup';
 
 class eventDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      image: [
-        {id: 1, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 2, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 3, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 4, image: require('../../assets/Slizzer-icon/testImage.webp')},
-        {id: 5, image: require('../../assets/Slizzer-icon/testImage.webp')},
-      ],
       detailItem: {},
       date: '',
       imageUri: '',
       Check_Status: '',
-      users: [],
+      mutualConnnections: [],
       Ticket_Left: '',
       User_Attending_Event: '',
       loading: false,
+      popUpError: false,
+      btnOneText: '',
+      errorTitle: '',
+      errorText: '',
+      btnTwoText: '',
+      isModalVisible: false,
+      
       defaultCard: {},
-      nodefaultCard: false,
+      userdefaultCard: false,
     };
   }
   componentDidMount() {
@@ -74,11 +76,14 @@ class eventDetail extends Component {
       this.props.userDetail.STRIPE_CUST_ID &&
       this.props.userDetail.STRIPE_CUST_ID !== ''
     ) {
-      await getDefaultCustomerCard(this.props.userDetail.STRIPE_CUST_ID).then(
-        response => {
+      await getDefaultCustomerCard(this.props.userDetail.STRIPE_CUST_ID).then(response => {
+          if(response!==undefined){
           console.log('responseDefaultCrad', response);
-          this.setState({defaultCard: response});
-        },
+          this.setState({defaultCard: response,userdefaultCard:true});
+        }else{
+          console.log(response)
+        }
+      }
       );
     }
   }
@@ -88,11 +93,15 @@ class eventDetail extends Component {
 
   async getEventDetail(id, userId) {
     this.setState({loading: true});
-    await getEventDetail(id)
+     let location= {
+        Lat: this.props.userDetail.Location.latitude,
+        Long:  this.props.userDetail.Location.longitude
+    }
+    await getEventDetail(location,id)
       .then(response => {
         if(response.Event){
         this.setState({
-          myEvent: response.Event.Host.id === userId.Address,
+          myEvent: response.Event.Host.id === userId,
           detailItem: response.Event,
           date: response.Event,
         });
@@ -102,22 +111,6 @@ class eventDetail extends Component {
       }
       })
       .catch(error => console.log(error));
-    // const eventRef = firestore().collection('events');
-    // eventRef
-    //   .doc(id)
-    //   .get()
-    //   .then(firestoreDocument => {
-    //     if (!firestoreDocument.exists) {
-    //     } else {
-    //       this.setState({
-    //         myEvent: firestoreDocument.data().Host.id === userId,
-    //       });
-    //       this.setState({detailItem: firestoreDocument.data()});
-    //       this.setState({
-    //         date: firestoreDocument.data(),
-    //       });
-    //     }
-    //   });
     this.setState({loading: false});
   }
 
@@ -133,43 +126,38 @@ class eventDetail extends Component {
   }
   async getMutualConnections() {
     getMutualConnections(this.props.userToken).then(response => {
-      this.setState({users: response.Users});
+      this.setState({mutualConnnections: response.Users});
     });
   }
+ 
   async attendEvent({user_id, event_id}) {
-    this.setState({loading: true});
-    // this.props.navigation.navigate('prepay', {
-    //   event_id: event_id,
-    //   user_id: user_id,
-    //   detailItem: this.state.detailItem,
-    // });
+  
 
     if (
-      this.state.detailItem.EventType !== 'PREPAID' &&
-      this.state.defaultCard
+     
+      this.state.userdefaultCard === true 
     ) {
-      this.setState({nodefaultCard: false});
-
-      AtendPublicEvent({user_id, event_id}).then(response => {
-        this.getEventDetail(
-          this.props.route.params.detailItem,
-          this.props.userDetail.id,
-        );
-      });
-    } else if (!this.state.defaultCard) {
-      this.setState({nodefaultCard: true});
-    } else {
-      this.setState({nodefaultCard: false});
-
+   
       this.props.navigation.navigate('prepay', {
-        event_id: event_id,
-        user_id: user_id,
-        detailItem: this.state.detailItem,
+            event_id: event_id,
+            user_id: user_id,
+            detailItem: this.state.detailItem,
+          })
+     
+    } else if (this.state.userdefaultCard === false ) {
+      this.setState({
+        loading: false,
+        errorTitle: 'ERROR:No Default Card Set',
+        errorText: 'Please select your default card',
+        btnOneText: 'Ok',
+        popUpError: true,
       });
-    }
+    } 
     this.setState({loading: false});
   }
-
+  done = () => {
+    this.setState({popUpError: false});
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -261,12 +249,14 @@ class eventDetail extends Component {
                     `$${this.state.detailItem.Fee}`}
                 </Text>
               </View>
+              {this.state.mutualConnnections.length!==0 &&
+          <View style={{minHeight:60}}>
               <Text style={[styles.titleText, {marginTop: 9}]}>
                 Mutual Attendees
               </Text>
               <View style={{height: 50, width: SCREEN.width, marginTop: 11}}>
                 <FlatList
-                  data={this.state.users}
+                  data={this.state.mutualConnnections}
                   horizontal
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({item}) => (
@@ -301,10 +291,13 @@ class eventDetail extends Component {
                 ]}>
                 See more
               </Text>
+  </View>
+  }
+
             </View>
 
             {!this.state.myEvent && (
-              <TouchableOpacity
+         <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
                   if (this.state.Check_Status === 'Active') {
@@ -349,15 +342,26 @@ class eventDetail extends Component {
                 </Text>
               </TouchableOpacity>
             )}
-            {this.state.nodefaultCard === true && (
-              <Text
-                style={{textAlign: 'center', marginBottom: 10, color: 'red'}}>
-                Please select your default card
-              </Text>
-            )}
+            
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
+        {this.state.popUpError === true && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() => this.done()}
+              doneButtonPress={() => this.done()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+            />
+          </Modal>
+        )}
+
       </View>
     );
   }

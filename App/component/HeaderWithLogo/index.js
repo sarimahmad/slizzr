@@ -5,7 +5,7 @@ import { Image, View, TouchableOpacity } from 'react-native';
 import { SCREEN } from '../../helper/Constant';
 import { BLACK } from '../../helper/Color';
 
-function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor, borderBottom }) {
+function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor, borderBottom,relation }) {
   return (
     <View
       style={{
@@ -37,7 +37,7 @@ function HeaderWithLogo({ leftPress, leftIcon, rightPress, rightIcon, backColor,
           <Image source={require('../../assets/homeLogo.png')} />
         </View>
       </View>
-      {rightIcon && <TouchableOpacity
+      {(rightIcon && relation===false) &&<TouchableOpacity
         underlayColor={backColor}
         onPress={rightPress}
         style={{

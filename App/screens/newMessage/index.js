@@ -20,7 +20,8 @@ import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import { getAllFriends } from '../../helper/Api';
-const KEYS_TO_FILTERS = ['Name'];
+const KEYS_TO_FILTERS = [''];
+
 import SearchInput, { createFilter } from 'react-native-search-filter';
  class newMessage extends Component {
   constructor(props) {
@@ -28,7 +29,8 @@ import SearchInput, { createFilter } from 'react-native-search-filter';
     this.state = {
       attendingEvents: true,
       myevents: false,
-      friends:[]
+      friends:[],
+      searchTerm:''
     };
   }
   componentDidMount(){
@@ -41,6 +43,9 @@ import SearchInput, { createFilter } from 'react-native-search-filter';
       this.setState({friends: response.Users, loading: false});
     });
     
+  }
+  searchUpdated(term) {
+    this.setState({searchTerm: term});
   }
   
   emptyListComponent = () => {
@@ -99,8 +104,10 @@ import SearchInput, { createFilter } from 'react-native-search-filter';
                 placeholder={'Search'}
                 placeholderTextColor={'#B2ABB1'}
                 style={{fontFamily:FONT.Nunito.regular,fontSize:17,color:'#B2ABB1',paddingTop:5}}
-                // onChangeText={handleText}
-              ></TextInput>
+                onChangeText={term => {
+                  this.searchUpdated(term);
+                }}
+                ></TextInput>
               
             </View>
           <FlatList
@@ -110,21 +117,44 @@ import SearchInput, { createFilter } from 'react-native-search-filter';
         
             renderItem={({item}) => (
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('chat')}
                 style={{
                   borderBottomWidth: 1,
                   borderColor: 'lightgrey',
                   justifyContent: 'center',
                 }}>
                 <View style={styles.flexRow}>
-                  <View style={styles.imgView}>
-                    <Image
-                      style={{height: 50, width: 50}}
-                      source={require('../../assets/profile1.png')}
-                    />
+                <View style={styles.imgView}>
+                    {item.Friend.Pictures && item.Friend.Pictures.length > 0 ? (
+                      <Image
+                        source={{uri: item.Friend.Pictures[0].Profile_Url}}
+                        style={styles.logo}
+                      />
+                    ) : (
+                      <View
+                        style={[
+                          styles.logo,
+                          {
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: '#7b1fa2',
+                            borderColor: '#7b1fa2',
+                          },
+                        ]}>
+                        <Text
+                          style={{
+                            fontSize: 28,
+                            fontWeight: '600',
+                            color: 'white',
+                          }}>
+                          {item.Friend && item.Friend.FirstName.charAt(0).concat(
+                            item.Friend.LastName.charAt(0),
+                          )}
+                        </Text>
+                      </View>
+                    )}
                   </View>
-                  <View style={styles.detail}>
-                    <Text style={styles.titleText}>{item.name}</Text>
+           <View style={styles.detail}>
+                    <Text style={styles.titleText}>{item.Friend.FirstName}</Text>
                     <Image
                       style={{height: 26, width: 28,marginLeft:8,resizeMode:'contain'}}
                       source={require('../../assets/newProfile.png')}
@@ -176,6 +206,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: FONT.Nunito.bold,
   },
+  logo: {height: 60, width: 60, borderWidth: 2, borderRadius: 30},
+ 
   btnLocation: {
     width: wp('80%'),
     marginHorizontal: '10%',
@@ -218,7 +250,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  logo: {},
   titleText: {
     color: BLACK.grey,
     fontFamily: FONT.Nunito.semiBold,

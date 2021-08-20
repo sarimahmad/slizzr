@@ -303,7 +303,11 @@ class CreateEvent extends Component {
 
   async getEventDetail(id) {
     this.setState({loading: true});
-    await getEventDetail(id).then(response => {
+    let location= {
+       Lat: this.props.userDetail.Location.latitude,
+       Long:  this.props.userDetail.Location.longitude
+   }
+    await getEventDetail(location,id).then(response => {
       this.setState({detailItem: response.Event});
 
       this.setState({Name: response.Event.Name});
@@ -320,6 +324,7 @@ class CreateEvent extends Component {
 
       this.setState({loading: false});
     });
+ 
   }
   handleSubmit = async () => {
     console.log(this.state);
@@ -521,9 +526,10 @@ class CreateEvent extends Component {
   onChange = selectedDate => {
     console.log("selected date"+selectedDate,"date time"+this.state.DateTime)
     const currentDate = selectedDate || this.state.DateTime;
-    
-    const current_date = new Date(currentDate);  
-    console.log("current date"+current_date)
+    console.log("cureent Date"+currentDate)
+    // const current_date = new Date('2016-08-13 00:00');
+    const current_date = new Date(currentDate);    
+    console.log("current date new"+current_date)
       this.setState({
         datetimeSelected:currentDate,
         DateTime: current_date,

@@ -53,19 +53,19 @@ export default class DateAndTimePicker extends React.Component {
 
         this.setState({timeSelect: true});
         this.setState({
-          time: moment(event.nativeEvent.timestamp).format('hh:mm a'),
+          time: moment(event.nativeEvent.timestamp).format('hh:mm'),
         });
       } else if (this.state.dateSelect === false) {
         console.log('date');
         this.setState({
-          date: moment(event.nativeEvent.timestamp).format('DD MMM YYYY'),
+          date: moment(event.nativeEvent.timestamp).format('DD-MMM-YYYY'),
         });
         this.setState({dateSelect: true});
         this.setState({show: false});
       }
 
       if (this.state.dateSelect === true && this.state.timeSelect === true) {
-        let selectedValue = this.state.date.concat('  ' + this.state.time);
+        let selectedValue = this.state.date.concat(' ' + this.state.time);
         this.props.setDateAndTime(selectedValue);
         this.setState({dateSelect: false, show: false, timeSelect: false});
       }
@@ -116,6 +116,7 @@ export default class DateAndTimePicker extends React.Component {
                 mode={'date'}
                 minimumDate={moment().toDate()}
                 is24Hour={true}
+                
                 display="default"
                 onChange={this.OnChange}
                 onTouchCancel={value => {
@@ -212,9 +213,9 @@ export default class DateAndTimePicker extends React.Component {
     );
   };
   openModel = () => {
-    // if(this.props.editable===false){
+    if(this.props.editable===false){
     this.setState({show: true});
-    // }
+    }
   };
   render() {
     return (

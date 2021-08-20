@@ -32,48 +32,7 @@ class messages extends Component {
       index: 1,
       userEvents: [],
       userAttendedEvents: [],
-      messages: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
-      findpeople: [
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-        {
-          imgProfile: '',
-          profileName: 'Marriage Anniversary',
-          adress: 'Host: Tallah Cotton',
-          date: '11:30 PM | Feb 25, 2020 - WED',
-        },
-      ],
+    
     };
   }
 

@@ -805,6 +805,7 @@ class home extends Component {
             style={{flexDirection: 'row'}}>
             <DateAndTimePicker
               testID="dateTimePicker"
+                      
               format="MMM DD, YYYY "
               value={this.state.date}
               mode={'date'}

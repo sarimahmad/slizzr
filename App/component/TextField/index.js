@@ -26,47 +26,49 @@ const TextField = props => {
             ? {width: (SCREEN.width - 40) / 2.1}
             : {width: SCREEN.width - 40},
         ]}>
-        {props.type === 'password' ? (
-          <View >
+        {/* {props.type === 'password' ? (
+          <View>
                  <TouchableOpacity
-              onPress={() => setShowPassword(!showPassword)}
-              style={{
-                position: 'absolute',
-                right: 10,
-                height: 80,
-                backgroundColor:'red',
-                width: 40,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              {props.type === 'password' && showPassword === true && (
-              
-               <Image
-                  style={{
-                    height: 40,
-                    width: 40,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  source={require('../../assets/eyeImage.png')}
-                />
-              )}
-              {props.type === 'password' && showPassword === false && (
-                
-                <Image
-                  style={{
-                    height: 40,
-                    width: 40,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}
-                  source={require('../../assets/eyeclose.png')}
-              
-              />
-              )}
-
-            </TouchableOpacity>
-      
+                 onPress={() => setShowPassword(!showPassword)}
+                 style={{
+                   position: 'absolute',
+                   right: 10,
+                   height: 80,
+                   backgroundColor:'red',
+                   width: 40,
+                   justifyContent: 'center',
+                   alignItems: 'center',
+                 }}>
+                 {props.type === 'password' && showPassword === true && (
+                 
+                  <Image
+                     style={{
+                       height: 40,
+                       width: 40,
+                       justifyContent: 'center',
+                       alignItems: 'center',
+                     }}
+                     source={require('../../assets/eyeImage.png')}
+                   />
+                 )}
+                 {props.type === 'password' && showPassword === false && (
+                   
+                   <Image
+                     style={{
+                       height: 40,
+                       width: 40,
+                       justifyContent: 'center',
+                       alignItems: 'center',
+                     }}
+                     source={require('../../assets/eyeclose.png')}
+                 
+                 />
+                 )}
+   
+               </TouchableOpacity>
+         
+        <View >
+        
             <TextInput
               style={styles.input}
               placeholder={props.placeholder}
@@ -76,6 +78,7 @@ const TextField = props => {
               autoCapitalize="none"
               autoCorrect={false}
             />
+          </View>
           </View>
         ) : (
           <View>
@@ -88,7 +91,7 @@ const TextField = props => {
               autoCorrect={false}
             />
           </View>
-        )}
+        )} */}
       </View>
     </View>
   );

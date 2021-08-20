@@ -21,10 +21,13 @@ import {getAllMessages, getEventDetail} from '../../helper/Api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../../component/Loader';
 
+
 const messagesEvent = props => {
   const [messages, SetMessages] = useState([]);
   const [currentUID, SetCurrentUID] = useState('');
   const [event, SetEvent] = useState({});
+  const [user, SetUser] = useState({});
+
   const [loading, SetLoading] = useState(false);
   
   const navigation = useNavigation();
@@ -39,6 +42,9 @@ const messagesEvent = props => {
   async function getMessage() {
     SetLoading(true)
     const TOKEN = await AsyncStorage.getItem('token');
+    const userDetail = await AsyncStorage.getItem('userdetail');
+    const user = JSON.parse(userDetail)
+    console.log(user)
     if (TOKEN) {
       SetCurrentUID(TOKEN);
       await getAllMessages({
@@ -54,7 +60,11 @@ const messagesEvent = props => {
         });
     }
     if (EventID) {
-      await getEventDetail(EventID)
+      let location= {
+        Lat:user.Location.latitude,
+        Long: user.Location.longitude
+    }
+      await getEventDetail(location,EventID)
         .then(response => {
           SetEvent(response.Event);
         })

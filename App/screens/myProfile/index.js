@@ -196,7 +196,8 @@ class Profile extends Component {
             leftIcon={require('../../assets/back.png')}
             leftPress={() => this.props.navigation.pop()}
             rightPress={() => this.rightIconPress()}
-            borderBottom={true}
+            borderBottom={true}  
+            relation={this.state.relation}
             rightIcon={
               this.props.route.params.from === 'drawer' ||
               this.props.route.params.id === this.props.userToken
@@ -338,7 +339,8 @@ class Profile extends Component {
                   : 'Empty Bio'}
               </Text>
               {this.props.userDetail &&
-                this.state.userDetail &&
+                this.state.userDetail && 
+                this.state.mutualConnections.length !==0 &&
                 this.props.userDetail.id !== this.state.userDetail.id && (
                   <View style={{alignSelf: 'flex-start', marginLeft: 40}}>
                     <Text style={[styles.titleText, {marginTop: 10}]}>
@@ -376,6 +378,7 @@ class Profile extends Component {
                     </View>
                     {this.footer()}
                   </View>
+                
                 )}
               {this.props.userDetail &&
                 this.state.userDetail &&

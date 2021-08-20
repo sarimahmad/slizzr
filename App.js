@@ -40,6 +40,7 @@ export default class App extends Component {
     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({isReady: true});
+    
   }
 
   render() {

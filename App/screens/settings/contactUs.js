@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   TextInput,
+  Modal,
   TouchableOpacity,
 } from 'react-native';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -16,6 +17,7 @@ import { contactUs } from '../../helper/Api';
 import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
 import Validations from '../../helper/Validations';
+import ErrorPopup from '../../component/ErrorPopup';
  class ContactUs extends Component {
 
   constructor(props) {
@@ -24,6 +26,7 @@ import Validations from '../../helper/Validations';
     this.state = {
       loading:false,
       name:'',
+      popUpError:false,
       email:'',
       phone:'',
       message:''
@@ -40,13 +43,39 @@ import Validations from '../../helper/Validations';
       return true;
     }
     if (!name) {
-      alert("Failed : invalid name")
+      
+      this.setState({
+        loading: false,
+        errorTitle: 'ERROR',
+        errorText: 'Invalid name',
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
     } else if (!email) {
-      alert("Failed : invalid email")
+      this.setState({
+        loading: false,
+        errorTitle: 'ERROR',
+        errorText: 'Invalid email',
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
     }else if (!phone) {
-      alert("Failed : invalid phone")
+      this.setState({
+        loading: false,
+        errorTitle: 'ERROR',
+        errorText: 'Invalid phone',
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
     }else if (!message) {
-      alert("Failed : invalid message")
+    
+      this.setState({
+        loading: false,
+        errorTitle: 'ERROR',
+        errorText: 'Invalid message',
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
     }
     return false;
   }
@@ -68,22 +97,45 @@ console.log(this.state)
       const data = {
         name: this.state.name,
         email: this.state.email,
-        phone:this.state.phone,
+        number:this.state.phone,
         message: this.state.message,
         
       };
       this.setState({loading: true});
       await contactUs(data,this.props.userToken).then(response => {
         this.setState({loading: false});
+        this.props.navigation.navigate("Settings")
         alert(response.Message)
      
       });
     
   }
 }
+done = () => {
+  console.log("false")
+  this.setState({popUpError: false});
+  // if(this.isFormFilledCheck()){
+  // this.props.navigation.goBack();
+  // }
+};
   render() {
     return (
       <View style={styles.wrapperView}>
+          {this.state.popUpError === true && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() => this.done()}
+              doneButtonPress={() => this.done()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+            />
+          </Modal>
+        )}
         <SafeAreaView style={styles.wrapperView}>
           <HeaderWithOptionBtn
             backColor={WHITE.dark}
@@ -125,7 +177,7 @@ console.log(this.state)
           </TouchableOpacity>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-    
+      
       </View>
     );
   }
