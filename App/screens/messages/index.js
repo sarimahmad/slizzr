@@ -18,7 +18,11 @@ import {
 
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import moment from 'moment';
-import {getUserAttendedEvents, getUserEvents} from '../../helper/Api';
+import {
+  getAllSharedEvents,
+  getUserAttendedEvents,
+  getUserEvents,
+} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 
@@ -32,13 +36,56 @@ class messages extends Component {
       index: 1,
       userEvents: [],
       userAttendedEvents: [],
-    
+      userSharedEvents: [],
+      messages: [
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+      ],
+      findpeople: [
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+        {
+          imgProfile: '',
+          profileName: 'Marriage Anniversary',
+          adress: 'Host: Tallah Cotton',
+          date: '11:30 PM | Feb 25, 2020 - WED',
+        },
+      ],
     };
   }
 
   componentDidMount() {
     this.getUserEvents();
     this.getUserAttendedEvents();
+    this.getAllUserSharedEvents();
   }
 
   async getUserEvents() {
@@ -50,6 +97,14 @@ class messages extends Component {
   async getUserAttendedEvents() {
     await getUserAttendedEvents(this.props.userToken).then(response => {
       this.setState({userAttendedEvents: response.UserAttendedEvents});
+    });
+  }
+  async getAllUserSharedEvents() {
+    await getAllSharedEvents(this.props.userToken).then(response => {
+      this.setState({loading: false});
+      this.setState({
+        userSharedEvents: response.data.SharedEvents,
+      });
     });
   }
 
@@ -148,12 +203,12 @@ class messages extends Component {
                   borderColor: 'grey',
                   justifyContent: 'center',
                   borderWidth: 1,
-                  width: SCREEN.width * 0.3,
+                  width: SCREEN.width * 0.34,
                   height: 39,
-                }  
+                }
               : {
                   color: 'black',
-                  width: SCREEN.width * 0.3,
+                  width: SCREEN.width * 0.34,
                   height: 39,
                   borderColor: 'grey',
                   justifyContent: 'center',
@@ -166,10 +221,9 @@ class messages extends Component {
               styles.barText,
               this.state.index === 3 ? {color: '#F818D9'} : {color: 'black'},
             ]}>
-            Shared Events
+            SHARED EVENTS
           </Text>
         </TouchableOpacity>
-  
       </View>
     );
   };
@@ -207,7 +261,7 @@ class messages extends Component {
             </TouchableOpacity>
           </View>
         )}
-         {this.state.index === 3 && (
+        {this.state.index === 3 && (
           <View>
             <Text style={styles.emptyFont}>
               You are not sharing any events at the moment.
@@ -259,13 +313,12 @@ class messages extends Component {
                         source={{uri: item.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-   {item.PublicPrivate==="Private" &&
-                    
-                      <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
-                      />
-                }
+                      {item.PublicPrivate === 'Private' && (
+                        <Image
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
+                        />
+                      )}
                     </View>
 
                     <View style={styles.detail}>
@@ -313,13 +366,12 @@ class messages extends Component {
                         source={{uri: item.Event.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-   {item.PublicPrivate==="Private" &&
-                    
-                      <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
-                      />
-                }
+                      {item.PublicPrivate === 'Private' && (
+                        <Image
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
+                        />
+                      )}
                     </View>
 
                     <View style={styles.detail}>
@@ -345,44 +397,50 @@ class messages extends Component {
           )}
           {this.state.index === 3 && (
             <FlatList
-              data={this.state.userSharedRequests}
-              keyExtractor={item => item.id}
+              data={this.state.userSharedEvents}
+              keyExtractor={item => item.Event.id}
               ListEmptyComponent={this.emptyListComponent}
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>
-                    this.props.navigation.navigate('attendingEventInfo')
+                    this.props.navigation.navigate('myEventInfo', {
+                      id: item.Event.id,
+                    })
                   }
                   style={{
-                    width: SCREEN.width,
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',
                   }}>
                   <View style={styles.flexRow}>
-                    <View style={styles.flexRow}>
-                      <View style={styles.imgView}>
+                    <View style={styles.imgView}>
+                      <Image
+                        source={{uri: item.Event.image}}
+                        style={{borderRadius: 44, height: 60, width: 60}}
+                      />
+                      {item.Event.PublicPrivate === 'Private' && (
                         <Image
-                          source={{uri: item.Event.image}}
-                          style={{borderRadius: 44, height: 60, width: 60}}
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
                         />
-                        {item.Event.PublicPrivate === 'Private' && (
-                          <Image
-                            style={{position: 'absolute', right: -10}}
-                            source={require('../../assets/private.png')}
-                          />
-                        )}
-                      </View>
-
-                      <View style={styles.detail}>
-                        <Text style={styles.titleText}>{item.Event.Name}</Text>
-                        <Text style={styles.subtitleText}>
-                          Host: {item.Event.Host.displayName}
-                        </Text>
-                        <Text style={[styles.purpleText, {marginTop: 5}]}>
-                          {item.Event.DateTime}
-                        </Text>
-                      </View>
+                      )}
                     </View>
+
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>{item.Event.Name}</Text>
+                      <Text style={styles.subtitleText}>
+                        {item.Event.EventType === 'SCAN'
+                          ? 'SCAN-&-PAY AT DOOR'
+                          : item.Event.EventType}
+                      </Text>
+                      <Text style={[styles.purpleText, {marginTop: 5}]}>
+                        {item.Event.DateTime}
+                      </Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => this.shareEvent()}
+                      style={styles.shareView}>
+                      <Image source={require('../../assets/share.png')} />
+                    </TouchableOpacity>
                   </View>
                 </TouchableOpacity>
               )}

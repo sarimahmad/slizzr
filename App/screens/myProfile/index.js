@@ -18,7 +18,7 @@ import * as userActions from '../../redux/actions/user';
 import {FONT, SCREEN} from '../../helper/Constant';
 import {BLACK, WHITE} from '../../helper/Color';
 import HeaderWithOptionBtn from '../../component/HeaderWithLogo';
-import {blockUser, getUserImages,findRelation} from '../../helper/Api';
+import {blockUser, getUserImages, findRelation} from '../../helper/Api';
 import ErrorPopup from '../../component/ErrorPopup';
 import firestore from '@react-native-firebase/firestore';
 import {sendMutualConnection, getMutualConnections} from '../../helper/Api';
@@ -30,9 +30,9 @@ class Profile extends Component {
     this.state = {
       imageOfuser: [],
       mutualConnections: [],
-      relation:false,
-      hostId:'',
-      eventId:''
+      relation: false,
+      hostId: '',
+      eventId: '',
     };
   }
   footer = () => {
@@ -52,22 +52,22 @@ class Profile extends Component {
       });
     } else if (this.props.route.params.id) {
       let eventId = this.props.route.params.eventId;
-      let hostId = this.props.route.params.hostId;  
-      this.setState({eventId:eventId,hostId:hostId})
+      let hostId = this.props.route.params.hostId;
+      this.setState({eventId: eventId, hostId: hostId});
       this._unsubscribe = this.props.navigation.addListener('focus', () => {
         this.getUserFromFirestore(this.props.route.params.id);
         this.getOtherUserImages(this.props.route.params.id);
         this.getMutualConnections(this.props.route.params.id);
-        this.findRelation(this.props.userToken,this.props.route.params.id)
+        this.findRelation(this.props.userToken, this.props.route.params.id);
       });
     }
   }
-  async findRelation(user_id,otheruser_id) {
-    await findRelation(user_id,otheruser_id).then(response => {
+  async findRelation(user_id, otheruser_id) {
+    await findRelation(user_id, otheruser_id).then(response => {
       this.setState({relation: response.Relation, loading: false});
     });
   }
- 
+
   async getMutualConnections(id) {
     await getMutualConnections(id).then(response => {
       this.setState({mutualConnections: response.Users, loading: false});
@@ -146,47 +146,54 @@ class Profile extends Component {
 
     await blockUser(data).then(response => {
       this.setState({loading: false});
-     if(response!==undefined){
-    this.setState({
-      loading: false,
-      errorTitle: 'Successful',
-      errorText: response.message,
+      if (response !== undefined) {
+        this.setState({
+          loading: false,
+          errorTitle: 'Successful',
+          errorText: response.message,
 
-      btnOneText: 'Ok',
-      popUpError: true,
-    });
-  }else{
-    this.setState({
-      loading: false,
-      errorTitle: 'Failed',
-      errorText: "Failed to block User",
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
+      } else {
+        this.setState({
+          loading: false,
+          errorTitle: 'Failed',
+          errorText: 'Failed to block User',
 
-      btnOneText: 'Ok',
-      popUpError: true,
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
+      }
     });
-  
-  }
-   
-})
   };
-  getMutualProfile=(id)=>{
-    
-    this.props.navigation.push('myProfile',{id:id})
+  getMutualProfile = id => {
+    this.props.navigation.push('myProfile', {id: id});
     // this._unsubscribe = this.props.navigation.addListener('focus', () => {
     //   this.getUserFromFirestore(id);
     //   this.getOtherUserImages(id);
     //   this.getMutualConnections(id);
     //   this.findRelation(this.props.userToken,id)
     // });
-
-  }
-  IconImage = (item) => {
+  };
+  IconImage = item => {
     let name = item.FirstName.charAt(0);
-    return (   
-    <View style={[styles.logo,{alignItems:'center',justifyContent: 'center',backgroundColor:'#7b1fa2',borderColor:'#7b1fa2'}]}>
-    <Text style={{fontSize:28,fontWeight:'600',color:'white'}}>{name}</Text>
-  </View>
-    )
+    return (
+      <View
+        style={[
+          styles.logo,
+          {
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: '#7b1fa2',
+            borderColor: '#7b1fa2',
+          },
+        ]}>
+        <Text style={{fontSize: 28, fontWeight: '600', color: 'white'}}>
+          {name}
+        </Text>
+      </View>
+    );
   };
   render() {
     return (
@@ -285,31 +292,36 @@ class Profile extends Component {
                 </View>
               </View>
               {
-              // this.props.userDetail &&
-              //   this.state.userDetail &&
+                // this.props.userDetail &&
+                //   this.state.userDetail &&
                 this.state.relation == true &&
-                this.props.userDetail.id !== this.props.route.params.id && (
-                  <TouchableOpacity onPress={()=>this.props.navigation.navigate('chat', {
-                    CurrentUserUID: this.props.userToken,
-                    HostUID: this.state.hostId,
-                    EventID: this.state.eventId,
-                  })} style={styles.messageIcon}>
-                    <Image
-                      style={{width: 51, resizeMode: 'contain'}}
-                      source={require('../../assets/Slizzer-icon/message.png')}
-                    />
-                    <View
-                      style={{
-                        height: 20,
-                        width: 20,
-                        position: 'absolute',
-                      }}>
+                  this.props.userDetail.id !== this.props.route.params.id && (
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('chat', {
+                          CurrentUserUID: this.props.userToken,
+                          HostUID: this.state.hostId,
+                          EventID: this.state.eventId,
+                        })
+                      }
+                      style={styles.messageIcon}>
                       <Image
-                        source={require('../../assets/Slizzer-icon/insideMessage.png')}
+                        style={{width: 51, resizeMode: 'contain'}}
+                        source={require('../../assets/Slizzer-icon/message.png')}
                       />
-                    </View>
-                  </TouchableOpacity>
-                )}
+                      <View
+                        style={{
+                          height: 20,
+                          width: 20,
+                          position: 'absolute',
+                        }}>
+                        <Image
+                          source={require('../../assets/Slizzer-icon/insideMessage.png')}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  )
+              }
               <Text style={styles.text1}>
                 {this.state.userDetail && this.state.userDetail.FirstName}
               </Text>
@@ -354,8 +366,7 @@ class Profile extends Component {
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({item}) => (
                           <TouchableOpacity
-                            onPress={() =>this.getMutualProfile(item.id)
-                            }
+                            onPress={() => this.getMutualProfile(item.id)}
                             style={styles.listView}>
                             {item.Pictures.length !== 0 && (
                               <Image
@@ -452,7 +463,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 30,
   },
- 
+
   wrapperView2: {
     flex: 1,
     alignItems: 'center',

@@ -574,7 +574,7 @@
 				CODE_SIGN_ENTITLEMENTS = Slizzr/Slizzr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 8WAFT5WQ92;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = arm64;
@@ -608,7 +608,7 @@
 				CODE_SIGN_ENTITLEMENTS = Slizzr/Slizzr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 8WAFT5WQ92;
 				EXCLUDED_ARCHS = "";
 				INFOPLIST_FILE = Slizzr/Info.plist;

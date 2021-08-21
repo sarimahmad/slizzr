@@ -73,7 +73,7 @@ class attendingEventInfo extends Component {
       user_id: this.props.userDetail.id,
       event_id: id,
     }).then(response => {
-      if (response.status === 200) {
+      if (response.status && response.status === 200) {
         this.setState({loading: false});
         this.props.navigation.pop();
       } else {

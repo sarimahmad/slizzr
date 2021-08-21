@@ -22,24 +22,29 @@ import {
   getAllRequests,
   acceptandRejectRequest,
   getAllNotifications,
+  DecideSharedHostRequest,
 } from '../../helper/Api';
-import NotifService from '../../helper/NotifService';
-import handler from '../../helper/NotificationHandler';
+
+// Todo Need to implement User profile picture
+// Already added Pictures Array in the response so take it from there
 class notification extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      findpeople: [],
       notifications: [],
     };
   }
 
-  async getAllRequests() {
-    this.setState({loading: true});
-    await getAllRequests(this.props.userToken).then(response => {
-      this.setState({findpeople: response.Users, loading: false});
+  componentDidMount() {
+    this._unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.getAllNotifications();
     });
   }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+  }
+
   async getAllNotifications() {
     this.setState({loading: true});
     await getAllNotifications(this.props.userToken).then(response => {
@@ -47,6 +52,7 @@ class notification extends Component {
 handler.onNotification()
     });
   }
+
   async acceptandRejectRequest(status, item) {
     const data = {
       current_user_id: this.props.userToken,
@@ -57,21 +63,21 @@ handler.onNotification()
     await acceptandRejectRequest(data).then(response => {
       this.setState({loading: false});
       Alert.alert('Successfull', response.message, [
-        {text: 'OK', onPress: () => this.getAllRequests()},
+        {text: 'OK', onPress: () => this.getAllNotifications()},
       ]);
     });
   }
 
-  componentDidMount() {
-    this._unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.getAllRequests();
-      this.getAllNotifications();
+  async acceptandRejectSharedHostRequest({ACCEPTED, shared_host_id}) {
+    this.setState({loading: true});
+    await DecideSharedHostRequest({ACCEPTED, shared_host_id}).then(response => {
+      this.setState({loading: false});
+      Alert.alert('Successfull', response.message, [
+        {text: 'OK', onPress: () => this.getAllNotifications()},
+      ]);
     });
   }
 
-  componentWillUnmount() {
-    this._unsubscribe();
-  }
   emptyListComponent = () => {
     return (
       <View
@@ -99,60 +105,176 @@ handler.onNotification()
             leftIcon={require('../../assets/drawer.png')}
           />
           <FlatList
-            data={this.state.findpeople}
-            keyExtractor={item => item.id}
+            data={this.state.notifications}
+            keyExtractor={item => item.NotificationID}
             ListEmptyComponent={this.emptyListComponent}
             renderItem={({item}) => (
               <View>
-                <View style={styles.flexRow}>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <View style={styles.imgView}>
-                      <Image
-                        source={require('../../assets/notification2.png')}
-                      />
-                    </View>
-                    <View style={styles.detail}>
-                      <Text style={[styles.subtitleText]}>
-                        {item.Friend.displayName}
-                      </Text>
-                      <Text style={styles.greyText}>{item.adress}</Text>
-                    </View>
-                  </View>
+                {/* Only Message */}
+                {item.NotificationType === 'MESSAGE' && (
+                  <View style={styles.flexRow}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <View style={styles.imgView}>
+                        <Image
+                          source={require('../../assets/notification2.png')}
+                        />
+                      </View>
+                      <View style={styles.detail}>
+                        <Text style={[styles.subtitleText]}>
+                          {item.Message}
+                        </Text>
 
-                  <View>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.acceptandRejectRequest('ACCEPTED', item)
-                      }
-                      style={{
-                        marginBottom: 5,
-                        marginRight: 5,
-                        height: 30,
-                        width: 30,
-                        borderRadius: 24,
-                        backgroundColor: '#4CD964',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <Image source={require('../../assets/check.png')} />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.acceptandRejectRequest('REJECTED', item)
-                      }
-                      style={{
-                        marginRight: 5,
-                        height: 30,
-                        width: 30,
-                        borderRadius: 24,
-                        backgroundColor: '#FF3B30',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <Image source={require('../../assets/closeIcon.png')} />
-                    </TouchableOpacity>
+                        {/* Implement time here */}
+                        <Text style={styles.greyText}>
+                          {item.LastNotification}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
-                </View>
+                )}
+
+                {/* Only Direct Invite */}
+                {/* Only press move to event detail*/}
+                {item.NotificationType === 'DIRECTINVITE' && (
+                  <View
+                    style={styles.flexRow}
+                    onPress={() => console.log(item.EventID)}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <View style={styles.imgView}>
+                        <Image
+                          source={require('../../assets/notification2.png')}
+                        />
+                      </View>
+                      <View style={styles.detail}>
+                        <Text style={[styles.subtitleText]}>
+                          {item.Message}
+                        </Text>
+
+                        {/* Implement time here */}
+                        <Text style={styles.greyText}>
+                          {item.LastNotification}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                )}
+
+                {/* Only Mutual Connect Type */}
+                {item.NotificationType === 'MUTUAL' && (
+                  <View style={styles.flexRow}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <View style={styles.imgView}>
+                        <Image
+                          source={require('../../assets/notification2.png')}
+                        />
+                      </View>
+                      <View style={styles.detail}>
+                        <Text style={[styles.subtitleText]}>
+                          {item.Message}
+                        </Text>
+                        {/* Implement time here */}
+                        <Text style={styles.greyText}>
+                          {item.LastNotification}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.acceptandRejectRequest('ACCEPTED', item)
+                        }
+                        style={{
+                          marginBottom: 5,
+                          marginRight: 5,
+                          height: 30,
+                          width: 30,
+                          borderRadius: 24,
+                          backgroundColor: '#4CD964',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Image source={require('../../assets/check.png')} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.acceptandRejectRequest('REJECTED', item)
+                        }
+                        style={{
+                          marginRight: 5,
+                          height: 30,
+                          width: 30,
+                          borderRadius: 24,
+                          backgroundColor: '#FF3B30',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Image source={require('../../assets/closeIcon.png')} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
+                {/* Only SHARED Host Type */}
+                {item.NotificationType === 'SHARED' && (
+                  <View style={styles.flexRow}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <View style={styles.imgView}>
+                        <Image
+                          source={require('../../assets/notification2.png')}
+                        />
+                      </View>
+                      <View style={styles.detail}>
+                        <Text style={[styles.subtitleText]}>
+                          {item.Message}
+                        </Text>
+                        {/* Implement time here */}
+                        <Text style={styles.greyText}>
+                          {item.LastNotification}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.acceptandRejectSharedHostRequest({
+                            ACCEPTED: 'TRUE',
+                            shared_host_id: item.SharedHostID,
+                          })
+                        }
+                        style={{
+                          marginBottom: 5,
+                          marginRight: 5,
+                          height: 30,
+                          width: 30,
+                          borderRadius: 24,
+                          backgroundColor: '#4CD964',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Image source={require('../../assets/check.png')} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.acceptandRejectSharedHostRequest({
+                            ACCEPTED: 'FALSE',
+                            shared_host_id: item.SharedHostID,
+                          })
+                        }
+                        style={{
+                          marginRight: 5,
+                          height: 30,
+                          width: 30,
+                          borderRadius: 24,
+                          backgroundColor: '#FF3B30',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Image source={require('../../assets/closeIcon.png')} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                )}
                 <View
                   style={{
                     hiehgt: 1,
