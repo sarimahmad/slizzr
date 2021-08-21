@@ -27,7 +27,8 @@ import Validations from '../../helper/Validations';
 import * as userActions from '../../redux/actions/user';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
-
+import PushNotification, {Importance} from 'react-native-push-notification';
+import NotifService from '../../helper/NotifService';
 class SignIn extends Component {
   constructor(props) {
     super(props);
@@ -52,6 +53,7 @@ class SignIn extends Component {
       webClientId:
         '473629197290-3374lal9f0nk1cjcec4u41nns049jcfo.apps.googleusercontent.com',
     });
+   
   }
 
   storeInputData = (text, type) => {
@@ -353,36 +355,38 @@ class SignIn extends Component {
   };
 
   facebookSignIn = async () => {
-    const result = await LoginManager.logInWithPermissions([
-      'public_profile',
-      'email',
-    ]);
-    if (result.isCancelled) {
-      throw 'User cancelled the login process';
-    }
+   
+  
+       // const result = await LoginManager.logInWithPermissions([
+    //   'public_profile',
+    //   'email',
+    // ]);
+    // if (result.isCancelled) {
+    //   throw 'User cancelled the login process';
+    // }
 
-    // Once signed in, get the users AccesToken
-    const data = await AccessToken.getCurrentAccessToken();
+    // // Once signed in, get the users AccesToken
+    // const data = await AccessToken.getCurrentAccessToken();
 
-    if (!data) {
-      throw 'Something went wrong obtaining access token';
-    }
+    // if (!data) {
+    //   throw 'Something went wrong obtaining access token';
+    // }
 
-    // Create a Firebase credential with the AccessToken
-    const facebookCredential = auth.FacebookAuthProvider.credential(
-      data.accessToken,
-    );
-    this.setState({loading: true});
-    auth()
-      .signInWithCredential(facebookCredential)
-      .then(response => {
-        console.log('responseFb', JSON.stringify(response));
-        this.setState({loading: false});
-      })
-      .catch(error => {
-        this.setState({loading: false});
-        alert(error);
-      });
+    // // Create a Firebase credential with the AccessToken
+    // const facebookCredential = auth.FacebookAuthProvider.credential(
+    //   data.accessToken,
+    // );
+    // this.setState({loading: true});
+    // auth()
+    //   .signInWithCredential(facebookCredential)
+    //   .then(response => {
+    //     console.log('responseFb', JSON.stringify(response));
+    //     this.setState({loading: false});
+    //   })
+    //   .catch(error => {
+    //     this.setState({loading: false});
+    //     alert(error);
+    //   });
   };
 
   doneClick() {}

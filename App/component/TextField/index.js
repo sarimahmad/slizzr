@@ -26,9 +26,9 @@ const TextField = props => {
             ? {width: (SCREEN.width - 40) / 2.1}
             : {width: SCREEN.width - 40},
         ]}>
-        {/* {props.type === 'password' ? (
+        {props.type === 'password' ? (
           <View>
-                 <TouchableOpacity
+                 {/* <TouchableOpacity
                  onPress={() => setShowPassword(!showPassword)}
                  style={{
                    position: 'absolute',
@@ -66,7 +66,7 @@ const TextField = props => {
                  )}
    
                </TouchableOpacity>
-         
+          */}
         <View >
         
             <TextInput
@@ -91,7 +91,7 @@ const TextField = props => {
               autoCorrect={false}
             />
           </View>
-        )} */}
+        )} 
       </View>
     </View>
   );
