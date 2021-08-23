@@ -109,12 +109,28 @@ function localNotif(title,message) {
   }
   async function onNotif(notif) {
     Alert.alert(notif.title);
+
     localNotif(notif.title,notif.message)
-   
+   if(notif.type==="NOTIFICATION"){
+     this.props.navigation.navigate("Notifications")
+   }else if(notif.type==="MESSAGE"){
+    this.props.navigation.navigate("messages")
+  }else if(notif.type==="PROFILE"){
+    this.props.navigation.navigate("myProfile",notif.PRIMARY_ID)
+  }else if(notif.type==="SHAREDREQUEST"){
+    this.props.navigation.navigate("sharedHosts")
+  }else if(notif.type==="SHAREDEVENTDETAIL"){
+    this.props.navigation.navigate("sharedHosts")
+  }else if(notif.type==="MANAGESHAREDHOST"){
+    this.props.navigation.navigate("sharedHosts",)
+  }else if(notif.type==="MANAGEEVENT"){
+    this.props.navigation.navigate("manageEvent")
+  }else if(notif.type==="EVENTDETAIL"){
+    this.props.navigation.navigate("eventDetail",notif.PRIMARY_ID)
+  }
   }
 
   const checkUSer = async () => {
-    localNotif("notif.title","notif.message")
    
     const userDetail = await AsyncStorage.getItem('userdetail');
     const TOKEN = await AsyncStorage.getItem('token');

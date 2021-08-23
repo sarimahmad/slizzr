@@ -13,6 +13,8 @@ import {
   TextInput,
   StyleSheet,
   Platform,
+  Share,
+  
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -543,6 +545,30 @@ class CreateEvent extends Component {
     console.log(response)
   })
   }
+  shareInvites = async() => {
+  
+    try {
+        const result = await Share.share({
+          message:'Your message here',
+          title:'message',
+          url:''
+
+        });
+      
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            console.log(result)  
+            alert(result)
+          } else {
+   }
+        } else if (result.action === Share.dismissedAction) {
+            alert("dismissed")
+          // dismissed
+        }
+      } catch (error) {
+        alert(error.message);
+      }
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -925,13 +951,14 @@ class CreateEvent extends Component {
                       </Text>
                       {this.state.skip === false && (
                         <TouchableOpacity
-                          onPress={this.directInvites}
+                          onPress={()=>this.shareInvites()}
                           style={styles.button}>
                           <Text style={styles.text}> SHARE EVENT</Text>
                         </TouchableOpacity>
                       )}
                       {this.state.skip === true && (
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity   onPress={()=>this.directInvites()}
+                        style={styles.button}>
                           <Text style={styles.text}> Send Direct Invites</Text>
                         </TouchableOpacity>
                       )}

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet, FlatList, Image} from 'react-native';
+import {Text,Modal, View, StyleSheet, FlatList, Image} from 'react-native';
 
 import Header from '../../component/Header';
 import {SafeAreaView} from 'react-navigation';
@@ -8,18 +8,17 @@ import {getAllBlockedUsers} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 import {FONT, SCREEN} from '../../helper/Constant';
+import { TouchableOpacity } from 'react-native';
+import { UnblockUser } from '../../helper/Api';
+import ErrorPopup from '../../component/ErrorPopup';
  class BlockedUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading:false,
+      popUpError:false,
       blockedUser: [
-        // {id: 1, name: 'Christina Sin'},
-        // {id: 2, name: 'Sandra Martinez'},
-        // {id: 3, name: 'Gerald Martinez'},
-        // {id: 4, name: 'Bryan Jordan'},
-        // {id: 5, name: 'Keith Santos'},
-        // {id: 6, name: 'Tiffany Pena'},
+      
       ],
     };
   }
@@ -53,7 +52,41 @@ import {FONT, SCREEN} from '../../helper/Constant';
       </View>
     );
   };
- 
+  UnblockUser = async (mutual_connection_id) => {
+    this.setState({loading: true});
+
+    await UnblockUser(this.props.userToken,mutual_connection_id).then(response => {
+      this.setState({loading: false});
+      if (response !== undefined) {
+        this.setState({
+          loading: false,
+          errorTitle: 'Successfully unblocked user',
+          errorText: response.message,
+
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
+      } else {
+        this.setState({
+          loading: false,
+          errorTitle: 'Failed',
+          errorText: 'Failed to block User',
+
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
+      }
+    });
+  };
+  doneClick=()=>{
+    this.setState({
+      popUpError: false,
+      btnOneText: this.state.btnOneText,
+      errorTitle: this.state.titleText,
+      errorText: this.state.errorText,
+    })
+    this.props.navigation.goBack()
+ }
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -77,16 +110,36 @@ import {FONT, SCREEN} from '../../helper/Constant';
                   />
                   <Text style={styles.textView}>{item.Friend.displayName}</Text>
                 </View>
-                <View>
+                <TouchableOpacity onPress={()=>this.UnblockUser(item.MutualConnectionID)}>
                   <Image
                     style={styles.image2}
                     source={require('../../assets/Slizzer-icon/cross.png')}
                   />
-                </View>
+                </TouchableOpacity>
               </View>
             )}
           />
         </SafeAreaView>
+        {this.state.popUpError && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() =>
+               this.doneClick()
+              }
+              doneButtonPress={() =>    this.doneClick()
+              }
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+              btnTwoText={this.state.btnTwoText}
+            />
+          </Modal>
+        )}
+      
         {this.state.loading && <Loader loading={this.state.loading} />}
      
       </View>

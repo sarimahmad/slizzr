@@ -21,7 +21,7 @@ import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {getAllFriends} from '../../helper/Api';
 import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
-const KEYS_TO_FILTERS = ['Name', 'EventType'];
+const KEYS_TO_FILTERS = ['Friend.FirstName'];
 import SearchInput, {createFilter} from 'react-native-search-filter';
 
 class lookFriends extends Component {
@@ -30,6 +30,7 @@ class lookFriends extends Component {
     this.state = {
       findpeople: [],
       searchTerm: '',
+      loading:false
     };
   }
 
@@ -88,7 +89,6 @@ class lookFriends extends Component {
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('lookFriends')}
               style={[
-                styles.logo,
                 {
                   marginRight: 5,
                   padding: 10,
@@ -115,7 +115,7 @@ class lookFriends extends Component {
               <TouchableOpacity
                 onPress={() =>
                   this.props.navigation.navigate('myProfile', {
-                    id: item.UserID,
+                    id: item.Friend.id,
                     MutualConnectionID: item.MutualConnectionID,
                   })
                 }>
@@ -143,8 +143,8 @@ class lookFriends extends Component {
                             fontWeight: '600',
                             color: 'white',
                           }}>
-                          {item.User && item.User.FirstName.charAt(0).concat(
-                            item.User.LastName.charAt(0),
+                          {item.Friend && item.Friend.FirstName.charAt(0).concat(
+                            item.Friend.LastName.charAt(0),
                           )}
                         </Text>
                       </View>
@@ -154,7 +154,7 @@ class lookFriends extends Component {
                     <Text style={styles.titleText}>
                       {item.Friend && item.Friend.displayName}
                     </Text>
-                    <Text style={styles.subtitleText}>Adress empty</Text>
+                    <Text style={styles.subtitleText}>{item.Friend.Address && item.Friend.Address.city}</Text>
                   </View>
                 </View>
                 <View

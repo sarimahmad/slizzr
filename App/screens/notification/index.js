@@ -48,11 +48,31 @@ class notification extends Component {
   async getAllNotifications() {
     this.setState({loading: true});
     await getAllNotifications(this.props.userToken).then(response => {
-      // this.setState({notifications: response.Notifications, loading: false});
-handler.onNotification()
+      this.setState({notifications: response.Notifications, loading: false});
+// handler.onNotification()
+
     });
   }
-
+notificationTap=(notif)=>{
+  if(notif.NotificationType==="NOTIFICATION"){
+    this.props.navigation.navigate("Notifications")
+  }else if(notif.NotificationType==="MESSAGE"){
+   this.props.navigation.navigate("messages")
+ }else if(notif.NotificationType==="PROFILE"){
+   this.props.navigation.navigate("myProfile",notif.PRIMARY_ID)
+ }else if(notif.NotificationType==="SHAREDREQUEST"){
+   this.props.navigation.navigate("sharedHosts")
+ }else if(notif.NotificationType==="SHAREDEVENTDETAIL"){
+   this.props.navigation.navigate("sharedHosts")
+ }else if(notif.NotificationType==="MANAGESHAREDHOST"){
+   this.props.navigation.navigate("sharedHosts",)
+ }else if(notif.NotificationType==="MANAGEEVENT"){
+   this.props.navigation.navigate("manageEvent")
+ }else if(notif.NotificationType==="EVENTDETAIL"){
+   this.props.navigation.navigate("eventDetail",notif.PRIMARY_ID)
+ }
+ 
+}
   async acceptandRejectRequest(status, item) {
     const data = {
       current_user_id: this.props.userToken,

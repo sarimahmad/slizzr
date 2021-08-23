@@ -243,7 +243,46 @@ class NewpayoutMethod extends Component {
                     }
                     value={this.state.accountholderName}
                   />
+                                   <View
+                  style={{
+                    width: '90%',
+                    height: 53,
+                    borderWidth: 1,
+                    borderColor: 'lightgrey',
+                    borderRadius: 8,
+                    alignSelf: 'center',
+                    marginVertical: 20,
+                    justifyContent: 'center',
+                   }}>
                   <RNPickerSelect
+                    // placeholder={{
+                    //   label: 'Public',
+                    //   value: this.state.PublicPrivate,
+                    // }}
+                    style={{
+                      inputIOS: {
+                        paddingLeft: 7,
+                        marginLeft: 15,
+                        height: 51,
+                        width: '100%',
+                      },
+                      inputAndroid: {
+                        paddingLeft: 7,
+                        color: 'black',
+                        height: 51,
+                        textAlignVertical: 'center',
+                      },
+                    }}
+                    selectedValue={this.state.AccountType}
+                    onValueChange={(itemValue, itemIndex) =>
+                      this.setState({AccountType: itemValue})
+                    }
+                    items={[{label: 'individual', value: 'individual'}]}
+                  
+                  />
+                </View>
+
+                  {/* <RNPickerSelect
                     Icon={() => {
                       return (
                         <Icon
@@ -288,7 +327,7 @@ class NewpayoutMethod extends Component {
                       this.setState({AccountType: itemValue})
                     }
                     items={[{label: 'individual', value: 'individual'}]}
-                  />
+                  /> */}
                   <View style={styles.shortInputView}>
                     <TextInput
                       style={styles.shortInput}

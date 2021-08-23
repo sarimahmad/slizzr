@@ -18,6 +18,8 @@ export default class scan extends Component {
       flash: RNCamera.Constants.FlashMode.off,
       cameraType: 'back',
       item: '',
+      responseMessage:'',
+      success:'',
     };
   }
   componentDidMount() {
@@ -25,14 +27,20 @@ export default class scan extends Component {
     this.setState({item: item});
   }
   onSuccess = async e => {
-    alert(JSON.stringify(e));
+    this.setState({success:true})
     let userId = e.data.split('_')[0].trim();
     let eventId = e.data.split('_')[1].trim();
 
     console.log(userId);
     if (this.state.item === 'PREPAID' || this.state.item === 'FREE') {
       await ScanZicket(eventId,e.data).then(response => {
-        alert(response.Message);
+      if(response.Success === false){
+       this.setState({success:false,responseMessage:response.Message})
+      
+      }else if(response.Success === true){
+        this.setState({success:true,responseMessage:response.Message})
+        
+      }
       });
     } else if (this.state.item === 'SCAN-&-PAY AT DOOR') {
       data = {
@@ -42,7 +50,11 @@ export default class scan extends Component {
       await payAndJoin(data).then(async response => {
         if (response === 'success') {
           await ScanZicket(eventId).then(response => {
+            if(response.status === 200){
+              this.setState({success:false})
+            
             console.log(response);
+            }
           });
         }
       });
@@ -86,15 +98,32 @@ export default class scan extends Component {
                 style={[styles.ScanerFocus, {position: 'absolute'}]}
                 source={require('../../assets/scanner_focus.png')}
               />
+             {this.state.success===false  &&
+             <View style={{alignItems:'center',justifyContent: 'center',}}>
               <Image
                 style={styles.resultIcon}
                 source={require('../../assets/redBlock.png')}
               />
               <Text style={styles.resultText}>
-                Unsuccesful! Invalid Payment.
+             {this.state.responseMessage}
               </Text>
+              </View>
+  }
+      {this.state.success===true  &&
+         
+            <View style={{alignItems:'center',justifyContent: 'center',}}>
+            <Image
+              style={styles.resultIcon}
+              source={require('../../assets/checked.png')}
+            />
+            <Text style={styles.resultText}>
+           {this.state.responseMessage}
+            </Text>
             </View>
-            <TouchableHighlight style={styles.ScanBtn}>
+           
+            }
+            </View>
+            <TouchableHighlight onPress={()=>this.props.navigation.pop()} style={styles.ScanBtn}>
               <Text style={styles.BtnText}>BACK TO SCANNER</Text>
             </TouchableHighlight>
             <Text style={styles.DoneText}>Done</Text>

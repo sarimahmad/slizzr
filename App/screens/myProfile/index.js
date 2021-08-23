@@ -32,6 +32,7 @@ class Profile extends Component {
       mutualConnections: [],
       relation: false,
       hostId: '',
+      popUpError:false,
       eventId: '',
     };
   }
@@ -176,6 +177,7 @@ class Profile extends Component {
     //   this.findRelation(this.props.userToken,id)
     // });
   };
+
   IconImage = item => {
     let name = item.FirstName.charAt(0);
     return (
@@ -195,6 +197,15 @@ class Profile extends Component {
       </View>
     );
   };
+  doneClick=()=>{
+    this.setState({
+      popUpError: false,
+      btnOneText: this.state.btnOneText,
+      errorTitle: this.state.titleText,
+      errorText: this.state.errorText,
+    })
+  
+  }
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -291,37 +302,7 @@ class Profile extends Component {
                   />
                 </View>
               </View>
-              {
-                // this.props.userDetail &&
-                //   this.state.userDetail &&
-                this.state.relation == true &&
-                  this.props.userDetail.id !== this.props.route.params.id && (
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.props.navigation.navigate('chat', {
-                          CurrentUserUID: this.props.userToken,
-                          HostUID: this.state.hostId,
-                          EventID: this.state.eventId,
-                        })
-                      }
-                      style={styles.messageIcon}>
-                      <Image
-                        style={{width: 51, resizeMode: 'contain'}}
-                        source={require('../../assets/Slizzer-icon/message.png')}
-                      />
-                      <View
-                        style={{
-                          height: 20,
-                          width: 20,
-                          position: 'absolute',
-                        }}>
-                        <Image
-                          source={require('../../assets/Slizzer-icon/insideMessage.png')}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                  )
-              }
+              
               <Text style={styles.text1}>
                 {this.state.userDetail && this.state.userDetail.FirstName}
               </Text>
@@ -392,8 +373,9 @@ class Profile extends Component {
                 
                 )}
               {this.props.userDetail &&
-                this.state.userDetail &&
-                this.props.userDetail.id !== this.state.userDetail.id && (
+              
+                 this.state.relation == true &&
+                this.props.userDetail.id !== this.props.route.params.id && (
                   <TouchableOpacity
                     onPress={() => this.blockUser()}
                     style={styles.blockUser}>
@@ -416,13 +398,7 @@ class Profile extends Component {
             transparent={true}
             presentationStyle={'overFullScreen'}>
             <ErrorPopup
-              cancelButtonPress={() =>
-                this.setState({
-                  popUpError: false,
-                  btnOneText: this.state.btnOneText,
-                  errorTitle: this.state.titleText,
-                  errorText: this.state.errorText,
-                })
+              cancelButtonPress={() =>this.doneClick()
               }
               doneButtonPress={() => this.doneClick()}
               errorTitle={this.state.errorTitle}

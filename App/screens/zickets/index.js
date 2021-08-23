@@ -101,12 +101,12 @@ class Zickets extends Component {
                   borderColor: 'lightgrey',
                   justifyContent: 'center',
                   borderWidth: 1,
-                  width: SCREEN.width * 0.5,
+                  width: SCREEN.width * 0.3,
                   height: 39,
                 }
               : {
                   color: 'black',
-                  width: SCREEN.width * 0.5,
+                  width: SCREEN.width * 0.3,
                   height: 39,
                   borderColor: 'lightgrey',
                   borderWidth: 1,
@@ -132,12 +132,12 @@ class Zickets extends Component {
                   borderColor: 'grey',
                   justifyContent: 'center',
                   borderWidth: 1,
-                  width: SCREEN.width * 0.5,
+                  width: SCREEN.width * 0.3,
                   height: 39,
                 }
               : {
                   color: 'black',
-                  width: SCREEN.width * 0.5,
+                  width: SCREEN.width * 0.3,
                   height: 39,
                   borderColor: 'grey',
                   justifyContent: 'center',
@@ -163,12 +163,12 @@ class Zickets extends Component {
                   borderColor: 'grey',
                   justifyContent: 'center',
                   borderWidth: 1,
-                  width: SCREEN.width * 0.34,
+                  width: SCREEN.width * 0.44,
                   height: 39,
                 }
               : {
                   color: 'black',
-                  width: SCREEN.width * 0.34,
+                  width: SCREEN.width * 0.44,
                   height: 39,
                   borderColor: 'grey',
                   justifyContent: 'center',
@@ -181,14 +181,14 @@ class Zickets extends Component {
               styles.barText,
               this.state.index === 3 ? {color: '#F818D9'} : {color: 'black'},
             ]}>
-            SCAN SHARED EVENTS
+             SHARED SCAN ZICKETS
           </Text>
         </TouchableOpacity>
       </View>
     );
   };
 
-  // Empty Component
+  // Eypty Component
   emptyListComponent = () => {
     return (
       <View
@@ -203,7 +203,7 @@ class Zickets extends Component {
         }}>
         {this.state.index === 1 && (
           <View>
-            <Text>You are not hosting any events at the moment.</Text>
+            <Text style={styles.emptyFont}>You are not hosting any events at the moment.</Text>
             <TouchableOpacity style={styles.btnMap}>
               <Text style={styles.btnText}>HOST?</Text>
             </TouchableOpacity>
@@ -266,16 +266,17 @@ class Zickets extends Component {
                     borderBottomColor: 'lightgrey',
                   }}>
                   <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
+                  <View style={styles.imgView}>
                       <Image
                         source={{uri: item.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-
-                      <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
-                      />
+                      {item.PublicPrivate === 'Private' && (
+                        <Image
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
+                        />
+                      )}
                     </View>
 
                     <View style={styles.detail}>
@@ -309,7 +310,7 @@ class Zickets extends Component {
             <FlatList
               data={this.state.userAttendedEvents}
               keyExtractor={item => item.id}
-              // ListEmptyComponent={this.emptyListComponent}
+              ListEmptyComponent={this.emptyListComponent}
               renderItem={({item}) => (
                 <TouchableOpacity
                   onPress={() =>
@@ -323,16 +324,17 @@ class Zickets extends Component {
                     borderBottomColor: 'lightgrey',
                   }}>
                   <View style={styles.flexRow}>
-                    <View style={styles.imgView}>
+                  <View style={styles.imgView}>
                       <Image
-                        source={require('../../assets/image2.jpg')}
+                        source={{uri: item.Event.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-
-                      <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
-                      />
+                      {item.Event.PublicPrivate === 'Private' && (
+                        <Image
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
+                        />
+                      )}
                     </View>
 
                     <View style={styles.detail}>
@@ -368,11 +370,11 @@ class Zickets extends Component {
               ListEmptyComponent={this.emptyListComponent}
               renderItem={({item}) => (
                 <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate('myEventInfo', {
-                      id: item.Event.id,
-                    })
-                  }
+                onPress={() =>
+                  this.props.navigation.navigate('Scan', {
+                    item: item.EventType,
+                  })
+                }
                   style={{
                     borderBottomWidth: 1,
                     borderBottomColor: 'lightgrey',

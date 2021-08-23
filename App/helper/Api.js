@@ -1320,7 +1320,7 @@ export async function GetAllPayoutStatusEvents({event_id}) {
 }
 
 //Delete Block user Or Unblock user
-export async function UnblockUser({user_id, mutual_connection_id}) {
+export async function UnblockUser(user_id, mutual_connection_id) {
   var data = JSON.stringify({
     user_id: user_id,
     mutual_connection_id: mutual_connection_id,

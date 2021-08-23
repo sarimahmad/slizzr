@@ -16,10 +16,11 @@ import {TextInput} from 'react-native';
 
 // import Share from 'react-native-share';
 import {connect} from 'react-redux';
-import Loader from '../../component/Loader';
-const KEYS_TO_FILTERS = ['Name', 'EventType'];
+const KEYS_TO_FILTERS = ['Friend.FirstName'];
 import SearchInput, {createFilter} from 'react-native-search-filter';
-import { sendDirectInvite } from '../../helper/Api';
+import {sendDirectInvite} from '../../helper/Api';
+import Loader from '../../component/Loader';
+
 class directInvites extends Component {
   constructor() {
     super();
@@ -28,53 +29,7 @@ class directInvites extends Component {
       searchTerm: '',
       selectedName: '',
       selectedUser: {},
-      data: [
-        {
-          id: 1,
-          name: 'Corabelle D.',
-          pic: require('../../assets/Slizzer-icon/display.jpg'),
-        },
-        {
-          id: 2,
-          name: 'Jube B.',
-          pic: require('../../assets/Slizzer-icon/display.jpg'),
-        },
-        {
-          id: 3,
-          name: 'Dai J.',
-          pic: require('../../assets/Slizzer-icon/display.jpg'),
-        },
-        {
-          id: 4,
-          name: 'Corabelle D.',
-          pic: require('../../assets/Slizzer-icon/display.jpg'),
-        },
-        {
-          id: 5,
-          name: 'Dai J. ',
-          pic: require('../../assets/Slizzer-icon/display.jpg'),
-        },
-        {
-          id: 6,
-          name: 'Jube B.',
-          pic: require('../../assets/Slizzer-icon/display.jpg'),
-        },
-        {
-          id: 7,
-          name: 'Corabelle D.',
-          pic: require('../../assets/Slizzer-icon/display.jpg'),
-        },
-        {
-          id: 8,
-          name: 'Jube B.',
-          pic: require('../../assets/Slizzer-icon/display.jpg'),
-        },
-        {
-          id: 8,
-          name: 'Dai J. ',
-          pic: require('../../assets/Slizzer-icon/display.jpg'),
-        },
-      ],
+      data: [],
     };
   }
   footer = () => {
@@ -85,38 +40,35 @@ class directInvites extends Component {
           style={styles.btn}>
           <Text style={styles.btntext}>DIRECT INVITES</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => this.shareInvites()}>
-        <Text style={styles.lastText}>More Invite Options</Text>
+        <TouchableOpacity onPress={() => this.shareInvites()}>
+          <Text style={styles.lastText}>More Invite Options</Text>
         </TouchableOpacity>
       </View>
     );
   };
-  shareInvites = async() => {
+  shareInvites = async () => {
     try {
-        const result = await Share.share({
-          message:'Your message here',
-          title:'message',
-          url:''
+      const result = await Share.share({
+        message: 'Your message here',
+        title: 'message',
+        url: '',
+      });
 
-        });
-      
-        if (result.action === Share.sharedAction) {
-          if (result.activityType) {
-            console.log(result)  
-            alert(result)
-            // shared with activity type of result.activityType
-          } else {
-
-            // shared
-          }
-        } else if (result.action === Share.dismissedAction) {
-            alert("dismissed")
-          // dismissed
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log(result);
+          alert(result);
+          // shared with activity type of result.activityType
+        } else {
+          // shared
         }
-      } catch (error) {
-        alert(error.message);
+      } else if (result.action === Share.dismissedAction) {
+        alert('dismissed');
+        // dismissed
       }
+    } catch (error) {
+      alert(error.message);
+    }
     // Share.open(options)
     //   .then(res => {
     //     console.log(res);
@@ -142,7 +94,7 @@ class directInvites extends Component {
     this.setState({loading: true});
     await sendDirectInvite(data).then(response => {
       console.log('response' + response);
-      alert("Invite Send")
+      alert('Invite Send');
     });
   }
   emptyListComponent = () => {
@@ -169,10 +121,12 @@ class directInvites extends Component {
   componentDidMount() {
     this.getAllFriends();
   }
+  
+  searchUpdated(term) {
+    this.setState({searchTerm: term});
+  }
   render() {
-    const friends = this.state.friends.filter(
-      createFilter(this.state.searchTerm, KEYS_TO_FILTERS),
-    );
+    const friends = this.state.friends.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS));
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.wrapperView}>
@@ -201,6 +155,10 @@ class directInvites extends Component {
               source={require('../../assets/searchBlack.png')}
             />
             <TextInput
+              onChangeText={term => {
+                this.searchUpdated(term);
+              }}
+            
               style={styles.textInput}
               placeholder={'Search Slizzr Connections'}
             />
@@ -210,23 +168,60 @@ class directInvites extends Component {
           </Text>
           <FlatList
             numColumns={3}
-            data={this.state.data}
+            data={friends}
             ListEmptyComponent={this.emptyListComponent}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() =>
-                  this.setState({selectedName: item.name, selectedUser: item})
+                  this.setState({
+                    selectedName: item.Friend.FirstName,
+                    selectedUser: item,
+                  })
                 }
                 style={styles.blockView}>
                 <View style={[styles.blockView, {height: SCREEN.width / 3}]}>
-                  <Image style={styles.imageView} source={item.pic} />
-                  {this.state.selectedName.includes(item.name) && (
+                  {this.state.selectedName !== item.Friend.FirstName && (
+                    <View style={styles.imageView}>
+                      {item.Pictures && item.Pictures.length > 0 ? (
+                        <Image
+                          source={{uri: item.Pictures[0].Profile_Url}}
+                          style={styles.logo}
+                        />
+                      ) : (
+                        <View
+                          style={[
+                            styles.imageView,
+                            {
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor: '#7b1fa2',
+                              borderColor: '#7b1fa2',
+                            },
+                          ]}>
+                          <Text
+                            style={{
+                              fontSize: 28,
+                              fontWeight: '600',
+                              color: 'white',
+                            }}>
+                            {item.Friend &&
+                              item.Friend.FirstName.charAt(0).concat(
+                                item.Friend.LastName.charAt(0),
+                              )}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+                  )}
+
+
+                  {this.state.selectedName.includes(item.Friend.FirstName) && (
                     <View
                       style={[
                         styles.imageView,
                         {
-                          position: 'absolute',
+                          
                           alignItems: 'center',
                           justifyContent: 'center',
                           backgroundColor: 'rgba(0,0,0, 0.5)',
@@ -238,13 +233,20 @@ class directInvites extends Component {
                       />
                     </View>
                   )}
+                                    <View style={styles.detail}>
+                    <Text style={styles.titleText}>
+                      {item.Friend && item.Friend.FirstName}
+                    </Text>
+                  </View>
+
                 </View>
-                <Text style={styles.textView}>{item.name}</Text>
               </TouchableOpacity>
             )}
             ListFooterComponent={this.footer}
           />
         </SafeAreaView>
+        {this.state.loading && <Loader loading={this.state.loading} />}
+    
       </View>
     );
   }
