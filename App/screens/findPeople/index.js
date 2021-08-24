@@ -33,6 +33,7 @@ class findPeople extends Component {
     this.getPrivateEvents();
   }
   getPrivateEvents = async () => {
+    console.warn(this.props.userDetail.id);
     let privateEvents = [];
     const usersRef = firestore().collection('events');
     this.setState({loading: true});
@@ -100,45 +101,50 @@ class findPeople extends Component {
             keyExtractor={item => item.id}
             ListEmptyComponent={this.emptyListComponent}
             renderItem={({item}) => (
-              <TouchableOpacity    onPress={() =>
-                this.props.navigation.navigate('myEventInfo', {id: item.id})
-              }
-           
-                style={{
-                  minHeight: 80,
-                  borderBottomColor: 'lightgrey',
-                  borderBottomWidth: 1,
-                  width: SCREEN.width,
-                }}>
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('peopleProfiles')
+                }>
                 <View
-                  style={[
-                    styles.flexRow,
-                    {width: SCREEN.width - 20, alignItems: 'center'},
-                  ]}>
-                  <View style={styles.imgView}>
-                    <Image
-                      source={{uri: item.image}}
-                      style={{borderRadius: 44, height: 60, width: 60}}
-                    />
-                    {item.PublicPrivate === 'Private' && (
+                  style={{
+                    minHeight: 80,
+                    borderBottomColor: 'lightgrey',
+                    borderBottomWidth: 1,
+                    width: SCREEN.width,
+                  }}>
+                  <View
+                    style={[
+                      styles.flexRow,
+                      {width: SCREEN.width - 20, alignItems: 'center'},
+                    ]}>
+                    <View style={styles.imgView}>
                       <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
+                        source={{uri: item.image}}
+                        style={{borderRadius: 44, height: 60, width: 60}}
                       />
-                    )}
-                  </View>
+                      {item.PublicPrivate === 'Private' && (
+                        <Image
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
+                        />
+                      )}
+                    </View>
 
-                  <View style={styles.detail}>
-                    <Text style={styles.titleText}>{item.Name}</Text>
-                    <Text style={styles.adressText}>
-                      Host: {item.Host.displayName}
-                    </Text>
-                    <Text style={styles.purpleText}>{item.DateTime}</Text>
+                    <View style={styles.detail}>
+                      <Text style={styles.titleText}>{item.Name}</Text>
+                      <Text style={styles.adressText}>
+                        Host: {item.Host.displayName}
+                      </Text>
+                      <Text style={styles.purpleText}>{item.DateTime}</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('peopleProfiles')
+                      }
+                      style={styles.shareView}>
+                      <Image source={require('../../assets/Right.png')} />
+                    </TouchableOpacity>
                   </View>
-                  <TouchableOpacity
-                    style={styles.shareView}>
-                    <Image source={require('../../assets/Right.png')} />
-                  </TouchableOpacity>
                 </View>
               </TouchableOpacity>
             )}

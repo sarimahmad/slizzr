@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  Share,
   FlatList,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
@@ -24,7 +25,6 @@ import {
 } from '../../helper/Api';
 import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
-import Share from 'react-native-share';
 
 class manageEvents extends Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class manageEvents extends Component {
       index: 1,
       userEvents: [],
       userAttendedEvents: [],
-      userSharedEvents:[],
+      userSharedEvents: [],
       userSharedRequests: [],
       userSharedEvents: [],
     };
@@ -48,7 +48,6 @@ class manageEvents extends Component {
       this.getUserAttendedEvents();
       this.getAllSharedRequests();
       this.getAllUserSharedEvents();
-
     });
   }
   componentWillUnmount() {
@@ -253,17 +252,27 @@ class manageEvents extends Component {
       </View>
     );
   };
-  shareEvent = () => {
-    let options = {
-      message: 'testing',
-    };
-    Share.open(options)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        err && console.log(err);
+
+  shareEvent = async () => {
+    try {
+      const result = await Share.share({
+        message: 'Your message here',
+        title: 'message',
+        url: '',
       });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log(result);
+          alert(result);
+        } else {
+        }
+      } else if (result.action === Share.dismissedAction) {
+        alert('dismissed');
+      }
+    } catch (error) {
+      alert(error.message);
+    }
   };
   render() {
     return (
@@ -336,25 +345,25 @@ class manageEvents extends Component {
                         {item.DateTime}
                       </Text>
                     </View>
-                    {item.PublicPrivate === 'Private' ?
-                    
-                    <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('directInvites',{eventId:item.id})
-                    }
-                      style={styles.shareView}>
-                      <Image source={require('../../assets/messageIcon.png')} />
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity
-                   
-                    onPress={() => this.shareEvent()}
-                    style={styles.shareView}>
-                    <Image source={require('../../assets/share.png')} />
-                  </TouchableOpacity>
-           
-                 
-              }
+                    {item.PublicPrivate === 'Private' ? (
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.props.navigation.navigate('directInvites', {
+                            eventId: item.id,
+                          })
+                        }
+                        style={styles.shareView}>
+                        <Image
+                          source={require('../../assets/messageIcon.png')}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => this.shareEvent()}
+                        style={styles.shareView}>
+                        <Image source={require('../../assets/share.png')} />
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </TouchableOpacity>
               )}
@@ -396,28 +405,28 @@ class manageEvents extends Component {
                         Host: {item.Event.Host.displayName}
                       </Text>
                       {item.PublicPrivate !== 'Private' && (
-                      
-                      <Text style={[styles.purpleText, {marginTop: 5}]}>
-                        {item.Event.DateTime}
-                      </Text>
+                        <Text style={[styles.purpleText, {marginTop: 5}]}>
+                          {item.Event.DateTime}
+                        </Text>
                       )}
                     </View>
-                    {item.PublicPrivate === 'Private' ?
-                   <TouchableOpacity
-                   onPress={() => this.shareEvent()}
-                     style={styles.shareView}>
-                     <Image source={require('../../assets/messageIcon.png')} />
-                   </TouchableOpacity>
-                   :
-                   <TouchableOpacity
-                   onPress={() =>
-                     this.props.navigation.navigate('directInvites')
-                   }
-                   style={styles.shareView}>
-                   <Image source={require('../../assets/share.png')} />
-                 </TouchableOpacity>
-          
-              }
+                    {item.PublicPrivate === 'Private' ? (
+                      <TouchableOpacity
+                        onPress={() => this.shareEvent()}
+                        style={styles.shareView}>
+                        <Image
+                          source={require('../../assets/messageIcon.png')}
+                        />
+                      </TouchableOpacity>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.props.navigation.navigate('directInvites')
+                        }
+                        style={styles.shareView}>
+                        <Image source={require('../../assets/share.png')} />
+                      </TouchableOpacity>
+                    )}
                   </View>
                 </TouchableOpacity>
               )}
@@ -433,7 +442,7 @@ class manageEvents extends Component {
                   onPress={() =>
                     this.props.navigation.navigate('myEventInfo', {
                       id: item.Event.id,
-                      from:"SharedHost"
+                      from: 'SharedHost',
                     })
                   }
                   style={{

@@ -55,11 +55,11 @@ class peopleProfiles extends Component {
   }
   async findPeoplebyDistance() {
     this.setState({loading: true});
-    await findPeoplebyDistance(
-      this.state.min_age,
-      this.state.max_age,
-      this.props.userToken,
-    ).then(response => {
+    await findPeoplebyDistance({
+      min_age: this.state.min_age,
+      max_age: this.state.max_age,
+      user_id: this.props.userToken,
+    }).then(response => {
       console.log('response' + response);
       this.setState({findpeople: response.Users, loading: false});
     });
@@ -190,22 +190,27 @@ class peopleProfiles extends Component {
                   </View>
 
                   <View style={styles.bottomView}>
-                    <View style={{minHeight:170}}>
-                    <View
-                      style={{alignItems: 'center', justifyContent: 'center',}}>
-                      <Text style={styles.titleText}>{item.FirstName}</Text>
-                      <View style={{flexDirection: 'row', marginTop: 5}}>
-                        <Image
-                          source={require('../../assets/location.png')}
-                          style={{marginHorizontal: 5}}
-                        />
-                        <Text>12 KM away</Text>
+                    <View style={{minHeight: 170}}>
+                      <View
+                        style={{
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Text style={styles.titleText}>
+                          {item.FirstName}, {item.age}
+                        </Text>
+                        <View style={{flexDirection: 'row', marginTop: 5}}>
+                          {/* <Image
+                            source={require('../../assets/location.png')}
+                            style={{marginHorizontal: 5}}
+                          />
+                          <Text>12 KM away</Text> */}
+                        </View>
                       </View>
+
+                      <MutualConnectionImages userId={item.id} />
                     </View>
-                   
-                    <MutualConnectionImages userId={item.id} />
-                    </View>
-                    
+
                     <TouchableOpacity style={styles.btnLocation}>
                       <Text style={styles.btnTextLocation}>DIRECT INVITE</Text>
                     </TouchableOpacity>
@@ -213,22 +218,21 @@ class peopleProfiles extends Component {
 
                   {item.Pictures.length !== 0 && (
                     //  this.IconImage(item)
-                    <TouchableOpacity 
-                    style={{  position: 'absolute',
-                    alignSelf: 'center',
-                    top: 65,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        alignSelf: 'center',
+                        top: 65,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
                       onPress={() =>
                         this.props.navigation.navigate('myProfile', {
                           id: item.id,
                         })
                       }>
                       <Image
-                        style={[
-                          styles.logo,
-                        ]}
+                        style={[styles.logo]}
                         source={{uri: item.Pictures[0].Profile_Url}}
                       />
                     </TouchableOpacity>

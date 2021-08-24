@@ -9,7 +9,7 @@ import {
   StyleSheet,
   FlatList,
   Modal,
-  Share
+  Share,
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -53,7 +53,7 @@ class eventDetail extends Component {
       errorText: '',
       btnTwoText: '',
       isModalVisible: false,
-      
+
       defaultCard: {},
       userdefaultCard: false,
     };
@@ -77,18 +77,19 @@ class eventDetail extends Component {
       this.props.userDetail.STRIPE_CUST_ID &&
       this.props.userDetail.STRIPE_CUST_ID !== ''
     ) {
-      await getDefaultCustomerCard(this.props.userDetail.STRIPE_CUST_ID).then(response => {
-          if(response!==undefined){
-          console.log('responseDefaultCrad', response);
-          this.setState({defaultCard: response,userdefaultCard:true});
-        }else{
-         alert("No default Card")
-        }
-      }
+      await getDefaultCustomerCard(this.props.userDetail.STRIPE_CUST_ID).then(
+        response => {
+          if (response !== undefined) {
+            console.log('responseDefaultCrad', response);
+            this.setState({defaultCard: response, userdefaultCard: true});
+          } else {
+            alert('No default Card');
+          }
+        },
       );
     }
   }
-  
+
   shareInvites = async () => {
     try {
       const result = await Share.share({
@@ -116,22 +117,22 @@ class eventDetail extends Component {
 
   async getEventDetail(id, userId) {
     this.setState({loading: true});
-     let location= {
-        Lat: this.props.userDetail.Location.latitude,
-        Long:  this.props.userDetail.Location.longitude
-    }
-    await getEventDetail(location,id)
+    let location = {
+      Lat: this.props.userDetail.Location.latitude,
+      Long: this.props.userDetail.Location.longitude,
+    };
+    await getEventDetail(location, id)
       .then(response => {
-        if(response.Event){
-        this.setState({
-          myEvent: response.Event.Host.id === userId,
-          detailItem: response.Event,
-          date: response.Event,
-        });
-      }else{
-        alert(response)
-        this.props.navigation.goBack()
-      }
+        if (response.Event) {
+          this.setState({
+            myEvent: response.Event.Host.id === userId,
+            detailItem: response.Event,
+            date: response.Event,
+          });
+        } else {
+          alert(response);
+          this.props.navigation.goBack();
+        }
       })
       .catch(error => console.log(error));
     this.setState({loading: false});
@@ -152,22 +153,15 @@ class eventDetail extends Component {
       this.setState({mutualConnnections: response.Users});
     });
   }
- 
-  async attendEvent({user_id, event_id}) {
-  
 
-    if (
-     
-      this.state.userdefaultCard === true 
-    ) {
-   
+  async attendEvent({user_id, event_id}) {
+    if (this.state.userdefaultCard === true) {
       this.props.navigation.navigate('prepay', {
-            event_id: event_id,
-            user_id: user_id,
-            detailItem: this.state.detailItem,
-          })
-     
-    } else if (this.state.userdefaultCard === false ) {
+        event_id: event_id,
+        user_id: user_id,
+        detailItem: this.state.detailItem,
+      });
+    } else if (this.state.userdefaultCard === false) {
       this.setState({
         loading: false,
         errorTitle: 'ERROR:No Default Card Set',
@@ -175,7 +169,7 @@ class eventDetail extends Component {
         btnOneText: 'Ok',
         popUpError: true,
       });
-    } 
+    }
     this.setState({loading: false});
   }
   done = () => {
@@ -190,11 +184,13 @@ class eventDetail extends Component {
             backColor={WHITE.dark}
             leftPress={() => this.props.navigation.goBack()}
             leftIcon={require('../../assets/back.png')}
-            rightIcon={this.props.route.params.detailItem.PublicPrivate === 'Private' ? require('../../assets/share.png'):''}
-            centerIcon={require('../../assets/slizerLogo.png')}
-            rightPress={() =>
-              this.shareInvites()
+            rightIcon={
+              this.props.route.params.detailItem.PublicPrivate === 'Private'
+                ? require('../../assets/share.png')
+                : ''
             }
+            centerIcon={require('../../assets/slizerLogo.png')}
+            rightPress={() => this.shareInvites()}
           />
 
           <ScrollView bounces={false}>
@@ -272,55 +268,55 @@ class eventDetail extends Component {
                     `$${this.state.detailItem.Fee}`}
                 </Text>
               </View>
-              {this.state.mutualConnnections.length!==0 &&
-          <View style={{minHeight:60}}>
-              <Text style={[styles.titleText, {marginTop: 9}]}>
-                Mutual Attendees
-              </Text>
-              <View style={{height: 50, width: SCREEN.width, marginTop: 11}}>
-                <FlatList
-                  data={this.state.mutualConnnections}
-                  horizontal
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => (
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.props.navigation.navigate('mutualConnections')
-                      }
-                      style={styles.listView}>
-                      {item.Pictures.length !== 0 && (
-                        <Image
-                          style={styles.ImageView}
-                          source={{uri: item.Pictures[0].Profile_Url}}
-                        />
+              {this.state.mutualConnnections.length !== 0 && (
+                <View style={{minHeight: 60}}>
+                  <Text style={[styles.titleText, {marginTop: 9}]}>
+                    Mutual Attendees
+                  </Text>
+                  <View
+                    style={{height: 50, width: SCREEN.width, marginTop: 11}}>
+                    <FlatList
+                      data={this.state.mutualConnnections}
+                      horizontal
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({item}) => (
+                        <TouchableOpacity
+                          onPress={() =>
+                            this.props.navigation.navigate('mutualConnections')
+                          }
+                          style={styles.listView}>
+                          {item.Pictures.length !== 0 && (
+                            <Image
+                              style={styles.ImageView}
+                              source={{uri: item.Pictures[0].Profile_Url}}
+                            />
+                          )}
+                          {item.Pictures.length === 0 && item.Profile && (
+                            <Image
+                              style={styles.ImageView}
+                              source={{uri: item.Profile}}
+                            />
+                          )}
+                          {item.Pictures.length === 0 &&
+                            !item.Profile &&
+                            this.IconImage(item)}
+                        </TouchableOpacity>
                       )}
-                      {item.Pictures.length === 0 && item.Profile && (
-                        <Image
-                          style={styles.ImageView}
-                          source={{uri: item.Profile}}
-                        />
-                      )}
-                      {item.Pictures.length === 0 &&
-                        !item.Profile &&
-                        this.IconImage(item)}
-                    </TouchableOpacity>
-                  )}
-                />
-              </View>
-              <Text
-                style={[
-                  styles.purpleText,
-                  {marginTop: 9, textDecorationLine: 'underline'},
-                ]}>
-                See more
-              </Text>
-  </View>
-  }
-
+                    />
+                  </View>
+                  <Text
+                    style={[
+                      styles.purpleText,
+                      {marginTop: 9, textDecorationLine: 'underline'},
+                    ]}>
+                    See more
+                  </Text>
+                </View>
+              )}
             </View>
 
             {!this.state.myEvent && (
-         <TouchableOpacity
+              <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={() => {
                   if (this.state.Check_Status === 'Active') {
@@ -365,7 +361,6 @@ class eventDetail extends Component {
                 </Text>
               </TouchableOpacity>
             )}
-            
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
@@ -384,7 +379,6 @@ class eventDetail extends Component {
             />
           </Modal>
         )}
-
       </View>
     );
   }

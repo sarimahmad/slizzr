@@ -26,8 +26,6 @@ function HeaderWithOptionBtn({ leftPress, headerTitle,rightIconText, leftIcon,pr
           activeOpacity={0.85} style={{ position: 'absolute', left: 20, justifyContent: 'center', alignItems: 'center', height: 20, width: 20 }}>
           <Image source={leftIcon} style={{ height: 40, width: 40, justifyContent: 'center' }} />
         </TouchableOpacity>}
-       
-
         {centerIcon &&
       <View
       style={{
@@ -77,7 +75,7 @@ source={{uri: profileIcon}}
         }}>
        <Text style={{fontFamily:FONT.Nunito.bold,fontSize:12,color:'#B2ABB1'}}>{rightIconText}</Text>
       </TouchableHighlight>}
-      {rightIcon && <TouchableHighlight
+      {rightIcon !== ''&& <TouchableHighlight
         underlayColor={backColor}
         onPress={rightPress}
         style={{
