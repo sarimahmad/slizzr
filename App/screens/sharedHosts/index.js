@@ -29,6 +29,8 @@ import {
 import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
 import {ScrollView} from 'react-native';
+import ErrorPopup from '../../component/ErrorPopup';
+import { Modal } from 'react-native';
 
 class sharedHosts extends Component {
   constructor(props) {
@@ -161,7 +163,7 @@ class sharedHosts extends Component {
     this.getAllSharedHostsforEventAccepted(id)
   }
   inviteSharedHost = async () => {
-    if (this.state.hostSelected) {
+    if (Object.keys(this.state.hostSelected).length !== 0) {
       console.log(this.state.hostSelected);
       let data = {
         host_id: this.props.userToken,
@@ -171,17 +173,38 @@ class sharedHosts extends Component {
 
       await inviteSharedHost(data, this.state.hostSelected.Friend.id).then(response => {
         if (response.status === 200) {
-          alert(response.data.message);
+          this.setState({
+            loading: false,
+            errorTitle: 'SUCCESSFULL',
+            errorText: response.data.message,
+            btnOneText: 'Ok',
+            popUpError: true,
+          });
           this.setState({loading: false, hostSelected: {}});
         } else {
-          alert('failed');
-          this.setState({loading: false});
+          this.setState({
+            loading: false,
+            errorTitle: 'Failed',
+            errorText: 'Shared host Request Failed',
+            btnOneText: 'Ok',
+            popUpError: true,
+          });
         }
       });
     } else {
-      alert('Select host');
+      this.setState({
+        loading: false,
+        errorTitle: 'Failed',
+        errorText: "Select shared host first",
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
     }
   };
+  done = () => {
+    this.setState({popUpError: false});
+  };
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -492,6 +515,22 @@ class sharedHosts extends Component {
           </SafeAreaView>
         </ScrollView>
         {this.state.loading && <Loader loading={this.state.loading} />}
+        {this.state.popUpError === true && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() => this.done()}
+              doneButtonPress={() => this.done()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+            />
+          </Modal>
+        )}
+
       </View>
     );
   }

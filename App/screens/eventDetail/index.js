@@ -8,7 +8,8 @@ import {
   Image,
   StyleSheet,
   FlatList,
-  Modal
+  Modal,
+  Share
 } from 'react-native';
 import {SafeAreaView} from 'react-navigation';
 import {connect} from 'react-redux';
@@ -81,12 +82,34 @@ class eventDetail extends Component {
           console.log('responseDefaultCrad', response);
           this.setState({defaultCard: response,userdefaultCard:true});
         }else{
-          console.log(response)
+         alert("No default Card")
         }
       }
       );
     }
   }
+  
+  shareInvites = async () => {
+    try {
+      const result = await Share.share({
+        message: 'Your message here',
+        title: 'message',
+        url: '',
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log(result);
+          alert(result);
+        } else {
+        }
+      } else if (result.action === Share.dismissedAction) {
+        alert('dismissed');
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
   componentWillUnmount() {
     this._unsubscribe();
   }
@@ -167,10 +190,10 @@ class eventDetail extends Component {
             backColor={WHITE.dark}
             leftPress={() => this.props.navigation.goBack()}
             leftIcon={require('../../assets/back.png')}
-            rightIcon={require('../../assets/share.png')}
+            rightIcon={this.props.route.params.detailItem.PublicPrivate === 'Private' ? require('../../assets/share.png'):''}
             centerIcon={require('../../assets/slizerLogo.png')}
             rightPress={() =>
-              console.log('responseEvent', this.state.detailItem)
+              this.shareInvites()
             }
           />
 

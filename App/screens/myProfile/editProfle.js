@@ -194,8 +194,20 @@ class editProfle extends Component {
 
   updateProfileApi = async dataToSend => {
     await updateProfile(this.props.userToken, dataToSend).then(response => {
-      this.getUserFromFirestore(this.props.userToken);
+      if(response.status === 200 ){
+        this.getUserFromFirestore(this.props.userToken);
       this.setState({loading: false});
+       
+       }else{
+        this.setState({
+          loading: false,
+          btnOneText: 'Ok',
+          errorTitle: 'FAILED',
+          errorText: 'Your profile has not been updated!',
+          popUpError: true,
+        });
+       
+      }
     });
     this.setState({loading: false});
   };
@@ -456,38 +468,6 @@ class editProfle extends Component {
                   />
                 )}
               </View>
-              {/* <View
-                style={{
-                  width: '90%',
-                  height: 53,
-                  borderWidth: 1,
-                  borderColor: 'lightgrey',
-                  borderRadius: 8,
-                  alignSelf: 'center',
-                  marginVertical: 20,
-                  justifyContent: 'center',
-                }}>
-                <RNPickerSelect
-                  style={{
-                    inputIOS: {
-                      paddingLeft: 20,
-                    },
-                    inputAndroid: {
-                      paddingLeft: 20,
-                    },
-                  }}
-                  selectedValue={this.state.gender}
-                  value={this.state.gender}
-                  onValueChange={(itemValue, itemIndex) =>
-                    this.setState({gender: itemValue})
-                  }
-                  items={[
-                    {label: 'Female', value: 'Female'},
-                    {label: 'Male', value: 'Male'},
-                  ]}
-                />
-              </View>
-              */}
                         <View
                   style={{
                     width: '90%',
@@ -500,10 +480,10 @@ class editProfle extends Component {
                     justifyContent: 'center',
                    }}>
                   <RNPickerSelect
-                    // placeholder={{
-                    //   label: 'Public',
-                    //   value: this.state.PublicPrivate,
-                    // }}
+                    placeholder={{
+                      label: this.state.Gender,
+                      value: this.state.PublicPrivate,
+                    }}
                     style={{
                       inputIOS: {
                         paddingLeft: 7,

@@ -34,11 +34,18 @@ class myEventInfo extends Component {
       errorTitle: '',
       errorText: '',
       popUpError: false,
+      from:''
     };
   }
   componentDidMount() {
     let id = this.props.route.params.id;
-    if (id) {
+    if(this.props.route.params.from === "SharedHost"){
+   this.setState({from:this.props.route.params.from})
+    }else{
+      this.setState({from:'host'})
+  
+    } 
+   if (id) {
       this.getEventDetail(id);
     }
   }
@@ -91,6 +98,9 @@ class myEventInfo extends Component {
   };
 
   render() {
+    const fromAttend =
+    this.props.route.params.from && this.props.route.params.from === 'SharedHost';
+
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
@@ -179,7 +189,8 @@ class myEventInfo extends Component {
                 this.props.navigation.navigate('attendeesList', {
                   id: this.state.detailItem.id,
                   host: this.state.detailItem.Host,
-                  from: 'host',
+                  from: this.state.from,
+                  
                 })
               }>
               <Text style={styles.btnText}>ATTENDEES</Text>
@@ -189,6 +200,8 @@ class myEventInfo extends Component {
               style={styles.btnMap}>
               <Text style={styles.btnText}>SHARED HOSTS</Text>
             </TouchableOpacity>
+            {!fromAttend && (
+                 
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate('createEvent', {
@@ -199,12 +212,15 @@ class myEventInfo extends Component {
               style={styles.btnMap}>
               <Text style={styles.btnText}>EDIT</Text>
             </TouchableOpacity>
-
+            )}
+            {!fromAttend && (
+           
             <TouchableOpacity
               onPress={() => this.cancelEvent()}
               style={styles.cancelButton}>
               <Text style={styles.btnTextCancel}>CANCEL EVENT</Text>
             </TouchableOpacity>
+            )}
           </ScrollView>
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}

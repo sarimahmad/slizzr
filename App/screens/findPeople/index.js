@@ -100,7 +100,10 @@ class findPeople extends Component {
             keyExtractor={item => item.id}
             ListEmptyComponent={this.emptyListComponent}
             renderItem={({item}) => (
-              <View
+              <TouchableOpacity    onPress={() =>
+                this.props.navigation.navigate('myEventInfo', {id: item.id})
+              }
+           
                 style={{
                   minHeight: 80,
                   borderBottomColor: 'lightgrey',
@@ -133,14 +136,11 @@ class findPeople extends Component {
                     <Text style={styles.purpleText}>{item.DateTime}</Text>
                   </View>
                   <TouchableOpacity
-                    onPress={() =>
-                      this.props.navigation.navigate('myEventInfo', {id: item.id})
-                    }
                     style={styles.shareView}>
                     <Image source={require('../../assets/Right.png')} />
                   </TouchableOpacity>
                 </View>
-              </View>
+              </TouchableOpacity>
             )}
           />
         </SafeAreaView>

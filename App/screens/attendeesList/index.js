@@ -26,7 +26,7 @@ import Loader from '../../component/Loader';
 import {connect} from 'react-redux';
 import ErrorPopup from '../../component/ErrorPopup';
 import {sendMessageToAttendees, disInviteAttendee} from '../../helper/Api';
-const KEYS_TO_FILTERS = ['item.User.FirstName'];
+const KEYS_TO_FILTERS = ['User.FirstName'];
 import SearchInput, { createFilter } from 'react-native-search-filter';
 
 class attendeesList extends Component {
@@ -53,6 +53,7 @@ class attendeesList extends Component {
   componentDidMount() {
     let eventId = this.props.route.params.id;
     let host = this.props.route.params.host;
+    
     this.setState({eventId:eventId,hostId:host.id})
     if (eventId) {
       this.getAttendeesList(eventId);
@@ -141,7 +142,7 @@ class attendeesList extends Component {
     const attendeesList = this.state.attendeesList.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS))
   
     const fromAttend =
-      this.props.route.params.from && this.props.route.params.from === 'attend';
+      this.props.route.params.from && this.props.route.params.from === 'SharedHost';
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
@@ -196,9 +197,9 @@ class attendeesList extends Component {
                   <View
                     style={{flexDirection: 'row', width: SCREEN.width * 0.6}}>
                        <View style={styles.imgView}>
-                    {item.Pictures && item.Pictures.length > 0 ? (
+                    {item.User && item.User.Profile  ? (
                       <Image
-                        source={{uri: item.Pictures[0].Profile_Url}}
+                        source={{uri: item.User.Profile}}
                         style={styles.logo}
                       />
                     ) : (

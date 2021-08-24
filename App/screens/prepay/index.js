@@ -442,19 +442,6 @@ class prepay extends Component {
                     <CreditCardInput onChange={this._onChange} />
                   </View>
                 )}
-                <Text
-                  style={[
-                    styles.subtitleText,
-                    {
-                      textAlign: 'center',
-                      marginTop: SCREEN.height * 0.04,
-                      fontFamily: FONT.Nunito.regular,
-                      color: BLACK.grey,
-                    },
-                  ]}>
-                  ** put scrollable stripe card + billing address form here**
-                  https://stripe.com/img/docs/elements/elements-demo-iphone.png
-                </Text>
               </View>
 
               <View style={{flex: 1}}>

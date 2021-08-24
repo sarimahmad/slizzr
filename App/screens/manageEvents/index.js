@@ -433,6 +433,7 @@ class manageEvents extends Component {
                   onPress={() =>
                     this.props.navigation.navigate('myEventInfo', {
                       id: item.Event.id,
+                      from:"SharedHost"
                     })
                   }
                   style={{
