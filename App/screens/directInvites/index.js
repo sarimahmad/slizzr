@@ -20,6 +20,8 @@ const KEYS_TO_FILTERS = ['Friend.FirstName'];
 import SearchInput, {createFilter} from 'react-native-search-filter';
 import {sendDirectInvite} from '../../helper/Api';
 import Loader from '../../component/Loader';
+import ErrorPopup from '../../component/ErrorPopup';
+import { Modal } from 'react-native';
 
 class directInvites extends Component {
   constructor() {
@@ -29,8 +31,14 @@ class directInvites extends Component {
       searchTerm: '',
       selectedName: '',
       selectedUser: {},
+      popUpError: false,
+     
       data: [],
     };
+  }
+  done=()=>{
+    this.setState({popUpError: false,
+    })
   }
   footer = () => {
     return (
@@ -49,9 +57,9 @@ class directInvites extends Component {
   shareInvites = async () => {
     try {
       const result = await Share.share({
-        message: 'Your message here',
+        message:'http://slizzr://app/event'+this.props.route.params.eventId,
         title: 'message',
-        url: '',
+        url: 'http://slizzr://app/event'+this.props.route.params.eventId,
       });
 
       if (result.action === Share.sharedAction) {
@@ -69,13 +77,6 @@ class directInvites extends Component {
     } catch (error) {
       alert(error.message);
     }
-    // Share.open(options)
-    //   .then(res => {
-    //     console.log(res);
-    //   })
-    //   .catch(err => {
-    //     err && console.log(err);
-    //   });
   };
   async getAllFriends() {
     this.setState({loading: true});
@@ -86,17 +87,52 @@ class directInvites extends Component {
   }
 
   async sendDirectInvite() {
+   if(Object.keys(this.state.selectedUser).length !== 0){
+                     
     let data = {
       current_user_id: this.props.userDetail.id,
-      friend_user_id: this.state.selectedUser.friend_user_id,
-      event_id: this.props.eventId,
+      friend_user_id: this.state.selectedUser.FriendID,
+      event_id: this.props.route.params.eventId,
     };
     this.setState({loading: true});
     await sendDirectInvite(data).then(response => {
-      console.log('response' + response);
-      alert('Invite Send');
+      this.setState({loading:false})
+     if(response !== undefined && response.status===200){
+      this.setState({
+        errorTitle: 'Successful',
+        btnOneText: 'Ok',
+        popUpError: true,
+        errorText: response.data.message,
+      });
+    } else if(response === undefined){
+      this.setState({
+        errorTitle: 'Failed ',
+        btnOneText: 'Ok',
+        popUpError: true,
+        loading:false,
+        errorText: 'Invite not Sent',
+      });
+    }else{
+      this.setState({
+        errorTitle: 'Failed ',
+        btnOneText: 'Ok',
+        popUpError: true,
+        loading:false,
+        errorText: 'Invite not Sent',
+      });
+    }
+   
     });
+   }else{
+    this.setState({
+      errorTitle: 'Failed',
+      btnOneText: 'Ok',
+      popUpError: true,
+      errorText: 'Select Friend First',
+    });
+   }
   }
+
   emptyListComponent = () => {
     return (
       <View
@@ -246,7 +282,22 @@ class directInvites extends Component {
           />
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-    
+        {this.state.popUpError === true && (
+          <Modal
+            statusBarTranslucent={true}
+            isVisible={this.state.popUpError}
+            transparent={true}
+            presentationStyle={'overFullScreen'}>
+            <ErrorPopup
+              cancelButtonPress={() => this.done()}
+              doneButtonPress={() => this.done()}
+              errorTitle={this.state.errorTitle}
+              errorText={this.state.errorText}
+              btnOneText={this.state.btnOneText}
+            />
+          </Modal>
+        )}
+
       </View>
     );
   }

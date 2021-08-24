@@ -1346,13 +1346,14 @@ export async function UnblockUser(user_id, mutual_connection_id) {
 }
 // 
 export async function sendDirectInvite(data) {
+//  let dataSend = JSON.stringify({data})
   var config = {
     method: 'POST',
     url: `${Server}/direct-invite`,
     headers: {
       'Content-Type': 'application/json',
     },
-    data: JSON.stringify({data}),
+    data: data,
   };
 
   const GetResponse = await axios(config)

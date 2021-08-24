@@ -340,7 +340,7 @@ class manageEvents extends Component {
                     
                     <TouchableOpacity
                     onPress={() =>
-                      this.props.navigation.navigate('directInvites')
+                      this.props.navigation.navigate('directInvites',{eventId:item.id})
                     }
                       style={styles.shareView}>
                       <Image source={require('../../assets/messageIcon.png')} />

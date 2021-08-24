@@ -8,7 +8,7 @@
  * @flow
  */
 import React, {Component} from 'react';
-import {View, ActivityIndicator, BackHandler, StatusBar} from 'react-native';
+import {View, ActivityIndicator, BackHandler, StatusBar,Linking} from 'react-native';
 import {Provider} from 'react-redux';
 import {StripeProvider} from '@stripe/stripe-react-native';
 
@@ -41,8 +41,34 @@ export default class App extends Component {
     // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({isReady: true});
     
+  if (Platform.OS === 'android') {
+    Linking.getInitialURL().then(url => {
+      this.navigate(url);
+    });
+  } else {
+      Linking.addEventListener('url', this.handleOpenURL);
+    }
+  
   }
-
+ 
+  
+  componentWillUnmount() { // C
+    Linking.removeEventListener('url', this.handleOpenURL);
+  }
+  handleOpenURL = (event) => { // D
+    this.navigate(event.url);
+  }
+  navigate = (url) => { // E
+    const route = url.replace(/.*?:\/\//g, '');
+    const id = route.match(/\/([^\/]+)\/?$/)[1];
+    const routeName = route.split('/')[1];
+  
+    if (routeName === 'event') {
+      this.props.navigation.navigate('eventDetail', {
+        detailItem: id,
+      })
+    };
+  }
   render() {
     return this.state.isReady ? (
       <Provider store={store}>
