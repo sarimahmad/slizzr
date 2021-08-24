@@ -85,7 +85,7 @@ export async function getUserImages(user_id) {
 }
 // export async function getEventDetail(formdata, event_id) {
 //   var config = {
-   
+
 //     url: `${Server}/event/${event_id}`,
 //     headers: {
 //       'Content-Type': 'application/json',
@@ -102,8 +102,10 @@ export async function getUserImages(user_id) {
 //     });
 //   return GetResponse;
 // }
-export async function getEventDetail(data,event_id) {
-  return fetch(`${Server}/event/`+event_id+"?Lat="+data.Lat+"&Long="+data.Long)
+export async function getEventDetail(data, event_id) {
+  return fetch(
+    `${Server}/event/` + event_id + '?Lat=' + data.Lat + '&Long=' + data.Long,
+  )
     .then(async response => {
       return await response.json();
     })
@@ -486,10 +488,11 @@ export async function getAllFriends(user_id) {
       console.error(error);
     });
 }
-export async function findPeoplebyDistance() {
-  let min_age = '0';
+export async function findPeoplebyDistance({min_age, user_id}) {
   let max_age = '0';
-  let user_id = '3wDLplGq1oYQMO3xRnS4ZtpdK0M2';
+  console.log(
+    `${Server}/user/people/find-people?min_age=${min_age}&max_age=${max_age}&user_id=${user_id}`,
+  );
   return fetch(
     `${Server}/user/people/find-people?min_age=${min_age}&max_age=${max_age}&user_id=${user_id}`,
   )
@@ -893,6 +896,7 @@ export async function getAllPendingSharedHostsforEvent(event_id) {
 }
 
 export async function getAllSharedEvents(user_id) {
+  console.log(`${Server}/event/get-all-sharedevents/${user_id}`);
   var config = {
     method: 'GET',
     url: `${Server}/event/get-all-sharedevents/${user_id}`,
@@ -1281,6 +1285,7 @@ export async function DeleteSharedHostRequest({shared_host_id}) {
 
 //Get All Payout for users
 export async function GetAllPayoutStatusForEvents({user_id}) {
+  console.log(`${Server}/event/get-all-payout-events/${user_id}`);
   var config = {
     method: 'GET',
     url: `${Server}/event/get-all-payout-events/${user_id}`,
@@ -1291,7 +1296,7 @@ export async function GetAllPayoutStatusForEvents({user_id}) {
 
   const GetResponse = await axios(config)
     .then(function (response) {
-      return response;
+      return response.data;
     })
     .catch(function (error) {
       console.log(error);
@@ -1301,6 +1306,7 @@ export async function GetAllPayoutStatusForEvents({user_id}) {
 
 //Get Payout status for event
 export async function GetAllPayoutStatusEvents({event_id}) {
+  console.log(`${Server}/event/get-payout-status/${event_id}`);
   var config = {
     method: 'GET',
     url: `${Server}/event/get-payout-status/${event_id}`,
@@ -1311,7 +1317,7 @@ export async function GetAllPayoutStatusEvents({event_id}) {
 
   const GetResponse = await axios(config)
     .then(function (response) {
-      return response;
+      return response.data;
     })
     .catch(function (error) {
       console.log(error);
@@ -1344,7 +1350,7 @@ export async function UnblockUser({user_id, mutual_connection_id}) {
     });
   return GetResponse;
 }
-// 
+//
 export async function sendDirectInvite(data) {
   var config = {
     method: 'POST',

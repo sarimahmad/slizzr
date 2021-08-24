@@ -18,7 +18,11 @@ import {
 } from 'react-native-responsive-screen';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {connect} from 'react-redux';
-import {getAllSharedRequests,approveSharedHostRequest,removeSharedHostRequest} from '../../helper/Api';
+import {
+  getAllSharedRequests,
+  approveSharedHostRequest,
+  removeSharedHostRequest,
+} from '../../helper/Api';
 import Loader from '../../component/Loader';
 
 class sharedHostRequests extends Component {
@@ -27,97 +31,76 @@ class sharedHostRequests extends Component {
     this.state = {
       attendingEvents: true,
       myevents: false,
-      userSharedRequests:[] ,
-      loading:false
+      userSharedRequests: [],
+      loading: false,
     };
   }
-  componentDidMount(){
-    this.getAllSharedRequests()
+  componentDidMount() {
+    this.getAllSharedRequests();
   }
   async getAllSharedRequests() {
-    this.setState({loading:true})
+    this.setState({loading: true});
     await getAllSharedRequests(this.props.userToken).then(response => {
-      this.setState({loading:false})
+      this.setState({loading: false});
       this.setState({userSharedRequests: response.data.SharedhostRequest});
     });
   }
 
+  approveSharedHostRequest = async (response, id) => {
+    this.setState({loading: true});
+    await approveSharedHostRequest(id).then(response => {
+      if (response.status === 200) {
+        this.setState({loading: false});
 
+        Alert.alert('Successfull', response.data.message, [
+          {text: 'OK', onPress: () => this.getAllSharedRequests()},
+        ]);
+      } else {
+        this.setState({loading: false});
 
-  approveSharedHostRequest=async(response,id)=>{
-    this.setState({loading:true})
-    console.log(id)
-    let data
-if(response==="approve"){
-data =  { ACCEPTED : "TRUE"}
-}else{
-   data ={ACCEPTED : "FALSE"}
-}
-    await approveSharedHostRequest(data,id).then(response=>{
-      if(response.status === 200){
-        this.setState({loading:false})
-     
-        Alert.alert(
-          "Successfull",
-          response.data.message,
-          [
-           
-            { text: "OK", onPress: () =>  this.getAllSharedRequests()}
-          ])
-       }else{
-        this.setState({loading:false})
-     
-        alert("Failed")
+        alert('Failed');
       }
-      this.setState({loading:false})
-    })
-    }
-    removeSharedHostRequest=async(id)=>{
-      this.setState({loading:true})
-  
-      await removeSharedHostRequest(id).then(response=>{
-        if(response.status === 200){
-          this.setState({loading:false})
-          Alert.alert(
-            "Successfull",
-            response.data.message,
-            [
-             
-              { text: "OK", onPress: () =>  this.getAllSharedRequests()}
-            ])
-          }else{
-            this.setState({loading:false})
-     
-            alert("Failed")
-          }
-          this.setState({loading:false})
-     
-      })
+      this.setState({loading: false});
+    });
+  };
+  removeSharedHostRequest = async id => {
+    this.setState({loading: true});
+
+    await removeSharedHostRequest(id).then(response => {
+      if (response.status === 200) {
+        this.setState({loading: false});
+        Alert.alert('Successfull', response.data.message, [
+          {text: 'OK', onPress: () => this.getAllSharedRequests()},
+        ]);
+      } else {
+        this.setState({loading: false});
+
+        alert('Failed');
       }
-      emptyListComponent = () => {
-        return (
-          <View
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              alignSelf: 'center',
-              justifyContent: 'center',
-              flexGrow: 1,
-              display: 'flex',
-              marginTop: SCREEN.height / 4,
-            }}>
-           
-              <View>
-                <Text style={styles.emptyFont}>
-                  You have no notification at the moment.
-                </Text>
-               
-              </View>
-         
-           </View>
-        );
-      };
-     
+      this.setState({loading: false});
+    });
+  };
+  emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+        <View>
+          <Text style={styles.emptyFont}>
+            You have no notification at the moment.
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -135,40 +118,37 @@ data =  { ACCEPTED : "TRUE"}
           </View> */}
 
         <SafeAreaView style={styles.contentView}>
-        <HeaderWithOptionBtn
-          borderBottom={true}
-          backColor={WHITE.dark}
-          headerTitle={'Shared Host Requests'}
-          leftPress={() => this.props.navigation.goBack()}
-          leftIcon={require('../../assets/back.png')}
-        />
-       <FlatList
-       data={this.state.userSharedRequests}
-       keyExtractor={item => item.id}
-       ListEmptyComponent={this.emptyListComponent}
-            
-       renderItem={({item}) => (
-         <View
-           style={{
-             width:SCREEN.width,
-             borderBottomWidth: 1,
-             borderBottomColor: 'lightgrey',
-           }}>
-           
-           <View style={styles.flexRow}>
-           <View style={styles.flexRow}>
+          <HeaderWithOptionBtn
+            borderBottom={true}
+            backColor={WHITE.dark}
+            headerTitle={'Shared Host Requests'}
+            leftPress={() => this.props.navigation.goBack()}
+            leftIcon={require('../../assets/back.png')}
+          />
+          <FlatList
+            data={this.state.userSharedRequests}
+            keyExtractor={item => item.id}
+            ListEmptyComponent={this.emptyListComponent}
+            renderItem={({item}) => (
+              <View
+                style={{
+                  width: SCREEN.width,
+                  borderBottomWidth: 1,
+                  borderBottomColor: 'lightgrey',
+                }}>
+                <View style={styles.flexRow}>
+                  <View style={styles.flexRow}>
                     <View style={styles.imgView}>
                       <Image
                         source={{uri: item.Event.image}}
                         style={{borderRadius: 44, height: 60, width: 60}}
                       />
-   {item.Event.PublicPrivate==="Private" &&
-                    
-                      <Image
-                        style={{position: 'absolute', right: -10}}
-                        source={require('../../assets/private.png')}
-                      />
-                }
+                      {item.Event.PublicPrivate === 'Private' && (
+                        <Image
+                          style={{position: 'absolute', right: -10}}
+                          source={require('../../assets/private.png')}
+                        />
+                      )}
                     </View>
 
                     <View style={styles.detail}>
@@ -181,45 +161,51 @@ data =  { ACCEPTED : "TRUE"}
                       </Text>
                     </View>
                     <View>
-               <TouchableOpacity
-                 onPress={() =>this.approveSharedHostRequest("approve",item.SharedHostID)
-                 }
-                 style={{
-                   marginBottom: 5,
-                   marginRight: 5,
-                   height: 30,
-                   width: 30,
-                   borderRadius: 24,
-                   backgroundColor: '#4CD964',
-                   alignItems: 'center',
-                   justifyContent: 'center',
-                 }}>
-                 <Image source={require('../../assets/check.png')} />
-               </TouchableOpacity>
-               <TouchableOpacity
-                 onPress={() =>
-                  this.removeSharedHostRequest("remove",item.SharedHostID) 
-                }
-               style={{
-                   marginRight: 5,
-                   height: 30,
-                   width: 30,
-                   borderRadius: 24,
-                   backgroundColor: '#FF3B30',
-                   alignItems: 'center',
-                   justifyContent: 'center',
-                 }}>
-                 <Image source={require('../../assets/closeIcon.png')} />
-               </TouchableOpacity>
-             </View>
-        </View>
-           </View>
-         </View>
-       )}
-     />
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.approveSharedHostRequest(
+                            'approve',
+                            item.SharedHostID,
+                          )
+                        }
+                        style={{
+                          marginBottom: 5,
+                          marginRight: 5,
+                          height: 30,
+                          width: 30,
+                          borderRadius: 24,
+                          backgroundColor: '#4CD964',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Image source={require('../../assets/check.png')} />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.removeSharedHostRequest(
+                            'remove',
+                            item.SharedHostID,
+                          )
+                        }
+                        style={{
+                          marginRight: 5,
+                          height: 30,
+                          width: 30,
+                          borderRadius: 24,
+                          backgroundColor: '#FF3B30',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Image source={require('../../assets/closeIcon.png')} />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+          />
         </SafeAreaView>
         {this.state.loading && <Loader loading={this.state.loading} />}
-    
       </View>
     );
   }
@@ -245,7 +231,7 @@ const styles = StyleSheet.create({
   emptyFont: {
     fontSize: 20,
     textAlign: 'center',
-    marginHorizontal:20,
+    marginHorizontal: 20,
     color: '#494949',
     fontFamily: FONT.Nunito.regular,
     marginBottom: 20,
@@ -278,20 +264,19 @@ const styles = StyleSheet.create({
   },
   flexRow: {
     flexDirection: 'row',
-    width:SCREEN.width- 40,
-    alignSelf: 'center', height:80,
-    alignItems:'center',
-    justifyContent:'space-between'
-
+    width: SCREEN.width - 40,
+    alignSelf: 'center',
+    height: 80,
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
 
   imgView: {
-    width:50,
-   height: 50,
-   borderRadius:25,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
 
-    marginRight:20
-
+    marginRight: 20,
   },
   shareView: {
     width: wp('20%'),
@@ -307,11 +292,10 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.bold,
     fontSize: 17,
   },
-  subtitleText:{
+  subtitleText: {
     color: BLACK.grey,
     fontFamily: FONT.Nunito.regular,
     fontSize: 12,
-
   },
   purpleText: {
     fontSize: 12,

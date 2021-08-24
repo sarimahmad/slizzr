@@ -49,7 +49,7 @@ class notification extends Component {
     this.setState({loading: true});
     await getAllNotifications(this.props.userToken).then(response => {
       // this.setState({notifications: response.Notifications, loading: false});
-handler.onNotification()
+      // handler.onNotification();
     });
   }
 
