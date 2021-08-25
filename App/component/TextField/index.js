@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowRadius: 6,
     shadowOpacity: 0.1,
+    alignItems: 'center',
     elevation: 2,
     paddingLeft: 0,
     marginTop: '5%',
@@ -139,6 +140,7 @@ const styles = StyleSheet.create({
     color: 'black',
     opacity: 1,
     borderRadius: 12,
+    justifyContent: 'center',
   },
   errorLabel: {
     color: 'red',

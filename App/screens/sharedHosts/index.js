@@ -39,7 +39,7 @@ class sharedHosts extends Component {
     super(props);
     this.state = {
       index: 0,
-      eventId:'',
+      eventId: '',
       hostSelected: {},
       image: [
        
@@ -76,9 +76,8 @@ class sharedHosts extends Component {
   }
   componentDidMount() {
     this.getAllFriends();
-    this.getUserEvents()
-
-    }
+    this.getUserEvents();
+  }
   async getAllFriends() {
     this.setState({loading: true});
     await getAllFriends(this.props.userToken).then(response => {
@@ -86,30 +85,34 @@ class sharedHosts extends Component {
       this.setState({friendsList: response.Users, loading: false});
     });
   }
-   async getUserEvents() {
+  async getUserEvents() {
     await getUserEvents(this.props.userToken).then(response => {
       this.setState({loading: false});
       this.setState({userEvents: response.UserHostedEvent, loading: false});
     });
   }
 
- async getAllSharedHostsforEventAccepted(id) {
+  async getAllSharedHostsforEventAccepted(id) {
     this.setState({loading: true});
 
     await getAllSharedHostsforEventAccepted(id).then(response => {
       console.log('response' + response);
-      this.setState({sharedHostsEventsAccepted: response.data.Sharedhost, loading: false});
+      this.setState({
+        sharedHostsEventsAccepted: response.data.Sharedhost,
+        loading: false,
+      });
     });
   }
-  
 
- 
   async getAllPendingSharedHostsforEvent(id) {
     this.setState({loading: true});
-    
+
     await getAllPendingSharedHostsforEvent(id).then(response => {
       console.log('response' + response);
-      this.setState({sharedHostsEventsPending: response.data.SharedEvents, loading: false});
+      this.setState({
+        sharedHostsEventsPending: response.data.SharedEvents,
+        loading: false,
+      });
     });
   }
   emptyListComponent = () => {
@@ -148,14 +151,13 @@ class sharedHosts extends Component {
             </TouchableOpacity>
           </View>
         )}
-        
       </View>
     );
   };
-  getSharedEventData=(id)=>{
-    this.getAllPendingSharedHostsforEvent(id)
-    this.getAllSharedHostsforEventAccepted(id)
-  }
+  getSharedEventData = id => {
+    this.getAllPendingSharedHostsforEvent(id);
+    this.getAllSharedHostsforEventAccepted(id);
+  };
   inviteSharedHost = async () => {
     if (Object.keys(this.state.hostSelected).length !== 0) {
       console.log(this.state.hostSelected);
@@ -272,14 +274,14 @@ class sharedHosts extends Component {
 
               <View style={styles.form}>
                 <Picker
-                onValueChange={(item, itemIndex) => this.getSharedEventData(item)} 
-
+                  onValueChange={(item, itemIndex) =>
+                    this.getSharedEventData(item)
+                  }
                   style={styles.PickerStyleClass}
-                  selectedValue={this.state.mode}
-                   >
+                  selectedValue={this.state.mode}>
                   {this.state.userEvents.map((item, key) => (
-                   <Picker.Item label={item.Name} value={item.id} key={key} />)
-                   )}
+                    <Picker.Item label={item.Name} value={item.id} key={key} />
+                  ))}
                 </Picker>
               </View>
 
@@ -301,43 +303,43 @@ class sharedHosts extends Component {
                   data={this.state.friendsList}
                   horizontal
                   ListEmptyComponent={this.emptyListComponent}
-            
                   keyExtractor={(item, index) => index.toString()}
                   renderItem={({item}) => (
                     <TouchableOpacity
                       onPress={() => this.setState({hostSelected: item})}
                       style={styles.listView}>
-                           <View style={styles.imgView}>
-                    {item.Pictures && item.Pictures.length > 0 ? (
-                      <Image
-                        source={{uri: item.Pictures[0].Profile_Url}}
-                        style={styles.logo}
-                      />
-                    ) : (
-                      <View
-                        style={[
-                          styles.logo,
-                          {
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#7b1fa2',
-                            borderColor: '#7b1fa2',
-                          },
-                        ]}>
-                        <Text
-                          style={{
-                            fontSize: 28,
-                            fontWeight: '600',
-                            color: 'white',
-                          }}>
-                          {item.Friend && item.Friend.FirstName.charAt(0).concat(
-                            item.Friend.LastName.charAt(0),
-                          )}
-                        </Text>
+                      <View style={styles.imgView}>
+                        {item.Pictures && item.Pictures.length > 0 ? (
+                          <Image
+                            source={{uri: item.Pictures[0].Profile_Url}}
+                            style={styles.logo}
+                          />
+                        ) : (
+                          <View
+                            style={[
+                              styles.logo,
+                              {
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#7b1fa2',
+                                borderColor: '#7b1fa2',
+                              },
+                            ]}>
+                            <Text
+                              style={{
+                                fontSize: 28,
+                                fontWeight: '600',
+                                color: 'white',
+                              }}>
+                              {item.Friend &&
+                                item.Friend.FirstName.charAt(0).concat(
+                                  item.Friend.LastName.charAt(0),
+                                )}
+                            </Text>
+                          </View>
+                        )}
                       </View>
-                    )}
-                  </View>
-           </TouchableOpacity>
+                    </TouchableOpacity>
                   )}
                 />
               </View>
@@ -414,57 +416,63 @@ class sharedHosts extends Component {
                 </Text>
               </TouchableOpacity>
             </View>
-{this.state.index==0 &&
-            <FlatList
-              data={this.state.sharedHostsEventsAccepted}
-              keyExtractor={item => item.id}
-              ListEmptyComponent={this.emptyListComponent}
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  onPress={() => this.setState({hostSelected: item})}
-                  activeOpacity={0.1}>
-                  <View style={styles.flexRow}>
-                    {/* <View style={styles.imgView}>
-                      <Image
-                        style={{height: 50, width: 50}}
-                        source={{uri: item.User.Profile}}
-                      />
-                    </View> */}
-         <View style={styles.imgView}>
-                    {item.User && item.User.Profile  ? (
-                      <Image
-                        source={{uri: item.User.Profile}}
-                        style={styles.logo}
-                      />
-                    ) : (
-                      <View
-                        style={[
-                          styles.logo,
-                          {
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#7b1fa2',
-                            borderColor: '#7b1fa2',
-                          },
-                        ]}>
-                        <Text
-                          style={{
-                            fontSize: 28,
-                            fontWeight: '600',
-                            color: 'white',
-                          }}>
-                          {item.User && item.User.FirstName.charAt(0).concat(
-                            item.User.LastName.charAt(0),
-                          )}
+            {this.state.index == 0 && (
+              <FlatList
+                data={this.state.sharedHostsEventsAccepted}
+                keyExtractor={item => item.id}
+                ListEmptyComponent={this.emptyListComponent}
+                renderItem={({item}) => (
+                  <TouchableOpacity
+                    onPress={() => this.setState({hostSelected: item})}
+                    activeOpacity={0.1}>
+                    <View style={styles.flexRow}>
+                      <View style={styles.imgView}>
+                        {item.User && item.User.Profile ? (
+                          <Image
+                            source={{uri: item.User.Profile}}
+                            style={styles.logo}
+                          />
+                        ) : (
+                          <View
+                            style={[
+                              styles.logo,
+                              {
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#7b1fa2',
+                                borderColor: '#7b1fa2',
+                              },
+                            ]}>
+                            <Text
+                              style={{
+                                fontSize: 28,
+                                fontWeight: '600',
+                                color: 'white',
+                              }}>
+                              {item.User &&
+                                item.User.FirstName.charAt(0).concat(
+                                  item.User.LastName.charAt(0),
+                                )}
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+                      {/*  */}
+                      <View style={styles.detail}>
+                        <Text style={styles.titleText}>
+                          {item.User.displayName}
                         </Text>
                       </View>
-                    )}
-                  </View>
-                    {/*  */}
-                    <View style={styles.detail}>
-                      <Text style={styles.titleText}>
-                        {item.User.displayName}
-                      </Text>
+                      <View
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Image
+                          style={{height: 35, width: 35}}
+                          source={require('../../assets/close.png')}
+                        />
+                      </View>
                     </View>
                     <TouchableOpacity onPress={()=>this.cancelSharedHostAccepted(item)}
                       style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -473,17 +481,18 @@ class sharedHosts extends Component {
                         source={require('../../assets/close.png')}
                       />
                     </TouchableOpacity>
-                  </View>
                   <View
                     style={{
                       height: 1,
                       backgroundColor: 'lightgrey',
                       width: SCREEN.width,
                     }}></View>
-                </TouchableOpacity>
-              )}
-            />
-  }
+            </TouchableOpacity>
+            
+                )}
+                  
+                />
+            )}
   {this.state.index==1 &&
             <FlatList
               data={this.state.sharedHostsEventsPending}
@@ -494,48 +503,53 @@ class sharedHosts extends Component {
                   onPress={() => this.setState({hostSelected: item})}
                   activeOpacity={0.1}>
                   <View style={styles.flexRow}>
-                    {/* <View style={styles.imgView}>
-                      <Image
-                        style={{height: 50, width: 50}}
-                        source={{uri: item.User.Profile}}
-                      />
-                    </View> */}
-
-<View style={styles.imgView}>
-                    {item.User && item.User.Profile  ? (
-                      <Image
-                        source={{uri: item.User.Profile}}
-                        style={styles.logo}
-                      />
-                    ) : (
-                      <View
-                        style={[
-                          styles.logo,
-                          {
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            backgroundColor: '#7b1fa2',
-                            borderColor: '#7b1fa2',
-                          },
-                        ]}>
-                        <Text
-                          style={{
-                            fontSize: 28,
-                            fontWeight: '600',
-                            color: 'white',
-                          }}>
-                          {item.User && item.User.FirstName.charAt(0).concat(
-                            item.User.LastName.charAt(0),
-                          )}
+                      <View style={styles.imgView}>
+                        {item.User && item.User.Profile ? (
+                          <Image
+                            source={{uri: item.User.Profile}}
+                            style={styles.logo}
+                          />
+                        ) : (
+                          <View
+                            style={[
+                              styles.logo,
+                              {
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                backgroundColor: '#7b1fa2',
+                                borderColor: '#7b1fa2',
+                              },
+                            ]}>
+                            <Text
+                              style={{
+                                fontSize: 28,
+                                fontWeight: '600',
+                                color: 'white',
+                              }}>
+                              {item.User &&
+                                item.User.FirstName.charAt(0).concat(
+                                  item.User.LastName.charAt(0),
+                                )}
+                            </Text>
+                          </View>
+                        )}
+                      </View>
+                      {/*  */}
+                      <View style={styles.detail}>
+                        <Text style={styles.titleText}>
+                          {item.User.displayName}
                         </Text>
                       </View>
-                    )}
-                  </View>
-                    {/*  */}
-                    <View style={styles.detail}>
-                      <Text style={styles.titleText}>
-                        {item.User.displayName}
-                      </Text>
+                      <View
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Image
+                          style={{height: 35, width: 35}}
+                          source={require('../../assets/close.png')}
+                        />
+                      </View>
                     </View>
                     <TouchableOpacity onPress={()=>this.DeleteSharedHostRequest(item)}
                       style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -544,7 +558,6 @@ class sharedHosts extends Component {
                         source={require('../../assets/close.png')}
                       />
                     </TouchableOpacity>
-                  </View>
                   <View
                     style={{
                       height: 1,
@@ -608,7 +621,7 @@ const styles = StyleSheet.create({
     fontFamily: FONT.Nunito.regular,
     marginBottom: 20,
   },
- 
+
   btnTextLocation: {
     fontSize: 16,
     color: 'white',
@@ -649,7 +662,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     height: 50,
     marginBottom: 20,
-  
+
     backgroundColor: 'black',
     justifyContent: 'center',
   },
@@ -668,7 +681,7 @@ const styles = StyleSheet.create({
     bottom: 10,
   },
   logo: {height: 40, width: 40, borderWidth: 2, borderRadius: 30},
-  
+
   flexRow: {
     flexDirection: 'row',
     paddingVertical: 20,

@@ -116,7 +116,7 @@ export default class DateAndTimePicker extends React.Component {
                 mode={'date'}
                 minimumDate={moment().toDate()}
                 is24Hour={true}
-                
+                editable={false}
                 display="default"
                 onChange={this.OnChange}
                 onTouchCancel={value => {
@@ -126,22 +126,19 @@ export default class DateAndTimePicker extends React.Component {
               />
             )}
             {this.props.showPreviousDate === 'yes' && (
-           
               <DateTimePicker
-              testID="dateTimePicker"
-              value={this.props.value}
-              mode={'date'}
-              is24Hour={true}
-              display="default"
-              onChange={this.OnChange}
-              onTouchCancel={value => {
-                console.log('touch cancel', value);
-                this.setState({show: false});
-              }}
-            />
-          
-            )
-          }
+                testID="dateTimePicker"
+                value={this.props.value}
+                mode={'date'}
+                is24Hour={true}
+                display="default"
+                onChange={this.OnChange}
+                onTouchCancel={value => {
+                  console.log('touch cancel', value);
+                  this.setState({show: false});
+                }}
+              />
+            )}
           </View>
         );
       }
@@ -153,38 +150,35 @@ export default class DateAndTimePicker extends React.Component {
           visible={this.state.show}>
           <View>
             <View style={{height: SCREEN.height / 2, marginTop: 200}}>
-            {this.props.showPreviousDate === 'no' && (
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={this.props.value}
-                mode={'date'}
-                minimumDate={moment().toDate()}
-                is24Hour={true}
-                display="default"
-                onChange={this.OnChange}
-                onTouchCancel={value => {
-                  console.log('touch cancel', value);
-                  this.setState({show: false});
-                }}
-              />
-            )}
-            {this.props.showPreviousDate === 'yes' && (
-           
-              <DateTimePicker
-              testID="dateTimePicker"
-              value={this.props.value}
-              mode={'date'}
-              is24Hour={true}
-              display="default"
-              onChange={this.OnChange}
-              onTouchCancel={value => {
-                console.log('touch cancel', value);
-                this.setState({show: false});
-              }}
-            />
-          
-            )
-          }
+              {this.props.showPreviousDate === 'no' && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={this.props.value}
+                  mode={'date'}
+                  minimumDate={moment().toDate()}
+                  is24Hour={true}
+                  display="default"
+                  onChange={this.OnChange}
+                  onTouchCancel={value => {
+                    console.log('touch cancel', value);
+                    this.setState({show: false});
+                  }}
+                />
+              )}
+              {this.props.showPreviousDate === 'yes' && (
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={this.props.value}
+                  mode={'date'}
+                  is24Hour={true}
+                  display="default"
+                  onChange={this.OnChange}
+                  onTouchCancel={value => {
+                    console.log('touch cancel', value);
+                    this.setState({show: false});
+                  }}
+                />
+              )}
             </View>
             <ButtonResetPassaword
               validate={true}
@@ -213,8 +207,8 @@ export default class DateAndTimePicker extends React.Component {
     );
   };
   openModel = () => {
-    if(this.props.editable===false){
-    this.setState({show: true});
+    if (this.props.editable === false) {
+      this.setState({show: true});
     }
   };
   render() {

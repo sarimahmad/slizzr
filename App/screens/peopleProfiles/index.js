@@ -219,22 +219,21 @@ class peopleProfiles extends Component {
 
                   {item.Pictures.length !== 0 && (
                     //  this.IconImage(item)
-                    <TouchableOpacity 
-                    style={{  position: 'absolute',
-                    alignSelf: 'center',
-                    top: 65,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
+                    <TouchableOpacity
+                      style={{
+                        position: 'absolute',
+                        alignSelf: 'center',
+                        top: 65,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
                       onPress={() =>
                         this.props.navigation.navigate('myProfile', {
                           id: item.id,
                         })
                       }>
                       <Image
-                        style={[
-                          styles.logo,
-                        ]}
+                        style={[styles.logo]}
                         source={{uri: item.Pictures[0].Profile_Url}}
                       />
                     </TouchableOpacity>

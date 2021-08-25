@@ -8,32 +8,59 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {FONT} from '../../helper/Constant';
+import {FONT, SCREEN} from '../../helper/Constant';
 import HeaderWithOptionBtn from '../../component/HeaderWithOptionBtn';
 import {SafeAreaView} from 'react-navigation';
 import {WHITE} from '../../helper/Color';
+import {GetAllPayoutStatusForEvents} from '../../helper/Api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
+
 export default class payouts extends Component {
   constructor() {
     super();
     this.state = {
-      payoutData: [
-        {
-          id: 1,
-          text1: 'Clapping Banger',
-          text2: 'Niagra Falls, ON',
-          text3: '11:30 PM | Feb 25, 2020 - WED',
-          btn: require('../../assets/Slizzer-icon/atdoor.png'),
-        },
-        {
-          id: 2,
-          text1: 'Uroojs Banger',
-          text2: 'Niagra Falls, ON',
-          text3: '11:30 PM | Feb 25, 2020 - WED',
-          btn: require('../../assets/Slizzer-icon/prepaid.png'),
-        },
-      ],
+      payoutData: [],
     };
   }
+  componentDidMount() {
+    this.getAllPayoutEvents();
+  }
+
+  async getAllPayoutEvents() {
+    await GetAllPayoutStatusForEvents({
+      user_id: (await AsyncStorage.getItem('token')).replace(/['"]+/g, ''),
+    }).then(response => {
+      console.log(response);
+      if (response.UserHostedEvent) {
+        this.setState({
+          payoutData: response.UserHostedEvent,
+        });
+      }
+    });
+  }
+
+  emptyListComponent = () => {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          alignSelf: 'center',
+          justifyContent: 'center',
+          flexGrow: 1,
+          display: 'flex',
+          marginTop: SCREEN.height / 4,
+        }}>
+        <View>
+          <Text style={styles.emptyFont}>
+            You are not hosting any events at the moment.
+          </Text>
+        </View>
+      </View>
+    );
+  };
+
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -50,19 +77,26 @@ export default class payouts extends Component {
           <FlatList
             data={this.state.payoutData}
             keyExtractor={(item, index) => index.toString()}
+            ListEmptyComponent={this.emptyListComponent}
             renderItem={({item}) => (
               <View>
                 <TouchableOpacity
                   style={styles.blockView}
-                  onPress={() => this.props.navigation.navigate('event')}>
+                  onPress={() =>
+                    this.props.navigation.navigate('event', {id: item.id})
+                  }>
                   <Image
                     style={styles.imageView}
                     source={require('../../assets/Slizzer-icon/pic.png')}
                   />
                   <View style={styles.columnView}>
-                    <Text style={styles.txt1}>{item.text1}</Text>
-                    <Text style={styles.txt2}>{item.text2}</Text>
-                    <Text style={styles.txt3}>{item.text3}</Text>
+                    <Text style={styles.txt1}>{item.Name}</Text>
+                    <Text style={styles.txt2}>{item.Address}</Text>
+                    <Text style={styles.txt3}>
+                      {moment(item.Start_date).format(
+                        'hh:mm A | MMM DD, YYYY - ddd',
+                      )}
+                    </Text>
                     <Image style={{marginTop: 5}} source={item.btn} />
                   </View>
                   <View style={styles.imageView2}>

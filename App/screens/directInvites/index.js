@@ -14,10 +14,9 @@ import {BLACK} from '../../helper/Color';
 import {getAllFriends} from '../../helper/Api';
 import {TextInput} from 'react-native';
 
-// import Share from 'react-native-share';
 import {connect} from 'react-redux';
 const KEYS_TO_FILTERS = ['Friend.FirstName'];
-import SearchInput, {createFilter} from 'react-native-search-filter';
+import {createFilter} from 'react-native-search-filter';
 import {sendDirectInvite} from '../../helper/Api';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
