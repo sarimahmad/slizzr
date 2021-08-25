@@ -52,6 +52,7 @@ class peopleProfiles extends Component {
   }
   componentDidMount() {
     this.findPeoplebyDistance();
+    
   }
   async findPeoplebyDistance() {
     this.setState({loading: true});
@@ -59,6 +60,8 @@ class peopleProfiles extends Component {
       this.state.min_age,
       this.state.max_age,
       this.props.userToken,
+      this.props.userDetail.Location.latitude,
+      this.props.userDetail.Location.longitude
     ).then(response => {
       console.log('response' + response);
       this.setState({findpeople: response.Users, loading: false});
@@ -120,7 +123,7 @@ class peopleProfiles extends Component {
               // onPress={() => this.props.navigation.navigate('lookFriends')}
               style={styles.inputSearch}>
               <Text style={[styles.titleText, {fontSize: 11, marginTop: 0}]}>
-                FINDING PEOPLE FOR MY PARTY
+                FINDING PEOPLE FOR {this.props.route.params.eventName}
               </Text>
             </TouchableOpacity>
 
@@ -191,9 +194,12 @@ class peopleProfiles extends Component {
 
                   <View style={styles.bottomView}>
                     <View style={{minHeight:170}}>
-                    <View
-                      style={{alignItems: 'center', justifyContent: 'center',}}>
+                    <TouchableOpacity 
+                    style={{alignItems: 'center', justifyContent: 'center',}}
+                     onPress={() => this.props.navigation.navigate('myProfile', {id: item.id})}>
+                     
                       <Text style={styles.titleText}>{item.FirstName}</Text>
+                     
                       <View style={{flexDirection: 'row', marginTop: 5}}>
                         <Image
                           source={require('../../assets/location.png')}
@@ -201,7 +207,7 @@ class peopleProfiles extends Component {
                         />
                         <Text>12 KM away</Text>
                       </View>
-                    </View>
+                    </TouchableOpacity>
                    
                     <MutualConnectionImages userId={item.id} />
                     </View>

@@ -82,7 +82,7 @@ class eventDetail extends Component {
           console.log('responseDefaultCrad', response);
           this.setState({defaultCard: response,userdefaultCard:true});
         }else{
-         alert("No default Card")
+        
         }
       }
       );
@@ -179,9 +179,12 @@ class eventDetail extends Component {
     this.setState({loading: false});
   }
   done = () => {
+    this.props.navigation.navigate("paymentsandPayouts")
+ 
     this.setState({popUpError: false});
   };
   render() {
+   const {detailItem}= this.state
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
@@ -190,7 +193,8 @@ class eventDetail extends Component {
             backColor={WHITE.dark}
             leftPress={() => this.props.navigation.goBack()}
             leftIcon={require('../../assets/back.png')}
-            rightIcon={this.props.route.params.detailItem.PublicPrivate === 'Private' ? require('../../assets/share.png'):''}
+            rightIcon={this.props.route.params.detailItem.PublicPrivate !== 'Private' ? 
+            require('../../assets/share.png'):''}
             centerIcon={require('../../assets/slizerLogo.png')}
             rightPress={() =>
               this.shareInvites()
@@ -207,28 +211,35 @@ class eventDetail extends Component {
               }}>
               {this.state.detailItem && this.state.detailItem !== '' && (
                 <FlipImage
-                  imageUrl={this.state.detailItem.image}
-                  Name={this.state.detailItem.Name}
-                  Description={this.state.detailItem.Description}
-                  Address={this.state.detailItem.Address}
+                  imageUrl={detailItem.image}
+                  Name={detailItem.Name}
+                  Description={detailItem.Description}
+                  Address={detailItem.Address}
                 />
               )}
             </View>
             <View style={{width: SCREEN.width - 40, alignSelf: 'center'}}>
               <View style={styles.flex}>
                 <Text style={[styles.titleText]}>
-                  {this.state.detailItem.Name}
+                  {detailItem.Name}
                 </Text>
-                {this.state.detailItem.EventType !== 'SCAN' && (
+                {detailItem.EventType !== 'SCAN' && (
                   <Text style={[styles.purpleText]}>
-                    {this.state.detailItem.EventType}
+                    {detailItem.EventType}
                   </Text>
                 )}
-                {this.state.detailItem.EventType === 'SCAN' && (
+                {detailItem.EventType === 'SCAN' && (
                   <Text style={[styles.purpleText]}> SCAN-&-PAY AT DOOR</Text>
                 )}
               </View>
-              <View style={[styles.flexRow, {paddingTop: 8}]}>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('myProfile', {
+                    id: detailItem.userId,
+        
+                    eventId:detailItem.id,
+                    hostId:detailItem.Host.id
+
+                  })} style={[styles.flexRow, {paddingTop: 8}]}>
+               
                 <Text
                   style={[
                     styles.titleText,
@@ -245,10 +256,10 @@ class eventDetail extends Component {
                       paddingLeft: 4,
                     },
                   ]}>
-                  {this.state.detailItem.Host !== undefined &&
-                    this.state.detailItem.Host.displayName}
+                  {detailItem.Host !== undefined &&
+                    detailItem.Host.displayName}
                 </Text>
-              </View>
+              </TouchableOpacity>
               <Text
                 style={{
                   fontFamily: FONT.Nunito.bold,
@@ -257,19 +268,34 @@ class eventDetail extends Component {
                   marginTop: 3,
                   fontWeight: 'bold',
                 }}>
-                {this.state.detailItem.DateTime} |{' '}
-                {this.state.detailItem.duration} HRS
+                {detailItem.DateTime} |{' '}
+                {detailItem.duration} HRS
               </Text>
-              <View style={[styles.flexRow, {justifyContent: 'space-between'}]}>
-                <View style={[styles.flexRow, {paddingTop: 5}]} />
+              <View style={[styles.flexRow, {marginTop:5,justifyContent: 'space-between'}]}>
+              <View style={{flexDirection:'row'}}>
+              <Image  style={{resizeMode:'contain'}}
+                          source={require('../../assets/pin.png')}
+                        />
+              <Text
+                style={{
+                  fontFamily: FONT.Nunito.bold,
+                  fontSize: 12,
+                  color: BLACK.textColor3,
+                  marginHorizontal:5,
+                  fontWeight: 'bold',
+                }}>
+                {detailItem.distance} KM away
+              </Text>
+              </View>
+   
                 <Text
                   style={{
                     fontFamily: FONT.Nunito.bold,
                     fontSize: 17,
                     color: BLACK.textColor2,
                   }}>
-                  {this.state.detailItem.EventType !== 'FREE' &&
-                    `$${this.state.detailItem.Fee}`}
+                  {detailItem.EventType !== 'FREE' &&
+                    `$${detailItem.Fee}`}
                 </Text>
               </View>
               {this.state.mutualConnnections.length!==0 &&

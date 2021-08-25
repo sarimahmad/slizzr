@@ -159,7 +159,6 @@ class SignIn extends Component {
           }
         });
     }
-    this.setState({loading: false});
   };
 
   firestoreLinking = data => {

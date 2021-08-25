@@ -486,12 +486,12 @@ export async function getAllFriends(user_id) {
       console.error(error);
     });
 }
-export async function findPeoplebyDistance() {
-  let min_age = '0';
-  let max_age = '0';
-  let user_id = '3wDLplGq1oYQMO3xRnS4ZtpdK0M2';
+export async function findPeoplebyDistance(min_age,max_age,user_id,lat,long) {
+  // let min_age = '0';
+  // let max_age = '0';
+  // let user_id = '3wDLplGq1oYQMO3xRnS4ZtpdK0M2';
   return fetch(
-    `${Server}/user/people/find-people?min_age=${min_age}&max_age=${max_age}&user_id=${user_id}`,
+    `${Server}/user/people/find-people?min_age=${min_age}&max_age=${max_age}&user_id=${user_id}&lat=${lat}&long=${long}`,
   )
     .then(async response => {
       return await response.json();
@@ -1195,7 +1195,7 @@ export async function GetSharedEventsForUser({current_user_id}) {
 
 // REMOVE Shared HOST can be used for self remove or can be user by host to remove
 //self_removed can be TRUE or FALSE
-export async function RemoveSharedHost({self_removed, shared_host_id}) {
+export async function RemoveSharedHost(self_removed, shared_host_id) {
   var data = JSON.stringify({
     self_removed: self_removed,
   });
@@ -1206,7 +1206,7 @@ export async function RemoveSharedHost({self_removed, shared_host_id}) {
     headers: {
       'Content-Type': 'application/json',
     },
-    data: data,
+    data: self_removed,
   };
 
   const GetResponse = await axios(config)

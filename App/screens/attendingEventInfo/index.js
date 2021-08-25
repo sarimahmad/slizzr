@@ -89,6 +89,7 @@ class attendingEventInfo extends Component {
   };
 
   render() {
+    const {detailItem} =this.state
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
@@ -102,7 +103,7 @@ class attendingEventInfo extends Component {
 
           <ScrollView>
             <Image
-              source={{uri: this.state.detailItem.image}}
+              source={{uri: detailItem.image}}
               style={styles.logoEvent}
             />
 
@@ -112,35 +113,41 @@ class attendingEventInfo extends Component {
                   styles.titleText,
                   {textAlign: 'center', marginTop: 20},
                 ]}>
-                {this.state.detailItem.Name}
+                {detailItem.Name}
               </Text>
               <Text style={[styles.text, {textAlign: 'center', marginTop: 5}]}>
-                {this.state.detailItem.EventType}{' '}
-                {this.state.detailItem.EventType !== 'FREE' &&
-                  `| $${this.state.detailItem.Fee}`}
+                {detailItem.EventType}{' '}
+                {detailItem.EventType !== 'FREE' &&
+                  `| $${detailItem.Fee}`}
               </Text>
               <Text
                 style={[
                   styles.purpleText,
                   {textAlign: 'center', marginTop: 4},
                 ]}>
-                {moment(this.state.detailItem.Start_date).format(
+                {moment(detailItem.Start_date).format(
                   'hh:mm A | MMM DD, YYYY - ddd',
                 )}{' '}
-                | {this.state.detailItem.duration} HRS
+                | {detailItem.duration} HRS
               </Text>
 
-              <Text style={{textAlign: 'center', marginVertical: 4}}>
-                <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('myProfile', {
+                    id: detailItem.userId,
+        
+                    eventId:detailItem.id,
+                    hostId:detailItem.Host.id
+
+                  })} style={[styles.flexRow]}>
+                   <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
                 <Text
                   style={[
                     styles.purpleText,
                     {textDecorationLine: 'underline'},
                   ]}>
-                  {this.state.detailItem.Host &&
-                    this.state.detailItem.Host.displayName}{' '}
+                  {detailItem.Host &&
+                    detailItem.Host.displayName}{' '}
                 </Text>
-              </Text>
+              </TouchableOpacity>
             </View>
             <View
               style={{
@@ -161,7 +168,7 @@ class attendingEventInfo extends Component {
                   fontFamily: FONT.Nunito.regular,
                   color: '#494949',
                 }}>
-                {this.state.detailItem.Address}
+                {detailItem.Address}
               </Text>
             </View>
             <Text style={[styles.titleText, {textAlign: 'center'}]}>
@@ -177,13 +184,13 @@ class attendingEventInfo extends Component {
                   marginBottom: 20,
                 },
               ]}>
-              {this.state.detailItem.Description}
+              {detailItem.Description}
             </Text>
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate('attendeesList', {
                   id: this.props.route.params.id,
-                  host: this.state.detailItem.Host,
+                  host: detailItem.Host,
                   from: 'attend',
                 })
               }
@@ -207,7 +214,7 @@ class attendingEventInfo extends Component {
               onPress={() =>
                 this.props.navigation.navigate('chat', {
                   CurrentUserUID: this.state.currentUserUID,
-                  HostUID: this.state.detailItem.Host.Id,
+                  HostUID: detailItem.Host.Id,
                   EventID: this.props.route.params.id,
                 })
               }
@@ -381,8 +388,7 @@ const styles = StyleSheet.create({
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-    marginTop: 10,
-
+ 
     fontFamily: FONT.Nunito.semiBold,
   },
   barChild: {

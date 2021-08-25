@@ -98,9 +98,8 @@ class myEventInfo extends Component {
   };
 
   render() {
-    const fromAttend =
-    this.props.route.params.from && this.props.route.params.from === 'SharedHost';
-
+    const fromAttend = this.props.route.params.from && this.props.route.params.from === 'SharedHost';
+    const {detailItem} = this.state
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
@@ -114,33 +113,44 @@ class myEventInfo extends Component {
 
           <ScrollView>
             <Image
-              source={{uri: this.state.detailItem.image}}
+              source={{uri: detailItem.image}}
               style={styles.logoEvent1}
             />
 
             <View style={{alignSelf: 'center'}}>
               <Text style={[styles.titleText, {textAlign: 'center'}]}>
-                {this.state.detailItem.Name}
+                {detailItem.Name}
               </Text>
               <Text style={[styles.text, {textAlign: 'center'}]}>
-                {this.state.detailItem.EventType}{' '}
-                {this.state.detailItem.EventType !== 'FREE' &&
-                  `| $${this.state.detailItem.Fee}`}
+                {detailItem.EventType}{' '}
+                {detailItem.EventType !== 'FREE' &&
+                  `| $${detailItem.Fee}`}
               </Text>
               <Text style={[styles.purpleText, {textAlign: 'center'}]}>
-                {moment(this.state.detailItem.Start_date).format(
+                {moment(detailItem.Start_date).format(
                   'hh:mm A | MMM DD, YYYY - ddd',
                 )}{' '}
-                | {this.state.detailItem.duration} HRS
+                | {detailItem.duration} HRS
               </Text>
 
-              <Text style={{textAlign: 'center', marginVertical: 5}}>
-                <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
-                <Text style={styles.purpleText}>
-                  {this.state.detailItem.Host &&
-                    this.state.detailItem.Host.displayName}{' '}
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('myProfile', {
+                    id: detailItem.userId,
+        
+                    eventId:detailItem.id,
+                    hostId:detailItem.Host.id
+
+                  })} style={[styles.flexRow]}>
+                   <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
+                <Text
+                  style={[
+                    styles.purpleText,
+                    {textDecorationLine: 'underline'},
+                  ]}>
+                  {detailItem.Host &&
+                    detailItem.Host.displayName}
                 </Text>
-              </Text>
+              </TouchableOpacity>
+         
             </View>
             <View
               style={{
@@ -156,7 +166,7 @@ class myEventInfo extends Component {
               />
 
               <Text>
-                {this.state.detailItem && this.state.detailItem.Address}
+                {detailItem && detailItem.Address}
               </Text>
             </View>
             <Text style={[styles.titleText, {textAlign: 'center'}]}>
@@ -167,7 +177,7 @@ class myEventInfo extends Component {
                 styles.text,
                 {textAlign: 'center', marginHorizontal: 36, marginVertical: 10},
               ]}>
-              {this.state.detailItem && this.state.detailItem.Description}
+              {detailItem && detailItem.Description}
             </Text>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('peopleProfiles')}
@@ -177,7 +187,7 @@ class myEventInfo extends Component {
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate('Scan', {
-                  id: this.state.detailItem.id,
+                  id: detailItem.id,
                 })
               }
               style={styles.btnMap}>
@@ -187,8 +197,8 @@ class myEventInfo extends Component {
               style={styles.btnMap}
               onPress={() =>
                 this.props.navigation.navigate('attendeesList', {
-                  id: this.state.detailItem.id,
-                  host: this.state.detailItem.Host,
+                  id: detailItem.id,
+                  host: detailItem.Host,
                   from: this.state.from,
                   
                 })
@@ -205,7 +215,7 @@ class myEventInfo extends Component {
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate('createEvent', {
-                  id: this.state.detailItem.id,
+                  id: detailItem.id,
                   from: 'edit',
                 })
               }
@@ -364,7 +374,7 @@ const styles = StyleSheet.create({
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-    marginTop: 10,
+ 
     textDecorationLine: 'underline',
     fontFamily: FONT.Nunito.regular,
   },

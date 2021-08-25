@@ -44,10 +44,21 @@ class notification extends Component {
   componentWillUnmount() {
     this._unsubscribe();
   }
-
+  done=()=>{
+    this.getAllNotifications();
+    this.setState({
+      popUpError: false,
+      btnOneText: this.state.btnOneText,
+      errorTitle: this.state.titleText,
+      errorText: this.state.errorText,
+    })
+  
+  }
+  
   async getAllNotifications() {
     this.setState({loading: true});
     await getAllNotifications(this.props.userToken).then(response => {
+      
       this.setState({notifications: response.Notifications, loading: false});
 // handler.onNotification()
 
@@ -81,20 +92,31 @@ notificationTap=(notif)=>{
     };
     this.setState({loading: true});
     await acceptandRejectRequest(data).then(response => {
-      this.setState({loading: false});
-      Alert.alert('Successfull', response.message, [
-        {text: 'OK', onPress: () => this.getAllNotifications()},
-      ]);
+      this.setState({loading:false})
+   
+      this.setState({
+        loading: false,
+        errorTitle: 'Successful',
+        errorText: response.message,
+
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
     });
   }
 
   async acceptandRejectSharedHostRequest({ACCEPTED, shared_host_id}) {
     this.setState({loading: true});
     await DecideSharedHostRequest({ACCEPTED, shared_host_id}).then(response => {
-      this.setState({loading: false});
-      Alert.alert('Successfull', response.message, [
-        {text: 'OK', onPress: () => this.getAllNotifications()},
-      ]);
+     this.setState({loading:false})
+      this.setState({
+        loading: false,
+        errorTitle: 'Successful',
+        errorText: response.message,
+
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
     });
   }
 
@@ -114,6 +136,9 @@ notificationTap=(notif)=>{
       </View>
     );
   };
+  goToMessage=(item)=>{
+console.log(item)
+  }
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -132,7 +157,7 @@ notificationTap=(notif)=>{
               <View>
                 {/* Only Message */}
                 {item.NotificationType === 'MESSAGE' && (
-                  <View style={styles.flexRow}>
+                  <TouchableOpacity onPress={()=>this.goToMessage(item)} style={styles.flexRow}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <View style={styles.imgView}>
                         <Image
@@ -150,7 +175,7 @@ notificationTap=(notif)=>{
                         </Text>
                       </View>
                     </View>
-                  </View>
+                  </TouchableOpacity>
                 )}
 
                 {/* Only Direct Invite */}

@@ -373,13 +373,17 @@ class home extends Component {
       });
   }
   onChange = selectedDate => {
-    const currentDate = selectedDate || this.state.date;
-    let term =  moment(selectedDate).format('llll')
+    if(selectedDate == undefined){
+    this.searchUpdated('')
+    }else{
+      const currentDate = selectedDate || this.state.date;
+    let term =  moment(currentDate).format('DD MMM YYYY')
     console.log(term)
-    // this.searchUpdated(currentDate);
+    this.searchUpdated(term);
            
     this.setState({date: currentDate});
     this.setState({showDate: false});
+    }
   };
 
   showDatepicker = () => {
@@ -803,18 +807,17 @@ class home extends Component {
           <TouchableOpacity
             onPress={this.showDatepicker}
             style={{flexDirection: 'row'}}>
-            <DateAndTimePicker
-              testID="dateTimePicker"
-                      
-              format="MMM DD, YYYY "
-              value={this.state.date}
-              mode={'date'}
-              type={'onlyDate'}
-              is24Hour={true}
-              display="default"
-              setDateAndTime={value => this.onChange(value)}
-            />
-          </TouchableOpacity>
+             <DateAndTimePicker
+            testID="dateTimePicker"
+            value={this.state.date}
+            format="MMM DD, YYYY"
+            editable={false}
+            mode="date"  
+            showPreviousDate={"no"}
+            type="onlyDate"
+            setDateAndTime={date => this.onChange(date)}
+          />
+        </TouchableOpacity>
           {this.state.mapView === true && (
             <TouchableOpacity
               style={styles.btnMap}

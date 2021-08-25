@@ -24,7 +24,9 @@ import {
   getAllSharedEvents,
   getAllSharedHostsforEventAccepted,
   getAllPendingSharedHostsforEvent,
-  getUserEvents
+  getUserEvents,
+  RemoveSharedHost,
+  DeleteSharedHostRequest
 } from '../../helper/Api';
 import {connect} from 'react-redux';
 import Loader from '../../component/Loader';
@@ -40,15 +42,7 @@ class sharedHosts extends Component {
       eventId:'',
       hostSelected: {},
       image: [
-        {id: 1, image: require('../../assets/profile2.png')},
-        {id: 2, image: require('../../assets/profile2.png')},
-        {id: 3, image: require('../../assets/profile2.png')},
-        {id: 4, image: require('../../assets/profile2.png')},
-        {id: 5, image: require('../../assets/profile2.png')},
-        {id: 4, image: require('../../assets/profile2.png')},
-        {id: 5, image: require('../../assets/profile2.png')},
-        {id: 4, image: require('../../assets/profile2.png')},
-        {id: 5, image: require('../../assets/profile2.png')},
+       
       ],
       sharedHosts: [],
       userEvents: [],
@@ -172,6 +166,9 @@ class sharedHosts extends Component {
       this.setState({loading: true});
 
       await inviteSharedHost(data, this.state.hostSelected.Friend.id).then(response => {
+        this.setState({loading:false})
+   
+
         if (response.status === 200) {
           this.setState({
             loading: false,
@@ -204,7 +201,53 @@ class sharedHosts extends Component {
   done = () => {
     this.setState({popUpError: false});
   };
-
+  cancelSharedHostAccepted= async(item)=>{
+    let approve ={self_removed: "FALSE"}
+    let shared_host_id =item.SharedHostID
+   await RemoveSharedHost(approve,shared_host_id).then(response=>{
+    this.setState({loading:false})
+    if (response && response.status === 200) {
+      this.setState({
+        errorTitle: 'SUCCESSFULL',
+        errorText: response.data.message,
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
+    } else {
+      this.setState({
+        loading: false,
+        errorTitle: 'Failed',
+        errorText: 'Shared host is not Removed ',
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
+    }
+    })
+  }
+  
+  DeleteSharedHostRequest= async(item)=>{
+    let shared_host_id =item.Event.id
+   await DeleteSharedHostRequest(shared_host_id).then(response=>{
+  this.setState({loading:false})
+    if (response && response.status === 200) {
+      this.setState({
+        errorTitle: 'SUCCESSFULL',
+        errorText: response.data.message,
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
+    } else {
+      this.setState({
+        loading: false,
+        errorTitle: 'Failed',
+        errorText: 'Shared host is not Removed ',
+        btnOneText: 'Ok',
+        popUpError: true,
+      });
+    }
+    })
+  }
+  
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -423,13 +466,13 @@ class sharedHosts extends Component {
                         {item.User.displayName}
                       </Text>
                     </View>
-                    <View
+                    <TouchableOpacity onPress={()=>this.cancelSharedHostAccepted(item)}
                       style={{justifyContent: 'center', alignItems: 'center'}}>
                       <Image
                         style={{height: 35, width: 35}}
                         source={require('../../assets/close.png')}
                       />
-                    </View>
+                    </TouchableOpacity>
                   </View>
                   <View
                     style={{
@@ -494,13 +537,13 @@ class sharedHosts extends Component {
                         {item.User.displayName}
                       </Text>
                     </View>
-                    <View
+                    <TouchableOpacity onPress={()=>this.DeleteSharedHostRequest(item)}
                       style={{justifyContent: 'center', alignItems: 'center'}}>
                       <Image
                         style={{height: 35, width: 35}}
                         source={require('../../assets/close.png')}
                       />
-                    </View>
+                    </TouchableOpacity>
                   </View>
                   <View
                     style={{

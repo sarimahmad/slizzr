@@ -35,6 +35,7 @@ import SearchInput, { createFilter } from 'react-native-search-filter';
   }
   componentDidMount(){
     this.getAllFriends()
+
   }
   async getAllFriends() {
     this.setState({loading:true})
@@ -116,7 +117,11 @@ import SearchInput, { createFilter } from 'react-native-search-filter';
             ListEmptyComponent={this.emptyListComponent}
         
             renderItem={({item}) => (
-              <TouchableOpacity
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('chat', {
+                CurrentUserUID: this.props.userDetail.id,
+                HostUID: item.Friend.id,
+                EventID: this.props.route.params.EventID,
+              })}
                 style={{
                   borderBottomWidth: 1,
                   borderColor: 'lightgrey',

@@ -76,7 +76,8 @@ class zicketDetail extends Component {
       .catch(err => console.error(err));
   }
   render() {
-    if (this.state.detailItem === undefined) {
+    const {detailItem}=this.state
+    if (detailItem === undefined) {
       return (
         <View style={styles.wrapperView}>
           <SafeAreaView
@@ -106,7 +107,7 @@ class zicketDetail extends Component {
 
           <ScrollView>
             <Image
-              source={{uri: this.state.detailItem.Event.image}}
+              source={{uri: detailItem.Event.image}}
               style={styles.logoEvent}
             />
 
@@ -116,35 +117,44 @@ class zicketDetail extends Component {
                   styles.titleText,
                   {textAlign: 'center', marginTop: 20},
                 ]}>
-                {this.state.detailItem.Event.Name}
+                {detailItem.Event.Name}
               </Text>
               <Text style={[styles.text, {textAlign: 'center', marginTop: 5}]}>
-                {this.state.detailItem.Event.EventType}{' '}
-                {this.state.detailItem.Event.EventType !== 'FREE' &&
-                  `| $${this.state.detailItem.Event.Fee}`}
+                {detailItem.Event.EventType}{' '}
+                {detailItem.Event.EventType !== 'FREE' &&
+                  `| $${detailItem.Event.Fee}`}
               </Text>
               <Text
                 style={[
                   styles.purpleText,
                   {textAlign: 'center', marginTop: 4},
                 ]}>
-                {moment(this.state.detailItem.Event.Start_date).format(
+                {moment(detailItem.Event.Start_date).format(
                   'hh:mm A | MMM DD, YYYY - ddd',
                 )}{' '}
-                | {this.state.detailItem.Event.duration} HRS
+                | {detailItem.Event.duration} HRS
                 {/* 11:30 PM | Feb 25, 2020 - WED | 2 HRS */}
               </Text>
 
-              <Text style={{textAlign: 'center', marginVertical: 4}}>
-                <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
+           
+              <TouchableOpacity onPress={()=>this.props.navigation.navigate('myProfile', {
+                    id: detailItem.UserID,
+        
+                    eventId:detailItem.id,
+                    hostId:detailItem.User.id
+
+                  })} style={[styles.flexRow]}>
+                   <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
                 <Text
                   style={[
                     styles.purpleText,
                     {textDecorationLine: 'underline'},
                   ]}>
-                  {this.state.detailItem.Event.Host.displayName}
+                  {detailItem.User &&
+                    detailItem.User.displayName}
                 </Text>
-              </Text>
+              </TouchableOpacity>
+         
             </View>
             <View
               style={{
@@ -165,7 +175,7 @@ class zicketDetail extends Component {
                   fontFamily: FONT.Nunito.regular,
                   color: '#494949',
                 }}>
-                {this.state.detailItem.Event.Address}
+                {detailItem.Event.Address}
               </Text>
             </View>
             <View
@@ -177,7 +187,7 @@ class zicketDetail extends Component {
                 width: 242,
               }}>
               <Image
-                source={{uri: this.state.detailItem.QRImage}}
+                source={{uri: detailItem.QRImage}}
                 style={{height: 239, width: 239}}
               />
             </View>
@@ -189,7 +199,7 @@ class zicketDetail extends Component {
               }}>
               <Text style={styles.titleText}>Host: </Text>
               <Text style={{fontFamily: FONT.Nunito.regular, fontSize: 17}}>
-                {this.state.detailItem.Event.Host.displayName}
+                {detailItem.Event.Host.displayName}
               </Text>
             </View>
             <View
@@ -201,7 +211,7 @@ class zicketDetail extends Component {
               }}>
               <Text style={styles.titleText}>Attendee: </Text>
               <Text style={{fontFamily: FONT.Nunito.regular, fontSize: 17}}>
-                {this.state.detailItem.User.displayName}
+                {detailItem.User.displayName}
               </Text>
             </View>
 
@@ -209,11 +219,11 @@ class zicketDetail extends Component {
             <View
               style={{alignSelf: 'center', marginTop: 20, marginBottom: 10}}>
               <TouchableOpacity
-                onPress={() => this.savePicture(this.state.detailItem.QRImage)}>
+                onPress={() => this.savePicture(detailItem.QRImage)}>
                 <Text>Save to Gallery</Text>
               </TouchableOpacity>
             </View>
-            {this.state.detailItem.Event.EventType === 'SCAN' && (
+            {detailItem.Event.EventType === 'SCAN' && (
               <View
                 style={{
                   flexDirection: 'row',
@@ -372,8 +382,7 @@ const styles = StyleSheet.create({
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-    marginTop: 10,
-
+   
     fontFamily: FONT.Nunito.semiBold,
   },
   barChild: {

@@ -37,6 +37,7 @@ const messagesEvent = props => {
 
   useEffect(() => {
     getMessage();
+    
   }, []);
 
   async function getMessage() {
@@ -52,8 +53,9 @@ const messagesEvent = props => {
         user_id: TOKEN.slice(1, -1),
       })
         .then(response => {
-          SetMessages(response.Messages);
           SetLoading(false)
+          SetMessages(response.Messages);
+         
         })
         .catch(error => {
           console.log(error);
@@ -99,7 +101,9 @@ const messagesEvent = props => {
           backColor={WHITE.dark}
           leftPress={() => navigation.goBack()}
           leftIcon={require('../../assets/back.png')}
-          rightPress={() => navigation.navigate('newMessage')}
+          rightPress={() => navigation.navigate('newMessage', {
+            EventID: event.id,
+          })}
           rightIcon={require('../../assets/newMesssage.png')}
           headerTitle={'Messages'}
         />

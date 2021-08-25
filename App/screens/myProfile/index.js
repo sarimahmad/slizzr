@@ -131,10 +131,15 @@ class Profile extends Component {
       };
       this.setState({loading: true});
       await sendMutualConnection(data).then(response => {
-        this.setState({loading: false});
-        alert(response.message);
+        this.setState({
+          loading: false,
+          errorTitle: 'Successful',
+          errorText: response.message,
 
-        this.props.navigation.pop();
+          btnOneText: 'Ok',
+          popUpError: true,
+        });
+      
       });
     }
   };
@@ -198,6 +203,7 @@ class Profile extends Component {
     );
   };
   doneClick=()=>{
+    this.findRelation(this.props.userToken, this.props.route.params.id);
     this.setState({
       popUpError: false,
       btnOneText: this.state.btnOneText,
