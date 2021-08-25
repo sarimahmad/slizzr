@@ -34,46 +34,42 @@ class myEventInfo extends Component {
       errorTitle: '',
       errorText: '',
       popUpError: false,
-      from:''
+      from: '',
     };
   }
   componentDidMount() {
     let id = this.props.route.params.id;
-    if(this.props.route.params.from === "SharedHost"){
-   this.setState({from:this.props.route.params.from})
-    }else{
-      this.setState({from:'host'})
-  
-    } 
-   if (id) {
+    if (this.props.route.params.from === 'SharedHost') {
+      this.setState({from: this.props.route.params.from});
+    } else {
+      this.setState({from: 'host'});
+    }
+    if (id) {
       this.getEventDetail(id);
     }
   }
   async getEventDetail(id) {
     this.setState({loading: true});
-     let location= {
-        Lat: this.props.userDetail.Location.latitude,
-        Long:  this.props.userDetail.Location.longitude
-    }
-    await getEventDetail(location,id)
+    let location = {
+      Lat: this.props.userDetail.Location.latitude,
+      Long: this.props.userDetail.Location.longitude,
+    };
+    await getEventDetail(location, id)
       .then(response => {
-        if(response.Event){
-        this.setState({
-          loading:false,
-          detailItem: response.Event,
-      
-        });
-      }else{
-        alert(response)
-        this.props.navigation.goBack()
-        this.setState({
-          loading:false,
-        });
-      
-      }
+        if (response.Event) {
+          this.setState({
+            loading: false,
+            detailItem: response.Event,
+          });
+        } else {
+          alert(response);
+          this.props.navigation.goBack();
+          this.setState({
+            loading: false,
+          });
+        }
       })
       .catch(error => console.log(error));
-  
   }
 
   cancelEvent = async () => {
@@ -98,8 +94,10 @@ class myEventInfo extends Component {
   };
 
   render() {
-    const fromAttend = this.props.route.params.from && this.props.route.params.from === 'SharedHost';
-    const {detailItem} = this.state
+    const fromAttend =
+      this.props.route.params.from &&
+      this.props.route.params.from === 'SharedHost';
+    const {detailItem} = this.state;
     return (
       <View style={styles.wrapperView}>
         <SafeAreaView style={styles.contentView}>
@@ -112,10 +110,7 @@ class myEventInfo extends Component {
           />
 
           <ScrollView>
-            <Image
-              source={{uri: detailItem.image}}
-              style={styles.logoEvent1}
-            />
+            <Image source={{uri: detailItem.image}} style={styles.logoEvent1} />
 
             <View style={{alignSelf: 'center'}}>
               <Text style={[styles.titleText, {textAlign: 'center'}]}>
@@ -123,8 +118,7 @@ class myEventInfo extends Component {
               </Text>
               <Text style={[styles.text, {textAlign: 'center'}]}>
                 {detailItem.EventType}{' '}
-                {detailItem.EventType !== 'FREE' &&
-                  `| $${detailItem.Fee}`}
+                {detailItem.EventType !== 'FREE' && `| $${detailItem.Fee}`}
               </Text>
               <Text style={[styles.purpleText, {textAlign: 'center'}]}>
                 {moment(detailItem.Start_date).format(
@@ -133,24 +127,25 @@ class myEventInfo extends Component {
                 | {detailItem.duration} HRS
               </Text>
 
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate('myProfile', {
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('myProfile', {
                     id: detailItem.userId,
-        
-                    eventId:detailItem.id,
-                    hostId:detailItem.Host.id
 
-                  })} style={[styles.flexRow]}>
-                   <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
+                    eventId: detailItem.id,
+                    hostId: detailItem.Host.id,
+                  })
+                }
+                style={[styles.flexRow]}>
+                <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
                 <Text
                   style={[
                     styles.purpleText,
                     {textDecorationLine: 'underline'},
                   ]}>
-                  {detailItem.Host &&
-                    detailItem.Host.displayName}
+                  {detailItem.Host && detailItem.Host.displayName}
                 </Text>
               </TouchableOpacity>
-         
             </View>
             <View
               style={{
@@ -165,9 +160,7 @@ class myEventInfo extends Component {
                 style={styles.logoEvent}
               />
 
-              <Text>
-                {detailItem && detailItem.Address}
-              </Text>
+              <Text>{detailItem && detailItem.Address}</Text>
             </View>
             <Text style={[styles.titleText, {textAlign: 'center'}]}>
               Description:
@@ -187,7 +180,7 @@ class myEventInfo extends Component {
             <TouchableOpacity
               onPress={() =>
                 this.props.navigation.navigate('Scan', {
-                  id: detailItem.id,
+                  item: detailItem.EventType,
                 })
               }
               style={styles.btnMap}>
@@ -200,38 +193,39 @@ class myEventInfo extends Component {
                   id: detailItem.id,
                   host: detailItem.Host,
                   from: this.state.from,
-                  
                 })
               }>
               <Text style={styles.btnText}>ATTENDEES</Text>
             </TouchableOpacity>
-           
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('sharedHosts',{id:this.props.route.params.id})}
-              style={styles.btnMap}>
-              <Text style={styles.btnText}>SHARED HOSTS</Text>
-            </TouchableOpacity>
-           
-            {!fromAttend && (
-                 
+
             <TouchableOpacity
               onPress={() =>
-                this.props.navigation.navigate('createEvent', {
-                  id: detailItem.id,
-                  from: 'edit',
+                this.props.navigation.navigate('sharedHosts', {
+                  id: this.props.route.params.id,
                 })
               }
               style={styles.btnMap}>
-              <Text style={styles.btnText}>EDIT</Text>
+              <Text style={styles.btnText}>SHARED HOSTS</Text>
             </TouchableOpacity>
+
+            {!fromAttend && (
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('createEvent', {
+                    id: detailItem.id,
+                    from: 'edit',
+                  })
+                }
+                style={styles.btnMap}>
+                <Text style={styles.btnText}>EDIT</Text>
+              </TouchableOpacity>
             )}
             {!fromAttend && (
-           
-            <TouchableOpacity
-              onPress={() => this.cancelEvent()}
-              style={styles.cancelButton}>
-              <Text style={styles.btnTextCancel}>CANCEL EVENT</Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.cancelEvent()}
+                style={styles.cancelButton}>
+                <Text style={styles.btnTextCancel}>CANCEL EVENT</Text>
+              </TouchableOpacity>
             )}
           </ScrollView>
         </SafeAreaView>
@@ -376,7 +370,7 @@ const styles = StyleSheet.create({
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
- 
+
     textDecorationLine: 'underline',
     fontFamily: FONT.Nunito.regular,
   },

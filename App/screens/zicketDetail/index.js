@@ -38,8 +38,8 @@ class zicketDetail extends Component {
   componentDidMount() {
     let event_id = this.props.route.params.EventID;
     let user_id = this.props.route.params.UserID;
-    console.log(event_id);
-    console.log(user_id);
+    console.log('Event ID ' + event_id);
+    console.log('User ID ' + user_id);
     if (event_id) {
       this.getZicketDetail({event_id, user_id});
     }
@@ -76,7 +76,7 @@ class zicketDetail extends Component {
       .catch(err => console.error(err));
   }
   render() {
-    const {detailItem}=this.state
+    const {detailItem} = this.state;
     if (detailItem === undefined) {
       return (
         <View style={styles.wrapperView}>
@@ -136,25 +136,25 @@ class zicketDetail extends Component {
                 {/* 11:30 PM | Feb 25, 2020 - WED | 2 HRS */}
               </Text>
 
-           
-              <TouchableOpacity onPress={()=>this.props.navigation.navigate('myProfile', {
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('myProfile', {
                     id: detailItem.UserID,
-        
-                    eventId:detailItem.id,
-                    hostId:detailItem.User.id
 
-                  })} style={[styles.flexRow]}>
-                   <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
+                    eventId: detailItem.id,
+                    hostId: detailItem.User.id,
+                  })
+                }
+                style={[styles.flexRow]}>
+                <Text style={[styles.titleText, {fontSize: 12}]}>Host: </Text>
                 <Text
                   style={[
                     styles.purpleText,
                     {textDecorationLine: 'underline'},
                   ]}>
-                  {detailItem.User &&
-                    detailItem.User.displayName}
+                  {detailItem.User && detailItem.User.displayName}
                 </Text>
               </TouchableOpacity>
-         
             </View>
             <View
               style={{
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   purpleText: {
     fontSize: 12,
     color: '#F818D9',
-   
+
     fontFamily: FONT.Nunito.semiBold,
   },
   barChild: {

@@ -17,27 +17,35 @@ export async function CheckEventStatus({user_id, event_id}) {
     .catch(err => err);
   return Response;
 }
-export async function ScanZicket(event_id, data) {
-  const reqOptions = {
+
+export async function ScanZicket({EventID, ZicketID}) {
+  var data = JSON.stringify({
+    event_id: EventID,
+  });
+
+  var config = {
     method: 'POST',
+    url: `${Server}/zicket/scan-zicket/` + ZicketID,
     headers: {
-      Accept: 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({event_id}),
+    data: data,
   };
-  const Response = await fetch(
-    `${Server}/zicket/scan-zicket/` + data,
-    reqOptions,
-  )
-    .then(async response => {
-      return await response.json();
+
+  const GetResponse = await axios(config)
+    .then(function (response) {
+      return response.data;
     })
-    .catch(err => err);
-  return Response;
+    .catch(function (error) {
+      console.log(error);
+    });
+  return GetResponse;
 }
 
 export async function AtendPublicEvent({user_id, event_id}) {
+  console.log(user_id);
+  console.log(event_id);
+
   const reqOptions = {
     method: 'POST',
     headers: {
@@ -488,7 +496,13 @@ export async function getAllFriends(user_id) {
       console.error(error);
     });
 }
-export async function findPeoplebyDistance(min_age,max_age,user_id,lat,long) {
+export async function findPeoplebyDistance(
+  min_age,
+  max_age,
+  user_id,
+  lat,
+  long,
+) {
   // let min_age = '0';
   // let max_age = '0';
   // let user_id = '3wDLplGq1oYQMO3xRnS4ZtpdK0M2';
@@ -1351,7 +1365,7 @@ export async function UnblockUser(user_id, mutual_connection_id) {
 }
 //
 export async function sendDirectInvite(data) {
-//  let dataSend = JSON.stringify({data})
+  //  let dataSend = JSON.stringify({data})
   var config = {
     method: 'POST',
     url: `${Server}/direct-invite`,
