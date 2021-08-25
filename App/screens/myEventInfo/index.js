@@ -205,11 +205,13 @@ class myEventInfo extends Component {
               }>
               <Text style={styles.btnText}>ATTENDEES</Text>
             </TouchableOpacity>
+           
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('sharedHosts',{id:this.props.route.params.id})}
               style={styles.btnMap}>
               <Text style={styles.btnText}>SHARED HOSTS</Text>
             </TouchableOpacity>
+           
             {!fromAttend && (
                  
             <TouchableOpacity

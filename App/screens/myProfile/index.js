@@ -32,7 +32,7 @@ class Profile extends Component {
       mutualConnections: [],
       relation: false,
       hostId: '',
-      popUpError:false,
+      popUpError: false,
       eventId: '',
     };
   }
@@ -139,7 +139,6 @@ class Profile extends Component {
           btnOneText: 'Ok',
           popUpError: true,
         });
-      
       });
     }
   };
@@ -202,16 +201,15 @@ class Profile extends Component {
       </View>
     );
   };
-  doneClick=()=>{
+  doneClick = () => {
     this.findRelation(this.props.userToken, this.props.route.params.id);
     this.setState({
       popUpError: false,
       btnOneText: this.state.btnOneText,
       errorTitle: this.state.titleText,
       errorText: this.state.errorText,
-    })
-  
-  }
+    });
+  };
   render() {
     return (
       <View style={styles.wrapperView}>
@@ -220,7 +218,7 @@ class Profile extends Component {
             leftIcon={require('../../assets/back.png')}
             leftPress={() => this.props.navigation.pop()}
             rightPress={() => this.rightIconPress()}
-            borderBottom={true}  
+            borderBottom={true}
             relation={this.state.relation}
             rightIcon={
               this.props.route.params.from === 'drawer' ||
@@ -308,7 +306,7 @@ class Profile extends Component {
                   />
                 </View>
               </View>
-              
+
               <Text style={styles.text1}>
                 {this.state.userDetail && this.state.userDetail.FirstName}
               </Text>
@@ -331,6 +329,24 @@ class Profile extends Component {
                   ,ON
                 </Text>
               </View>
+              
+              {this.state.relation == true &&
+              //  <TouchableOpacity onPress={()=>this.props.navigation.navigate('chat', {
+              //   CurrentUserUID: this.props.userDetail.id,
+              //   HostUID: item.Friend.id,
+              //   EventID: "1234",
+              // })}>
+             
+              <Image
+                style={{
+                  height: 30,
+                  marginTop:20,
+                  width: 30,
+                }}
+                source={require('../../assets/message.png')}
+              />
+              // </TouchableOpacity>
+              }
               <Text style={styles.text3}>BIO:</Text>
               <Text style={styles.bio}>
                 {this.state.userDetail && this.state.userDetail.bio
@@ -338,8 +354,8 @@ class Profile extends Component {
                   : 'Empty Bio'}
               </Text>
               {this.props.userDetail &&
-                this.state.userDetail && 
-                this.state.mutualConnections.length !==0 &&
+                this.state.userDetail &&
+                this.state.mutualConnections.length !== 0 &&
                 this.props.userDetail.id !== this.state.userDetail.id && (
                   <View style={{alignSelf: 'flex-start', marginLeft: 40}}>
                     <Text style={[styles.titleText, {marginTop: 10}]}>
@@ -376,11 +392,9 @@ class Profile extends Component {
                     </View>
                     {this.footer()}
                   </View>
-                
                 )}
               {this.props.userDetail &&
-              
-                 this.state.relation == true &&
+                this.state.relation == true &&
                 this.props.userDetail.id !== this.props.route.params.id && (
                   <TouchableOpacity
                     onPress={() => this.blockUser()}
@@ -404,8 +418,7 @@ class Profile extends Component {
             transparent={true}
             presentationStyle={'overFullScreen'}>
             <ErrorPopup
-              cancelButtonPress={() =>this.doneClick()
-              }
+              cancelButtonPress={() => this.doneClick()}
               doneButtonPress={() => this.doneClick()}
               errorTitle={this.state.errorTitle}
               errorText={this.state.errorText}

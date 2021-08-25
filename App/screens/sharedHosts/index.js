@@ -202,7 +202,7 @@ class sharedHosts extends Component {
     this.setState({popUpError: false});
   };
   cancelSharedHostAccepted= async(item)=>{
-    let approve ={self_removed: "FALSE"}
+    let approve ={self_removed: "TRUE"}
     let shared_host_id =item.SharedHostID
    await RemoveSharedHost(approve,shared_host_id).then(response=>{
     this.setState({loading:false})
