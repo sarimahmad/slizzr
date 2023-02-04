@@ -14,7 +14,6 @@ import {
   StyleSheet,
   Platform,
   Share,
-  
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {FONT, SCREEN} from '../../helper/Constant';
@@ -29,13 +28,19 @@ import Header from '../../component/Header';
 import GoogleSearchBar from '../../component/GoogleSearchBar';
 import * as userActions from '../../redux/actions/user';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {BLACK, WHITE} from '../../helper/Color';
+import {BLACK, GRAY, WHITE} from '../../helper/Color';
 import Validations from '../../helper/Validations';
 import DateAndTimePicker from '../../component/DateAndTimePicker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import Loader from '../../component/Loader';
 import ErrorPopup from '../../component/ErrorPopup';
 import {Alert} from 'react-native';
-import {getEventDetail, updateEvent, createHostStripe,EditEventNotify} from '../../helper/Api';
+import {
+  getEventDetail,
+  updateEvent,
+  createHostStripe,
+  EditEventNotify,
+} from '../../helper/Api';
 
 class CreateEvent extends Component {
   constructor() {
@@ -81,7 +86,7 @@ class CreateEvent extends Component {
       errorText: '',
       btnTwoText: '',
       detailItem: {},
-      selected:false
+      selected: false,
     };
   }
 
@@ -131,13 +136,8 @@ class CreateEvent extends Component {
       this.state.PublicPrivate,
     );
     let checkduration = Validations.checkUsername(this.state.duration);
-    let dateCheck
-    if(this.state.selected === true)
-    {
-      dateCheck=true
-    }else{
-      dateCheck=false
-    }
+    let dateCheck;
+    dateCheck = true;
     if (
       checkAddress &&
       checkAttendeeLimit &&
@@ -146,8 +146,8 @@ class CreateEvent extends Component {
       checkduration &&
       checkFee &&
       checkPublicPrivate &&
-      checkEventType && 
-      dateCheck 
+      checkEventType &&
+      dateCheck
     ) {
       return true;
     } else {
@@ -156,29 +156,27 @@ class CreateEvent extends Component {
   }
   isFormFilled() {
     let checkTitle = Validations.checkTitle(this.state.Name);
-    
+
     let checkAddress = Validations.checkUsername(this.state.Address);
-    
-    let checkAttendeeLimit = Validations.checkUsername(this.state.AttendeeLimit);
+
+    let checkAttendeeLimit = Validations.checkUsername(
+      this.state.AttendeeLimit,
+    );
     let checkDateTime = Validations.checkUsername(this.state.DateTime);
     let checkDescription = Validations.checkUsername(this.state.Description);
     let checkEventType = Validations.checkUsername(this.state.EventType);
-    let checkFee = this.state.EventType === 'FREE'
+    let checkFee =
+      this.state.EventType === 'FREE'
         ? true
         : Validations.checkUsername(this.state.Fee);
     let checkPublicPrivate = Validations.checkUsername(
       this.state.PublicPrivate,
     );
     let checkduration = Validations.checkUsername(this.state.duration);
-    let dateCheck
-    if(this.state.selected === true)
-    {
-      dateCheck=true
-    }else{
-      dateCheck=false
-    }
+    let dateCheck;
+    dateCheck = true;
     if (
-      checkTitle && 
+      checkTitle &&
       checkAddress &&
       checkAttendeeLimit &&
       checkDateTime &&
@@ -191,30 +189,28 @@ class CreateEvent extends Component {
     ) {
       return true;
     }
-     if (!checkTitle) {
+    if (!checkTitle) {
       this.setState({
         errorTitle: 'Invalid Form  Add Title in form',
         btnOneText: 'Ok',
         popUpError: true,
         errorText: 'Title must be maximum 60 characters',
       });
-    } 
-    else if (!checkAddress) {
+    } else if (!checkAddress) {
       this.setState({
         errorTitle: 'Invalid Form ',
         btnOneText: 'Ok',
         popUpError: true,
         errorText: 'Add Adress in form',
       });
-    }else if (!checkDescription) {
+    } else if (!checkDescription) {
       this.setState({
         errorTitle: 'Invalid Form Add Description',
         btnOneText: 'Ok',
         popUpError: true,
         errorText: 'Description must be less then  600 characters',
       });
-    }  
-    else if (!checkAttendeeLimit) {
+    } else if (!checkAttendeeLimit) {
       this.setState({
         errorTitle: 'Invalid Form',
         btnOneText: 'Ok',
@@ -256,7 +252,7 @@ class CreateEvent extends Component {
         popUpError: true,
         errorText: 'Add Duration in form',
       });
-    }else if (!dateCheck) {
+    } else if (!dateCheck) {
       this.setState({
         errorTitle: 'Invalid Form',
         btnOneText: 'Ok',
@@ -272,16 +268,16 @@ class CreateEvent extends Component {
     if (isParamsExist) {
       this.setState({screenTypeEdit: true});
 
-     await this.getEventDetail(this.props.route.params.id);
+      await this.getEventDetail(this.props.route.params.id);
     }
-   await this.checkStripeHostId();
+    await this.checkStripeHostId();
   }
 
   checkStripeHostId = async () => {
     const userData = this.props.userDetail;
     if (!userData.STRIPE_HOST_ID || userData.STRIPE_HOST_ID === '') {
       this.setState({loading: true});
-  
+
       await createHostStripe({
         user_id: userData.id,
         email: userData.Email,
@@ -305,11 +301,11 @@ class CreateEvent extends Component {
 
   async getEventDetail(id) {
     this.setState({loading: true});
-    let location= {
-       Lat: this.props.userDetail.Location.latitude,
-       Long:  this.props.userDetail.Location.longitude
-   }
-    await getEventDetail(location,id).then(response => {
+    let location = {
+      Lat: this.props.userDetail.Location.latitude,
+      Long: this.props.userDetail.Location.longitude,
+    };
+    await getEventDetail(location, id).then(response => {
       this.setState({detailItem: response.Event});
 
       this.setState({Name: response.Event.Name});
@@ -326,7 +322,6 @@ class CreateEvent extends Component {
 
       this.setState({loading: false});
     });
- 
   }
   handleSubmit = async () => {
     console.log(this.state);
@@ -521,53 +516,47 @@ class CreateEvent extends Component {
   };
   done = () => {
     this.setState({popUpError: false});
-    if(this.isAllDataFilled()){
-    this.props.navigation.goBack();
+    if (this.isAllDataFilled()) {
+      this.props.navigation.goBack();
     }
   };
-  onChange = selectedDate => {
-    console.log("selected date"+selectedDate,"date time"+this.state.DateTime)
+  onChange = (event, selectedDate) => {
+    console.log(
+      'selected date' + selectedDate,
+      'date time' + this.state.DateTime,
+    );
     const currentDate = selectedDate || this.state.DateTime;
-    console.log("cureent Date"+currentDate)
+    console.log('cureent Date' + currentDate);
     // const current_date = new Date('2016-08-13 00:00');
-    const current_date = new Date(currentDate);    
-    console.log("current date new"+current_date)
-      this.setState({
-        datetimeSelected:currentDate,
-        DateTime: current_date,
-        selected:true
-      });
-   
-  }
-  editEventNotify=async()=>{
-    let eventId= this.props.route.params.id
-  await EditEventNotify(eventId).then(response=>{
-    console.log(response)
-  })
-  }
-  shareInvites = async() => {
-  
+    this.setState({DateTime: currentDate});
+  };
+  editEventNotify = async () => {
+    let eventId = this.props.route.params.id;
+    await EditEventNotify(eventId).then(response => {
+      console.log(response);
+    });
+  };
+  shareInvites = async () => {
     try {
-        const result = await Share.share({
-          message:'Your message here',
-          title:'message',
-          url:''
+      const result = await Share.share({
+        message: 'Your message here',
+        title: 'message',
+        url: '',
+      });
 
-        });
-      
-        if (result.action === Share.sharedAction) {
-          if (result.activityType) {
-            console.log(result)  
-            alert(result)
-          } else {
-   }
-        } else if (result.action === Share.dismissedAction) {
-            alert("dismissed")
-          // dismissed
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log(result);
+          alert(result);
+        } else {
         }
-      } catch (error) {
-        alert(error.message);
+      } else if (result.action === Share.dismissedAction) {
+        alert('dismissed');
+        // dismissed
       }
+    } catch (error) {
+      alert(error.message);
+    }
   };
   render() {
     return (
@@ -661,8 +650,27 @@ class CreateEvent extends Component {
                 </View>
 
                 <Text style={styles.TextInputTitle}>Date and Time:</Text>
-                <View style={styles.TextInputWrapper}>
-                  <DateAndTimePicker
+                <View
+                  style={[
+                    styles.TextInputWrapper,
+                    {
+                      borderWidth: 1,
+                      borderColor: 'lightgrey',
+                      borderRadius: 10,
+                      height: 53,
+                    },
+                  ]}>
+                  <DateTimePicker
+                    format="MMM DD, YYYY - hh:mm "
+                    testID="dateTimePicker"
+                    value={this.state.DateTime}
+                    mode={'datetime'}
+                    is24Hour={true}
+                    display="default"
+                    onChange={this.onChange}
+                    themeVariant="red"
+                  />
+                  {/* <DateAndTimePicker
                     format="MMM DD, YYYY - hh:mm "
                     mode="datetime"
                     showPreviousDate="no"
@@ -672,7 +680,7 @@ class CreateEvent extends Component {
                     setDateAndTime={value => this.onChange(value)}
                     showPlaceholder="+ Add"
                     datebutton={styles.datebutton}
-                  />
+                  /> */}
                 </View>
                 <View style={styles.RowView}>
                   <View style={{flex: 1}}>
@@ -716,7 +724,6 @@ class CreateEvent extends Component {
                     </View>
                   </View>
                   <View style={{flex: 1}}>
-                   
                     <View style={{flexDirection: 'row', marginVertical: 11}}>
                       <Text style={[{marginLeft: 0, marginTop: -2}]}>Fee</Text>
                       <TouchableOpacity
@@ -820,9 +827,7 @@ class CreateEvent extends Component {
                     </View>
                   </View>
                   <View style={{flex: 1, alignItems: 'flex-end'}}>
-                    <Text style={[styles.TextInputTitle,]}>
-                      Duration (HRS)
-                    </Text>
+                    <Text style={[styles.TextInputTitle]}>Duration (HRS)</Text>
                     <View
                       style={[
                         styles.TextInputWrapper2,
@@ -951,14 +956,15 @@ class CreateEvent extends Component {
                       </Text>
                       {this.state.skip === false && (
                         <TouchableOpacity
-                          onPress={()=>this.shareInvites()}
+                          onPress={() => this.shareInvites()}
                           style={styles.button}>
                           <Text style={styles.text}> SHARE EVENT</Text>
                         </TouchableOpacity>
                       )}
                       {this.state.skip === true && (
-                        <TouchableOpacity   onPress={()=>this.directInvites()}
-                        style={styles.button}>
+                        <TouchableOpacity
+                          onPress={() => this.directInvites()}
+                          style={styles.button}>
                           <Text style={styles.text}> Send Direct Invites</Text>
                         </TouchableOpacity>
                       )}
@@ -990,25 +996,15 @@ class CreateEvent extends Component {
                       justifyContent: 'flex-start',
                       alignItems: 'center',
                     }}>
-                       <GoogleSearchBar
+                    <GoogleSearchBar
                       closeLocationModal={() => {
                         this.setState({selectLocationFlag: false});
                       }}
                       getAddress={this.getAdress}
                       setLocation={this.setLocation}
-                      clearGoogleSearch={""}
+                      clearGoogleSearch={''}
                       inputValue={'Address'}
                     />
-
-                    {/* <GoogleSearchBar
-                      closeLocationModal={() => {
-                        this.setState({selectLocationFlag: false});
-                      }}
-                      getAddress={this.getAdress}
-                      setLocation={this.setLocation}
-                      clearGoogleSearch={this.state.clearGoogleSearch}
-                      inputValue={'Address'}
-                    /> */}
                   </View>
                 </Modal>
               </View>

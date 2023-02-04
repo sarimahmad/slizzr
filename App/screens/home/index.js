@@ -373,16 +373,16 @@ class home extends Component {
       });
   }
   onChange = selectedDate => {
-    if(selectedDate == undefined){
-    this.searchUpdated('')
-    }else{
+    if (selectedDate == undefined) {
+      this.searchUpdated('');
+    } else {
       const currentDate = selectedDate || this.state.date;
-    let term =  moment(currentDate).format('DD MMM YYYY')
-    console.log(term)
-    this.searchUpdated(term);
-           
-    this.setState({date: currentDate});
-    this.setState({showDate: false});
+      let term = moment(currentDate).format('DD MMM YYYY');
+      console.log(term);
+      this.searchUpdated(term);
+
+      this.setState({date: currentDate});
+      this.setState({showDate: false});
     }
   };
 
@@ -407,13 +407,12 @@ class home extends Component {
     this.getEvents('update');
   };
   eventDetail = item => {
-    if (this.props.userDetail.id !== item.Host.id ) {
+    if (this.props.userDetail.id !== item.Host.id) {
       this.props.navigation.navigate('eventDetail', {
         detailItem: item.id,
       });
     } else {
-      this.props.navigation.navigate('myEventInfo', {id: item.id})
-                 
+      this.props.navigation.navigate('myEventInfo', {id: item.id});
     }
   };
   listView = () => {
@@ -435,12 +434,10 @@ class home extends Component {
               keyExtractor={(item, index) => index.toString()}
               onEndReached={() => console.log('Reach end')}
               data={currentData}
-              
               refreshing={true}
               renderItem={({item}) => (
                 <TouchableOpacity
-                onPress={() => this.eventDetail(item)}
-             
+                  onPress={() => this.eventDetail(item)}
                   style={{
                     minHeight: 80,
                     borderBottomColor: 'lightgrey',
@@ -480,12 +477,11 @@ class home extends Component {
                         <Text>{item.Distance} KM</Text>
                       </View>
                     </View>
-                    <View
-                      style={styles.shareView}>
+                    <View style={styles.shareView}>
                       <Image source={require('../../assets/Right.png')} />
                     </View>
                   </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
               )}
             />
           )}
@@ -807,17 +803,17 @@ class home extends Component {
           <TouchableOpacity
             onPress={this.showDatepicker}
             style={{flexDirection: 'row'}}>
-             <DateAndTimePicker
-            testID="dateTimePicker"
-            value={this.state.date}
-            format="MMM DD, YYYY"
-            editable={false}
-            mode="date"  
-            showPreviousDate={"no"}
-            type="onlyDate"
-            setDateAndTime={date => this.onChange(date)}
-          />
-        </TouchableOpacity>
+            <DateAndTimePicker
+              testID="dateTimePicker"
+              value={this.state.date}
+              format="MMM DD, YYYY"
+              editable={false}
+              mode="date"
+              showPreviousDate={'no'}
+              type="onlyDate"
+              setDateAndTime={date => this.onChange(date)}
+            />
+          </TouchableOpacity>
           {this.state.mapView === true && (
             <TouchableOpacity
               style={styles.btnMap}
